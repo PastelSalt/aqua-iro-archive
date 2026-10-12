@@ -1,0 +1,201 @@
+# Ask — learning about her. Fan-written lines, not her actual words.
+- id: favorite-game
+  title: { ja: "なにして遊ぶ？", en: "What do you play?" }
+  category: ask
+  lines:
+    - { exp: smile, ja: "ご主人様、今日はなにして遊ぶ？", en: "Master, what shall we play today?" }
+  choices:
+    - id: fav
+      ja: "いちばん好きなゲームは？"
+      en: "What's your favorite game?"
+      reply:
+        - { exp: excited, ja: "えっ、ひとつに決めるの！？むりむり！", en: "Just one!? No way, that's impossible!" }
+        - { exp: cheerful, ja: "でもね、夢中になれるゲームはぜんぶ好き！", en: "Any game I can lose myself in is my favorite." }
+    - id: kart
+      ja: "マリカで勝負しよ！"
+      en: "Mario Kart, you versus me!"
+      reply:
+        - { exp: smug, ja: "ふふん、あてぃしに勝てるとでも？", en: "Heh. You really think you can beat me?" }
+      next: rematch
+    - id: apex
+      ja: "APEX、どうやって上手くなったの？"
+      en: "How did you get so good at APEX?"
+      reply:
+        - { exp: cool, ja: "ひたすら練習！負けて、悔しくて、また練習！", en: "Practice! Lose, get frustrated, practice again!" }
+        - { exp: smile, ja: "耐久配信、いっしょに付き合ってくれてありがとね。", en: "Thanks for sticking with me through all those endurance streams." }
+    - id: horror
+      ja: "ホラーゲームは平気？"
+      en: "Are you okay with horror games?"
+      reply:
+        - { exp: flustered, ja: "へ、平気だし！？ぜんぜんびびってないし！？", en: "I-I'm totally fine!? Not scared at all!?" }
+    - id: streams
+      ja: "ゲーム配信を見たい！"
+      en: "Show me your game streams!"
+      reply:
+        - { exp: cheerful, ja: "いいよ！配信アーカイブにぜんぶ並んでるよ。", en: "Sure! They're all lined up in the stream archive." }
+      goto: streaming
+  nodes:
+    rematch:
+      lines:
+        - { exp: pout, ja: "……いまのはラグ！ノーカン！もう一回！", en: "...That was lag! Doesn't count! Again!" }
+      choices: []
+
+- id: live-prep
+  title: { ja: "ライブの前って？", en: "Before a live show" }
+  category: ask
+  lines:
+    - { exp: calm, ja: "ライブの前ってね、ちょっとだけ緊張するんだ。", en: "Before a live show, I always get a little nervous." }
+  choices:
+    - id: ritual
+      ja: "本番前のおまじないはある？"
+      en: "Do you have a good-luck ritual?"
+      reply:
+        - { exp: smile, ja: "深呼吸して、クルーのみんなの顔を思い浮かべるの。", en: "I take a deep breath and picture all of the crew." }
+    - id: practice
+      ja: "ダンスの練習、大変だった？"
+      en: "Was dance practice hard?"
+      reply:
+        - { exp: flustered, ja: "運動音痴だから……何回も転びそうになった！", en: "I'm not exactly athletic... I nearly tripped so many times!" }
+        - { exp: cheerful, ja: "でも、踊れたときはすっごくうれしかったよ。", en: "But when I finally got it right, I was so happy." }
+    - id: fav-song
+      ja: "ライブでいちばん好きな曲は？"
+      en: "Your favorite song to perform?"
+      reply:
+        - { exp: excited, ja: "あくあ色ぱれっと！みんなの声が聞こえる気がするの。", en: "Aqua Iro Palette! It feels like I can hear everyone singing." }
+    - id: lights
+      ja: "ペンライト、ちゃんと見えてた？"
+      en: "Could you see our glow sticks?"
+      reply:
+        - { exp: shy, ja: "見えてたよ！ピンクと水色の海みたいだった。", en: "I could! It looked like a sea of pink and light blue." }
+    - id: songs
+      ja: "曲をもっと聴きたいな"
+      en: "I want to hear more of your songs"
+      reply:
+        - { exp: smile, ja: "ディスコグラフィに、ぜんぶまとめてあるよ。", en: "They're all gathered in the discography." }
+      goto: discography
+
+- id: maid-duties
+  title: { ja: "メイドのお仕事", en: "Maid duties" }
+  category: ask
+  lines:
+    - { exp: cheerful, ja: "メイドとして、今日もお仕事がんばります！", en: "As your maid, I'll do my best again today!" }
+  choices:
+    - id: cooking
+      ja: "得意な料理は？"
+      en: "What's your best dish?"
+      reply:
+        - { exp: smug, ja: "オムライス！ケチャップでお絵かきもできるよ。", en: "Omurice! I can even draw on it with ketchup." }
+    - id: cleaning
+      ja: "お掃除は得意？"
+      en: "Are you good at cleaning?"
+      reply:
+        - { exp: flustered, ja: "モ、モップはちゃんと持ってるよ！使うかは別として！", en: "I-I do own a mop! Whether I use it is another matter!" }
+    - id: tea
+      ja: "紅茶をいれてほしいな"
+      en: "Could you make me some tea?"
+      reply:
+        - { exp: smile, ja: "かしこまりました！……あっ、お湯わかすの忘れてた。", en: "Right away! ...Oh, I forgot to boil the water." }
+    - id: day-off
+      ja: "メイドのお休みの日は？"
+      en: "What does a maid do on her day off?"
+      reply:
+        - { exp: sleepy, ja: "ゲームして、お昼寝して、またゲーム！", en: "Games, a nap, then more games!" }
+    - id: outfits
+      ja: "メイド服、ほかにもあるの？"
+      en: "Do you have other maid outfits?"
+      reply:
+        - { exp: cheerful, ja: "いっぱいあるよ！アートのページで見てみて。", en: "Lots! Take a look on the Arts page." }
+      goto: arts
+
+- id: the-cat
+  title: { ja: "ねこのはなし", en: "About the cat" }
+  category: ask
+  lines:
+    - { exp: smile, ja: "ねこってね、ずっと見てられるよね。", en: "You could watch a cat forever, couldn't you?" }
+  choices:
+    - id: neko
+      ja: "あのねこ、元気？"
+      en: "How's that cat of yours?"
+      reply:
+        - { exp: cheerful, ja: "元気だよ！今日もあてぃしの心の中でごろごろしてる。", en: "Doing great! Rolling around in my heart as usual." }
+    - id: dog-or-cat
+      ja: "犬派？猫派？"
+      en: "Dog person or cat person?"
+      reply:
+        - { exp: smug, ja: "それ、聞く必要ある？ねこ一択だよ！", en: "Do you even need to ask? Cats, obviously!" }
+    - id: cat-sounds
+      ja: "ねこのまねして！"
+      en: "Do a cat impression!"
+      reply:
+        - { exp: shy, ja: "にゃ、にゃー……もう！はずかしいじゃん！", en: "Nya... nyaa... Hey! That's embarrassing!" }
+    - id: sleep
+      ja: "ねこみたいに寝てない？"
+      en: "Don't you sleep like a cat?"
+      reply:
+        - { exp: sleepy, ja: "まるくなるとね、ほんとに落ち着くの……", en: "Curling up into a ball really is the comfiest..." }
+
+- id: favorite-song-own
+  title: { ja: "じぶんの歌", en: "Her own songs" }
+  category: ask
+  lines:
+    - { exp: calm, ja: "歌うのってね、むかしから大好きなんだ。", en: "I've loved singing for as long as I can remember." }
+  choices:
+    - id: first
+      ja: "初めての歌ってみたは？"
+      en: "What was your first cover?"
+      reply:
+        - { exp: cheerful, ja: "インドア系ならトラックメイカー！なつかしいなぁ。", en: "Indoor Kei nara Trackmaker! That takes me back." }
+    - id: palette
+      ja: "あくあ色ぱれっとってどんな曲？"
+      en: "What's Aqua Iro Palette about?"
+      reply:
+        - { exp: smile, ja: "あてぃしの色を、みんなに届けたいって曲だよ。", en: "It's about sharing my colors with all of you." }
+    - id: karaoke
+      ja: "歌枠でよく歌う曲は？"
+      en: "What do you sing a lot in karaoke streams?"
+      reply:
+        - { exp: excited, ja: "その日の気分！でもアニソンは多めかも！", en: "Whatever I'm in the mood for! Lots of anime songs, though!" }
+    - id: hard
+      ja: "いちばん難しかった曲は？"
+      en: "Which song was hardest?"
+      reply:
+        - { exp: flustered, ja: "早口の曲はね……舌がからまりそうになる！", en: "The fast ones... my tongue nearly ties itself in knots!" }
+    - id: listen
+      ja: "全部の曲を聴きたい"
+      en: "I want to hear all of them"
+      reply:
+        - { exp: smile, ja: "オリジナルも歌ってみたも、ディスコにあるよ。", en: "Originals and covers are all in the discography." }
+      goto: discography
+
+- id: crew-name
+  title: { ja: "あくあクルー", en: "The Aqua Crew" }
+  category: ask
+  lines:
+    - { exp: cheerful, ja: "ねえねえ、あくあクルーってどんな人たちだと思う？", en: "Hey, what kind of people do you think the Aqua Crew are?" }
+  choices:
+    - id: kind
+      ja: "やさしい人ばっかり！"
+      en: "Kind people, every one of them!"
+      reply:
+        - { exp: smile, ja: "でしょ！あてぃしの自慢のクルーだもん。", en: "Right? They're the crew I'm proudest of." }
+    - id: loud
+      ja: "コメント欄がにぎやか"
+      en: "A very noisy comment section"
+      reply:
+        - { exp: smug, ja: "にぎやかすぎて、ときどき読めないくらい！", en: "So noisy I sometimes can't keep up!" }
+    - id: anchor
+      ja: "⚓マークの意味は？"
+      en: "What does the ⚓ mean?"
+      reply:
+        - { exp: calm, ja: "いかりはね、みんながいる港のしるし。", en: "The anchor marks the harbor where everyone gathers." }
+    - id: onion
+      ja: "なんで玉ねぎなの？"
+      en: "Why onions, though?"
+      reply:
+        - { exp: pout, ja: "それはクルーのみんなに聞いてよ！もう！", en: "Ask the crew, not me! Honestly!" }
+    - id: board
+      ja: "クルーの寄せ書きを見たい"
+      en: "I want to see the crew's notes"
+      reply:
+        - { exp: smile, ja: "寄せ書きボードにいっぱい貼ってあるよ。", en: "There are lots pinned on the message board." }
+      goto: messages

@@ -1,0 +1,333 @@
+---
+/** No.01 About (EXECUTIONPLAN §9.1). */
+import { Image, getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import Stamp from '../components/ui/Stamp.astro';
+import portrait from '../assets/poses/portrait-01.webp';
+import sailor from '../assets/poses/full-06.webp';
+import { dotDate } from '../lib/format';
+
+const profile = (await getCollection('profile')).sort((a, b) => a.data.order - b.data.order);
+const lore = await getCollection('lore');
+const rels = await getCollection('relationships');
+const links = await getCollection('links');
+const wardrobe = (
+  await getCollection(
+    'arts',
+    (a) => a.data.section === 'outfits' || a.id === '3d-live-dress-schwarz' || a.id === 'concept-wonderland',
+  )
+).sort((a, b) => (a.data.date ?? '9999').localeCompare(b.data.date ?? '9999'));
+const bigs = Object.fromEntries(
+  await Promise.all(
+    wardrobe.map(
+      async (a) =>
+        [
+          a.id,
+          (
+            await getImage({
+              src: a.data.image,
+              width: Math.round(
+                a.data.image.width * Math.min(1, 1600 / Math.max(a.data.image.width, a.data.image.height)),
+              ),
+              format: 'webp',
+              quality: 76,
+            })
+          ).src,
+        ] as const,
+    ),
+  ),
+);
+
+const NOTE_COLORS = [
+  'var(--note-pink)',
+  'var(--note-mint)',
+  'var(--note-cream)',
+  'var(--note-lav)',
+  'var(--note-sky)',
+];
+const TILTS = [-1.6, 1.2, -0.6, 2, -1.2, 0.8, -2, 1.4];
+
+// relationship map: Aqua in the middle, pairings and units around her on a ring
+const R = 190;
+const nodes = rels.map((r, i) => {
+  const a = (i / rels.length) * Math.PI * 2 - Math.PI / 2;
+  return {
+    r,
+    x: 300 + Math.cos(a) * R,
+    y: 250 + Math.sin(a) * R * 0.82,
+    size: r.data.kind === 'pair' ? 50 : 60,
+  };
+});
+const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' };
+---
+
+<Page
+  chapter="about"
+  description="湊あくあのプロフィール、性格、関係、衣装の歩み。Minato Aqua's profile, personality, relationships and outfit history."
+  h1="About"
+  subtitle="プロフィール"
+  intro={{
+    ja: 'ホロライブ2期生のドジっ子マリンメイド。人見知りで、ゲームが強くて、歌が大好き。2018年8月8日から2024年8月28日までの、湊あくあのこと。',
+    en: 'A clumsy marine maid from hololive 2nd Gen — shy, fiercely good at games, and in love with singing. This is Minato Aqua, from 8 August 2018 to 28 August 2024.',
+  }}
+  vert={{ small: 'PROFILE', text: 'ドジっ子', em: 'メイド' }}
+  marquee={[
+    '#湊あくあ',
+    'こんあくあ～！',
+    '#あくあクルー',
+    '⚓ OSHI MARK',
+    '#あくあーと',
+    'CLUMSY MARINE MAID',
+    '148cm',
+    '12.01',
+  ]}
+>
+  <Fragment slot="visual">
+    <div class="about-visual">
+      <Image
+        src={sailor}
+        alt="セーラー私服姿の湊あくあ / Aqua in her casual sailor outfit"
+        height={560}
+        densities={[1, 1.5]}
+        loading="eager"
+        class="about-visual__pose"
+      />
+      <Stamp text="MINATO AQUA ⚓ AQUA CREW ⚓ HOLOLIVE 2ND GEN ⚓ " size={120} class="about-visual__stamp" />
+    </div>
+  </Fragment>
+
+  <!-- ID card -->
+  <section class="section wrap" aria-labelledby="profile-title">
+    <SectionTitle no="01" en="Profile" ja="プロフィールカード" id="profile-title" />
+    <article class="id-card card">
+      <div class="id-card__photo">
+        <span class="id-card__clip" aria-hidden="true"></span>
+        <Image
+          src={portrait}
+          alt="メイド服姿の湊あくあのポートレート / Portrait of Minato Aqua in her maid outfit"
+          width={340}
+          densities={[1, 2]}
+        />
+        <p class="id-card__name">
+          <span lang="ja">湊あくあ</span>
+          <small lang="en">MINATO AQUA</small>
+        </p>
+        <p class="label">HOLOLIVE · 2ND GEN · ⚓</p>
+      </div>
+      <dl class="id-card__data">
+        {profile.map((p) => (
+          <div class="id-row">
+            <dt>
+              <span lang="ja">{p.data.label.ja}</span>
+              <small lang="en">{p.data.label.en}</small>
+            </dt>
+            <dd>
+              {p.data.value.ja && (
+                <span data-l="ja" lang="ja">
+                  {p.data.value.ja}
+                </span>
+              )}
+              <span data-l="en" lang="en">
+                {p.data.value.en ?? p.data.value.ja}
+              </span>
+              {!p.data.value.ja && (
+                <span data-l="ja" lang="en">
+                  {p.data.value.en}
+                </span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p class="id-card__asof label">
+        AS OF 2026-10-11 · <span lang="ja">2026年10月11日時点</span>
+      </p>
+    </article>
+  </section>
+
+  <!-- lore notes -->
+  <section class="section wrap" aria-labelledby="lore-title">
+    <SectionTitle no="02" en="Personality & lore" ja="性格とおなじみのネタ" id="lore-title" />
+    <ul class="scrapbook" role="list">
+      {lore.map((l, i) => (
+        <li class="scrap" style={`--note-bg:${NOTE_COLORS[i % 5]};--tilt:${TILTS[i % TILTS.length]}deg`}>
+          <span class={`tape tape--${['pink', 'blue', 'mint'][i % 3]}`} aria-hidden="true" />
+          {l.data.sticker && (
+            <span class="scrap__sticker" aria-hidden="true">
+              <Icon name={l.data.sticker} />
+            </span>
+          )}
+          {l.data.text.ja && (
+            <p data-l="ja" lang="ja">
+              {l.data.text.ja}
+            </p>
+          )}
+          <p data-l="en" lang="en">
+            {l.data.text.en}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- relationships -->
+  <section class="section wrap" aria-labelledby="rel-title">
+    <SectionTitle no="03" en="Relationships" ja="なかよしの輪" id="rel-title" />
+    <div class="relmap" data-relmap>
+      <svg class="relmap__svg" viewBox="0 0 600 500" aria-hidden="true">
+        {nodes.map((n) => (
+          <path
+            class="rope"
+            data-rope={n.r.id}
+            d={`M300 250 Q ${(300 + n.x) / 2 + (n.y - 250) * 0.15} ${(250 + n.y) / 2 - (n.x - 300) * 0.15} ${n.x} ${n.y}`}
+          />
+        ))}
+      </svg>
+      <div class="relmap__center" aria-hidden="true">
+        <Image src={portrait} alt="" width={120} densities={[1, 2]} />
+        <span>あくあ</span>
+      </div>
+      {nodes.map((n) => (
+        <button
+          type="button"
+          class="relmap__node"
+          data-node={n.r.id}
+          style={`left:${(n.x / 600) * 100}%;top:${(n.y / 500) * 100}%;--size:${n.size * 2}px`}
+          aria-pressed="false"
+          aria-describedby="rel-detail"
+        >
+          <b lang="ja">{n.r.data.name.ja}</b>
+          <small lang="en">{n.r.data.name.en}</small>
+        </button>
+      ))}
+      <p class="relmap__detail card" id="rel-detail" aria-live="polite" data-rel-detail>
+        <span data-l="ja" lang="ja">
+          気になる輪をえらんでね。
+        </span>
+        <span data-l="en" lang="en">
+          Pick a circle to see who's in it.
+        </span>
+      </p>
+    </div>
+    <ul class="rel-list" role="list">
+      {rels.map((r) => (
+        <li class="rel-list__item" data-rel-item={r.id}>
+          <b>
+            <span lang="ja">{r.data.name.ja}</span> · <span lang="en">{r.data.name.en}</span>
+          </b>
+          <span class="muted">{r.data.members.join(' · ')}</span>
+          {r.data.note && (
+            <span class="credit">
+              <span data-l="ja" lang="ja">
+                {r.data.note.ja}
+              </span>
+              <span data-l="en" lang="en">
+                {r.data.note.en}
+              </span>
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- wardrobe -->
+  <section class="section" aria-labelledby="wardrobe-title">
+    <div class="wrap">
+      <SectionTitle no="04" en="Model history" ja="衣装のあゆみ" id="wardrobe-title" />
+    </div>
+    <ol class="wardrobe" role="list" tabindex="0" aria-label="Outfits, oldest first">
+      {wardrobe.map((a) => (
+        <li class="wardrobe__item">
+          <a
+            class="wardrobe__card"
+            href={bigs[a.id]}
+            data-lb="image"
+            data-group="wardrobe"
+            data-id={a.id}
+            data-alt={a.data.alt.ja + ' / ' + a.data.alt.en}
+            data-title={`${a.data.title.ja ?? ''} / ${a.data.title.en ?? ''}`}
+            data-credit={`${a.data.artist} · ${a.data.credit}`}
+            data-source={a.data.source}
+            data-event="art_open"
+          >
+            <span class="wardrobe__img">
+              <Image
+                src={a.data.image}
+                alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
+                height={420}
+                densities={[1, 1.5]}
+                loading="lazy"
+              />
+            </span>
+            <span class="wardrobe__meta">
+              <span class="num">{a.data.date ? dotDate(a.data.date) : '—'}</span>
+              <b lang="ja">{a.data.title.ja}</b>
+              <small lang="en">{a.data.title.en}</small>
+              <span class="credit">{a.data.artist}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- links -->
+  <section class="section wrap" aria-labelledby="links-title">
+    <SectionTitle no="05" en="Official & fan links" ja="リンク" id="links-title" />
+    <ul class="link-tags" role="list">
+      {links.map((l) => (
+        <li>
+          <a class="tag-link" href={l.data.url} rel="noopener">
+            <Icon name={linkIcon[l.id] ?? 'anchor'} />
+            <span>
+              <b>{l.data.label}</b> · {l.data.text}
+            </span>
+          </a>
+          {l.data.note && (
+            <p class="credit link-note">
+              <span data-l="ja" lang="ja">
+                卒業後にタレントページは削除されました。Wayback Machineのアーカイブをどうぞ。
+              </span>
+              <span data-l="en" lang="en">
+                The talent page was removed after graduation — use the Wayback Machine archive.
+              </span>
+            </p>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+</Page>
+
+<script>
+  import { onPage } from '../lib/lifecycle';
+  onPage(() => {
+    const map = document.querySelector<HTMLElement>('[data-relmap]');
+    if (!map) return;
+    const detail = map.querySelector<HTMLElement>('[data-rel-detail]')!;
+    const items = new Map(
+      Array.from(document.querySelectorAll<HTMLElement>('[data-rel-item]')).map((li) => [
+        li.dataset.relItem!,
+        li,
+      ]),
+    );
+    const nodes = Array.from(map.querySelectorAll<HTMLButtonElement>('[data-node]'));
+    const select = (id: string | null) => {
+      nodes.forEach((n) => n.setAttribute('aria-pressed', String(n.dataset.node === id)));
+      map
+        .querySelectorAll<SVGPathElement>('[data-rope]')
+        .forEach((p) => p.classList.toggle('is-on', p.dataset.rope === id));
+      const li = id ? items.get(id) : null;
+      if (li) detail.innerHTML = li.innerHTML;
+    };
+    nodes.forEach((n) => {
+      n.addEventListener('click', () => select(n.dataset.node!));
+      n.addEventListener('mouseenter', () => select(n.dataset.node!));
+      n.addEventListener('focus', () => select(n.dataset.node!));
+    });
+  });
+</script>

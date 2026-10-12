@@ -1,0 +1,102 @@
+---
+/**
+ * NO.0X page skeleton (EXECUTIONPLAN §9): key visual → bilingual title + intro → main → related → marquee → footer.
+ * Slots: "visual" (right side of the head), default (main module), "related", "after-head".
+ */
+import Base from './Base.astro';
+import Marquee from '../components/chrome/Marquee.astro';
+import Icon from '../components/ui/Icon.astro';
+import { CHAPTERS, type ChapterId } from '../lib/chapters';
+import { SITE_NAME } from '../lib/site';
+
+export interface Props {
+  chapter: ChapterId;
+  description: string;
+  /** h1 text; defaults to the chapter's EN title */
+  h1?: string;
+  h1Mincho?: boolean;
+  subtitle?: string; // JP subtitle under h1
+  intro?: { ja: string; en: string };
+  vert?: { small: string; text: string; em?: string };
+  marquee?: string[];
+  og?: string;
+}
+const { chapter, description, h1, h1Mincho = false, subtitle, intro, vert, marquee, og } = Astro.props;
+const idx = CHAPTERS.findIndex((x) => x.id === chapter);
+const c = CHAPTERS[idx]!;
+const prev = CHAPTERS[(idx + CHAPTERS.length - 1) % CHAPTERS.length]!;
+const next = CHAPTERS[(idx + 1) % CHAPTERS.length]!;
+const title =
+  chapter === 'home'
+    ? `${SITE_NAME} — あくあ色アーカイブ`
+    : `${c.no} ${c.title.ja} — ${c.title.en} | ${SITE_NAME}`;
+---
+
+<Base title={title} description={description} chapter={chapter} og={og ?? `/og/${chapter}.jpg`}>
+  <slot name="head" slot="head" />
+  <main id="main" class="page" data-chapter={chapter} tabindex="-1">
+    <header class="page-head">
+      {vert && (
+        <div class="vert-col" aria-hidden="true">
+          <span class="vert-small">{vert.small}</span>
+          <span class="vert">
+            {vert.text}
+            {vert.em && <em>{vert.em}</em>}
+          </span>
+        </div>
+      )}
+      <div class="wrap page-head__grid">
+        <div class="page-head__copy">
+          <p class="label">
+            <b>{c.no}</b> — {c.en}
+          </p>
+          <h1 class:list={{ mincho: h1Mincho }} lang={h1Mincho ? 'ja' : 'en'}>
+            <slot name="h1">{h1 ?? c.title.en}</slot>
+          </h1>
+          {subtitle && (
+            <p class="subtitle" lang="ja">
+              {subtitle}
+            </p>
+          )}
+          <slot name="poem" />
+          {intro && (
+            <p class="intro">
+              <span data-l="ja" lang="ja">
+                {intro.ja}
+              </span>
+              <span data-l="en" lang="en">
+                {intro.en}
+              </span>
+            </p>
+          )}
+          <slot name="head-extra" />
+        </div>
+        <div class="page-head__visual">
+          <slot name="visual" />
+        </div>
+      </div>
+    </header>
+    <slot name="after-head" />
+    <div class="page-body">
+      <slot />
+    </div>
+    <Marquee items={marquee} />
+    <slot name="related" />
+    <nav class="wrap related" aria-label="Chapters">
+      {[prev, next].map((x, i) => (
+        <a
+          class:list={['related__card', { 'related__card--next': i === 1 }]}
+          href={x.href}
+          style={`--dot:var(${x.tint})`}
+        >
+          <span class="label">
+            {i === 0 ? '← PREV' : 'NEXT →'} · {x.no}
+          </span>
+          <b lang="ja">{x.title.ja}</b>
+          <small lang="en">{x.title.en}</small>
+          <Icon name={i === 0 ? 'anchor' : 'chevron'} />
+        </a>
+      ))}
+    </nav>
+  </main>
+</Base>

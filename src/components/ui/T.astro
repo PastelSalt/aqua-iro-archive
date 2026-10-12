@@ -1,0 +1,36 @@
+---
+/**
+ * Bilingual text. Default renders both languages as spans and lets html[data-lang] hide one (§22).
+ * `both` renders them side by side for short labels (dock, buttons), matching the mockups.
+ */
+import { t, type Key } from '../../lib/i18n';
+interface Props {
+  k?: Key;
+  ja?: string;
+  en?: string;
+  both?: boolean;
+  vars?: Record<string, string | number>;
+}
+const { k, both = false, vars } = Astro.props;
+const pair = k
+  ? t(k, vars)
+  : { ja: Astro.props.ja ?? Astro.props.en ?? '', en: Astro.props.en ?? Astro.props.ja ?? '' };
+const same = pair.ja === pair.en;
+---
+
+{same ? (
+  <Fragment set:text={pair.ja} />
+) : both ? (
+  <Fragment>
+    <span lang="ja">{pair.ja}</span> <span lang="en">{pair.en}</span>
+  </Fragment>
+) : (
+  <Fragment>
+    <span data-l="ja" lang="ja">
+      {pair.ja}
+    </span>
+    <span data-l="en" lang="en">
+      {pair.en}
+    </span>
+  </Fragment>
+)}

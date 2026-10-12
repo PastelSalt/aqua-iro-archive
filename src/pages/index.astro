@@ -1,0 +1,597 @@
+---
+/** No.00 Home (EXECUTIONPLAN §9.0). */
+import { Image, Picture } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/ui/Icon.astro';
+import Stamp from '../components/ui/Stamp.astro';
+import VoyageLine from '../components/ui/VoyageLine.astro';
+import Marquee from '../components/chrome/Marquee.astro';
+import DialogueBox from '../components/talk/DialogueBox.tsx';
+import { CHAPTERS } from '../lib/chapters';
+import { OFFICIAL, SITE_NAME } from '../lib/site';
+import full08 from '../assets/poses/full-08.webp';
+import full01 from '../assets/poses/full-01.webp';
+import full06 from '../assets/poses/full-06.webp';
+import full07 from '../assets/poses/full-07.webp';
+import heart3d from '../assets/poses/3d-heart.webp';
+import signature from '../assets/logo/signature.png';
+
+const outfits = [
+  { img: full08, ja: '最後の新衣装', en: 'Final outfit' },
+  { img: full01, ja: '初期衣装', en: 'Original maid' },
+  { img: full06, ja: 'セーラー私服', en: 'Casual sailor' },
+  { img: full07, ja: '黒ジャケット', en: 'Black jacket' },
+  { img: heart3d, ja: '3Dモデル', en: '3D model' },
+];
+
+const palette = await getEntry('arts', 'music-aqua-iro-palette');
+const cardArt: Record<string, string> = {
+  about: 'gaou-v2',
+  clips: 'anniv-2020-birthday-gaou',
+  discography: 'music-aqua-iro-palette',
+  streaming: 'anniv-4th-booota',
+  events: 'kv-5th-fes',
+  arts: 'gaou-aquart-1',
+  messages: 'music-kimiiro-princess-art',
+};
+const cards = await Promise.all(
+  CHAPTERS.filter((c) => c.id !== 'home').map(async (c) => ({
+    c,
+    art: (await getEntry('arts', cardArt[c.id]!))!,
+  })),
+);
+const cardLine: Record<string, { ja: string; en: string }> = {
+  about: { ja: 'ドジっ子マリンメイドのプロフィール', en: 'Meet the clumsy marine maid' },
+  clips: { ja: 'みんなが残してくれた名場面', en: 'The moments fans kept' },
+  discography: { ja: 'オリジナル19曲と、たくさんの歌声', en: '19 originals and many more voices' },
+  streaming: { ja: '639回ぶんの配信アーカイブ', en: 'All 639 archived streams' },
+  events: { ja: 'デビューから卒業までの航海', en: 'The voyage from debut to graduation' },
+  arts: { ja: '衣装、記念日、ジャケットのギャラリー', en: 'Outfits, anniversaries and jackets' },
+  messages: { ja: 'あくたんへ、一枚ずつ', en: 'One note at a time, for Akutan' },
+};
+
+const moments = [
+  {
+    id: 'S3CAGeeMRvo',
+    key: 'beginning',
+    ja: 'はじまり',
+    en: 'BEGINNING',
+    title: 'はじめまして、湊あくあです！',
+    meta: '2018.08.08 · SELF-INTRODUCTION',
+    thumb: 'https://i.ytimg.com/vi/S3CAGeeMRvo/hqdefault.jpg',
+  },
+  {
+    id: '6bnaBnd4kyU',
+    key: 'theme',
+    ja: 'テーマ',
+    en: 'THEME',
+    title: '#あくあ色ぱれっと',
+    meta: '2020 · ORIGINAL SONG',
+    thumb: null,
+  },
+  {
+    id: 'fDtUy1PTor0',
+    key: 'finale',
+    ja: 'フィナーレ',
+    en: 'FINALE',
+    title: '卒業ライブ「あくあ色に染まれ！」',
+    meta: '2024.08.28 · GRADUATION LIVE',
+    thumb: 'https://i.ytimg.com/vi/fDtUy1PTor0/hqdefault.jpg',
+  },
+];
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE_NAME,
+  alternateName: 'あくあ色アーカイブ',
+  url: Astro.site?.href,
+  inLanguage: ['ja', 'en'],
+};
+---
+
+<Base
+  title={`${SITE_NAME} — あくあ色アーカイブ`}
+  description="湊あくあの6年間（2018–2024）を、色の数だけ残した非公式ファンアーカイブ。An unofficial fan archive of Minato Aqua's six years."
+  chapter="home"
+  og="/og/home.jpg"
+  jsonLd={ld}
+>
+  <main id="main" class="home" data-chapter="home" tabindex="-1">
+    <section class="home-hero" aria-labelledby="home-title" data-home>
+      <canvas class="bubbles" data-bubbles aria-hidden="true"></canvas>
+
+      <!-- decorative doodles (mockup v5) -->
+      <div class="home-hero__fx" aria-hidden="true">
+        <span
+          class="fx c-lav"
+          style="left:19%;top:4%;width:90px;height:40px;transform:rotate(-8deg);opacity:.8"
+        >
+          <svg>
+            <use href="#i-headdress"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan float" style="left:25.6%;top:10.5%;width:18px;height:18px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="fx c-pink" style="left:24.5%;top:14%;width:11px;height:11px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan" style="left:22.5%;top:20%;width:110px;height:18px;opacity:.55">
+          <svg>
+            <use href="#i-wave"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-deep float"
+          style="left:28.9%;top:26%;width:30px;height:36px;--rot:12deg;opacity:.65"
+        >
+          <svg>
+            <use href="#i-note"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-pink"
+          style="left:27.5%;top:45%;width:26px;height:24px;transform:rotate(-12deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-heart"></use>
+          </svg>
+        </span>
+        <span class="fx c-lav float" style="left:13%;top:68%;width:30px;height:40px;--rot:10deg;opacity:.75">
+          <svg>
+            <use href="#i-onion"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-pink"
+          style="left:65%;top:66%;width:70px;height:40px;transform:rotate(14deg);opacity:.75"
+        >
+          <svg>
+            <use href="#i-bow"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-cyan float"
+          style="left:73.7%;top:27.8%;width:26px;height:32px;--rot:-10deg;opacity:.7"
+        >
+          <svg>
+            <use href="#i-note"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-lav"
+          style="left:78%;top:21%;width:74px;height:46px;transform:rotate(-8deg);opacity:.75"
+        >
+          <svg>
+            <use href="#i-pad"></use>
+          </svg>
+        </span>
+        <span class="fx c-pink float" style="left:85%;top:19%;width:16px;height:16px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-cyan"
+          style="left:92%;top:62%;width:24px;height:22px;transform:rotate(10deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-heart"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-lav"
+          style="left:91.4%;top:48%;width:30px;height:34px;transform:rotate(-14deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-anchor"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan float" style="left:40%;top:4.4%;width:14px;height:14px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="tiny-bub" style="left:20.6%;top:27.8%;width:12px;height:12px"></span>
+        <span class="tiny-bub" style="left:22%;top:31%;width:7px;height:7px"></span>
+        <span class="tiny-bub" style="left:32.5%;top:69%;width:10px;height:10px"></span>
+        <span class="tiny-bub" style="left:75%;top:15.5%;width:9px;height:9px"></span>
+        <span class="tiny-bub" style="left:92.5%;top:53%;width:11px;height:11px"></span>
+        <span class="tiny-bub" style="left:61%;top:4.4%;width:8px;height:8px"></span>
+      </div>
+
+      <div class="home-hero__copy">
+        <p class="label">
+          <b>NO.00</b> — HOME
+        </p>
+        <h1 id="home-title" lang="en">
+          Aqua <span class="iro">Iro</span>
+          <br />
+          Archive
+        </h1>
+        <p class="home-hero__jp mincho" lang="ja">
+          あくあ色アーカイブ
+        </p>
+        <p class="poem" lang="ja">
+          一緒に過ごした六年間の、
+          <br />
+          すべての色を、ここに。
+        </p>
+        <p class="poem-en" lang="en">
+          Every color from six years together, kept in one place.
+        </p>
+        <VoyageLine />
+        <span class="sticker sticker--round home-hero__cat" style="--tilt:-10deg" aria-hidden="true">
+          <Icon name="cat" style="width:38px;height:30px" />
+        </span>
+      </div>
+
+      <div class="home-hero__stage">
+        <div class="hero-circle" data-hero>
+          <div class="hero-circle__ring" aria-hidden="true"></div>
+          <div class="hero-circle__ring2" aria-hidden="true"></div>
+          <div class="hero-circle__disc" aria-hidden="true">
+            <div class="hero-circle__lace"></div>
+            <i class="hero-bubble" style="width:46px;height:46px;left:11%;top:23%"></i>
+            <i class="hero-bubble" style="width:22px;height:22px;left:19%;top:17%"></i>
+            <i class="hero-bubble" style="width:60px;height:60px;right:9%;top:33%"></i>
+            <i class="hero-bubble" style="width:18px;height:18px;right:19%;top:27%"></i>
+            <i class="hero-bubble" style="width:34px;height:34px;left:14%;bottom:27%"></i>
+          </div>
+          <div class="hero-circle__poses">
+            {outfits.map((o, i) => (
+              <Picture
+                fallbackFormat="webp"
+                src={o.img}
+                formats={['avif', 'webp']}
+                height={770}
+                densities={[1, 1.5]}
+                alt={
+                  i === 0
+                    ? '最後の新衣装（ピンクのメイド服）を着た湊あくあの全身イラスト / Minato Aqua in her final pink maid outfit'
+                    : ''
+                }
+                class:list={['hero-pose', { 'is-on': i === 0 }]}
+                data-hero-img={i === 0 ? '' : undefined}
+                data-pose={i}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : 'low'}
+                decoding={i === 0 ? 'sync' : 'async'}
+                aria-hidden={i === 0 ? undefined : 'true'}
+              />
+            ))}
+            <img
+              class="hero-pose hero-pose--expr"
+              data-hero-expr
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+            />
+          </div>
+          <span class="fx c-cyan" style="left:-40px;top:300px;width:70px;height:80px" aria-hidden="true">
+            <svg>
+              <use href="#i-anchor"></use>
+            </svg>
+          </span>
+          <span class="fx c-pink" style="right:-34px;top:430px;width:74px;height:60px" aria-hidden="true">
+            <svg>
+              <use href="#i-cat"></use>
+            </svg>
+          </span>
+          <div class="hero-dots" role="group" aria-label="Outfits">
+            {outfits.map((o, i) => (
+              <button
+                type="button"
+                class:list={{ 'is-on': i === 0 }}
+                data-dot={i}
+                aria-pressed={i === 0 ? 'true' : 'false'}
+                aria-label={`${o.ja} / ${o.en}`}
+              />
+            ))}
+            <button
+              type="button"
+              class="hero-dots__pause"
+              data-pager-pause
+              aria-pressed="false"
+              aria-label="Pause outfit slideshow"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use href="#i-pause"></use>
+              </svg>
+            </button>
+          </div>
+          <Stamp class="home-stamp" />
+          <span
+            class="sticker sticker--round home-hero__sleep"
+            style="--tilt:8deg;width:84px;height:84px"
+            aria-hidden="true"
+          >
+            <Icon name="catsleep" style="width:56px;height:34px;color:var(--aqua-pink-deep)" />
+          </span>
+        </div>
+      </div>
+
+      <div class="home-hero__dialog">
+        <DialogueBox
+          client:idle
+          first={{
+            ja: 'おかえりなさいませ、ご主人様！どの章から振り返りますか？',
+            en: 'Welcome home, Master! Which chapter shall we open first?',
+          }}
+        />
+      </div>
+
+      <div class="home-hero__reel">
+        <p class="reel-head label">THREE MOMENTS</p>
+        {moments.map((m, i) => (
+          <div class:list={['film', `film--${m.key}`]}>
+            <a
+              class="film__link"
+              href={`https://www.youtube.com/watch?v=${m.id}`}
+              data-lb="video"
+              data-yt={m.id}
+              data-title={m.title}
+              data-credit="© COVER Corp. · Official YouTube"
+              data-event="moment_open"
+              data-id={m.key}
+              aria-label={`Play: ${m.title}`}
+            >
+              <span class="film__th">
+                {m.thumb ? (
+                  <img
+                    src={m.thumb}
+                    alt=""
+                    width="480"
+                    height="360"
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                  />
+                ) : (
+                  <Image src={palette!.data.image} alt="" width={444} loading="lazy" />
+                )}
+                <span class="film__ch">
+                  <span lang="ja">{m.ja}</span>
+                  <span>{m.en}</span>
+                </span>
+                {m.key === 'theme' && (
+                  <span class="film__eq" aria-hidden="true">
+                    <i style="height:6px" />
+                    <i style="height:12px" />
+                    <i style="height:8px" />
+                    <i style="height:14px" />
+                    <i style="height:5px" />
+                  </span>
+                )}
+                <span class="film__pl" aria-hidden="true">
+                  <Icon name="play" />
+                </span>
+              </span>
+              <span class="film__tt" lang="ja">
+                {m.title}
+              </span>
+              <span class="film__dt">{m.meta}</span>
+            </a>
+            {m.key === 'theme' && (
+              <button type="button" class="film__bgm" data-bgm-play={m.id}>
+                <Icon name="music" />{' '}
+                <span data-l="ja" lang="ja">
+                  BGMで流す
+                </span>
+                <span data-l="en" lang="en">
+                  Play as BGM
+                </span>
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <aside class="home-hero__side" aria-label="Minato Aqua">
+        <div class="home-vert" aria-hidden="true">
+          <span class="vert-small">MINATO AQUA</span>
+          <span class="vert">
+            ありがとう、<em>あくたん</em>
+          </span>
+        </div>
+        <div class="social">
+          <a href={OFFICIAL.youtube} rel="noopener" aria-label="YouTube — Aqua Ch. 湊あくあ">
+            <Icon name="youtube" />
+          </a>
+          <a href={OFFICIAL.x} rel="noopener" aria-label="X — @minatoaqua">
+            <Icon name="x" />
+          </a>
+        </div>
+      </aside>
+    </section>
+
+    <Marquee />
+
+    <section class="chapter-spread wrap" aria-labelledby="spread-title">
+      <div class="sec-title sec-title--center">
+        <span class="no label">
+          <Icon name="anchor" />
+          <b>CHAPTER SELECT</b>
+        </span>
+        <h2 id="spread-title" lang="ja" class="maru">
+          どの章から振り返る？
+        </h2>
+        <span class="jp" lang="en">
+          Which chapter shall we open?
+        </span>
+      </div>
+      <ol class="spread" role="list">
+        {cards.map(({ c, art }, i) => (
+          <li class="spread__item" style={`--i:${i};--dot:var(${c.tint})`}>
+            <a class="vn-card" href={c.href} data-chapter-card={c.id}>
+              <span class="vn-card__no" aria-hidden="true">
+                {c.no}
+              </span>
+              <span class="vn-card__art">
+                <Image
+                  src={art.data.image}
+                  alt=""
+                  widths={[360, 540]}
+                  sizes="(max-width: 600px) 90vw, 360px"
+                  class={`focal-${art.data.focal}`}
+                  loading="lazy"
+                />
+              </span>
+              <span class="vn-card__body">
+                <b lang="ja">{c.title.ja}</b>
+                <small lang="en">{c.title.en.toUpperCase()}</small>
+                <span class="vn-card__line">
+                  <span data-l="ja" lang="ja">
+                    {cardLine[c.id]!.ja}
+                  </span>
+                  <span data-l="en" lang="en">
+                    {cardLine[c.id]!.en}
+                  </span>
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="farewell" aria-labelledby="farewell-title">
+      <div class="farewell__waves" aria-hidden="true"></div>
+      <div class="wrap farewell__inner">
+        <Stamp text="ありがとう ⚓ THANK YOU ⚓ 2018 — 2024 ⚓ " size={150} />
+        <div>
+          <h2 id="farewell-title" class="mincho" lang="ja">
+            ありがとう、あくたん。
+          </h2>
+          <p class="farewell__en" lang="en">
+            Thank you, Akutan.
+          </p>
+          <p class="farewell__body">
+            <span data-l="ja" lang="ja">
+              2018年8月8日から2024年8月28日まで。
+              <br />
+              ここは終わった物語の記録ではなく、いつでも読み返せる一冊の本です。
+            </span>
+            <span data-l="en" lang="en">
+              From 8 August 2018 to 28 August 2024.
+              <br />
+              Not a record of a story that ended — a book you can open and read again, any time.
+            </span>
+          </p>
+          <a class="btn btn--primary" href="/messages">
+            <span data-l="ja" lang="ja">
+              寄せ書きを残す
+            </span>
+            <span data-l="en" lang="en">
+              Leave her a note
+            </span>{' '}
+            <Icon name="anchor" />
+          </a>
+        </div>
+        <Image
+          src={signature}
+          alt="湊あくあのサイン / Minato Aqua's signature"
+          width={320}
+          class="farewell__sign"
+          loading="lazy"
+        />
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import { onPage, onMotion } from '../lib/lifecycle';
+  import { track } from '../lib/analytics';
+  import { startBubbles } from '../scripts/bubbles';
+
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-home]');
+    if (!root) return;
+    const cleanups: (() => void)[] = [];
+
+    // ---- outfit pager: every 8 s when Motion is ON; pauses on hover/focus/Motion OFF/pause button ----
+    const poses = Array.from(root.querySelectorAll<HTMLElement>('[data-pose]'));
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-dot]'));
+    const pauseBtn = root.querySelector<HTMLButtonElement>('[data-pager-pause]')!;
+    const expr = root.querySelector<HTMLImageElement>('[data-hero-expr]')!;
+    let cur = 0;
+    let paused = false;
+    let hover = false;
+    let motionOn = true;
+    const show = (n: number) => {
+      cur = (n + poses.length) % poses.length;
+      poses.forEach((p, i) => {
+        p.classList.toggle('is-on', i === cur);
+        const img = p.tagName === 'IMG' ? (p as HTMLImageElement) : p.querySelector('img');
+        if (i === cur && img?.loading === 'lazy') img.loading = 'eager';
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('is-on', i === cur);
+        d.setAttribute('aria-pressed', String(i === cur));
+      });
+    };
+    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
+    pauseBtn.addEventListener('click', () => {
+      paused = !paused;
+      pauseBtn.setAttribute('aria-pressed', String(paused));
+    });
+    const hero = root.querySelector<HTMLElement>('[data-hero]')!;
+    const enter = () => (hover = true);
+    const leave = () => (hover = false);
+    hero.addEventListener('pointerenter', enter);
+    hero.addEventListener('pointerleave', leave);
+    hero.addEventListener('focusin', enter);
+    hero.addEventListener('focusout', leave);
+    cleanups.push(onMotion((on) => (motionOn = on)));
+    const timer = setInterval(() => {
+      if (!paused && !hover && motionOn && !document.hidden && !expr.classList.contains('is-on'))
+        show(cur + 1);
+    }, 8000);
+    cleanups.push(() => clearInterval(timer));
+
+    // ---- Talk expressions swap the hero pose (crossfade 200 ms) ----
+    const onExpr = (e: Event) => {
+      const pose = (e as CustomEvent<{ pose: string | null }>).detail.pose;
+      if (!pose) {
+        expr.classList.remove('is-on');
+        poses[cur]?.classList.add('is-on');
+        return;
+      }
+      expr.onload = () => {
+        expr.classList.add('is-on');
+        poses.forEach((p) => p.classList.remove('is-on'));
+      };
+      expr.src = pose;
+    };
+    window.addEventListener('aia:expression', onExpr);
+    cleanups.push(() => window.removeEventListener('aia:expression', onExpr));
+
+    // ---- BGM from the theme card ----
+    root
+      .querySelectorAll<HTMLButtonElement>('[data-bgm-play]')
+      .forEach((b) =>
+        b.addEventListener('click', () =>
+          window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { play: b.dataset.bgmPlay } })),
+        ),
+      );
+    // ---- chapter cards ----
+    document
+      .querySelectorAll<HTMLAnchorElement>('[data-chapter-card]')
+      .forEach((a) =>
+        a.addEventListener('click', () => track('chapter_card', { to: a.dataset.chapterCard })),
+      );
+
+    // ---- bubbles (≤ 40, 30 fps, Motion ON only, paused when hidden) ----
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-bubbles]');
+    if (canvas) cleanups.push(startBubbles(canvas));
+
+    return () => cleanups.forEach((f) => f());
+  });
+</script>

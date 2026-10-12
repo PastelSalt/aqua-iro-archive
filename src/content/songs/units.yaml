@@ -1,0 +1,264 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on
+- id: shiny-smily-story
+  date: "2019-08-15"
+  title: Shiny Smily Story
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: 68KV7JnrvDo
+  highlight: false
+  jacket: music-shiny-smily-story
+- id: unit-0o3vrblh8ji
+  date: "2020-02-24"
+  title: キラメキライダー☆
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: 0o3VrBLh8jI
+  highlight: false
+  jacket: music-kirameki-rider
+- id: drama-track-ep-3
+  date: "2020-07-10"
+  title: "#幻想郷ホロイズム"
+  titleEn: drama track, Ep. 3
+  kind: unit
+  with:
+    - COOL&CREATE × Houshou Marine
+  link: https://music.apple.com/jp/album/gensokyoholoism/1522016421
+  highlight: false
+- id: 2-remixes
+  date: "2020-10-11"
+  title: カレーメシ・イン・ミラクル
+  titleEn: +2 remixes
+  kind: unit
+  with:
+    - Spice Love (Subaru, Pekora)
+  youtube: 3QJD9iekpDQ
+  highlight: false
+  jacket: music-spice-love
+- id: hacha-mecha
+  date: "2020-12-18"
+  title: Hacha-Mecha ミラクル
+  kind: unit
+  with:
+    - Spice Love
+  youtube: swuds0FeoI4
+  highlight: false
+  jacket: music-spice-love
+- id: beyond-the-stage-ver
+  date: "2021-01-08"
+  title: ホロライブ言えるかな？ Beyond the Stage ver.
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: mZ0sJQC8qkE
+  highlight: false
+- id: candy-go-round
+  date: "2021-01-13"
+  title: Candy-Go-Round
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: Ciq_CDwmICU
+  highlight: false
+  jacket: music-candy-go-round
+- id: clearsky
+  date: "2021-02-18"
+  title: あすいろClearSky
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: UYyzAlbcw8w
+  highlight: false
+  jacket: music-asuiro-clear-sky
+- id: unit-08zyuyx3mro
+  date: "2021-04-21"
+  title: 大切フォトグラフ
+  kind: unit
+  with:
+    - hololive IDOL PROJECT (album Bouquet)
+  youtube: 08zYuyX3mRo
+  highlight: false
+  jacket: music-bouquet
+- id: unit-jsuv29l6cgy
+  date: "2021-08-01"
+  title: つまりはいつもくじけない！ / めいくあっぷとぅるぅ!
+  kind: unit
+  with:
+    - NEGI☆U (Subaru, Nene) — Jahy ED
+  youtube: jSUv29L6cgY
+  highlight: false
+  jacket: music-negiu-kujikenai
+- id: unit-mkeb-ox1kew
+  date: "2021-09-18"
+  title: 浸食!! 地球全域全おーしゃん
+  kind: unit
+  with:
+    - UMISEA (Marine, Gura, Ina)
+  youtube: MKEb-Ox1KEw
+  highlight: false
+  jacket: music-umisea-domination
+- id: hololive-medley-mix-by-iosys
+  date: "2022-01-26"
+  title: hololive Medley mix by IOSYS
+  kind: unit
+  with:
+    - hololive
+  youtube: BTeMv4jydEw
+  highlight: false
+- id: prism-melody
+  date: "2022-03-13"
+  title: Prism Melody
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: 1fX6qYFXemY
+  highlight: false
+  jacket: music-prism-melody
+- id: panight-v
+  date: "2022-06-01"
+  title: PANIGHT, ドヤっとVピース☆, ナンデダメナン？, よくばりキュートガール
+  kind: unit
+  with:
+    - NEGI☆U (EP ねぎゆーのパないうた)
+  youtube: zxTarx9eJAM
+  highlight: false
+  jacket: music-negiu-panaiuta
+- id: feat
+  date: "2022-08-13"
+  title: ヒロインは平均以下。 feat. 湊あくあ
+  kind: unit
+  with:
+    - HoneyWorks (告白実行委員会 -FLYING SONGS-)
+  highlight: false
+- id: k
+  date: "2022-08-18"
+  title: 飛んでK！ホロライブサマー
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: zHD5MCUezVo
+  highlight: false
+  jacket: music-tonde-k
+- id: unit-s_uit5c8bjq
+  date: "2022-08-21"
+  title: ホロメン音頭
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: s_uiT5C8BjQ
+  highlight: false
+- id: unit-vofomehamfk
+  date: "2022-08-29"
+  title: りゅーーっときてきゅーーっ!!!
+  kind: unit
+  with:
+    - UMISEA (+ Chloe)
+  youtube: VOFOmeHAmfk
+  highlight: false
+  jacket: music-umisea-ryuuu
+- id: shiny-smily-story-2022-ver
+  date: "2022-08-31"
+  title: Shiny Smily Story (2022 ver.)
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  highlight: false
+- id: unit-i097di5uobo
+  date: "2023-04-16"
+  title: 僕は独りだ
+  kind: unit
+  with:
+    - Blue Journey
+  youtube: I097di5uoBo
+  highlight: false
+  jacket: music-blue-journey-hitori
+- id: hololive-medley-mix-by-batsu
+  date: "2023-04-22"
+  title: hololive Medley mix by Batsu
+  kind: unit
+  with:
+    - hololive
+  youtube: gVaRNSao0oU
+  highlight: false
+- id: unit-mtx41qjx_vi
+  date: "2023-05-03"
+  title: うみシーのさちハピ！
+  kind: unit
+  with:
+    - UMISEA
+  youtube: mTX41QjX_VI
+  highlight: false
+  jacket: music-umisea-sachihappy
+- id: unit-27pq5zepyqe
+  date: "2023-05-18"
+  title: 寿司☆でしょ！
+  kind: unit
+  with:
+    - NEGI☆U
+  youtube: 27pQ5ZePYqE
+  highlight: false
+  jacket: music-negiu-sushi
+- id: unit-p30xdslkwoc
+  date: "2023-06-19"
+  title: あの日の僕らへ
+  kind: unit
+  with:
+    - Blue Journey
+  youtube: p30XdSlkWOc
+  highlight: false
+  jacket: music-blue-journey-anohi
+- id: unit-yzqcnmk3yya
+  date: "2023-07-01"
+  title: 青春アーカイブ
+  kind: unit
+  with:
+    - hololive × HoneyWorks
+  youtube: YzQCNmk3YYA
+  highlight: false
+  jacket: music-seishun-archive
+- id: party
+  date: "2023-08-13"
+  title: おーしゃんうぇーぶ・Party☆らぃ
+  kind: unit
+  with:
+    - UMISEA
+  youtube: 2v_BFL-kuWs
+  highlight: false
+  jacket: music-umisea-ocean-wave
+- id: album
+  date: "2023-09-06"
+  title: Album 夜明けのうた
+  kind: unit
+  with:
+    - Blue Journey
+  link: https://lnk.to/BJ_yu
+  highlight: false
+  jacket: music-blue-journey-yoake
+- id: unit-v7xbruoyi8g
+  date: "2023-09-13"
+  title: 水たまり
+  kind: unit
+  with:
+    - Blue Journey
+  youtube: v7XbruOYI8g
+  highlight: false
+  jacket: music-blue-journey-mizutamari
+- id: i-love-me-feat
+  date: "2024-02-21"
+  title: I LOVE MEでいられるように feat. 湊あくあ
+  kind: unit
+  with:
+    - Nanawo Akari (EP DOPING!!!!!!)
+  youtube: znaH7_uvA64
+  highlight: false
+  jacket: music-doping
+- id: super-expo-2024-ver
+  date: "2024-03-13"
+  title: ホロライブ言えるかな？ SUPER EXPO 2024 ver.
+  kind: unit
+  with:
+    - hololive IDOL PROJECT
+  youtube: QNW7yHDYldY
+  highlight: false
+  jacket: music-ieru-kana-2024

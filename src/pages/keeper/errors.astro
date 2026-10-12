@@ -1,0 +1,32 @@
+---
+import Keeper from '../../layouts/Keeper.astro';
+import { desc } from 'drizzle-orm';
+import { dbTx } from '../../server/db/pool';
+import { appErrors } from '../../server/db/schema';
+export const prerender = false;
+const list = await dbTx().select().from(appErrors).orderBy(desc(appErrors.at)).limit(200);
+---
+
+<Keeper title="Errors" active="/keeper/errors">
+  <h1>
+    Errors <span class="k-pill">latest 200</span>
+  </h1>
+  {list.length === 0 && <p class="k-card">No errors. ⚓</p>}
+  <ol style="list-style:none;display:grid;gap:10px">
+    {list.map((e) => (
+      <li class="k-card">
+        <div class="k-item__meta">
+          <b>{e.route}</b>
+          <time>{e.at.toISOString()}</time>
+        </div>
+        <p>{e.message}</p>
+        {e.stack && (
+          <details>
+            <summary>stack</summary>
+            <pre style="white-space:pre-wrap;font-size:12px">{e.stack}</pre>
+          </details>
+        )}
+      </li>
+    ))}
+  </ol>
+</Keeper>

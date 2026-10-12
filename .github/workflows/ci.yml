@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Cloudflare's documented Turnstile testing keys (always pass)
+      TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+      HAS_NEON: ${{ secrets.NEON_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Astro's font + image caches: Google Fonts downloads (~400 files) are flaky without it
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: astro-cache-${{ hashFiles('astro.config.ts', 'src/content/arts/arts.yaml') }}
+          restore-keys: astro-cache-
+      - run: npm run lint
+      - run: npm run contrast
+      # unit + data + integration (the board pipeline runs against PGlite with the real migrations)
+      - run: npm run test
+
+      # Migrations against a temporary Neon branch (skipped until NEON_API_KEY / NEON_PROJECT_ID exist)
+      - name: Create Neon branch
+        id: neon
+        if: env.HAS_NEON == 'true'
+        uses: neondatabase/create-branch-action@v6
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: ci-${{ github.run_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+      - name: Apply migrations + seed on the branch
+        if: ${{ steps.neon.outputs.db_url != '' }}
+        env:
+          DATABASE_URL_UNPOOLED: ${{ steps.neon.outputs.db_url }}
+        run: npm run db:migrate && npm run db:seed
+
+      # data → validate-talk → astro check → build → prune → CSP hashes (retry once: font downloads)
+      - run: npm run build || npm run build
+      - run: npm run budget
+
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test --project=chromium --project=webkit
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+      - name: Delete Neon branch
+        if: ${{ always() && steps.neon.outputs.branch_id != '' }}
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: ${{ steps.neon.outputs.branch_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - run: npm audit --omit=dev --audit-level=high
+
+  migrate:
+    # Production migrations on push to main (§24.3). Migrations stay backward compatible for one deploy.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:migrate && npm run db:seed
+        env:
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}

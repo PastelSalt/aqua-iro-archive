@@ -1,0 +1,37 @@
+---
+/** No.07 Message Board (EXECUTIONPLAN §9.7). Prerendered shell; notes load in the island (the API is noindex). */
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+import Page from '../layouts/Page.astro';
+import BoardApp from '../components/board/BoardApp.tsx';
+---
+
+<Page
+  chapter="messages"
+  description="あくたんへ、届けたい言葉を一枚ずつ。ファンが寄せ書きを残せるボードです。A message board where fans leave notes for Minato Aqua."
+  h1Mincho
+  subtitle="Message Board"
+  vert={{ small: 'CREW BOARD', text: 'あくたんへ、', em: '一枚ずつ' }}
+  marquee={['#あくあクルー', 'THANK YOU AKUTAN', '寄せ書き', 'KIND WORDS ONLY', '⚓', 'AQUA CREW', 'またね']}
+>
+  <Fragment slot="h1">寄せ書き</Fragment>
+  <Fragment slot="poem">
+    <p class="poem board-poem" lang="ja">
+      あくたんへ、
+      <br />
+      届けたい言葉を一枚ずつ。
+    </p>
+    <p class="poem-en" lang="en">
+      One note at a time, for Akutan. Every crew member gets a number, nobody needs a name.
+    </p>
+  </Fragment>
+
+  <div class="wrap-wide">
+    <BoardApp client:idle siteKey={TURNSTILE_SITE_KEY ?? ''} />
+    <noscript>
+      <p class="card" style="margin-top:16px">
+        寄せ書きの表示と投稿にはJavaScriptが必要です。 · The message board needs JavaScript to show and pin
+        notes.
+      </p>
+    </noscript>
+  </div>
+</Page>

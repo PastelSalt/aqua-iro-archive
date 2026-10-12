@@ -1,0 +1,253 @@
+---
+/** No.02 Clips (EXECUTIONPLAN §9.2). Works without JS: every card is visible and links to YouTube. */
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import { CLIP_TAGS } from '../content.config';
+import { compactEn, compactJa } from '../lib/format';
+
+const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
+const TAG_LABEL: Record<string, { ja: string; en: string }> = {
+  animated: { ja: '手描き', en: 'Animated' },
+  gaming: { ja: 'ゲーム', en: 'Gaming' },
+  collab: { ja: 'コラボ', en: 'Collab' },
+  funny: { ja: 'おもしろ', en: 'Funny' },
+  emotional: { ja: 'エモい', en: 'Emotional' },
+  music: { ja: '音楽', en: 'Music' },
+};
+const counts = Object.fromEntries(
+  CLIP_TAGS.map((t) => [t, clips.filter((c) => c.data.tags.includes(t)).length]),
+);
+const hasDates = clips.every((c) => c.data.published);
+---
+
+<Page
+  chapter="clips"
+  description="ファンが残した湊あくあの人気切り抜き30本。手描き切り抜きからAPEXの名場面まで。The 30 most-viewed fan clips of Minato Aqua."
+  h1="Clips"
+  subtitle="切り抜き"
+  intro={{
+    ja: 'YouTubeでいちばん見られている湊あくあの切り抜き30本（2026年10月11日時点）。手描きの切り抜きがとくに人気。すべての切り抜きに、作ってくれた人のクレジットを付けています。',
+    en: 'The 30 most-viewed clips of Minato Aqua on YouTube, as of 2026-10-11 — hand-drawn animated clips lead the list. Every card credits the clipper who made it.',
+  }}
+  vert={{ small: 'CLIPS', text: '名場面', em: 'いっぱい' }}
+  marquee={[
+    '#湊あくあ切り抜き',
+    '手描き切り抜き',
+    'THANK YOU CLIPPERS',
+    '#あくあクルー',
+    'APEX',
+    '44.5',
+    'ん゛に゛ゃ゛あああ',
+  ]}
+>
+  <Fragment slot="visual">
+    <div class="clips-visual" aria-hidden="true">
+      {clips.slice(0, 3).map((c, i) => (
+        <img
+          class={`clips-visual__th clips-visual__th--${i}`}
+          src={`https://i.ytimg.com/vi/${c.id}/hqdefault.jpg`}
+          alt=""
+          width="480"
+          height="360"
+          loading="eager"
+          referrerpolicy="strict-origin-when-cross-origin"
+        />
+      ))}
+      <span class="sticker" style="--tilt:-6deg">
+        TOP 30
+      </span>
+    </div>
+  </Fragment>
+
+  <section class="section wrap" aria-labelledby="clips-title" data-clips>
+    <SectionTitle no="01" en="Most-viewed clips" ja="人気の切り抜き" id="clips-title" />
+    <div class="filterbar" role="group" aria-label="Filter clips">
+      <div class="chips" role="radiogroup" aria-label="Tag">
+        <button type="button" class="chip" role="radio" aria-checked="true" data-tag="all">
+          <span data-l="ja" lang="ja">
+            すべて
+          </span>
+          <span data-l="en" lang="en">
+            All
+          </span>{' '}
+          <span class="count">{clips.length}</span>
+        </button>
+        {CLIP_TAGS.map((t) => (
+          <button type="button" class="chip" role="radio" aria-checked="false" data-tag={t}>
+            <span data-l="ja" lang="ja">
+              {TAG_LABEL[t]!.ja}
+            </span>
+            <span data-l="en" lang="en">
+              {TAG_LABEL[t]!.en}
+            </span>
+            <span class="count">{counts[t]}</span>
+          </button>
+        ))}
+      </div>
+      {hasDates && (
+        <div class="seg" role="radiogroup" aria-label="Sort">
+          <button type="button" role="radio" aria-checked="true" data-sort="views">
+            MOST VIEWED
+          </button>
+          <button type="button" role="radio" aria-checked="false" data-sort="new">
+            NEWEST
+          </button>
+        </div>
+      )}
+    </div>
+    <p class="result-count" aria-live="polite" data-clips-count></p>
+
+    <ol class="masonry" role="list" data-clips-list>
+      {clips.map((c) => (
+        <li
+          class="clip"
+          data-tags={c.data.tags.join(' ')}
+          data-views={c.data.views}
+          data-date={c.data.published ?? ''}
+        >
+          <a
+            class="clip__link"
+            href={`https://www.youtube.com/watch?v=${c.id}`}
+            data-lb="video"
+            data-yt={c.id}
+            data-title={c.data.title}
+            data-credit={`Clip by ${c.data.clipper}`}
+            data-event="clip_open"
+            data-id={c.id}
+            data-rank={c.data.rank}
+            aria-label={`Play: ${c.data.title} — clip by ${c.data.clipper}`}
+          >
+            <span class="clip__th">
+              <img
+                src={`https://i.ytimg.com/vi/${c.id}/hqdefault.jpg`}
+                alt=""
+                width="480"
+                height="360"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="strict-origin-when-cross-origin"
+              />
+              <span class="clip__play" aria-hidden="true">
+                <Icon name="play" />
+              </span>
+            </span>
+            <span
+              class="clip__rank sticker"
+              style={`--tilt:${c.data.rank % 2 ? -4 : 3}deg`}
+              aria-hidden="true"
+            >
+              #{c.data.rank}
+            </span>
+            <span class="clip__title">{c.data.title}</span>
+          </a>
+          <span class="clip__meta">
+            <span class="clip__by">
+              <Icon name="heart" />{' '}
+              {c.data.clipperUrl ? (
+                <a href={c.data.clipperUrl} rel="noopener">
+                  {c.data.clipper}
+                </a>
+              ) : (
+                c.data.clipper
+              )}
+            </span>
+            <span class="num" title={`${c.data.views.toLocaleString('en-US')} views`}>
+              <span data-l="ja" lang="ja">
+                {compactJa(c.data.views)}回
+              </span>
+              <span data-l="en" lang="en">
+                {compactEn(c.data.views)} views
+              </span>
+            </span>
+          </span>
+          <span class="clip__tags">
+            {c.data.tags.map((t) => (
+              <span class="mini-tag">
+                <span data-l="ja" lang="ja">
+                  {TAG_LABEL[t]!.ja}
+                </span>
+                <span data-l="en" lang="en">
+                  {TAG_LABEL[t]!.en}
+                </span>
+              </span>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ol>
+    <p class="credit asof">
+      <span data-l="ja" lang="ja">
+        再生数は2026年10月11日時点の概数です。切り抜きの権利は各切り抜き師とCOVER株式会社に帰属します。
+      </span>
+      <span data-l="en" lang="en">
+        View counts are rounded, as of 2026-10-11. Clips belong to their clippers and COVER Corp.
+      </span>
+    </p>
+  </section>
+</Page>
+
+<script>
+  import { onPage } from '../lib/lifecycle';
+  import { track } from '../lib/analytics';
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-clips]');
+    if (!root) return;
+    const list = root.querySelector<HTMLElement>('[data-clips-list]')!;
+    const items = Array.from(list.querySelectorAll<HTMLElement>('.clip'));
+    const tagBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tag]'));
+    const sortBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sort]'));
+    const count = root.querySelector<HTMLElement>('[data-clips-count]')!;
+    const params = new URLSearchParams(location.search);
+    let tag = params.get('tag') ?? 'all';
+    let sort = params.get('sort') ?? 'views';
+    if (!tagBtns.some((b) => b.dataset.tag === tag)) tag = 'all';
+    const apply = (push = false) => {
+      let n = 0;
+      for (const it of items) {
+        const on = tag === 'all' || it.dataset.tags!.split(' ').includes(tag);
+        it.hidden = !on;
+        if (on) n++;
+      }
+      const sorted = [...items].sort((a, b) =>
+        sort === 'new'
+          ? (b.dataset.date ?? '').localeCompare(a.dataset.date ?? '')
+          : Number(b.dataset.views) - Number(a.dataset.views),
+      );
+      sorted.forEach((el) => list.appendChild(el));
+      tagBtns.forEach((b) => {
+        b.setAttribute('aria-checked', String(b.dataset.tag === tag));
+        b.tabIndex = b.dataset.tag === tag ? 0 : -1;
+      });
+      sortBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sort === sort)));
+      const ja = document.documentElement.dataset.lang === 'ja';
+      count.textContent = ja ? `${n}本の切り抜き` : `${n} clip${n === 1 ? '' : 's'}`;
+      if (push) {
+        const p = new URLSearchParams();
+        if (tag !== 'all') p.set('tag', tag);
+        if (sort !== 'views') p.set('sort', sort);
+        history.replaceState(history.state, '', `${location.pathname}${p.size ? `?${p}` : ''}`);
+      }
+    };
+    tagBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        tag = b.dataset.tag!;
+        apply(true);
+        track('clip_filter', { tag });
+      }),
+    );
+    sortBtns.forEach((b) => b.addEventListener('click', () => ((sort = b.dataset.sort!), apply(true))));
+    // arrow keys inside the radiogroup
+    root.querySelector('[role="radiogroup"]')?.addEventListener('keydown', (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft') return;
+      const i = tagBtns.findIndex((b) => b.dataset.tag === tag);
+      const nx = tagBtns[(i + (k === 'ArrowRight' ? 1 : -1) + tagBtns.length) % tagBtns.length]!;
+      nx.click();
+      nx.focus();
+      e.preventDefault();
+    });
+    apply();
+  });
+</script>

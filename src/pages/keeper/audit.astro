@@ -1,0 +1,88 @@
+---
+/** Audit log (EXECUTIONPLAN §15.3). ?format=csv exports. */
+import Keeper from '../../layouts/Keeper.astro';
+import { dbTx } from '../../server/db/pool';
+import { auditList } from '../../server/board/moderation';
+export const prerender = false;
+const action = Astro.url.searchParams.get('action') || undefined;
+const list = await auditList(
+  dbTx() as never,
+  action,
+  Astro.url.searchParams.get('format') === 'csv' ? 5000 : 300,
+);
+if (Astro.url.searchParams.get('format') === 'csv') {
+  const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = [
+    'time,action,crew_no,actor,detail',
+    ...list.map((a) =>
+      [a.created_at, a.action, a.crew_no, a.actor_id, JSON.stringify(a.detail)].map(cell).join(','),
+    ),
+  ].join('\n');
+  return new Response(csv, {
+    headers: {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="aqua-keeper-audit.csv"',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+const ACTIONS = [
+  'approve',
+  'remove',
+  'restore',
+  'bulk_remove',
+  'bulk_approve',
+  'settings_change',
+  'term_add',
+  'term_remove',
+  'pause',
+  'resume',
+  'login',
+  'login_failed',
+  'twofa_reset',
+  'purge',
+];
+---
+
+<Keeper title="Audit" active="/keeper/audit">
+  <h1>Audit log</h1>
+  <form method="get" style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+    <label class="k-field">
+      <span>Action</span>
+      <select name="action">
+        <option value="">any</option>
+        {ACTIONS.map((a) => (
+          <option selected={a === action}>{a}</option>
+        ))}
+      </select>
+    </label>
+    <button class="k-btn k-btn--navy">Filter</button>
+    <a class="k-btn" href={`/keeper/audit?format=csv${action ? `&action=${action}` : ''}`}>
+      Export CSV
+    </a>
+  </form>
+  <table class="k-table k-card">
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Action</th>
+        <th>Note</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      {list.map((a) => (
+        <tr>
+          <td>{new Date(a.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Manila' })}</td>
+          <td>
+            <span class="k-pill">{a.action}</span>
+          </td>
+          <td>{a.crew_no ? `#${a.crew_no}` : '—'}</td>
+          <td>
+            <code style="font-size:12px">{a.detail ? JSON.stringify(a.detail) : ''}</code>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</Keeper>

@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  text?: string;
+  size?: number;
+  class?: string;
+  style?: string;
+}
+const { text = 'THANK YOU AKUTAN ⚓ 2018 — 2024 ⚓ ', size = 130, class: cls, style } = Astro.props;
+const pid = `stamp-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class:list={['stamp', cls]} style={`--stamp-size:${size}px;${style ?? ''}`} aria-hidden="true">
+  <svg class="stamp__ring" viewBox="0 0 130 130">
+    <defs>
+      <path id={pid} d="M65,65 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"></path>
+    </defs>
+    <circle cx="65" cy="65" r="63" fill="#fff"></circle>
+    <text
+      style="font-family:var(--font-fredoka),sans-serif"
+      font-weight="600"
+      font-size="11.5"
+      letter-spacing="3.2"
+      fill="#3B4583"
+    >
+      <textPath href={`#${pid}`}>{text}</textPath>
+    </text>
+  </svg>
+  <div class="stamp__core">
+    <Icon name="anchor" />
+  </div>
+</div>

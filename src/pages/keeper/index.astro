@@ -1,0 +1,191 @@
+---
+/** Keeper overview (EXECUTIONPLAN §15.3): visitors (Umami), archive insights, Talk, board, web vitals, health. */
+import Keeper from '../../layouts/Keeper.astro';
+import { dbTx } from '../../server/db/pool';
+import { boardStats } from '../../server/board/moderation';
+import { getSettings } from '../../server/settings';
+import { umamiConfigured } from '../../server/umami';
+export const prerender = false;
+const db = dbTx() as never;
+const [b, s] = await Promise.all([boardStats(db, 7), getSettings(db, true)]);
+---
+
+<Keeper title="Overview" active="/keeper">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <h1>Overview</h1>
+    <div class="k-tabs" role="group" aria-label="Range" data-range>
+      {['24h', '7d', '30d', '90d', 'all'].map((r) => (
+        <a href={`#${r}`} data-r={r} aria-current={r === '7d' ? 'page' : undefined}>
+          {r}
+        </a>
+      ))}
+    </div>
+  </div>
+  <section class="k-card" aria-labelledby="h-board">
+    <h2 id="h-board">Board</h2>
+    <dl class="k-kv">
+      <div>
+        <dt>Held</dt>
+        <dd>
+          <a href="/keeper/queue?tab=held">{b.held}</a>
+        </dd>
+      </div>
+      <div>
+        <dt>Under review</dt>
+        <dd>
+          <a href="/keeper/queue">{b.review}</a>
+        </dd>
+      </div>
+      <div>
+        <dt>Removed (30 d)</dt>
+        <dd>{b.removed30}</dd>
+      </div>
+      <div>
+        <dt>Errors (24 h)</dt>
+        <dd>
+          <a href="/keeper/errors">{b.errors24}</a>
+        </dd>
+      </div>
+      <div>
+        <dt>Last cron</dt>
+        <dd style="font-size:13px">
+          {s.last_cron_at
+            ? new Date(s.last_cron_at).toLocaleString('en-GB', { timeZone: 'Asia/Manila' })
+            : 'never'}
+        </dd>
+      </div>
+      <div>
+        <dt>Posting</dt>
+        <dd style="font-size:13px">
+          {s.posting_paused ? 'PAUSED' : s.newcomer_hold ? 'newcomer hold' : 'open'}
+        </dd>
+      </div>
+    </dl>
+    <div data-chart-board style="margin-top:12px;min-height:180px"></div>
+  </section>
+  <section class="k-card" aria-labelledby="h-visitors">
+    <h2 id="h-visitors">
+      Visitors <span class="k-pill" data-updated></span>
+    </h2>
+    {!umamiConfigured() && (
+      <p class="k-item__meta">Visitor stats unavailable — set UMAMI_API_* and PUBLIC_UMAMI_WEBSITE_ID.</p>
+    )}
+    <dl class="k-kv" data-vstats></dl>
+    <div data-chart-visitors style="margin-top:12px;min-height:180px"></div>
+    <div class="k-grid" data-vtables style="margin-top:12px"></div>
+  </section>
+  <section class="k-card" aria-labelledby="h-insights">
+    <h2 id="h-insights">Archive insights · Talk with Aqua · Web vitals</h2>
+    <div class="k-grid" data-insights></div>
+  </section>
+</Keeper>
+
+<script>
+  import uPlot from 'uplot';
+  import 'uplot/dist/uPlot.min.css';
+  const el = (sel: string) => document.querySelector<HTMLElement>(sel)!;
+  const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  const table = (title: string, rows: { x?: string; value?: string; y?: number; total?: number }[]) =>
+    `<div><h3 style="font-size:13px">${esc(title)}</h3><table class="k-table"><tbody>${
+      (rows ?? [])
+        .slice(0, 10)
+        .map(
+          (r) =>
+            `<tr><td>${esc(r.x ?? r.value)}</td><td style="text-align:right">${esc(r.y ?? r.total)}</td></tr>`,
+        )
+        .join('') || '<tr><td>—</td></tr>'
+    }</tbody></table></div>`;
+  let plots: uPlot[] = [];
+  function chart(
+    host: HTMLElement,
+    days: string[],
+    series: { label: string; values: number[]; stroke: string }[],
+  ) {
+    const xs = days.map((d) => new Date(d).getTime() / 1000);
+    const p = new uPlot(
+      {
+        width: host.clientWidth || 600,
+        height: 180,
+        series: [{}, ...series.map((s) => ({ label: s.label, stroke: s.stroke, width: 2 }))],
+        axes: [{}, {}],
+      },
+      [xs, ...series.map((s) => s.values)],
+      host,
+    );
+    plots.push(p);
+  }
+  async function load(range: string) {
+    plots.forEach((p) => p.destroy());
+    plots = [];
+    el('[data-chart-board]').innerHTML = '';
+    el('[data-chart-visitors]').innerHTML = '';
+    const r = await fetch(`/api/admin/stats?range=${range}`);
+    if (!r.ok) return;
+    const d = await r.json();
+    chart(
+      el('[data-chart-board]'),
+      d.board.series.map((x: { day: string }) => x.day),
+      [
+        { label: 'Notes', values: d.board.series.map((x: { notes: number }) => x.notes), stroke: '#C47FB6' },
+        {
+          label: 'Reports',
+          values: d.board.series.map((x: { reports: number }) => x.reports),
+          stroke: '#3B4583',
+        },
+      ],
+    );
+    const v = d.visitors;
+    if (v && !v.error) {
+      const st = v.stats ?? {};
+      const val = (k: string) => (typeof st[k] === 'number' ? st[k] : (st[k]?.value ?? '—'));
+      el('[data-vstats]').innerHTML = ['visitors', 'visits', 'pageviews', 'bounces', 'totaltime']
+        .map((k) => `<div><dt>${k}</dt><dd>${esc(val(k))}</dd></div>`)
+        .join('');
+      const pv = v.pageviews?.pageviews ?? [];
+      const ss = v.pageviews?.sessions ?? [];
+      if (pv.length)
+        chart(
+          el('[data-chart-visitors]'),
+          pv.map((p: { x: string }) => p.x),
+          [
+            { label: 'Pageviews', values: pv.map((p: { y: number }) => p.y), stroke: '#8EC9EE' },
+            { label: 'Visitors', values: ss.map((p: { y: number }) => p.y), stroke: '#C47FB6' },
+          ],
+        );
+      el('[data-vtables]').innerHTML = [
+        ['Top pages', v.paths],
+        ['Referrers', v.referrers],
+        ['Countries', v.countries],
+        ['Devices', v.devices],
+        ['Browsers', v.browsers],
+      ]
+        .map(([t, rows]) => table(t as string, rows as never))
+        .join('');
+      el('[data-updated]').textContent = `updated ${Math.round((Date.now() - v.fetchedAt) / 60000)} min ago`;
+    } else if (v?.error)
+      el('[data-vstats]').innerHTML =
+        `<p class="k-item__meta">Visitor stats unavailable (${esc(v.error)})</p>`;
+    const i = d.insights ?? {};
+    el('[data-insights]').innerHTML = [
+      ['Most-played embeds', i.embeds],
+      ['Most-opened streams', i.streams],
+      ['Top stream searches', i.searches],
+      ['Art opened', i.arts],
+      ['Dock chapter clicks', i.dock],
+      ['Talk: top choices', i.talkChoices],
+      ['Talk: goto', i.talkGoto],
+      ['Web vitals (rating)', i.cwvLcp],
+    ]
+      .map(([t, rows]) => table(t as string, (rows ?? []) as never))
+      .join('');
+  }
+  document.querySelectorAll<HTMLAnchorElement>('[data-range] a').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('[data-range] a').forEach((x) => x.removeAttribute('aria-current'));
+      a.setAttribute('aria-current', 'page');
+      void load(a.dataset.r!);
+    }),
+  );
+  void load('7d');
+</script>

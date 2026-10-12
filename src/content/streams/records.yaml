@@ -1,0 +1,64 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on (JA added 2026-10-12). Figures are a snapshot as of 2026-10-11.
+- id: most-viewed-stream
+  label: { ja: "最多再生の配信", en: "Most-viewed stream" }
+  youtube: fDtUy1PTor0
+  title: 卒業ライブ「あくあ色に染まれ！」
+  date: '2024-08-28'
+  figure: { ja: "891万回再生・同時接続 749,854人（VTuber歴代最多）", en: "8.91M views; 749,854 peak concurrent (all-time VTuber record)" }
+- id: 2nd-most-viewed
+  label: { ja: "再生数 第2位", en: "2nd most-viewed" }
+  youtube: wor3Qt90Yls
+  title: 大切なお知らせ（残念なほう）
+  date: '2024-08-06'
+  figure: { ja: "383万回再生", en: "3.83M views" }
+- id: most-viewed-game-stream
+  label: { ja: "最多再生のゲーム配信", en: "Most-viewed game stream" }
+  youtube: izMrbcgKVtY
+  title: 【Minecraft】ホロメンへ最後のお手紙をかく！
+  date: '2024-08-27'
+  figure: { ja: "220万回再生", en: "2.20M views" }
+- id: most-viewed-collab
+  label: { ja: "最多再生のコラボ", en: "Most-viewed collab" }
+  youtube: 81wyBhN6Ltk
+  title: 【#V最協S4】最初で最後のStartend！
+  date: '2022-04-17'
+  figure: { ja: "205万回再生", en: "2.05M views" }
+- id: most-viewed-solo-grind
+  label: { ja: "最多再生の耐久配信", en: "Most-viewed solo grind" }
+  youtube: aGlY6Ueaco0
+  title: '#10【APEX】ソロマスターいくまで耐久'
+  date: '2022-02-04'
+  figure: { ja: "165万回再生・ソロマスター到達", en: "1.65M views · Solo Master reached" }
+- id: top-3d-live-on-her-channel
+  label: { ja: "最多再生の3Dライブ（本人チャンネル）", en: "Top 3D live (on her channel)" }
+  youtube: c9VW0E2Unl4
+  title: Dreamy day — 5周年記念ライブ
+  date: '2023-08-15'
+  figure: { ja: "140万回再生", en: "1.40M views" }
+- id: longest-stream
+  label: { ja: "最長の配信", en: "Longest stream" }
+  youtube: 9Vu0D-oOWjw
+  title: '#5【ELDEN RING】'
+  date: '2024-05-04'
+  figure: { ja: "11時間55分", en: "11 h 55 min" }
+- id: longest-endurance-apex
+  label: { ja: "最長の耐久（APEX）", en: "Longest endurance (APEX)" }
+  youtube: gOEnxFFgIX0
+  title: 耐久！SOLO！ダイアモンドまで
+  date: '2020-12-12'
+  figure: { ja: "11時間37分", en: "11 h 37 min" }
+- id: busiest-month
+  label: { ja: "いちばん配信した月", en: "Busiest month" }
+  title: 2020年8月（2周年の「#湊あくあ24h」を含む）
+  date: '2020-08'
+  figure: { ja: "33回", en: "33 streams" }
+- id: busiest-year
+  label: { ja: "いちばん配信した年", en: "Busiest year" }
+  title: '2020'
+  date: '2020'
+  figure: { ja: "197回・576時間", en: "197 streams, 576 hours" }
+- id: most-streamed-series
+  label: { ja: "いちばん多いシリーズ", en: "Most-streamed series" }
+  title: Minecraft・APEX（タイトルに入っているもの各77回）、次いで歌枠（71回）
+  date: '—'
+  figure: { ja: "マイクラ・APEX・歌枠", en: "Minecraft, APEX, then karaoke" }

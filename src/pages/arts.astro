@@ -1,0 +1,231 @@
+---
+/** No.06 Arts — the VN "CG gallery" (EXECUTIONPLAN §9.6). Credit on every tile and in the viewer. */
+import { Picture, getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import { ART_SECTIONS } from '../content.config';
+import { dotDate } from '../lib/format';
+
+const SECTION: Record<string, { ja: string; en: string }> = {
+  outfits: { ja: '衣装', en: 'Outfits' },
+  'key-visuals': { ja: 'キービジュアル', en: 'Key visuals' },
+  anniversary: { ja: '記念日・誕生日', en: 'Anniversary & birthday' },
+  music: { ja: 'ジャケット', en: 'Music jackets' },
+  collabs: { ja: 'コラボ', en: 'Collabs' },
+  designer: { ja: 'がおう先生のアート', en: 'Designer art (Gaou)' },
+  concept: { ja: '設定画', en: 'Concept sheets' },
+  '3d': { ja: '3D', en: '3D' },
+  aquarium: { ja: 'あくありうむ。', en: 'AQUARIUM.' },
+};
+const ORDER = [
+  'outfits',
+  'key-visuals',
+  'anniversary',
+  'music',
+  'collabs',
+  'designer',
+  'concept',
+  '3d',
+  'aquarium',
+] as const;
+const all = await getCollection('arts');
+const sections = await Promise.all(
+  ORDER.filter((s) => (ART_SECTIONS as readonly string[]).includes(s)).map(async (id) => {
+    const items = all
+      .filter((a) => a.data.section === id)
+      .sort(
+        (a, b) =>
+          Number(b.data.featured) - Number(a.data.featured) ||
+          (a.data.date ?? '').localeCompare(b.data.date ?? ''),
+      );
+    const withLarge = await Promise.all(
+      items.map(async (a) => {
+        const big = await getImage({
+          src: a.data.image,
+          width: Math.round(
+            a.data.image.width * Math.min(1, 1600 / Math.max(a.data.image.width, a.data.image.height)),
+          ),
+          format: 'webp',
+          quality: 76,
+        });
+        return { a, srcset: '', href: big.src };
+      }),
+    );
+    return { id, label: SECTION[id]!, items: withLarge };
+  }),
+);
+let eager = 4;
+---
+
+<Page
+  chapter="arts"
+  description="湊あくあの公式アートを、作者クレジットつきで集めたギャラリー。A credited gallery of Minato Aqua's official art: outfits, anniversaries, jackets and collaborations."
+  h1="Arts"
+  subtitle="アート"
+  intro={{
+    ja: `衣装、記念日、ジャケット、コラボ、そしてキャラクターデザインのがおう先生の絵。${all.length}点の公式アートを、すべて作者と出典つきで並べています。`,
+    en: `Outfits, anniversaries, music jackets, collaborations and art by her character designer Gaou — ${all.length} pieces of official art, every one credited with its artist and source.`,
+  }}
+  vert={{ small: 'CG GALLERY', text: 'あくあーと', em: 'ギャラリー' }}
+  marquee={[
+    '#あくあーと',
+    'CG GALLERY',
+    'THANK YOU ARTISTS',
+    'がおう',
+    '© COVER Corp.',
+    'CREDIT EVERY ARTIST',
+    '⚓',
+  ]}
+>
+  <Fragment slot="visual">
+    <div class="arts-visual" aria-hidden="true">
+      {sections[0]!.items.slice(0, 3).map(({ a }, i) => (
+        <span class={`polaroid polaroid--${i}`}>
+          <Picture
+            fallbackFormat="webp"
+            src={a.data.image}
+            formats={['avif', 'webp']}
+            widths={[280, 420]}
+            width={420}
+            sizes="220px"
+            alt=""
+            loading="eager"
+          />
+          <span class="pin" aria-hidden="true">
+            <svg>
+              <use href="#i-pin" />
+            </svg>
+          </span>
+        </span>
+      ))}
+    </div>
+  </Fragment>
+
+  <div class="wrap">
+    <aside class="art-banner card card--dashed" aria-label="Art policy">
+      <Icon name="bow" />
+      <p>
+        <span data-l="ja" lang="ja">
+          すべてのアートワークの権利はCOVER株式会社および各作者に帰属します。非営利のファンアーカイブとして、クレジットつきで掲載しています。転載する場合は必ず作者と出典を明記してください。
+        </span>
+        <span data-l="en" lang="en">
+          All artwork © COVER Corp. and the credited artists. Shown here as a non-profit tribute with credit;
+          please don't repost without crediting the artist and source.
+        </span>
+      </p>
+    </aside>
+  </div>
+
+  <nav class="art-nav" aria-label="Gallery sections" data-art-nav>
+    <ul role="list">
+      {sections.map((s) => (
+        <li>
+          <a class="ribbon-tab" href={`#${s.id}`} data-section-link={s.id}>
+            <span lang="ja">{s.label.ja}</span>
+            <small lang="en">{s.label.en}</small>
+            <span class="count">{s.items.length}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <div class="wrap gallery" data-gallery>
+    {sections.map((s, si) => (
+      <section class="gallery__sec" id={s.id} aria-labelledby={`h-${s.id}`} data-section={s.id}>
+        <h2 class="gallery__title" id={`h-${s.id}`}>
+          <span class="label">
+            <b>{String(si + 1).padStart(2, '0')}</b>
+          </span>
+          <span lang="ja">{s.label.ja}</span>
+          <small lang="en">{s.label.en}</small>
+        </h2>
+        <ul class="art-masonry" role="list">
+          {s.items.map(({ a, srcset, href }) => {
+            const title = [a.data.title.ja, a.data.title.en].filter(Boolean).join(' / ');
+            return (
+              <li class="art-tile">
+                <a
+                  class="art-tile__link"
+                  href={href}
+                  data-lb="image"
+                  data-group="arts"
+                  data-id={a.id}
+                  data-srcset={srcset || undefined}
+                  data-alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
+                  data-title={title}
+                  data-credit={`${a.data.artist} · ${a.data.credit}`}
+                  data-source={a.data.source}
+                  data-event="art_open"
+                >
+                  <Picture
+                    fallbackFormat="webp"
+                    src={a.data.image}
+                    formats={['avif', 'webp']}
+                    widths={[400, 800]}
+                    width={800}
+                    sizes="(max-width: 600px) 46vw, (max-width: 1200px) 30vw, 280px"
+                    alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
+                    loading={eager-- > 0 ? 'eager' : 'lazy'}
+                    class={`focal-${a.data.focal}`}
+                  />
+                </a>
+                <span class="art-tile__cap">
+                  <b>
+                    {a.data.title.ja && (
+                      <span data-l="ja" lang="ja">
+                        {a.data.title.ja}
+                      </span>
+                    )}
+                    <span data-l="en" lang="en">
+                      {a.data.title.en ?? a.data.title.ja}
+                    </span>
+                  </b>
+                  <span class="credit">
+                    <b>{a.data.artist}</b> · {a.data.credit.split(' — ')[0]}
+                    {a.data.date && <> · {dotDate(a.data.date)}</>}
+                  </span>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Page>
+
+<script>
+  import { onPage } from '../lib/lifecycle';
+  import { track } from '../lib/analytics';
+  onPage(() => {
+    const nav = document.querySelector<HTMLElement>('[data-art-nav]');
+    if (!nav) return;
+    const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-section-link]'));
+    links.forEach((a) =>
+      a.addEventListener('click', () => track('art_section', { section: a.dataset.sectionLink })),
+    );
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const id = (e.target as HTMLElement).dataset.section;
+          links.forEach((a) =>
+            a.dataset.sectionLink === id
+              ? a.setAttribute('aria-current', 'true')
+              : a.removeAttribute('aria-current'),
+          );
+          nav.querySelector(`[data-section-link="${id}"]`)?.scrollIntoView({
+            block: 'nearest',
+            inline: 'center',
+            behavior: document.documentElement.dataset.motion === 'on' ? 'smooth' : 'auto',
+          });
+        }
+      },
+      { rootMargin: '-35% 0px -60% 0px' },
+    );
+    document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  });
+</script>

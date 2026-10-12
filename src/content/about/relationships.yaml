@@ -1,0 +1,31 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on (JA added 2026-10-12)
+- id: manjigumi
+  name: { ja: "卍組", en: "Manjigumi" }
+  members: [Aqua, Murasaki Shion, Nakiri Ayame]
+  kind: unit
+  note: { ja: "2期生の3人組", en: "Three of the 2nd Gen" }
+- id: aqushio
+  name: { ja: "あくシオ", en: "AquShio" }
+  members: [Aqua, Murasaki Shion]
+  kind: pair
+  note: { ja: "3Dライブも一緒に", en: "Even shared a 3D live" }
+- id: aquamarine
+  name: { ja: "あくあマリン", en: "AquaMarine" }
+  members: [Aqua, Houshou Marine]
+  kind: pair
+  note: { ja: "「親子」コンビ", en: "The \"mother and daughter\" duo" }
+- id: meaqua
+  name: { ja: "めあくあ", en: "Meaqua" }
+  members: [Aqua, Kagura Mea]
+  kind: pair
+  note: { ja: "ナイショの話、ソラシド", en: "Naisho no Hanashi, So La Si Do" }
+- id: startend
+  name: { ja: "Startend", en: "Startend" }
+  members: [Aqua, Hoshimachi Suisei, Tokoyami Towa]
+  kind: unit
+  note: { ja: "アスノヨゾラ哨戒班から8.32まで", en: "From Asu no Yozora Shoukaihan to 8.32" }
+- id: camp
+  name: { ja: "CAMP（ARK）", en: "CAMP (ARK)" }
+  members: [Aqua, Kiryu Coco, Houshou Marine, Usada Pekora]
+  kind: unit
+  note: { ja: "ホロARKの共同生活", en: "Roommates on the hololive ARK server" }

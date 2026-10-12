@@ -1,0 +1,63 @@
+---
+/** 404 "Lost at sea" (EXECUTIONPLAN §9.10). Official art only. */
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/ui/Icon.astro';
+import pose from '../assets/poses/portrait-06.webp';
+import { SITE_NAME } from '../lib/site';
+---
+
+<Base
+  title={`迷子 — Lost at sea | ${SITE_NAME}`}
+  description="ページが見つかりませんでした。Page not found."
+  noindex
+>
+  <main id="main" class="lost" tabindex="-1">
+    <div class="lost__art" aria-hidden="true">
+      <Image src={pose} alt="" height={420} densities={[1, 1.5]} />
+      <span class="fx c-cyan" style="left:-10px;top:30px;width:60px;height:70px">
+        <svg>
+          <use href="#i-anchor"></use>
+        </svg>
+      </span>
+      <span class="fx c-pink" style="right:0;top:10px;width:26px;height:26px">
+        <svg>
+          <use href="#i-spark"></use>
+        </svg>
+      </span>
+    </div>
+    <div class="lost__text">
+      <p class="label">
+        <b>404</b> — LOST AT SEA
+      </p>
+      <h1 class="mincho" lang="ja">
+        迷子になっちゃった…
+      </h1>
+      <p class="lost__en" lang="en">
+        Lost at sea
+      </p>
+      <p class="muted">
+        <span data-l="ja" lang="ja">
+          お探しのページは見つかりませんでした。港に戻りましょう。
+        </span>
+        <span data-l="en" lang="en">
+          We couldn't find that page. Let's head back to the harbor.
+        </span>
+      </p>
+      <a class="btn btn--primary" href="/">
+        <span data-l="ja" lang="ja">
+          アーカイブへ戻る
+        </span>
+        <span data-l="en" lang="en">
+          Back to the archive
+        </span>{' '}
+        <Icon name="anchor" />
+      </a>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import { track } from '../lib/analytics';
+  setTimeout(() => track('not_found', { path: location.pathname.slice(0, 60) }), 2000);
+</script>

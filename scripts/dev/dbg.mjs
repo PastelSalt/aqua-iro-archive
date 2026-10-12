@@ -1,0 +1,12 @@
+import { chromium } from '@playwright/test';
+const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+await p.addInitScript(() => localStorage.setItem('aia:prefs', JSON.stringify({ splash: true })));
+p.on('console', (m) => console.log('console', m.type(), m.text().slice(0, 200)));
+p.on('pageerror', (e) => console.log('pageerror', e.message));
+await p.goto('http://localhost:4323/arts');
+const first = p.locator('.art-tile__link').first();
+console.log('href', await first.getAttribute('href'), 'lb', await first.getAttribute('data-lb'));
+await first.click();
+await p.waitForTimeout(1000);
+console.log('url', p.url(), 'dialogs', await p.locator('dialog').count(), await p.evaluate(() => [...document.querySelectorAll('dialog')].map((d) => d.className + ':' + d.open)));
+await b.close();

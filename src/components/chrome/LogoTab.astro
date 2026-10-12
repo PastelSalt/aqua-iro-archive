@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../assets/logo/channel.png';
+---
+
+<header class="logo-header">
+  <a class="logo-tab" href="/" aria-label="Aqua Iro Archive — home" data-logo-tab>
+    <Image src={logo} alt="" width={372} loading="eager" fetchpriority="low" />
+    <small aria-hidden="true">AQUA IRO ARCHIVE</small>
+  </a>
+</header>
+
+<script>
+  import { onPage } from '../../lib/lifecycle';
+  onPage(() => {
+    const tab = document.querySelector<HTMLElement>('[data-logo-tab]');
+    if (!tab) return;
+    let ticking = false;
+    const update = () => {
+      tab.classList.toggle('is-small', window.scrollY > 120);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  });
+</script>

@@ -1,0 +1,22 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on
+- id: "2018"
+  streams: 1
+  hours: 1
+- id: "2019"
+  streams: 31
+  hours: 66
+- id: "2020"
+  streams: 197
+  hours: 576
+- id: "2021"
+  streams: 135
+  hours: 415
+- id: "2022"
+  streams: 60
+  hours: 176
+- id: "2023"
+  streams: 77
+  hours: 277
+- id: "2024"
+  streams: 138
+  hours: 502

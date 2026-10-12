@@ -1,0 +1,52 @@
+---
+import Keeper from '../../../layouts/Keeper.astro';
+export const prerender = false;
+---
+
+<Keeper title="Two-factor" bare>
+  <form class="k-auth k-card" data-verify>
+    <h1>Enter your 6-digit code</h1>
+    <div class="k-field">
+      <label for="code">Authenticator code</label>
+      <input
+        id="code"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        pattern="[0-9]{6}"
+        maxlength="6"
+        required
+      />
+    </div>
+    <details>
+      <summary>Use a backup code instead</summary>
+      <div class="k-field">
+        <label for="backup">Backup code</label>
+        <input id="backup" autocomplete="off" />
+      </div>
+    </details>
+    <p class="k-err" role="alert" hidden data-err></p>
+    <button class="k-btn k-btn--navy" type="submit">
+      Verify
+    </button>
+  </form>
+</Keeper>
+
+<script>
+  import { authClient } from '../../../scripts/keeper-client';
+  const form = document.querySelector<HTMLFormElement>('[data-verify]')!;
+  const err = form.querySelector<HTMLElement>('[data-err]')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = (form.querySelector('#code') as HTMLInputElement).value.trim();
+    const backup = (form.querySelector('#backup') as HTMLInputElement).value.trim();
+    const { error } = backup
+      ? await authClient.twoFactor.verifyBackupCode({ code: backup })
+      : await authClient.twoFactor.verifyTotp({ code });
+    if (error) {
+      err.textContent = 'That code did not work.';
+      err.hidden = false;
+      return;
+    }
+    location.href = '/keeper';
+  });
+</script>

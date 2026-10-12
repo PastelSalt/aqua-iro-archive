@@ -1,0 +1,21 @@
+dist
+.astro
+.vercel
+node_modules
+package-lock.json
+data/raw
+db/migrations
+src/content/streams/streams.json
+src/content/streams/search-index.json
+playwright-report
+test-results
+scripts/dev
+tests/e2e/*.md
+.claude
+data/overrides
+src/content/**/*.yaml
+public/og
+ops
+public/data
+# rewritten by scripts/csp-hash.ts on every build
+vercel.json

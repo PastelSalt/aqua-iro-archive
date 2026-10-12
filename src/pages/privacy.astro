@@ -1,0 +1,172 @@
+---
+/** Privacy (EXECUTIONPLAN §9.9 / §18). */
+import Extra from '../layouts/Extra.astro';
+import { CONTACT_EMAIL } from '../lib/site';
+---
+
+<Extra
+  title={{ ja: 'プライバシー', en: 'Privacy' }}
+  label="PRIVACY"
+  description="Aqua Iro Archive が保存するデータと、その理由・期間。What this site stores, why, and for how long."
+>
+  <p class="label">Last updated 2026-10-12 · 最終更新 2026年10月12日</p>
+
+  <section aria-labelledby="p-who">
+    <h2 id="p-who">1. Who runs this site · 運営者</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        Moesoft（個人のファン）が運営しています。
+      </span>
+      <span data-l="en" lang="en">
+        Moesoft, an individual fan.
+      </span>{' '}
+      {CONTACT_EMAIL && <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>}
+    </p>
+  </section>
+
+  <section aria-labelledby="p-what">
+    <h2 id="p-what">2. What we collect · 保存するもの</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Data</th>
+          <th scope="col">Why</th>
+          <th scope="col">How long</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Message-board note text · 寄せ書きの本文</td>
+          <td>To show it on the board</td>
+          <td>Until removed; deleted on request</td>
+        </tr>
+        <tr>
+          <td>A one-way hash of your IP address (with a monthly-changing key) · IPアドレスのハッシュ</td>
+          <td>Rate limits, duplicate checks, abuse prevention</td>
+          <td>30 days, then erased</td>
+        </tr>
+        <tr>
+          <td>An "undo" token hash · 取り消し用トークンのハッシュ</td>
+          <td>Lets you remove your own note for 10 minutes</td>
+          <td>Erased after 10 minutes (daily cleanup)</td>
+        </tr>
+        <tr>
+          <td>Report reason and optional note · 通報理由</td>
+          <td>Moderation</td>
+          <td>Kept with the note</td>
+        </tr>
+        <tr>
+          <td>Aggregated, cookieless analytics · 集計アクセス解析</td>
+          <td>Knowing which pages people enjoy</td>
+          <td>13 months</td>
+        </tr>
+        <tr>
+          <td>
+            Your preferences in your browser (motion, language, Memory album, your own notes) ·
+            ブラウザ内の設定
+          </td>
+          <td>Remembering your choices</td>
+          <td>Until you clear your browser</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <span data-l="ja" lang="ja">
+        訪問者向けのCookieはありません（管理者のログインCookieのみ）。
+      </span>
+      <span data-l="en" lang="en">
+        There are no cookies for visitors. The only first-party cookie is the site keeper's login session.
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="board" id="board">
+    <h2 id="p-board">3. The Message Board · 寄せ書き</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        寄せ書きは匿名です。名前もメールも不要で、届いた順にクルー番号がつきます。投稿はすぐに表示され、通報が3件集まると自動で非表示になり、管理人が確認します。自分の寄せ書きを消したいときは、クルー番号とだいたいの投稿日時をクレジットページの連絡先へ送ってください。
+      </span>
+      <span data-l="en" lang="en">
+        Notes are anonymous — no name or email, just a crew number given when the note lands. Notes appear
+        right away; three reports hide a note automatically until the keeper reviews it. To have your note
+        removed, send its crew number and roughly when you posted it to the contact on the Credits page.
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="p-analytics">
+    <h2 id="p-analytics">4. Analytics · アクセス解析</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        自前で運用しているUmamiを使っています。Cookieを使わず、個人を特定する情報は保存しません。ブラウザの「Do
+        Not Track」を尊重します。
+      </span>
+      <span data-l="en" lang="en">
+        Self-hosted Umami: cookieless, aggregated, no personal data. Do Not Track is honored.
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="p-third">
+    <h2 id="p-third">5. Third parties · 外部サービス</h2>
+    <ul>
+      <li>
+        <b>Cloudflare Turnstile</b> —{' '}
+        <span data-l="ja" lang="ja">
+          投稿・通報時のボット確認。
+        </span>
+        <span data-l="en" lang="en">
+          bot check when you post or report.
+        </span>{' '}
+        <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">
+          Privacy policy ↗
+        </a>
+      </li>
+      <li>
+        <b>YouTube</b> —{' '}
+        <span data-l="ja" lang="ja">
+          動画は youtube-nocookie で埋め込み、再生ボタンを押すまで読み込みません。
+        </span>
+        <span data-l="en" lang="en">
+          embeds use youtube-nocookie and load only when you press play.
+        </span>{' '}
+        <a href="https://policies.google.com/privacy" rel="noopener">
+          Privacy policy ↗
+        </a>
+      </li>
+      <li>
+        <b>Vercel</b>, <b>Neon</b> —{' '}
+        <span data-l="ja" lang="ja">
+          ホスティングとデータベース。
+        </span>
+        <span data-l="en" lang="en">
+          hosting and database.
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="p-choices">
+    <h2 id="p-choices">6. Your choices · あなたの選択</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        モーションと言語の設定はあなたのブラウザにだけ保存されます。
+      </span>
+      <span data-l="en" lang="en">
+        Motion and language preferences live only in your browser.
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="p-changes">
+    <h2 id="p-changes">7. Changes · 変更</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        このページを変更したときは、上の日付を更新します。
+      </span>
+      <span data-l="en" lang="en">
+        When this page changes, the date at the top changes too.
+      </span>
+    </p>
+  </section>
+</Extra>

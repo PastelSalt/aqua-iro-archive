@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../assets/logo/channel.png';
+import Icon from '../ui/Icon.astro';
+import T from '../ui/T.astro';
+import { CHAPTERS } from '../../lib/chapters';
+import { SISTER_SITES } from '../../lib/site';
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <Image src={logo} alt="湊あくあ Minato Aqua" width={300} />
+        <p>
+          <T k="unofficial" /> <T k="notAffiliated" />
+        </p>
+        <p>
+          <T k="copyright" />
+        </p>
+      </div>
+      <nav aria-labelledby="ft-archive">
+        <h2 id="ft-archive">
+          <T k="footer.archive" />
+        </h2>
+        <ul>
+          {CHAPTERS.map((c) => (
+            <li>
+              <a href={c.href}>
+                <span class="label">{c.no}</span> <span lang="ja">{c.title.ja}</span> ·{' '}
+                <span lang="en">{c.title.en}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div>
+        <h2 id="ft-about">
+          <T k="footer.about" />
+        </h2>
+        <ul>
+          <li>
+            <a href="/credits">
+              <T k="footer.credits" />
+            </a>
+          </li>
+          <li>
+            <a href="/privacy">
+              <T k="footer.privacy" />
+            </a>
+          </li>
+          <li>
+            <a href="/credits#removal">
+              <T k="footer.removal" />
+            </a>
+          </li>
+        </ul>
+        <h2 style="margin-top:var(--s-5)">
+          <T k="footer.sisters" />
+        </h2>
+        <ul>
+          {SISTER_SITES.map((s) => (
+            <li>
+              <a href={s.url} rel="noopener">
+                {s.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="footer__fine">
+      <span>
+        <T k="footer.madeBy" /> · 2026
+      </span>
+      <a class="back-top" href="#top">
+        <Icon name="arrow-up" /> <T k="footer.backTop" /> ⚓
+      </a>
+    </div>
+  </div>
+</footer>

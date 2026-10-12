@@ -1,0 +1,140 @@
+# Explore — leads into the archive. A goto offers "Take me there →" after the reply; it never navigates by itself.
+- id: explore-profile
+  title: { ja: "あてぃしってどんな人？", en: "Who am I, anyway?" }
+  category: explore
+  lines:
+    - { exp: smile, ja: "あてぃしのこと、どのくらい知ってる？", en: "How much do you know about me?" }
+  choices:
+    - id: everything
+      ja: "なんでも知ってるよ"
+      en: "I know everything"
+      reply:
+        - { exp: smug, ja: "ほんと～？じゃあ、身長は？……正解は148cm！", en: "Really~? Then how tall am I? ...148 cm!" }
+    - id: little
+      ja: "まだちょっとだけ"
+      en: "Only a little so far"
+      reply:
+        - { exp: cheerful, ja: "じゃあプロフィールをのぞいてみて！", en: "Then take a peek at my profile!" }
+      goto: about
+    - id: birthday
+      ja: "誕生日はいつ？"
+      en: "When's your birthday?"
+      reply:
+        - { exp: excited, ja: "12月1日！覚えておいてね！", en: "December 1st! Don't forget!" }
+    - id: friends
+      ja: "仲良しの人は？"
+      en: "Who are your close friends?"
+      reply:
+        - { exp: smile, ja: "シオンちゃん、マリン船長、めあちゃん……いっぱい！", en: "Shion, Captain Marine, Mea... lots of them!" }
+
+- id: explore-clips
+  title: { ja: "切り抜きのはなし", en: "About the clips" }
+  category: explore
+  lines:
+    - { exp: flustered, ja: "ねえ、あてぃしの切り抜き、見たことある……？", en: "Hey... have you seen clips of me?" }
+  choices:
+    - id: funny
+      ja: "おもしろいのいっぱいあるよ"
+      en: "There are so many funny ones"
+      reply:
+        - { exp: pout, ja: "おもしろいのばっかり残らないでほしい！", en: "Why do only the funny ones get clipped!?" }
+    - id: animated
+      ja: "手描き切り抜きが好き"
+      en: "I love the hand-drawn ones"
+      reply:
+        - { exp: shy, ja: "あれ、すごいよね……描いてくれてありがとう。", en: "They're amazing... thank you to everyone who drew them." }
+    - id: show
+      ja: "人気の切り抜きを見せて"
+      en: "Show me the popular clips"
+      reply:
+        - { exp: flustered, ja: "う、うん……はずかしいけど、どうぞ！", en: "O-okay... it's embarrassing, but go ahead!" }
+      goto: clips
+    - id: mute
+      ja: "ミュート忘れのやつ"
+      en: "The one where you forgot to mute"
+      reply:
+        - { exp: flustered, ja: "それは忘れて！今すぐ！", en: "Forget that one! Right now!" }
+
+- id: explore-music
+  title: { ja: "音楽室へ", en: "To the music room" }
+  category: explore
+  lines:
+    - { exp: cheerful, ja: "今日はなにか聴きたい気分？", en: "In the mood to listen to something today?" }
+  choices:
+    - id: originals
+      ja: "オリジナル曲を聴きたい"
+      en: "I want your original songs"
+      reply:
+        - { exp: excited, ja: "まかせて！ディスコグラフィへご案内！", en: "Leave it to me! This way to the discography!" }
+      goto: discography
+    - id: bgm
+      ja: "BGMを流してほしい"
+      en: "Play some background music"
+      reply:
+        - { exp: smile, ja: "下の♪ボタンを押すと、流れるよ。", en: "Press the ♪ button down below and it'll play." }
+    - id: duet
+      ja: "いっしょに歌おう"
+      en: "Let's sing together"
+      reply:
+        - { exp: shy, ja: "えっ……じゃあ、サビだけね？", en: "Huh... okay, just the chorus?" }
+    - id: humming
+      ja: "鼻歌きかせて"
+      en: "Hum something for me"
+      reply:
+        - { exp: calm, ja: "ふん、ふふ～ん……♪ 何の曲か、わかった？", en: "Hmm, hm-hmm~♪ Can you guess the song?" }
+
+- id: explore-streams
+  title: { ja: "配信のきろく", en: "The stream log" }
+  category: explore
+  lines:
+    - { exp: calm, ja: "配信、ほんとうにたくさんしたなぁ。", en: "I really did a lot of streams, didn't I?" }
+  choices:
+    - id: how-many
+      ja: "全部でいくつ？"
+      en: "How many in total?"
+      reply:
+        - { exp: excited, ja: "残ってるアーカイブだけで639個！", en: "639 archives are still up!" }
+    - id: longest
+      ja: "いちばん長い配信は？"
+      en: "What was your longest stream?"
+      reply:
+        - { exp: flustered, ja: "エルデンリングで12時間近く……よくがんばった！", en: "Almost twelve hours of Elden Ring... I did my best!" }
+    - id: search
+      ja: "配信をさがしたい"
+      en: "I want to search the streams"
+      reply:
+        - { exp: smile, ja: "配信アーカイブで、年やタグで探せるよ。", en: "You can search by year and tag in the stream archive." }
+      goto: streaming
+    - id: minecraft
+      ja: "マイクラの建築、すごかった"
+      en: "Your Minecraft builds were great"
+      reply:
+        - { exp: smug, ja: "AKUKIN建設におまかせあれ！", en: "Leave it to Akukin Construction!" }
+
+- id: explore-gallery
+  title: { ja: "CGギャラリー", en: "The CG gallery" }
+  category: explore
+  lines:
+    - { exp: smile, ja: "あてぃしの絵、いっぱい描いてもらったんだよ。", en: "So many people drew pictures of me." }
+  choices:
+    - id: gaou
+      ja: "がおう先生の絵が好き"
+      en: "I love Gaou's art"
+      reply:
+        - { exp: cheerful, ja: "ママの絵、ほんとにかわいいよね！", en: "Mama's art is the cutest, isn't it!" }
+    - id: outfits
+      ja: "衣装はいくつあるの？"
+      en: "How many outfits do you have?"
+      reply:
+        - { exp: excited, ja: "いっぱい！ぜんぶお気に入りなの。", en: "Lots! I love every single one." }
+    - id: gallery
+      ja: "ギャラリーを見たい"
+      en: "I want to see the gallery"
+      reply:
+        - { exp: smile, ja: "アートのページへどうぞ！クレジットも見てね。", en: "This way to Arts! Check the credits too." }
+      goto: arts
+    - id: draw
+      ja: "あくたんも絵を描く？"
+      en: "Do you draw too?"
+      reply:
+        - { exp: flustered, ja: "か、描けなくはない……見せないけど！", en: "I-I can draw... but I'm not showing you!" }

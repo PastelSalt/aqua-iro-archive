@@ -1,0 +1,12 @@
+# Expression → official pose (src/assets/poses/<id>). Official art is used as-is, never edited into new faces.
+# No matching pose → a small emote sticker beside the name plate instead (sprite id).
+- { id: smile, pose: full-08, fallbackSticker: null }
+- { id: cheerful, pose: full-01, fallbackSticker: null }
+- { id: calm, pose: full-06, fallbackSticker: null }
+- { id: cool, pose: full-07, fallbackSticker: null }
+- { id: excited, pose: null, fallbackSticker: excited }
+- { id: pout, pose: null, fallbackSticker: pout }
+- { id: shy, pose: null, fallbackSticker: shy }
+- { id: smug, pose: null, fallbackSticker: smug }
+- { id: sleepy, pose: null, fallbackSticker: sleepy }
+- { id: flustered, pose: null, fallbackSticker: sweat }

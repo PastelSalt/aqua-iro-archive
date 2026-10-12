@@ -1,0 +1,30 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on
+- id: youtube
+  label: YouTube
+  text: Aqua Ch. 湊あくあ
+  url: https://www.youtube.com/channel/UC1opHUrw8rvnsadT-iGp7Cg
+- id: x-twitter
+  label: X/Twitter
+  text: "@minatoaqua"
+  url: https://x.com/minatoaqua
+- id: hololive-official-site
+  label: hololive official site
+  text: hololive.hololivepro.com
+  url: https://hololive.hololivepro.com/en/
+  note: talent page removed after graduation; use the Wayback Machine for the archived profile
+- id: wikipedia
+  label: Wikipedia
+  text: Minato Aqua
+  url: https://en.wikipedia.org/wiki/Minato_Aqua
+- id: virtual-youtuber-wiki
+  label: Virtual YouTuber Wiki
+  text: Minato Aqua
+  url: https://virtualyoutuber.fandom.com/wiki/Minato_Aqua
+- id: hololive-fan-wiki
+  label: Hololive Fan Wiki
+  text: Minato Aqua
+  url: https://hololive.wiki/wiki/Minato_Aqua
+- id: fan-run-song-database
+  label: Fan-run song database
+  text: ホロ曲DB
+  url: https://db.holoplayer.jp/talent/72/

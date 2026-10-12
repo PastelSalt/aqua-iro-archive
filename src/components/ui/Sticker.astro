@@ -1,0 +1,16 @@
+---
+interface Props {
+  tilt?: number;
+  soft?: boolean;
+  bg?: string;
+  class?: string;
+}
+const { tilt = -2, soft = false, bg, class: cls } = Astro.props;
+---
+
+<span
+  class:list={['sticker', { 'sticker--soft': soft }, cls]}
+  style={`--tilt:${tilt}deg;${bg ? `--sticker-bg:${bg}` : ''}`}
+>
+  <slot />
+</span>

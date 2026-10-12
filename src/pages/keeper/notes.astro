@@ -1,0 +1,116 @@
+---
+/** All notes (EXECUTIONPLAN §15.3): filters, search by crew # or text, restore, typed-confirmation purge. */
+import Keeper from '../../layouts/Keeper.astro';
+import { dbTx } from '../../server/db/pool';
+import { notesList } from '../../server/board/moderation';
+export const prerender = false;
+const q = Astro.url.searchParams;
+const f = {
+  status: q.get('status') ?? '',
+  q: q.get('q') ?? '',
+  from: q.get('from') || undefined,
+  to: q.get('to') || undefined,
+};
+const list = await notesList(dbTx() as never, { ...f, status: f.status || undefined, q: f.q || undefined });
+---
+
+<Keeper title="Notes" active="/keeper/notes">
+  <h1>Notes</h1>
+  <form class="k-card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end" method="get">
+    <label class="k-field">
+      <span>Status</span>
+      <select name="status">
+        {['', 'visible', 'held', 'under_review', 'removed'].map((s) => (
+          <option value={s} selected={f.status === s}>
+            {s || 'any'}
+          </option>
+        ))}
+      </select>
+    </label>
+    <label class="k-field">
+      <span>Crew # or text</span>
+      <input name="q" value={f.q} />
+    </label>
+    <label class="k-field">
+      <span>From</span>
+      <input type="date" name="from" value={f.from} />
+    </label>
+    <label class="k-field">
+      <span>To</span>
+      <input type="date" name="to" value={f.to} />
+    </label>
+    <button class="k-btn k-btn--navy">Filter</button>
+  </form>
+  <table class="k-table k-card">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Note</th>
+        <th>Status</th>
+        <th>Posted</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {list.map((m) => (
+        <tr data-id={m.id} data-crew={m.crew_no}>
+          <td>{m.crew_no}</td>
+          <td style="white-space:pre-line;max-width:520px">{m.body}</td>
+          <td>
+            <span class="k-pill">{m.status}</span>{' '}
+            {m.removed_reason && <span class="k-item__meta">{m.removed_reason}</span>}
+          </td>
+          <td>{new Date(m.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Tokyo' })}</td>
+          <td style="display:flex;gap:6px;flex-wrap:wrap">
+            {m.status === 'removed' && (
+              <button type="button" class="k-btn" data-restore>
+                Restore
+              </button>
+            )}
+            {m.status !== 'removed' && (
+              <button type="button" class="k-btn k-btn--danger" data-remove>
+                Remove
+              </button>
+            )}
+            <button type="button" class="k-btn k-btn--danger" data-purge>
+              Purge…
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</Keeper>
+
+<script>
+  import { actions } from 'astro:actions';
+  import { toast } from '../../scripts/keeper-client';
+  document.querySelector('tbody')?.addEventListener('click', async (e) => {
+    const t = e.target as HTMLElement;
+    const tr = t.closest<HTMLElement>('tr');
+    if (!tr) return;
+    const id = tr.dataset.id!;
+    const crew = Number(tr.dataset.crew);
+    if (t.matches('[data-restore]')) {
+      const { error } = await actions.keeper.restore({ id });
+      toast(error ? 'Restore failed' : `Restored #${crew}`);
+      if (!error) location.reload();
+    }
+    if (t.matches('[data-remove]')) {
+      const reason = prompt(`Reason for removing #${crew}?`, 'Owner request');
+      if (!reason) return;
+      const { error } = await actions.keeper.remove({ ids: [id], reason });
+      toast(error ? 'Remove failed' : `Removed #${crew}`);
+      if (!error) location.reload();
+    }
+    if (t.matches('[data-purge]')) {
+      const typed = prompt(
+        `PERMANENT delete for a privacy request.\nType the crew number (${crew}) to confirm:`,
+      );
+      if (typed === null) return;
+      const { error } = await actions.keeper.purge({ id, crewNo: Number(typed) });
+      toast(error ? `Not purged: ${error.message}` : `Purged #${crew}`);
+      if (!error) tr.remove();
+    }
+  });
+</script>

@@ -1,0 +1,300 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on (JA titles, venues and visuals added 2026-10-12)
+# type: news · milestone · live · collab · music · game · brand · announcement · graduation · model · unit · lore · award
+- id: casting-call
+  date: '2018-07-14'
+  type: news
+  title: { ja: "ホロライブがバーチャルメイド「湊あくあ」のオーディションを開始", en: "hololive opens casting for a virtual maid named Minato Aqua" }
+- id: debut
+  date: '2018-08-08'
+  type: milestone
+  title: { ja: "初配信。ホロライブ2期生のトップバッターとして自己紹介動画を公開", en: "Debut — her self-introduction video opens hololive 2nd Gen" }
+  youtube: S3CAGeeMRvo
+  visual: outfit-original-maid
+- id: subs-10k
+  date: '2018-10-04'
+  type: milestone
+  title: { ja: "登録者1万人", en: "10,000 subscribers" }
+- id: first-birthday
+  date: '2018-12-01'
+  type: milestone
+  title: { ja: "初めての誕生日。がおう先生の誕生日イラスト", en: "First birthday, with an illustration by Gaou" }
+  visual: anniv-birthday-gaou
+- id: fake-retirement
+  date: '2019-02-02'
+  type: lore
+  title: { ja: "「引退」ドッキリ。ホロ鯖で自分のTNT像を爆破", en: "Fake-retirement stunt: she blows up a TNT model of herself on the hololive Minecraft server" }
+- id: first-cover
+  date: '2019-02-14'
+  type: music
+  title: { ja: "初の歌ってみた「インドア系ならトラックメイカー」", en: "First cover, \"Indoor Kei nara Trackmaker\"" }
+  youtube: -aB6MQU8l1s
+  visual: music-indoor-kei
+- id: dawn-of-the-breakers
+  date: '2019-04-04'
+  type: collab
+  title: { ja: "ゲーム『Dawn of the Breakers』とコラボ", en: "Dawn of the Breakers game collaboration" }
+  visual: collab-dawn-of-the-breakers
+- id: 3d-debut
+  date: '2019-04-08'
+  type: milestone
+  title: { ja: "3Dお披露目", en: "3D debut" }
+  youtube: BacoqH2e86U
+  visual: 3d-model-original
+- id: chokaigi-2019
+  date: '2019-04-27'
+  type: live
+  title: { ja: "ニコニコ超会議「超ビリビリVUPステージ」", en: "Niconico Chokaigi — Chou Bilibili VUP Stage" }
+  venue: 幕張メッセ / Makuhari Messe
+- id: subs-100k
+  date: '2019-06-02'
+  type: milestone
+  title: { ja: "登録者10万人", en: "100,000 subscribers" }
+  visual: anniv-100k
+- id: last-idea
+  date: '2019-07-23'
+  type: collab
+  title: { ja: "スクウェア・エニックス『LAST IDEA』イベント", en: "Square Enix LAST IDEA event" }
+  visual: collab-last-idea
+- id: 1st-anniversary
+  date: '2019-08-08'
+  type: milestone
+  title: { ja: "1周年", en: "1st anniversary" }
+- id: bilibili-world-guangzhou
+  date: '2019-08-17'
+  type: live
+  title: { ja: "Bilibili World 2019（広州）。3D水着衣装をお披露目", en: "Bilibili World 2019 (Guangzhou) — 3D swimsuit outfit debut" }
+  venue: 広州 / Guangzhou
+  visual: 3d-portrait-swimsuit
+- id: vr-anime-festival
+  date: '2019-08-18'
+  type: live
+  title: { ja: "VRアニメフェスティバル2019", en: "VR Anime Festival 2019" }
+- id: live2d-v2
+  date: '2019-09-14'
+  type: model
+  title: { ja: "Live2D Ver.2.0にアップデート", en: "Live2D updated to Ver. 2.0" }
+  youtube: JiuC5rPlUDQ
+  visual: gaou-v2
+- id: bilibili-world-shanghai
+  date: '2019-10-04'
+  type: live
+  title: { ja: "Bilibili World 2019（上海）", en: "Bilibili World 2019 (Shanghai)" }
+  venue: 上海 / Shanghai
+- id: azur-lane
+  date: '2019-11-27'
+  type: collab
+  title: { ja: "アズールレーンとコラボ（潜水艦・マリンメイドのスキン、12月10日まで）", en: "Azur Lane collaboration — Submarine and Marine Maid skins, to 10 Dec" }
+  visual: collab-azur-lane-marine-maid
+- id: new-year-kimono
+  date: '2020-01-02'
+  type: model
+  title: { ja: "お正月衣装（着物メイド）", en: "New Year kimono outfit" }
+  visual: outfit-new-year-kimono
+- id: 1st-fes
+  date: '2020-01-24'
+  type: live
+  title: { ja: "hololive 1st fes.「ノンストップ・ストーリー」。3Dアイドル衣装", en: "hololive 1st fes. \"Nonstop Story\" — 3D idol outfit" }
+  venue: 豊洲PIT / Toyosu PIT
+  visual: kv-1st-fes
+- id: neptunia
+  date: '2020-01-28'
+  type: collab
+  title: { ja: "『ネプテューヌ ヴァーチャル・ステーション』参戦発表", en: "Neptunia Virtual Stars announced" }
+  visual: collab-neptunia
+- id: subs-500k
+  date: '2020-05-30'
+  type: milestone
+  title: { ja: "登録者50万人。ホロライブでフブキに次ぐ2人目", en: "500,000 subscribers — second in hololive after Fubuki" }
+  youtube: o41aBPpm8nQ
+- id: aqua-iro-super-dream
+  date: '2020-08-21'
+  type: live
+  title: { ja: "初の有料ソロライブ「あくあ色すーぱー☆どりーむ♪」。新3Dドレスと「#あくあ色ぱれっと」初披露", en: "First paid solo live, \"AQUA IRO SUPER☆DREAM\" — new 3D dress and the #AquaIroPalette premiere" }
+  visual: outfit-anniversary-dress
+- id: casual-marine-outfit
+  date: '2020-09-26'
+  type: model
+  title: { ja: "私服（セーラー）衣装をお披露目", en: "Casual marine outfit (3rd 2D costume)" }
+  youtube: HUWyLcPf1vo
+  visual: outfit-casual-sailor
+- id: curry-meshi-week
+  date: '2020-10-10'
+  type: collab
+  title: { ja: "日清カレーメシWEEK。スバル・ぺこらとユニット「Spice Love」", en: "Nissin Curry Meshi WEEK — Spice Love unit with Subaru and Pekora" }
+  visual: collab-curry-meshi-week
+- id: spice-live
+  date: '2020-10-18'
+  type: live
+  title: { ja: "Spice Live!", en: "Spice Live!" }
+- id: 2nd-fes
+  date: '2020-12-22'
+  type: live
+  title: { ja: "hololive 2nd fes.「Beyond the Stage」DAY2", en: "hololive 2nd fes. \"Beyond the Stage\" (Day 2)" }
+  visual: kv-2nd-fes
+- id: subs-1m
+  date: '2021-01-13'
+  type: milestone
+  title: { ja: "登録者100万人。2期生で最初の達成", en: "1,000,000 subscribers — the first 2nd Gen member to get there" }
+  youtube: Qk51imbGXR0
+- id: vtuber-fes-japan
+  date: '2021-01-30'
+  type: live
+  title: { ja: "VTuber Fes Japan 2021 DAY1", en: "VTuber Fes Japan 2021, Day 1" }
+- id: bloom
+  date: '2021-02-17'
+  type: live
+  title: { ja: "hololive IDOL PROJECT 1st Live.「Bloom,」", en: "hololive IDOL PROJECT 1st Live \"Bloom,\"" }
+  venue: 東京ガーデンシアター / Tokyo Garden Theater
+- id: super-miracle-dream
+  date: '2021-05-09'
+  type: live
+  title: { ja: "3Dライブ「あくあ色すーぱーみらくる☆どり〜む♪」", en: "3D live \"Aqua Iro Super Miracle Dream\"" }
+  youtube: gf7RSwmp8dM
+- id: throat-rest
+  date: '2021-05-20'
+  type: news
+  title: { ja: "喉の療養のためお休み（6月7日に復帰）", en: "Rest for her throat; back on 7 June" }
+- id: red-bull
+  date: '2021-06-07'
+  type: collab
+  title: { ja: "獅白ぼたんとRed Bullのバーチャルアンバサダーに", en: "Red Bull virtual ambassador with Shishiro Botan" }
+  visual: collab-red-bull-tomari-duo
+- id: negiu
+  date: '2021-06-13'
+  type: unit
+  title: { ja: "スバル・ねねとNEGI☆U結成。アニメ『ジャヒー様はくじけない！』ED", en: "NEGI☆U formed with Subaru and Nene — ending theme of The Great Jahy Will Not Be Defeated!" }
+  visual: music-negiu-kujikenai
+- id: yokosuka
+  date: '2021-06-23'
+  type: collab
+  title: { ja: "よこすか海の楽しいアニメカーニバル 公式アンバサダー", en: "Official ambassador, Yokosuka Umi Anime Carnival" }
+- id: power-station-cancelled
+  date: '2021-08-02'
+  type: news
+  title: { ja: "日清パワーステーション公演がサイバー攻撃の影響で中止", en: "Nissin Power Station concert cancelled after a DDoS / security incident" }
+- id: 3rd-anniversary-live
+  date: '2021-08-09'
+  type: live
+  title: { ja: "「あくあ色 3rd Anniversary Live」", en: "\"Aqua Iro 3rd Anniversary Live\"" }
+  youtube: CtOkB0YQljY
+- id: umisea
+  date: '2021-09-14'
+  type: unit
+  title: { ja: "マリン・ぐら・いなとUMISEA結成", en: "UMISEA formed with Marine, Gura and Ina" }
+  visual: music-umisea-domination
+- id: kyoto-bust
+  date: '2021'
+  type: lore
+  title: { ja: "京都大学の学生が試験会場にあくあの胸像を制作", en: "Kyoto University students build an Aqua bust at the exam site" }
+- id: wonderland
+  date: '2022-01-28'
+  type: live
+  title: { ja: "初の有観客ソロライブ「あくあ色 in わんだ～☆らんど♪」", en: "\"AQUA IRO IN WONDERLAND\" — her first solo live with an audience" }
+  venue: 豊洲PIT / Toyosu PIT
+  visual: concept-wonderland
+- id: seaside-aqua-fes
+  date: '2022-02-19'
+  type: live
+  title: { ja: "「SEASIDE AQUA FES」（日清パワーステーション公演の振替）", en: "\"SEASIDE AQUA FES\" — the rescheduled Nissin Power Station live" }
+- id: 3rd-fes
+  date: '2022-03-20'
+  type: live
+  title: { ja: "hololive 3rd fes.「Link Your Wish」DAY2", en: "hololive 3rd fes. \"Link Your Wish\" (Day 2)" }
+  venue: 幕張メッセ / Makuhari Messe
+- id: startend
+  date: '2022-04-16'
+  type: unit
+  title: { ja: "すいせい・トワとStartend結成。「アスノヨゾラ哨戒班」", en: "Startend with Suisei and Towa debuts with \"Asu no Yozora Shoukaihan\"" }
+  youtube: XpgSrULHibg
+  visual: kv-startend-rosuuri
+- id: 4th-anniversary
+  date: '2022-08'
+  type: live
+  title: { ja: "4周年ライブ「灰色と青」と3Dライブ「How to World Domination」", en: "4th anniversary live \"Haiiro to Ao\" and 3D live \"How to World Domination\"" }
+  youtube: O4Ip7gZQOts
+  visual: anniv-4th-world-domination
+- id: aquarium-release
+  date: '2022-10-27'
+  type: game
+  title: { ja: "『あくありうむ。』発売（Switch / PS4、Steam英語版は2023年）", en: "AQUARIUM. released on Switch / PS4; Steam English release in 2023" }
+  visual: aquarium-header
+- id: famitsu-award
+  date: '2022'
+  type: award
+  title: { ja: "ファミ通アワード2022 主演賞（『あくありうむ。』）", en: "Famitsu Awards 2022 — Best Actor for AQUARIUM." }
+- id: 4th-fes
+  date: '2023-03-19'
+  type: live
+  title: { ja: "hololive 4th fes.「Our Bright Parade」DAY2", en: "hololive 4th fes. \"Our Bright Parade\" (Day 2)" }
+  visual: kv-4th-fes-concept
+- id: blue-journey
+  date: '2023-04-16'
+  type: unit
+  title: { ja: "Blue Journeyデビュー曲「僕は独りだ」", en: "Blue Journey debut single \"Boku wa Hitori da\"" }
+  youtube: I097di5uoBo
+  visual: music-blue-journey-hitori
+- id: dreamy-day
+  date: '2023-08-15'
+  type: live
+  title: { ja: "5周年3Dライブ「Dreamy day」", en: "5th anniversary 3D live \"Dreamy Day\"" }
+  youtube: c9VW0E2Unl4
+- id: splash-party
+  date: '2023-08-27'
+  type: live
+  title: { ja: "hololive Summer 2023 3DLIVE「Splash Party!」", en: "hololive Summer 2023 3DLIVE \"Splash Party!\"" }
+  visual: outfit-summer-2023-swimsuit
+- id: drama-series
+  date: '2024-02'
+  type: music
+  title: { ja: "ドラマシリーズ「#ホロメン、あてぃしのこと・・・・すき？」全4話", en: "4-part drama series \"#Holomen, do you like me...?\" on her channel" }
+- id: aquarium-sequel
+  date: '2024-03'
+  type: game
+  title: { ja: "『あくありうむ。』続編を発表（のちに中止）", en: "AQUARIUM. sequel announced (later cancelled)" }
+- id: 5th-fes
+  date: '2024-03-17'
+  type: live
+  title: { ja: "hololive 5th fes.「Capture the Moment」DAY2", en: "hololive 5th fes. \"Capture the Moment\" (Day 2)" }
+  visual: kv-5th-fes
+- id: sao-lr
+  date: '2024'
+  type: game
+  title: { ja: "『ソードアート・オンライン ラスト リコレクション』に登場", en: "Appears in Sword Art Online Last Recollection" }
+- id: subs-2m
+  date: '2024-05-09'
+  type: milestone
+  title: { ja: "登録者200万人", en: "2,000,000 subscribers" }
+  youtube: vwYTxvBANHQ
+- id: graduation-announced
+  date: '2024-08-06'
+  type: announcement
+  title: { ja: "卒業を発表", en: "Graduation announced" }
+  youtube: wor3Qt90Yls
+- id: farewell-covers
+  date: '2024-08-15'
+  dateLabel: 2024-08-15 → 08-27
+  type: music
+  title: { ja: "AZKi、シオン、めあ、マリン、Startend、わためとの歌ってみたを次々に公開", en: "A farewell wave of covers with AZKi, Shion, Mea, Marine, Startend and Watame" }
+  visual: music-solasido
+- id: kizuna-to-kiseki
+  date: '2024-08-27'
+  type: music
+  title: { ja: "「キズナトキセキ with hololive JP」リリース", en: "\"Kizuna to Kiseki with hololive JP\" released" }
+  youtube: xtYdo3HteYU
+  visual: music-kizuna-to-kiseki
+- id: graduation-live
+  date: '2024-08-28'
+  type: graduation
+  title: { ja: "卒業ライブ「あくあ色に染まれ！」。同時接続749,854人はVTuber歴代最多", en: "Graduation LIVE \"Aqua-iro ni Somare!\" — 749,854 concurrent viewers, the all-time VTuber record" }
+  youtube: fDtUy1PTor0
+  visual: anniv-2nd-gaou
+- id: kimiiro-princess
+  date: '2024-08-29'
+  type: music
+  title: { ja: "最後のオリジナル曲「#きみいろプリンセス」配信", en: "Final original \"#kimiiro princess\" released" }
+  youtube: RBBwfP1rtkE
+  visual: music-kimiiro-princess
+- id: fan-letters-closed
+  date: '2024-09-06'
+  type: news
+  title: { ja: "COVERがファンレターの受付を終了", en: "COVER stops accepting fan letters for her" }

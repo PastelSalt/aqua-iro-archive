@@ -1,0 +1,27 @@
+# One word per line. The validator warns when a line contains one of these, so a human re-reads it.
+# Topics the writing guidelines avoid: romance, real-life details, graduation reasons, rumors.
+恋人
+彼氏
+付き合
+結婚
+本名
+中の人
+年齢
+住所
+理由
+事務所
+運営
+引退理由
+炎上
+噂
+boyfriend
+girlfriend
+date me
+marry
+real name
+real life
+address
+reason
+company
+rumor
+drama

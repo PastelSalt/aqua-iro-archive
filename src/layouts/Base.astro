@@ -1,0 +1,150 @@
+---
+/**
+ * Base layout (EXECUTIONPLAN §7.1): html/meta/OG, fonts, pre-paint prefs, sprite, ClientRouter,
+ * persistent chrome (Dock, LOG drawer, BGM capsule), analytics.
+ */
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import {
+  PUBLIC_UMAMI_WEBSITE_ID,
+  PUBLIC_UMAMI_SRC,
+  PUBLIC_UMAMI_HOST,
+  PUBLIC_UMAMI_DOMAINS,
+} from 'astro:env/client';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/layout.css';
+import '../styles/components.css';
+import '../styles/sections.css';
+import '../styles/motion.css';
+import Sprite from '../components/chrome/Sprite.astro';
+import LogoTab from '../components/chrome/LogoTab.astro';
+import Footer from '../components/chrome/Footer.astro';
+import Splash from '../components/chrome/Splash.astro';
+import Dock from '../components/chrome/Dock.tsx';
+import LogDrawer from '../components/chrome/LogDrawer.tsx';
+import BgmCapsule from '../components/chrome/BgmCapsule.tsx';
+import { SITE_NAME } from '../lib/site';
+import type { ChapterId } from '../lib/chapters';
+
+export interface Props {
+  /** full <title>; use pageTitle() for chapter pages */
+  title: string;
+  description: string;
+  chapter?: ChapterId | 'extra';
+  og?: string; // path under /og/
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+  footer?: boolean;
+}
+const {
+  title,
+  description,
+  chapter = 'extra',
+  og = '/og/default.jpg',
+  noindex = false,
+  jsonLd,
+  footer = true,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site);
+const ogUrl = new URL(og, Astro.site);
+const ld = jsonLd ?? {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  url: canonical.href,
+  inLanguage: ['ja', 'en'],
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: Astro.site?.href },
+};
+---
+
+<!doctype html>
+<html lang="ja" data-motion="on" data-lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#FFFBFE" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+    <!-- pre-paint prefs (§6.4). Its sha256 goes in the CSP (scripts/csp-hash.ts). Keep it byte-identical. -->
+    <script is:inline>
+      (() => {
+        const d = document.documentElement;
+        const a = () => {
+          let s = {};
+          try {
+            s = JSON.parse(localStorage.getItem('aia:prefs') || '{}');
+          } catch {}
+          const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          d.dataset.motion = s.motion ?? (rm ? 'off' : 'on');
+          d.dataset.lang = s.lang ?? ((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
+          if (s.splash) d.dataset.splash = 'seen';
+        };
+        a();
+        document.addEventListener('astro:after-swap', a);
+      })();
+    </script>
+    <Font cssVariable="--font-fredoka" preload />
+    <link rel="stylesheet" href="/fonts/jp.css" media="print" data-jp-fonts />
+    <noscript>
+      <link rel="stylesheet" href="/fonts/jp.css" />
+    </noscript>
+    <ClientRouter fallback="swap" />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    {PUBLIC_UMAMI_WEBSITE_ID && (
+      <script
+        is:inline
+        defer
+        src={PUBLIC_UMAMI_SRC}
+        data-website-id={PUBLIC_UMAMI_WEBSITE_ID}
+        data-host-url={PUBLIC_UMAMI_HOST}
+        data-domains={PUBLIC_UMAMI_DOMAINS}
+        data-do-not-track="true"
+        data-exclude-search="true"
+        transition:persist="umami"
+      />
+    )}
+    <slot name="head" />
+  </head>
+  <body data-chapter={chapter} id="top">
+    <a class="skip-link" href="#main">
+      <span data-l="ja" lang="ja">
+        本文へスキップ
+      </span>
+      <span data-l="en" lang="en">
+        Skip to content
+      </span>
+    </a>
+    <div class="waves" aria-hidden="true"></div>
+    <Sprite />
+    <Splash />
+    <div class="site">
+      <LogoTab />
+      <slot />
+      {footer && <Footer />}
+    </div>
+    <Dock client:load transition:persist="dock" initialPath={Astro.url.pathname} />
+    <LogDrawer client:idle transition:persist="log" />
+    <BgmCapsule client:idle transition:persist="bgm" />
+    <script>
+      import '../scripts/lightbox';
+      import '../scripts/global';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /keeper
+Disallow: /api/
+Allow: /
+
+Sitemap: https://aqua-iro-archive.vercel.app/sitemap-index.xml

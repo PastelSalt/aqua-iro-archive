@@ -1,0 +1,59 @@
+---
+/** /keeper shell (EXECUTIONPLAN §15.3): on-demand, noindex, no analytics, calm keeper.css. */
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/keeper.css';
+interface Props {
+  title: string;
+  active?: string;
+  bare?: boolean;
+}
+const { title, active, bare = false } = Astro.props;
+const NAV = [
+  ['/keeper', 'Overview'],
+  ['/keeper/queue', 'Queue'],
+  ['/keeper/notes', 'Notes'],
+  ['/keeper/audit', 'Audit'],
+  ['/keeper/settings', 'Settings'],
+  ['/keeper/errors', 'Errors'],
+];
+---
+
+<!doctype html>
+<html lang="en" data-motion="off" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · Keeper</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="keeper">
+    {!bare && (
+      <header class="k-top">
+        <b>⚓ KEEPER</b>
+        <nav aria-label="Keeper">
+          {NAV.map(([href, label]) => (
+            <a href={href} aria-current={active === href ? 'page' : undefined}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <button type="button" class="k-btn k-sign" data-signout>
+          Sign out
+        </button>
+      </header>
+    )}
+    <main class="k-main" id="main">
+      <slot />
+    </main>
+    <div class="k-toast" role="status" hidden data-toast></div>
+    <script>
+      import { signOut } from '../scripts/keeper-client';
+      document.querySelector('[data-signout]')?.addEventListener('click', async () => {
+        await signOut();
+        location.href = '/keeper/login';
+      });
+    </script>
+  </body>
+</html>

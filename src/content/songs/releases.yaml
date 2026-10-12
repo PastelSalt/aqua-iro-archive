@@ -1,0 +1,61 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on
+- id: bouquet
+  date: "2021-04-21"
+  title: Bouquet
+  kind: release
+  credits: hololive IDOL PROJECT album
+  with: []
+  link: https://hip.streamlink.to/BouquetCD
+  highlight: false
+  jacket: music-bouquet
+- id: uni-birth-2
+  date: "2022-01-29"
+  title: ♡あくあたいむ・せれくと♡ (海想列車, あいわな, uni-birth, きらきら)
+  kind: release
+  credits: Solo EP / CD
+  with: []
+  link: https://cover.lnk.to/aquatimeselect
+  highlight: false
+  jacket: music-aquatime-select
+- id: release-2022-06-01
+  date: "2022-06-01"
+  title: ねぎゆーのパないうた
+  kind: release
+  credits: NEGI☆U EP
+  with: []
+  link: https://cover.lnk.to/PANAIUTA
+  highlight: false
+  jacket: music-negiu-panaiuta
+- id: hololive-summer-2022
+  date: "2022-09-01"
+  title: hololive Summer 2022
+  kind: release
+  credits: hololive IDOL PROJECT EP
+  with: []
+  link: https://cover.lnk.to/hololiveSummer2022
+  highlight: false
+  jacket: music-summer-2022
+- id: original-soundtrack
+  date: 2022-10
+  title: あくありうむ。ORIGINAL SOUNDTRACK
+  kind: release
+  credits: Game OST
+  with: []
+  highlight: false
+- id: release-2023-09-06
+  date: "2023-09-06"
+  title: 夜明けのうた
+  kind: release
+  credits: Blue Journey album
+  with: []
+  link: https://lnk.to/BJ_yu
+  highlight: false
+  jacket: music-blue-journey-yoake
+- id: originals
+  date: "2024-02-28"
+  title: ほろはにヶ丘高校 -Originals-
+  kind: release
+  credits: hololive × HoneyWorks
+  with: []
+  link: https://cover.lnk.to/holoHoneyCD
+  highlight: false

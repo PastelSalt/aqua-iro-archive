@@ -1,0 +1,66 @@
+---
+/** Mandatory TOTP enrollment (EXECUTIONPLAN §15.1). The QR code is rendered locally (uqr), never by a third party. */
+import Keeper from '../../../layouts/Keeper.astro';
+export const prerender = false;
+---
+
+<Keeper title="Set up two-factor" bare>
+  <div class="k-auth k-card">
+    <h1>Set up two-factor sign-in</h1>
+    <p>
+      Two-factor is required for the keeper. Confirm your passphrase to get a QR code for your authenticator
+      app.
+    </p>
+    <form data-enable class="k-field">
+      <label for="pw">Passphrase</label>
+      <input id="pw" type="password" autocomplete="current-password" required />
+      <button class="k-btn k-btn--navy" type="submit" style="margin-top:8px">
+        Show QR code
+      </button>
+    </form>
+    <div data-step2 hidden>
+      <div data-qr style="width:220px;margin:8px auto"></div>
+      <p class="k-item__meta">
+        Can't scan? Secret: <code data-secret></code>
+      </p>
+      <h2>Backup codes (shown once — store them offline)</h2>
+      <pre data-codes style="background:#f6f2fb;padding:10px;border-radius:10px"></pre>
+      <form data-confirm class="k-field">
+        <label for="code">Enter the 6-digit code to finish</label>
+        <input id="code" inputmode="numeric" maxlength="6" required />
+        <button class="k-btn k-btn--navy" type="submit" style="margin-top:8px">
+          Turn on two-factor
+        </button>
+      </form>
+    </div>
+    <p class="k-err" role="alert" hidden data-err></p>
+  </div>
+</Keeper>
+
+<script>
+  import { renderSVG } from 'uqr';
+  import { authClient } from '../../../scripts/keeper-client';
+  const err = document.querySelector<HTMLElement>('[data-err]')!;
+  const fail = (m: string) => ((err.textContent = m), (err.hidden = false));
+  document.querySelector<HTMLFormElement>('[data-enable]')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = (document.querySelector('#pw') as HTMLInputElement).value;
+    const { data, error } = await authClient.twoFactor.enable({ password });
+    if (error || !data) return fail('Could not start two-factor setup.');
+    const uri = (data as { totpURI: string }).totpURI;
+    const qr = document.querySelector<HTMLElement>('[data-qr]')!;
+    qr.innerHTML = renderSVG(uri); // generated locally from our own URI, not user input
+    document.querySelector('[data-secret]')!.textContent = new URL(uri).searchParams.get('secret') ?? '';
+    document.querySelector('[data-codes]')!.textContent = (
+      (data as { backupCodes: string[] }).backupCodes ?? []
+    ).join('\n');
+    document.querySelector<HTMLElement>('[data-step2]')!.hidden = false;
+  });
+  document.querySelector<HTMLFormElement>('[data-confirm]')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = (document.querySelector('#code') as HTMLInputElement).value.trim();
+    const { error } = await authClient.twoFactor.verifyTotp({ code });
+    if (error) return fail('That code did not work — check your phone clock and try again.');
+    location.href = '/keeper';
+  });
+</script>

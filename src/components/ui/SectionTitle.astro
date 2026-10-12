@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  no?: string; // "01"
+  en: string; // display title
+  ja?: string; // JP subtitle
+  id?: string;
+  level?: 2 | 3;
+  center?: boolean;
+}
+const { no, en, ja, id, level = 2, center = false } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+---
+
+<div class:list={['sec-title', { 'sec-title--center': center }]}>
+  {no && (
+    <span class="no label">
+      <Icon name="anchor" />
+      <b>{no}</b>
+    </span>
+  )}
+  <H id={id} lang="en">
+    {en}
+  </H>
+  {ja && (
+    <span class="jp" lang="ja">
+      {ja}
+    </span>
+  )}
+</div>

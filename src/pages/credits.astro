@@ -1,0 +1,211 @@
+---
+/** Credits & Policy (EXECUTIONPLAN §9.8). Generated from arts.yaml and clips.yaml. */
+import { getCollection } from 'astro:content';
+import Extra from '../layouts/Extra.astro';
+import { CONTACT_EMAIL, COVER_GUIDELINES } from '../lib/site';
+
+const arts = await getCollection('arts');
+const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
+const SECTION: Record<string, string> = {
+  outfits: 'Outfits · 衣装',
+  'key-visuals': 'Key visuals · キービジュアル',
+  anniversary: 'Anniversary & birthday · 記念日',
+  music: 'Music jackets · ジャケット',
+  collabs: 'Collaborations · コラボ',
+  designer: 'Designer art (Gaou) · がおう',
+  concept: 'Concept sheets · 設定画',
+  '3d': '3D models · 3D',
+  aquarium: 'AQUARIUM. · あくありうむ。',
+};
+const bySection = Object.keys(SECTION).map((s) => ({ s, items: arts.filter((a) => a.data.section === s) }));
+const clippers = [...new Set(clips.map((c) => c.data.clipper))];
+---
+
+<Extra
+  title={{ ja: 'クレジットとポリシー', en: 'Credits & Policy' }}
+  label="CREDITS"
+  description="Aqua Iro Archive のクレジット、出典、COVERの二次創作ガイドライン、削除依頼の連絡先。Credits, sources, guidelines and removal contact."
+>
+  <section aria-labelledby="c-statement">
+    <h2 id="c-statement">Unofficial, non-profit · 非公式・非営利</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        Aqua Iro Archive
+        は、湊あくあさんを応援するファンが個人で作った非公式・非営利のアーカイブです。COVER株式会社およびホロライブプロダクションとは一切関係ありません。広告・寄付・アフィリエイト・グッズ販売はありません。
+      </span>
+      <span data-l="en" lang="en">
+        Aqua Iro Archive is an unofficial, non-profit archive made by a fan. It is not affiliated with COVER
+        Corp. or hololive production. There are no ads, donations, affiliate links or merch.
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="c-guidelines">
+    <h2 id="c-guidelines">COVER derivative-works guidelines · 二次創作ガイドライン</h2>
+    <ul>
+      <li>
+        <span data-l="ja" lang="ja">
+          ファン活動・趣味の範囲での利用に限ります。営利利用はしていません。
+        </span>
+        <span data-l="en" lang="en">
+          Fan / hobby use only — nothing here is commercial.
+        </span>
+      </li>
+      <li>
+        <span data-l="ja" lang="ja">
+          公式アートは加工せず、作者と出典を明記して、このサイト独自のデザインの中で紹介しています。
+        </span>
+        <span data-l="en" lang="en">
+          Official art is shown as-is, inside this site's own design, always with artist and source.
+        </span>
+      </li>
+      <li>
+        <span data-l="ja" lang="ja">
+          公式と誤解される表現はしません。「あくあと話す」のセリフはファン創作です。
+        </span>
+        <span data-l="en" lang="en">
+          Nothing is presented as official; the "Talk with Aqua" lines are fan-written.
+        </span>
+      </li>
+      <li>
+        <span data-l="ja" lang="ja">
+          音楽は公式YouTubeの埋め込みのみ。音声ファイルは置いていません。
+        </span>
+        <span data-l="en" lang="en">
+          Music is embedded from official YouTube uploads only; no audio files are hosted.
+        </span>
+      </li>
+    </ul>
+    <p>
+      <a href={COVER_GUIDELINES} rel="noopener">
+        hololive production — Derivative Works Guidelines ↗
+      </a>
+    </p>
+  </section>
+
+  <section aria-labelledby="removal" id="removal">
+    <h2 id="removal-h">Removal or correction requests · 削除・訂正のご依頼</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        権利者の方からの削除依頼、クレジットの訂正、寄せ書きの削除依頼（クルー番号と投稿日時をお知らせください）は、下記までご連絡ください。7日以内にお返事し、権利者からのご依頼はまず削除してから対応します。
+      </span>
+      <span data-l="en" lang="en">
+        For takedown requests from rights holders, credit corrections, or removing a message-board note (send
+        its crew number and roughly when it was posted), please write to the address below. We reply within 7
+        days, and rights-holder requests are taken down first.
+      </span>
+    </p>
+    <p class="contact">
+      {CONTACT_EMAIL ? (
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      ) : (
+        <span class="sticker sticker--soft">
+          Contact address coming before launch · 連絡先は公開前に掲載します
+        </span>
+      )}
+    </p>
+  </section>
+
+  <section aria-labelledby="c-art">
+    <h2 id="c-art">Artwork · アートワーク ({arts.length})</h2>
+    {bySection.map(({ s, items }) => (
+      <details class="credit-group">
+        <summary>
+          {SECTION[s]} <span class="muted">({items.length})</span>
+        </summary>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Work</th>
+              <th scope="col">Artist</th>
+              <th scope="col">©</th>
+              <th scope="col">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((a) => (
+              <tr>
+                <td>
+                  <a href={`/arts#art=${a.id}`}>{a.data.title.en ?? a.data.title.ja}</a>
+                </td>
+                <td>{a.data.artist}</td>
+                <td>{a.data.credit}</td>
+                <td>
+                  <a href={a.data.source} rel="noopener">
+                    {new URL(a.data.source).hostname}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    ))}
+  </section>
+
+  <section aria-labelledby="c-clips">
+    <h2 id="c-clips">Clips · 切り抜き</h2>
+    <p>
+      <span data-l="ja" lang="ja">
+        切り抜きを作ってくれた皆さん、ありがとうございます：
+      </span>
+      <span data-l="en" lang="en">
+        Thank you to the clippers:
+      </span>
+      {clippers.join(' · ')}
+    </p>
+  </section>
+
+  <section aria-labelledby="c-sources">
+    <h2 id="c-sources">Data sources · データ出典</h2>
+    <ul>
+      <li>
+        <a href="https://www.youtube.com/channel/UC1opHUrw8rvnsadT-iGp7Cg" rel="noopener">
+          Aqua Ch. 湊あくあ — YouTube
+        </a>{' '}
+        (videos, streams, shorts; crawled 2026-10-11)
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Minato_Aqua" rel="noopener">
+          Wikipedia — Minato Aqua
+        </a>
+      </li>
+      <li>
+        <a href="https://virtualyoutuber.fandom.com/wiki/Minato_Aqua" rel="noopener">
+          Virtual YouTuber Wiki
+        </a>{' '}
+        ·{' '}
+        <a href="https://virtualyoutuber.fandom.com/wiki/Minato_Aqua/Gallery" rel="noopener">
+          Gallery
+        </a>
+      </li>
+      <li>
+        <a href="https://hololive.wiki/wiki/Minato_Aqua" rel="noopener">
+          Hololive Fan Wiki
+        </a>
+      </li>
+      <li>
+        <a href="https://db.holoplayer.jp/talent/72/" rel="noopener">
+          ホロ曲DB
+        </a>{' '}
+        ·{' '}
+        <a href="https://holotame.com/aqua-minato-original-music-list/" rel="noopener">
+          holotame
+        </a>
+      </li>
+      <li>
+        <a href="https://store.steampowered.com/app/2515070/" rel="noopener">
+          AQUARIUM. on Steam
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c-tools">
+    <h2 id="c-tools">Made with · 使ったもの</h2>
+    <p>
+      Astro, Preact, GSAP, Fuse.js, lite-youtube, BudouX, Neon Postgres, Drizzle, Better Auth, Cloudflare
+      Turnstile, Umami, Vercel. Fonts: Fredoka, Zen Maru Gothic, Shippori Mincho (Google Fonts, self-hosted).
+    </p>
+  </section>
+</Extra>

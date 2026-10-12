@@ -1,0 +1,486 @@
+---
+/** No.04 Streaming (EXECUTIONPLAN §9.4). All 639 rows are prerendered; filters only toggle `hidden`. */
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import data from '../content/streams/streams.json';
+import { STREAM_TAGS } from '../lib/streams/tags';
+import { compactEn, dotDate, hmm, thousands } from '../lib/format';
+
+type S = (typeof data.streams)[number];
+const streams = data.streams as S[];
+const summary = data.summary;
+const records = await getCollection('records');
+const years = summary.years;
+const maxCount = Math.max(...years.map((y) => y.count));
+
+const TAG_LABEL: Record<string, { ja: string; en: string }> = {
+  karaoke: { ja: '歌枠', en: 'Karaoke' },
+  minecraft: { ja: 'マイクラ', en: 'Minecraft' },
+  apex: { ja: 'APEX', en: 'APEX' },
+  game: { ja: 'ゲーム', en: 'Games' },
+  chat: { ja: '雑談', en: 'Chat' },
+  collab: { ja: 'コラボ', en: 'Collab' },
+  '3d': { ja: '3D', en: '3D' },
+  live: { ja: 'ライブ', en: 'Live' },
+  anniversary: { ja: '記念', en: 'Anniversary' },
+  milestone: { ja: 'マイルストーン', en: 'Milestone' },
+  special: { ja: 'スペシャル', en: 'Special' },
+  graduation: { ja: '卒業', en: 'Graduation' },
+};
+
+// ---- heatmap (one SVG per year; only days with streams are drawn) ----
+const CELL = 11;
+const byDay = new Map<string, number>();
+for (const s of streams) byDay.set(s.date, (byDay.get(s.date) ?? 0) + s.durationSec);
+function heat(year: number) {
+  const jan1 = new Date(Date.UTC(year, 0, 1));
+  const offset = jan1.getUTCDay();
+  const cells: { x: number; y: number; lvl: number; label: string }[] = [];
+  for (const [d, sec] of byDay) {
+    if (!d.startsWith(String(year))) continue;
+    const t = new Date(`${d}T00:00:00Z`);
+    const doy = Math.round((t.getTime() - jan1.getTime()) / 86400000);
+    const col = Math.floor((doy + offset) / 7);
+    const row = (doy + offset) % 7;
+    const h = sec / 3600;
+    const lvl = h < 1 ? 1 : h < 2 ? 2 : h < 4 ? 3 : h < 7 ? 4 : 5;
+    cells.push({ x: col * (CELL + 2), y: row * (CELL + 2), lvl, label: `${dotDate(d)} · ${h.toFixed(1)} h` });
+  }
+  return cells;
+}
+const totalHours = summary.hours;
+---
+
+<Page
+  chapter="streaming"
+  description="湊あくあの配信アーカイブ全639回（約2,013時間）。年・タグ・キーワードで探せます。All 639 archived streams of Minato Aqua, searchable by year, tag and title."
+  h1="Streaming"
+  subtitle="配信アーカイブ"
+  intro={{
+    ja: `YouTubeに残っている配信アーカイブ${summary.count}回、約${thousands(totalHours)}時間、合計${(summary.views / 1e8).toFixed(2)}億回再生（2026年10月11日時点）。2018〜2019年の配信の多くは非公開・削除されているため、少なめに数えられています。`,
+    en: `${summary.count} public stream archives on her channel — about ${thousands(totalHours)} hours and ${(summary.views / 1e6).toFixed(1)}M combined views, as of 2026-10-11. Most 2018–2019 streams were privated or deleted, so those years are undercounted.`,
+  }}
+  vert={{ small: 'STREAM LOG', text: '六三九回の', em: '放送' }}
+  marquee={[
+    '#湊あくあ生放送',
+    '歌枠',
+    'APEX',
+    'Minecraft',
+    'AKUKIN建設',
+    '#湊あくあ24h',
+    '耐久',
+    'おつあくあ',
+  ]}
+>
+  <Fragment slot="visual">
+    <figure class="yearbars card card--dashed">
+      <figcaption class="label">
+        <b>STREAMS PER YEAR</b> · <span lang="ja">年ごとの配信数</span>
+      </figcaption>
+      <svg viewBox={`0 0 ${years.length * 64} 190`} role="img" aria-labelledby="yb-desc">
+        <desc id="yb-desc">
+          {years.map((y) => `${y.year}: ${y.count} streams, ${y.hours} hours`).join('; ')}
+        </desc>
+        {years.map((y, i) => {
+          const h = Math.max(4, (y.count / maxCount) * 130);
+          return (
+            <g>
+              <rect
+                x={i * 64 + 12}
+                y={150 - h}
+                width="40"
+                height={h}
+                rx="10"
+                fill={y.year === 2020 ? 'var(--aqua-pink)' : 'var(--aqua-blue)'}
+              />
+              <text x={i * 64 + 32} y={143 - h} text-anchor="middle" class="yb-n">
+                {y.count}
+              </text>
+              <text x={i * 64 + 32} y="172" text-anchor="middle" class="yb-y">
+                {y.year}
+              </text>
+              <text x={i * 64 + 32} y="186" text-anchor="middle" class="yb-h">
+                {y.hours}h
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </figure>
+  </Fragment>
+
+  <section class="section wrap" aria-labelledby="records-title">
+    <SectionTitle no="01" en="Records" ja="配信の記録" id="records-title" />
+    <ul class="trophies" role="list">
+      {records.map((r, i) => (
+        <li class="trophy" style={`--tilt:${[-1.2, 0.8, -0.5, 1.4][i % 4]}deg`}>
+          <span class="trophy__badge" aria-hidden="true">
+            <Icon name="trophy" />
+          </span>
+          <span class="trophy__label">
+            <span data-l="ja" lang="ja">
+              {r.data.label.ja}
+            </span>
+            <span data-l="en" lang="en">
+              {r.data.label.en}
+            </span>
+          </span>
+          {r.data.youtube ? (
+            <a
+              class="trophy__title"
+              href={`https://www.youtube.com/watch?v=${r.data.youtube}`}
+              target="_blank"
+              rel="noopener"
+              data-stream={r.data.youtube}
+              lang="ja"
+            >
+              {r.data.title}
+            </a>
+          ) : (
+            <span class="trophy__title" lang="ja">
+              {r.data.title}
+            </span>
+          )}
+          <span class="trophy__fig">
+            <span data-l="ja" lang="ja">
+              {r.data.figure.ja ?? r.data.figure.en}
+            </span>
+            <span data-l="en" lang="en">
+              {r.data.figure.en}
+            </span>
+          </span>
+          {r.data.date !== '—' && <span class="num credit">{dotDate(r.data.date)}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap" aria-labelledby="log-title" data-streams>
+    <SectionTitle no="02" en="Stream log" ja="全配信リスト" id="log-title" />
+    <div class="stream-controls">
+      <div class="year-tabs chips" role="radiogroup" aria-label="Year">
+        <button type="button" class="chip" role="radio" aria-checked="true" data-year="all">
+          <span data-l="ja" lang="ja">
+            すべて
+          </span>
+          <span data-l="en" lang="en">
+            All
+          </span>
+        </button>
+        {years.map((y) => (
+          <button type="button" class="chip" role="radio" aria-checked="false" data-year={y.year}>
+            {y.year} <span class="count">{y.count}</span>
+          </button>
+        ))}
+      </div>
+      <div class="stream-controls__row">
+        <label class="search">
+          <Icon name="search" />
+          <span class="sr-only">Search stream titles</span>
+          <input
+            type="search"
+            placeholder="タイトルで検索 / search titles (耐久, minecraft…)"
+            data-stream-search
+            autocomplete="off"
+          />
+        </label>
+        <label class="select">
+          <span class="sr-only">Sort</span>
+          <select data-stream-sort>
+            <option value="date-desc">新しい順 · Newest</option>
+            <option value="date-asc">古い順 · Oldest</option>
+            <option value="views">再生数 · Most viewed</option>
+            <option value="length">長さ · Longest</option>
+          </select>
+        </label>
+        <div class="seg" role="radiogroup" aria-label="View">
+          <button type="button" role="radio" aria-checked="true" data-sview="list">
+            <Icon name="list" /> LIST
+          </button>
+          <button type="button" role="radio" aria-checked="false" data-sview="calendar">
+            <Icon name="calendar" /> CALENDAR
+          </button>
+        </div>
+      </div>
+      <div class="chips tag-chips" role="group" aria-label="Tags">
+        {STREAM_TAGS.map((t) => (
+          <button type="button" class="chip" aria-pressed="false" data-tag={t}>
+            <span data-l="ja" lang="ja">
+              {TAG_LABEL[t]!.ja}
+            </span>
+            <span data-l="en" lang="en">
+              {TAG_LABEL[t]!.en}
+            </span>
+            <span class="count">{summary.tags[t as keyof typeof summary.tags]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <p class="result-count" aria-live="polite" data-stream-count>
+      {summary.count} streams · {thousands(totalHours)} h
+    </p>
+    <p class="credit">
+      <span data-l="ja" lang="ja">
+        日付はアーカイブ公開日（JST）。日付をまたいだ配信は1日ずれることがあります。
+      </span>
+      <span data-l="en" lang="en">
+        Dates are archive dates (JST); streams that ran past midnight can be off by a day.
+      </span>
+    </p>
+
+    <div class="heatmaps" hidden data-heatmaps>
+      {years.map((y) => (
+        <figure class="heatmap">
+          <figcaption class="num">{y.year}</figcaption>
+          <svg
+            viewBox={`0 0 ${54 * (CELL + 2)} ${7 * (CELL + 2)}`}
+            role="img"
+            aria-label={`${y.year}: ${y.count} streams`}
+          >
+            <rect class="heatmap__bg" width="100%" height="100%" />
+            {heat(y.year).map((c) => (
+              <rect x={c.x} y={c.y} width={CELL} height={CELL} rx="3" class={`lv${c.lvl}`}>
+                <title>{c.label}</title>
+              </rect>
+            ))}
+          </svg>
+        </figure>
+      ))}
+      <p class="heatmap__legend credit">
+        <span data-l="ja" lang="ja">
+          配信時間
+        </span>
+        <span data-l="en" lang="en">
+          Hours streamed
+        </span>
+        <i class="lv1"></i>
+        <i class="lv2"></i>
+        <i class="lv3"></i>
+        <i class="lv4"></i>
+        <i class="lv5"></i> &lt;1 → 7+ h
+      </p>
+    </div>
+
+    <ol class="streams" role="list" data-stream-list>
+      {streams.map((s) => (
+        <li
+          class="srow"
+          data-id={s.id}
+          data-y={s.year}
+          data-t={s.tags.join(' ')}
+          data-v={s.views}
+          data-s={s.durationSec}
+          data-d={s.date}
+        >
+          <time class="srow__d num" datetime={s.date}>
+            {dotDate(s.date)}
+          </time>
+          <a class="srow__t" href={s.url} target="_blank" rel="noopener" lang="ja">
+            {s.milestone && <Icon name="anchor" />}
+            {s.title}
+            {s.milestone && (
+              <small class="srow__ms" lang="en">
+                {s.milestone.en}
+              </small>
+            )}
+          </a>
+          <span class="srow__l num" title="length">
+            {hmm(s.durationSec)}
+          </span>
+          <span class="srow__v num" title={`${s.views.toLocaleString('en-US')} views`}>
+            {compactEn(s.views)}
+          </span>
+          <span class="srow__tags">
+            {s.tags.map((t) => (
+              <span class={`stag stag--${t}`}>{TAG_LABEL[t]!.en}</span>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ol>
+    <div class="empty" hidden data-stream-empty>
+      <Icon name="catsleep" />
+      <p>
+        <span data-l="ja" lang="ja">
+          見つかりませんでした。ほかの言葉でさがしてみてね ⚓
+        </span>
+        <span data-l="en" lang="en">
+          No streams match — try another word ⚓
+        </span>
+      </p>
+    </div>
+  </section>
+</Page>
+
+<script>
+  import { onPage } from '../lib/lifecycle';
+  import { track, debounced } from '../lib/analytics';
+  import { searchForm } from '../lib/text/kana';
+  import { applyFilter, type Row } from '../lib/streams/filter';
+
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-streams]');
+    if (!root) return;
+    const list = root.querySelector<HTMLOListElement>('[data-stream-list]')!;
+    const els = Array.from(list.children) as HTMLLIElement[];
+    const rows: Row[] = els.map((el) => ({
+      el,
+      id: el.dataset.id!,
+      year: Number(el.dataset.y),
+      tags: el.dataset.t ? el.dataset.t.split(' ') : [],
+      views: Number(el.dataset.v),
+      sec: Number(el.dataset.s),
+      date: el.dataset.d!,
+    }));
+    const yearBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-year]'));
+    const tagBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tag]'));
+    const viewBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sview]'));
+    const input = root.querySelector<HTMLInputElement>('[data-stream-search]')!;
+    const sortSel = root.querySelector<HTMLSelectElement>('[data-stream-sort]')!;
+    const count = root.querySelector<HTMLElement>('[data-stream-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-stream-empty]')!;
+    const heat = root.querySelector<HTMLElement>('[data-heatmaps]')!;
+
+    const p = new URLSearchParams(location.search);
+    const state = {
+      year: p.get('year') ?? 'all',
+      tags: new Set((p.get('tag') ?? '').split(',').filter(Boolean)),
+      q: p.get('q') ?? '',
+      sort: p.get('sort') ?? 'date-desc',
+      view: 'list',
+    };
+    let matchIds: Set<string> | null = null;
+    let fuse: { search: (q: string) => { item: { id: string } }[] } | null = null;
+    let order = 'date-desc';
+
+    const sync = (push: boolean) => {
+      const res = applyFilter(rows, {
+        year: state.year === 'all' ? null : Number(state.year),
+        tags: [...state.tags],
+        ids: matchIds,
+      });
+      if (state.sort !== order) {
+        const sorted = [...rows].sort((a, b) =>
+          state.sort === 'views'
+            ? b.views - a.views
+            : state.sort === 'length'
+              ? b.sec - a.sec
+              : state.sort === 'date-asc'
+                ? a.date.localeCompare(b.date)
+                : b.date.localeCompare(a.date),
+        );
+        const frag = document.createDocumentFragment();
+        for (const r of sorted) frag.appendChild(r.el as HTMLElement);
+        list.appendChild(frag);
+        order = state.sort;
+      }
+      yearBtns.forEach((b) => {
+        const on = b.dataset.year === String(state.year);
+        b.setAttribute('aria-checked', String(on));
+        b.tabIndex = on ? 0 : -1;
+      });
+      tagBtns.forEach((b) => b.setAttribute('aria-pressed', String(state.tags.has(b.dataset.tag!))));
+      sortSel.value = state.sort;
+      const ja = document.documentElement.dataset.lang === 'ja';
+      const h = Math.round(res.seconds / 3600).toLocaleString('en-US');
+      count.textContent = ja
+        ? `${res.count}回 · ${h}時間`
+        : `${res.count} stream${res.count === 1 ? '' : 's'} · ${h} h`;
+      empty.hidden = res.count > 0 || state.view === 'calendar';
+      list.hidden = state.view !== 'list';
+      heat.hidden = state.view !== 'calendar';
+      viewBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sview === state.view)));
+      if (push) {
+        const u = new URLSearchParams();
+        if (state.year !== 'all') u.set('year', state.year);
+        if (state.tags.size) u.set('tag', [...state.tags].join(','));
+        if (state.q) u.set('q', state.q);
+        if (state.sort !== 'date-desc') u.set('sort', state.sort);
+        history.replaceState(history.state, '', `${location.pathname}${u.size ? `?${u}` : ''}`);
+      }
+    };
+    const logFilter = debounced(
+      () => track('stream_filter', { year: state.year, tag: [...state.tags].join(','), sort: state.sort }),
+      1000,
+    );
+
+    yearBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        state.year = b.dataset.year!;
+        sync(true);
+        logFilter();
+      }),
+    );
+    root.querySelector('.year-tabs')!.addEventListener('keydown', (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft') return;
+      const i = yearBtns.findIndex((b) => b.dataset.year === String(state.year));
+      const nx = yearBtns[(i + (k === 'ArrowRight' ? 1 : -1) + yearBtns.length) % yearBtns.length]!;
+      nx.click();
+      nx.focus();
+      e.preventDefault();
+    });
+    tagBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        const t = b.dataset.tag!;
+        if (state.tags.has(t)) state.tags.delete(t);
+        else state.tags.add(t);
+        sync(true);
+        logFilter();
+      }),
+    );
+    sortSel.addEventListener('change', () => {
+      state.sort = sortSel.value;
+      sync(true);
+      logFilter();
+    });
+    viewBtns.forEach((b) =>
+      b.addEventListener('click', () => ((state.view = b.dataset.sview!), sync(false))),
+    );
+
+    // search: the prebuilt Fuse index (≈45 KB gz) loads on first focus
+    const loadFuse = async () => {
+      if (fuse) return;
+      const [{ default: Fuse }, idx] = await Promise.all([
+        import('fuse.js'),
+        fetch('/data/stream-search.json').then((r) => r.json()),
+      ]);
+      fuse = new Fuse(
+        idx.docs,
+        { keys: ['t'], threshold: 0.3, ignoreLocation: true, minMatchCharLength: 1 },
+        Fuse.parseIndex(idx.index),
+      );
+    };
+    input.addEventListener('focus', () => void loadFuse(), { once: true });
+    let searchLog: ReturnType<typeof setTimeout>;
+    const runSearch = debounced(async () => {
+      state.q = input.value.trim();
+      const q = searchForm(state.q);
+      if (q) {
+        await loadFuse();
+        matchIds = new Set(fuse!.search(q).map((r) => r.item.id));
+      } else matchIds = null;
+      sync(true);
+      clearTimeout(searchLog);
+      if (q.length >= 2)
+        searchLog = setTimeout(() => track('stream_search', { q: q.slice(0, 30), len: q.length }), 1500);
+    }, 150);
+    input.addEventListener('input', runSearch);
+
+    list.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a.srow__t');
+      if (a) {
+        const li = a.closest<HTMLElement>('.srow')!;
+        track('stream_open', { id: li.dataset.id, year: li.dataset.y });
+      }
+    });
+
+    if (state.q) {
+      input.value = state.q;
+      void runSearch();
+    } else sync(false);
+    return () => clearTimeout(searchLog);
+  });
+</script>

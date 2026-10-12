@@ -1,0 +1,32 @@
+---
+interface Props {
+  from?: { date: string; ja: string; en: string };
+  to?: { date: string; ja: string; en: string };
+}
+const {
+  from = { date: '2018.08.08', ja: '初配信', en: 'DEBUT' },
+  to = { date: '2024.08.28', ja: '卒業', en: 'GRADUATION' },
+} = Astro.props;
+---
+
+<div class="voyage" role="group" aria-label="2018.08.08 – 2024.08.28">
+  <div class="voyage__pt">
+    <span class="voyage__mk" aria-hidden="true"></span>
+    <b>{from.date}</b>
+    <small>
+      {from.ja} · {from.en}
+    </small>
+  </div>
+  <div class="voyage__line" aria-hidden="true">
+    <i></i>
+    <i></i>
+    <i></i>
+  </div>
+  <div class="voyage__pt voyage__pt--end">
+    <span class="voyage__mk" aria-hidden="true"></span>
+    <b>{to.date}</b>
+    <small>
+      {to.ja} · {to.en}
+    </small>
+  </div>
+</div>

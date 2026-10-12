@@ -1,0 +1,43 @@
+---
+import Keeper from '../../layouts/Keeper.astro';
+export const prerender = false;
+---
+
+<Keeper title="Sign in" bare>
+  <form class="k-auth k-card" data-login>
+    <h1>⚓ Keeper sign in</h1>
+    <div class="k-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required />
+    </div>
+    <div class="k-field">
+      <label for="pw">Passphrase</label>
+      <input id="pw" type="password" autocomplete="current-password" minlength="14" required />
+    </div>
+    <p class="k-err" role="alert" hidden data-err></p>
+    <button class="k-btn k-btn--navy" type="submit">
+      Sign in
+    </button>
+  </form>
+</Keeper>
+
+<script>
+  import { authClient } from '../../scripts/keeper-client';
+  const form = document.querySelector<HTMLFormElement>('[data-login]')!;
+  const err = form.querySelector<HTMLElement>('[data-err]')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    const email = (form.querySelector('#email') as HTMLInputElement).value;
+    const password = (form.querySelector('#pw') as HTMLInputElement).value;
+    const { data, error } = await authClient.signIn.email({ email, password });
+    if (error) {
+      err.textContent = error.status === 429 ? 'Too many attempts. Wait 10 minutes.' : 'Sign-in failed.';
+      err.hidden = false;
+      return;
+    }
+    location.href = (data as { twoFactorRedirect?: boolean })?.twoFactorRedirect
+      ? '/keeper/two-factor'
+      : '/keeper';
+  });
+</script>

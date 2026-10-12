@@ -1,0 +1,420 @@
+---
+/** No.03 Discography (EXECUTIONPLAN §9.3). */
+import { Image } from 'astro:assets';
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import { compactEn, compactJa, dotDate } from '../lib/format';
+import { searchForm } from '../lib/text/kana';
+
+type Song = CollectionEntry<'originals'>;
+const TABS = [
+  { id: 'originals', coll: 'originals', ja: 'オリジナル', en: 'Originals' },
+  { id: 'units', coll: 'units', ja: 'ユニット・グループ', en: 'Units & Groups' },
+  { id: 'covers-solo', coll: 'coversSolo', ja: '歌ってみた（ソロ）', en: 'Covers (solo)' },
+  { id: 'covers-collab', coll: 'coversCollab', ja: '歌ってみた（コラボ）', en: 'Covers (collab)' },
+  { id: 'releases', coll: 'releases', ja: 'リリース', en: 'Releases' },
+] as const;
+
+const groups = await Promise.all(
+  TABS.map(async (t) => ({
+    ...t,
+    songs: ((await getCollection(t.coll as 'originals')) as Song[]).sort((a, b) =>
+      a.data.date.localeCompare(b.data.date),
+    ),
+  })),
+);
+const jacketIds = [
+  ...new Set(groups.flatMap((g) => g.songs.map((s) => s.data.jacket).filter(Boolean))),
+] as string[];
+const jackets = Object.fromEntries(
+  await Promise.all(jacketIds.map(async (id) => [id, (await getEntry('arts', id))?.data.image] as const)),
+);
+const highlight = groups[0]!.songs.find((s) => s.data.highlight)!;
+const years = [2019, 2020, 2021, 2022, 2023, 2024];
+const searchDocs = groups.flatMap((g) =>
+  g.songs.map((s) => ({
+    id: `${g.id}:${s.id}`,
+    t: searchForm([s.data.title, s.data.titleEn, s.data.credits, ...s.data.with].filter(Boolean).join(' ')),
+  })),
+);
+const PALETTES = [
+  ['#F2A7CF', '#CDB8EA'],
+  ['#8EC9EE', '#C9F0EE'],
+  ['#CDB8EA', '#8EC9EE'],
+  ['#FFCF9E', '#F2A7CF'],
+  ['#9FE3D8', '#8EC9EE'],
+];
+const hash = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
+---
+
+<Page
+  chapter="discography"
+  description="湊あくあのオリジナル曲、ユニット曲、歌ってみた、リリースの一覧。Minato Aqua's originals, unit songs, covers and releases."
+  h1="Discography"
+  subtitle="ディスコグラフィ"
+  intro={{
+    ja: `ソロのオリジナル${n('originals')}曲とソロEP、ユニットやグループで約${n('units')}曲、そして${n('covers-solo') + n('covers-collab')}本の歌ってみた（ソロ${n('covers-solo')}・コラボ${n('covers-collab')}）。2019年2月から2024年9月までの歌声です。`,
+    en: `${n('originals')} solo originals and a solo EP, about ${n('units')} unit and group songs, and ${n('covers-solo') + n('covers-collab')} covers (${n('covers-solo')} solo, ${n('covers-collab')} collab) — her voice from February 2019 to September 2024.`,
+  }}
+  vert={{ small: 'MUSIC ROOM', text: 'あくあ色', em: 'ぱれっと' }}
+  marquee={[
+    '#あくあ色ぱれっと',
+    '♪ MUSIC ROOM',
+    '#きみいろプリンセス',
+    '海想列車',
+    'あいわな',
+    'Startend',
+    'UMISEA',
+    'NEGI☆U',
+  ]}
+>
+  <Fragment slot="visual">
+    <div class="record" data-record>
+      <div class="record__sleeve">
+        {jackets[highlight.data.jacket!] && (
+          <Image
+            src={jackets[highlight.data.jacket!]!}
+            alt="「#あくあ色ぱれっと」ジャケット / #AquaIroPalette jacket"
+            width={420}
+            densities={[1, 1.5]}
+            loading="eager"
+          />
+        )}
+      </div>
+      <div class="record__disc" aria-hidden="true">
+        <span></span>
+      </div>
+      <div class="record__label">
+        <span class="label">
+          <b>NOW PLAYING</b> · ♪
+        </span>
+        <b class="maru" lang="ja">
+          #あくあ色ぱれっと
+        </b>
+        <small>2020.08.22 · Junky · {compactEn(highlight.data.views!)} views</small>
+        <a
+          class="btn btn--primary"
+          href={`https://www.youtube.com/watch?v=${highlight.data.youtube}`}
+          data-lb="video"
+          data-yt={highlight.data.youtube}
+          data-title="#あくあ色ぱれっと"
+          data-credit="© COVER Corp. · Official MV"
+          data-event="song_play"
+          data-id={highlight.id}
+        >
+          <Icon name="play" />{' '}
+          <span data-l="ja" lang="ja">
+            MVを見る
+          </span>
+          <span data-l="en" lang="en">
+            Watch the MV
+          </span>
+        </a>
+      </div>
+    </div>
+  </Fragment>
+
+  <section class="section wrap" aria-label="Songs" data-disco>
+    <div class="disco-bar">
+      <div class="disco-tabs" role="tablist" aria-label="Song lists">
+        {groups.map((g, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${g.id}`}
+            aria-controls={g.id}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={g.id}
+          >
+            <span lang="ja">{g.ja}</span>
+            <small lang="en">{g.en}</small>
+            <span class="count">{g.songs.length}</span>
+          </button>
+        ))}
+      </div>
+      <div class="disco-tools">
+        <label class="search">
+          <Icon name="search" />
+          <span class="sr-only">Search songs</span>
+          <input
+            type="search"
+            placeholder="曲名・作曲者・メンバー / title, credits, with"
+            data-disco-search
+            autocomplete="off"
+          />
+        </label>
+        <div class="seg" role="radiogroup" aria-label="View">
+          <button type="button" role="radio" aria-checked="true" data-view="grid">
+            <Icon name="grid" /> GRID
+          </button>
+          <button type="button" role="radio" aria-checked="false" data-view="timeline">
+            <Icon name="timeline" /> TIMELINE
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="result-count" aria-live="polite" data-disco-count></p>
+
+    {groups.map((g) => (
+      <div class="disco-panel" role="tabpanel" id={g.id} aria-labelledby={`tab-${g.id}`} data-panel={g.id}>
+        <h2 class="disco-panel__title">
+          <span lang="ja">{g.ja}</span> <small lang="en">{g.en}</small>
+        </h2>
+        <ol class="jackets" role="list">
+          {g.songs.map((s) => {
+            const pal = PALETTES[hash(s.id) % PALETTES.length]!;
+            const href = s.data.youtube ? `https://www.youtube.com/watch?v=${s.data.youtube}` : s.data.link;
+            return (
+              <li
+                class="jacket"
+                data-song={`${g.id}:${s.id}`}
+                data-year={s.data.date.slice(0, 4)}
+                style={`--j1:${pal[0]};--j2:${pal[1]}`}
+              >
+                <a
+                  class="jacket__link"
+                  href={href ?? '#'}
+                  aria-disabled={href ? undefined : 'true'}
+                  rel={s.data.youtube ? undefined : 'noopener'}
+                  data-lb={s.data.youtube ? 'video' : undefined}
+                  data-yt={s.data.youtube}
+                  data-title={s.data.title}
+                  data-credit={s.data.credits ? `${s.data.credits} · © COVER Corp.` : '© COVER Corp.'}
+                  data-event="song_play"
+                  data-id={s.id}
+                >
+                  <span class="jacket__case">
+                    <span class="jacket__disc" aria-hidden="true" />
+                    <span class="jacket__art">
+                      {s.data.jacket && jackets[s.data.jacket] ? (
+                        <Image
+                          src={jackets[s.data.jacket]!}
+                          alt=""
+                          width={240}
+                          densities={[1, 2]}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span class="jacket__gen" aria-hidden="true">
+                          <span class="mincho" lang="ja">
+                            {s.data.title}
+                          </span>
+                          <Icon name="note" />
+                        </span>
+                      )}
+                    </span>
+                    {s.data.youtube && (
+                      <span class="jacket__play" aria-hidden="true">
+                        <Icon name="play" />
+                      </span>
+                    )}
+                  </span>
+                  <span class="jacket__meta">
+                    <span class="num">{dotDate(s.data.date)}</span>
+                    <b lang="ja">{s.data.title}</b>
+                    {s.data.titleEn && <small lang="en">{s.data.titleEn}</small>}
+                  </span>
+                </a>
+                <span class="jacket__credits">
+                  {s.data.credits && <span>{s.data.credits}</span>}
+                  {s.data.with.length > 0 && <span class="muted">with {s.data.with.join(', ')}</span>}
+                  {s.data.views && (
+                    <span class="num muted">
+                      <span data-l="ja" lang="ja">
+                        {compactJa(s.data.views)}回
+                      </span>
+                      <span data-l="en" lang="en">
+                        {compactEn(s.data.views)} views
+                      </span>
+                    </span>
+                  )}
+                  {s.data.notes?.en && (
+                    <span class="credit" lang="en">
+                      {s.data.notes.en}
+                    </span>
+                  )}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+        <div class="ruler" hidden data-ruler>
+          {years.map((y) => (
+            <div class="ruler__year">
+              <span class="ruler__label num">{y}</span>
+              <ol class="ruler__pins" role="list">
+                {g.songs
+                  .filter((s) => s.data.date.startsWith(String(y)))
+                  .map((s) => (
+                    <li>
+                      <a
+                        class="pin-song"
+                        href={
+                          s.data.youtube
+                            ? `https://www.youtube.com/watch?v=${s.data.youtube}`
+                            : (s.data.link ?? '#')
+                        }
+                        data-lb={s.data.youtube ? 'video' : undefined}
+                        data-yt={s.data.youtube}
+                        data-title={s.data.title}
+                        data-credit={s.data.credits ?? '© COVER Corp.'}
+                        data-event="song_play"
+                        data-id={s.id}
+                        data-song={`${g.id}:${s.id}`}
+                      >
+                        <span class="num">{dotDate(s.data.date).slice(5) || '—'}</span>
+                        <b lang="ja">{s.data.title}</b>
+                      </a>
+                    </li>
+                  ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+    <div class="empty" hidden data-disco-empty>
+      <Icon name="catsleep" />
+      <p>
+        <span data-l="ja" lang="ja">
+          見つかりませんでした。ほかの言葉でさがしてみてね ⚓
+        </span>
+        <span data-l="en" lang="en">
+          No songs match — try another word ⚓
+        </span>
+      </p>
+    </div>
+    <p class="credit asof">
+      <span data-l="ja" lang="ja">
+        再生数は2026年10月11日時点の概数。音楽は公式YouTubeの埋め込みのみで、音声ファイルは置いていません。
+      </span>
+      <span data-l="en" lang="en">
+        View counts rounded, as of 2026-10-11. Music is embedded from official YouTube uploads only; no audio
+        is hosted here.
+      </span>
+    </p>
+    <script type="application/json" data-disco-docs set:html={JSON.stringify(searchDocs)} />
+  </section>
+</Page>
+
+<script>
+  import { onPage } from '../lib/lifecycle';
+  import { track, debounced } from '../lib/analytics';
+  import { searchForm } from '../lib/text/kana';
+
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-disco]');
+    if (!root) return;
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    const viewBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-view]'));
+    const input = root.querySelector<HTMLInputElement>('[data-disco-search]')!;
+    const count = root.querySelector<HTMLElement>('[data-disco-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-disco-empty]')!;
+    let active =
+      tabs.find((t) => `#${t.dataset.tab}` === location.hash)?.dataset.tab ?? tabs[0]!.dataset.tab!;
+    let view = 'grid';
+    let matches: Set<string> | null = null;
+
+    const render = () => {
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === active;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      let shown = 0;
+      panels.forEach((p) => {
+        // while searching, every panel shows its matches; otherwise only the active tab
+        const on = matches ? true : p.dataset.panel === active;
+        let visibleInPanel = 0;
+        p.querySelectorAll<HTMLElement>('.jacket').forEach((j) => {
+          const ok = !matches || matches.has(j.dataset.song!);
+          j.hidden = !ok;
+          if (ok) visibleInPanel++;
+        });
+        p.querySelectorAll<HTMLElement>('.pin-song').forEach(
+          (a) => (a.closest('li')!.hidden = !!matches && !matches.has(a.dataset.song!)),
+        );
+        p.hidden = !on || visibleInPanel === 0;
+        p.querySelector<HTMLElement>('.jackets')!.hidden = view !== 'grid';
+        p.querySelector<HTMLElement>('[data-ruler]')!.hidden = view !== 'timeline';
+        p.querySelector<HTMLElement>('.disco-panel__title')!.hidden = !matches;
+        if (!p.hidden) shown += visibleInPanel;
+      });
+      empty.hidden = shown > 0;
+      const ja = document.documentElement.dataset.lang === 'ja';
+      count.textContent = ja ? `${shown}曲` : `${shown} song${shown === 1 ? '' : 's'}`;
+      viewBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.view === view)));
+    };
+    const select = (id: string, focus = false) => {
+      active = id;
+      history.replaceState(history.state, '', `#${id}`);
+      render();
+      if (focus) tabs.find((t) => t.dataset.tab === id)?.focus();
+      track('disco_tab', { tab: id });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t.dataset.tab!));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        const j =
+          k === 'ArrowRight'
+            ? i + 1
+            : k === 'ArrowLeft'
+              ? i - 1
+              : k === 'Home'
+                ? 0
+                : k === 'End'
+                  ? tabs.length - 1
+                  : null;
+        if (j === null) return;
+        e.preventDefault();
+        select(tabs[(j + tabs.length) % tabs.length]!.dataset.tab!, true);
+      });
+    });
+    viewBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        view = b.dataset.view!;
+        render();
+        track('disco_view', { mode: view });
+      }),
+    );
+    // timeline: arrow keys move between pins
+    root.addEventListener('keydown', (e) => {
+      const a = (e.target as HTMLElement).closest('.pin-song');
+      if (!a || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+      const pins = Array.from(
+        root.querySelectorAll<HTMLElement>('.disco-panel:not([hidden]) .pin-song'),
+      ).filter((p) => !p.closest('[hidden]'));
+      const i = pins.indexOf(a as HTMLElement);
+      pins[i + (e.key === 'ArrowRight' ? 1 : -1)]?.focus();
+      e.preventDefault();
+    });
+
+    // search: Fuse loaded on first focus
+    const docs = JSON.parse(root.querySelector('[data-disco-docs]')!.textContent!) as {
+      id: string;
+      t: string;
+    }[];
+    let fuse: { search: (q: string) => { item: { id: string } }[] } | null = null;
+    input.addEventListener(
+      'focus',
+      async () => {
+        const { default: Fuse } = await import('fuse.js');
+        fuse = new Fuse(docs, { keys: ['t'], threshold: 0.35, ignoreLocation: true });
+      },
+      { once: true },
+    );
+    const run = debounced(() => {
+      const q = searchForm(input.value.trim());
+      matches = q && fuse ? new Set(fuse.search(q).map((r) => r.item.id)) : null;
+      render();
+    }, 120);
+    input.addEventListener('input', run);
+
+    render();
+  });
+</script>

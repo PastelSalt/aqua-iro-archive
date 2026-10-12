@@ -1,0 +1,2 @@
+# Replace this line with your age public key (age1...). Generate with `age-keygen -o age-key.txt`
+# and keep age-key.txt OFFLINE in your password manager. Lines starting with # are ignored by age.

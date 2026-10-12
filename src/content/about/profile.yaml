@@ -1,0 +1,81 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on (JA values added 2026-10-12)
+- id: name
+  order: 1
+  label: { ja: "名前", en: "Name" }
+  value: { ja: "湊あくあ（みなと あくあ）", en: "Minato Aqua (湊あくあ)" }
+- id: nicknames
+  order: 2
+  label: { ja: "愛称", en: "Nicknames" }
+  value: { ja: "あくたん、オニオン、AMT", en: "Akutan (あくたん), Onion, AMT" }
+- id: branch-generation
+  order: 3
+  label: { ja: "所属", en: "Branch / generation" }
+  value:
+    ja: ホロライブ 2期生（紫咲シオン、百鬼あやめ、癒月ちょこ、大空スバルと同期）
+    en: hololive JP, 2nd Generation (with Murasaki Shion, Nakiri Ayame, Yuzuki Choco, Oozora Subaru)
+- id: concept
+  order: 4
+  label: { ja: "コンセプト", en: "Concept" }
+  value: { ja: "ドジっ子マリンメイド", en: "Clumsy marine maid" }
+- id: birthday
+  order: 5
+  label: { ja: "誕生日", en: "Birthday" }
+  value: { ja: "12月1日", en: "1 December" }
+- id: height
+  order: 6
+  label: { ja: "身長", en: "Height" }
+  value: { ja: "148cm", en: "148 cm" }
+- id: debut
+  order: 7
+  label: { ja: "初配信", en: "Debut" }
+  value:
+    ja: 2018年8月8日（チャンネル開設 2018年7月31日、Twitter開始 8月1日）
+    en: 8 August 2018 (channel created 31 July 2018; Twitter 1 August 2018)
+- id: 3d-debut
+  order: 8
+  label: { ja: "3Dお披露目", en: "3D debut" }
+  value: { ja: "2019年4月8日", en: "8 April 2019" }
+- id: graduation-announced
+  order: 9
+  label: { ja: "卒業発表", en: "Graduation announced" }
+  value: { ja: "2024年8月6日", en: "6 August 2024" }
+- id: graduated-last-stream
+  order: 10
+  label: { ja: "卒業", en: "Graduated / last stream" }
+  value: { ja: "2024年8月28日「湊あくあ卒業ライブ」", en: "28 August 2024 — Minato Aqua Graduation Live" }
+- id: fanbase
+  order: 11
+  label: { ja: "ファンネーム", en: "Fanbase" }
+  value: { ja: "あくあクルー", en: "Aqua Crew (あくあクルー)" }
+- id: oshi-mark
+  order: 12
+  label: { ja: "推しマーク", en: "Oshi mark" }
+  value: { ja: "⚓（いかり）", en: "⚓ (anchor)" }
+- id: greeting
+  order: 13
+  label: { ja: "挨拶", en: "Greeting" }
+  value: { ja: "こんあくあ～！", en: "\"Konaqua!\"" }
+- id: pets
+  order: 14
+  label: { ja: "ペット", en: "Pets" }
+  value: { ja: "想像上の猫「ねこ」、本物の猫「こむぎ」", en: "Imaginary cat NEKO; real cat Komugi" }
+- id: character-designer
+  order: 15
+  label: { ja: "キャラクターデザイン", en: "Character designer" }
+  value: { ja: "がおう", en: "Gaou (がおう)" }
+- id: live2d
+  order: 16
+  label: { ja: "Live2D", en: "Live2D" }
+  value: { ja: "fumi（2018年）、rariemonn（メイン）、入江燈（お正月衣装）", en: "fumi (2018), rariemonn (main), 入江燈 (New Year outfit)" }
+- id: 3d
+  order: 17
+  label: { ja: "3Dモデル", en: "3D" }
+  value: { ja: "ぽんぷ長（メイン）、schwarz（周年衣装）", en: "ぽんぷ長 (main), schwarz (anniversary)" }
+- id: subscribers-at-graduation
+  order: 18
+  label: { ja: "卒業時の登録者数", en: "Subscribers at graduation" }
+  value: { ja: "約224万〜228万人（2026年10月11日時点の記録）", en: "about 2.24–2.28 million (as of 2026-10-11)" }
+- id: idol-role-model
+  order: 19
+  label: { ja: "憧れのアイドル", en: "Idol role model" }
+  value: { ja: "嗣永桃子", en: "Momoko Tsugunaga" }

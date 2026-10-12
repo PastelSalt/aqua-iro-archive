@@ -1,0 +1,34 @@
+---
+/** Simple document layout for Credits, Privacy and other non-chapter pages. */
+import Base from './Base.astro';
+import { SITE_NAME } from '../lib/site';
+interface Props {
+  title: { ja: string; en: string };
+  label: string;
+  description: string;
+  noindex?: boolean;
+}
+const { title, label, description, noindex } = Astro.props;
+---
+
+<Base
+  title={`${title.ja} — ${title.en} | ${SITE_NAME}`}
+  description={description}
+  chapter="extra"
+  noindex={noindex}
+>
+  <main id="main" class="extra" tabindex="-1">
+    <header class="page-head wrap">
+      <p class="label">
+        <b>{label}</b>
+      </p>
+      <h1 lang="en">{title.en}</h1>
+      <p class="subtitle" lang="ja">
+        {title.ja}
+      </p>
+    </header>
+    <div class="wrap prose">
+      <slot />
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,1884 @@
+# Curated art list (EXECUTIONPLAN §8.5 / §8.7). Hand-maintained.
+# `file` = path inside Project 44.5/assets/. `scripts/prepare-images.ts` copies it to src/assets/art/<section>/<id>.<ext>,
+# writes `image`, and refreshes `credit` + `source` from data/raw/manifest.json.
+# Left out on purpose: logos (site chrome), Live2D portraits (used as Talk expressions), duplicates, animated GIFs,
+# press-article images (publisher copyright) and Gaou's pin-up / lingerie pieces (keeps the archive all-ages).
+
+# ---------------- Outfits ----------------
+- id: outfit-original-maid
+  file: 01-priority/poses-2d/Minato_Aqua_-_Full_Illustration_01.png
+  section: outfits
+  title: { ja: "初期衣装（メイド服）", en: "Original maid outfit" }
+  date: '2018-08-08'
+  artist: Gaou (がおう)
+  featured: true
+  focal: top
+  alt: { ja: "ネイビーと白のメイド服に錨のヘッドドレスを付けた湊あくあの全身イラスト", en: "Full-body illustration of Minato Aqua in her original navy-and-white maid outfit with an anchor headdress" }
+  image: ../../assets/art/outfits/outfit-original-maid.webp
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Full_Illustration_01.png
+- id: outfit-new-year-kimono
+  file: 01-priority/poses-2d/Minato_Aqua_-_Full_Illustration_03.jpg
+  section: outfits
+  title: { ja: "お正月衣装（着物メイド）", en: "New Year kimono maid outfit" }
+  date: '2020-01-02'
+  artist: Gaou (がおう)
+  focal: top
+  alt: { ja: "青い着物風メイド服を着た湊あくあの全身イラスト", en: "Full-body illustration of Aqua in a blue kimono-style maid outfit for New Year" }
+  image: ../../assets/art/outfits/outfit-new-year-kimono.jpg
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Full_Illustration_03.jpg
+- id: outfit-casual-sailor
+  file: 01-priority/poses-2d/Minato_Aqua_-_Full_Illustration_06-2.png
+  section: outfits
+  title: { ja: "私服（セーラー×カーディガン）", en: "Casual sailor outfit with cardigan" }
+  date: '2020-09-26'
+  artist: Gaou (がおう)
+  featured: true
+  focal: top
+  alt: { ja: "白いカーディガンとネイビーのセーラー服を着た湊あくあの全身イラスト", en: "Full-body illustration of Aqua in a navy sailor dress under a long white cardigan" }
+  image: ../../assets/art/outfits/outfit-casual-sailor.webp
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Full_Illustration_06-2.png
+- id: outfit-black-jacket
+  file: 01-priority/poses-2d/Minato_Aqua_-_Full_Illustration_07.png
+  section: outfits
+  title: { ja: "4着目の衣装（黒ジャケット）", en: "4th outfit — black jacket and pink plaid" }
+  date: '2022-11-26'
+  artist: Gaou (がおう)
+  focal: top
+  alt: { ja: "黒いジャケットとピンクのチェックスカートを着た湊あくあの全身イラスト", en: "Full-body illustration of Aqua in a black jacket over a pink plaid school-style outfit" }
+  image: ../../assets/art/outfits/outfit-black-jacket.webp
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Full_Illustration_07.png
+- id: outfit-pink-maid
+  file: 01-priority/poses-2d/Minato_Aqua_-_Full_Illustration_08.png
+  section: outfits
+  title: { ja: "最後の新衣装（ピンクのメイド服）", en: "Final outfit — pink maid dress" }
+  date: '2024-06-16'
+  artist: Gaou (がおう)
+  featured: true
+  focal: top
+  alt: { ja: "猫のしっぽが付いたピンクと白のメイド服を着た湊あくあの全身イラスト", en: "Full-body illustration of Aqua in a pink-and-white frilled maid dress with a cat tail" }
+  image: ../../assets/art/outfits/outfit-pink-maid.webp
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Full_Illustration_08.png
+- id: outfit-swimsuit
+  file: 01-priority/poses-2d/Minato_Aqua_-_Swimsuit.png
+  section: outfits
+  title: { ja: "水着衣装", en: "Swimsuit outfit" }
+  date: '2019-08-17'
+  artist: Gaou (がおう)
+  alt: { ja: "花柄の背景でボーダーの水着を着てくつろぐ湊あくあ", en: "Aqua relaxing in a striped swimsuit against a bright flower pattern" }
+  image: ../../assets/art/outfits/outfit-swimsuit.jpg
+  credit: © COVER Corp. — character design by Gaou (がおう)
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Swimsuit.png
+- id: outfit-summer-2023-swimsuit
+  file: 02-official/outfits-and-models/Minato_Aqua_hololive_Summer_2023_Swimsuit.jpg
+  section: outfits
+  title: { ja: "hololive Summer 2023 水着", en: "hololive Summer 2023 swimsuit" }
+  date: '2023-08'
+  artist: COVER Corp.
+  focal: top
+  alt: { ja: "ネイビーの水着に白いパーカーを羽織った湊あくあの全身イラスト", en: "Full-body illustration of Aqua in a navy swimsuit with a short white jacket" }
+  image: ../../assets/art/outfits/outfit-summer-2023-swimsuit.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_hololive_Summer_2023_Swimsuit.jpg
+- id: outfit-nonstop-story
+  file: 02-official/outfits-and-models/Minato_Aqua_-_Nonstop_Story_Full_Illustration.png
+  section: outfits
+  title: { ja: "1st fes.「Nonstop Story」衣装", en: "1st fes. \"Nonstop Story\" idol outfit" }
+  date: '2020-01-24'
+  artist: COVER Corp.
+  focal: top
+  alt: { ja: "ピンクとゴールドのアイドル衣装で片足を上げてポーズをとる湊あくあ", en: "Aqua posing on one leg in a pink-and-gold idol stage outfit" }
+  image: ../../assets/art/outfits/outfit-nonstop-story.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Nonstop_Story_Full_Illustration.png
+- id: outfit-anniversary-dress
+  file: 02-official/outfits-and-models/Minato_Aqua_-_Anniversary_Full_Illustration.jpg
+  section: outfits
+  title: { ja: "2周年ライブドレス", en: "2nd anniversary live dress" }
+  date: '2020-08-21'
+  artist: COVER Corp.
+  featured: true
+  focal: top
+  alt: { ja: "白とパステルカラーのフリルドレスとティアラ姿で笑う湊あくあ", en: "Aqua smiling in a white-and-pastel frilled live dress with a tiara" }
+  image: ../../assets/art/outfits/outfit-anniversary-dress.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Anniversary_Full_Illustration.jpg
+
+# ---------------- 3D ----------------
+- id: 3d-model-original
+  file: 01-priority/poses-3d/Minato_Aqua_-_3D_Model_01-1.png
+  section: 3d
+  title: { ja: "3Dモデル（正面・横・背面）", en: "3D model — front, side and back" }
+  date: '2019-04-08'
+  artist: ぽんぷ長
+  alt: { ja: "メイド服姿の湊あくあ3Dモデルを正面・横・背面から並べた図", en: "Minato Aqua's maid-outfit 3D model shown from the front, side and back" }
+  image: ../../assets/art/3d/3d-model-original.jpg
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_3D_Model_01-1.png
+- id: 3d-model-original-alt
+  file: 01-priority/poses-3d/Minato_Aqua_-_3D_Model_01-2.png
+  section: 3d
+  title: { ja: "3Dモデル（メイド服）", en: "3D model — maid outfit" }
+  date: '2019-04-08'
+  artist: ぽんぷ長
+  focal: top
+  alt: { ja: "胸の前で両手を合わせるメイド服の湊あくあ3Dモデル", en: "Aqua's maid-outfit 3D model with her hands held together in front of her" }
+  image: ../../assets/art/3d/3d-model-original-alt.webp
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_3D_Model_01-2.png
+- id: 3d-live-dress-wink
+  file: 01-priority/poses-3d/Minato_Aqua_-_3D_Model_05.jpg
+  section: 3d
+  title: { ja: "3Dライブドレス", en: "3D live dress" }
+  artist: schwarz
+  focal: top
+  alt: { ja: "ティアラと白いライブドレス姿でウインクする湊あくあの3Dモデル", en: "Aqua's 3D model winking in a white live dress and tiara" }
+  image: ../../assets/art/3d/3d-live-dress-wink.jpg
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_3D_Model_05.jpg
+- id: 3d-portrait-peace
+  file: 01-priority/poses-3d/Minato_Aqua_-_Portrait_3D_01-2.png
+  section: 3d
+  title: { ja: "3Dポートレート（ピース）", en: "3D portrait — double peace" }
+  artist: ぽんぷ長
+  alt: { ja: "両手でピースサインをするメイド服の湊あくあ3Dモデル", en: "Aqua's 3D model making a double peace sign in her maid outfit" }
+  image: ../../assets/art/3d/3d-portrait-peace.webp
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Portrait_3D_01-2.png
+- id: 3d-portrait-swimsuit
+  file: 01-priority/poses-3d/Minato_Aqua_-_Portrait_3D_02.png
+  section: 3d
+  title: { ja: "3Dポートレート（水着）", en: "3D portrait — swimsuit" }
+  date: '2019-08-17'
+  artist: ぽんぷ長
+  alt: { ja: "黄色とネイビーのボーダー水着を着た湊あくあ3Dモデルのバストアップ", en: "Bust shot of Aqua's 3D model in a yellow-and-navy striped swimsuit" }
+  image: ../../assets/art/3d/3d-portrait-swimsuit.webp
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Portrait_3D_02.png
+- id: 3d-portrait-live-dress
+  file: 01-priority/poses-3d/Minato_Aqua_-_Portrait_3D_05.png
+  section: 3d
+  title: { ja: "3Dポートレート（ライブドレス）", en: "3D portrait — live dress" }
+  artist: schwarz
+  alt: { ja: "ティアラを着けウインクしながらステッキを掲げる湊あくあ3Dモデル", en: "Aqua's 3D model in a tiara, winking and raising a wand" }
+  image: ../../assets/art/3d/3d-portrait-live-dress.webp
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Portrait_3D_05.png
+- id: 3d-mmd
+  file: 01-priority/poses-3d/Minato_Aqua_-_Portrait_MMD_01.png
+  section: 3d
+  title: { ja: "公式MMDモデル", en: "Official MMD model" }
+  artist: ぽんぷ長
+  alt: { ja: "やさしく微笑むメイド服の湊あくあ公式MMDモデルのバストアップ", en: "Bust render of Aqua's official MMD model smiling softly in her maid outfit" }
+  image: ../../assets/art/3d/3d-mmd.jpg
+  credit: © COVER Corp. — 3D modeling by ぽんぷ長 / schwarz
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Portrait_MMD_01.png
+- id: 3d-live-dress-schwarz
+  file: 02-official/outfits-and-models/Minato_Aqua_3D_full_body_Live_dress_by_schwardz.jpg
+  section: 3d
+  title: { ja: "2周年3Dライブドレス（全身）", en: "2nd anniversary 3D live dress, full body" }
+  date: '2020-08-21'
+  artist: schwarz
+  featured: true
+  focal: top
+  alt: { ja: "白とパステルのライブドレスで手を高く掲げる湊あくあの3D全身モデル", en: "Full-body 3D model of Aqua in her white-and-pastel live dress, one arm raised high" }
+  image: ../../assets/art/3d/3d-live-dress-schwarz.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_3D_full_body_Live_dress_by_schwardz.jpg
+
+# ---------------- Concept sheets ----------------
+- id: concept-base-swimsuit
+  file: 02-official/concept-sheets/Minato_Aqua_-_Concept_Illustration_Base_and_Swimsuit.png
+  section: concept
+  title: { ja: "設定画（基本衣装・水着）", en: "Concept sheet — base outfit and swimsuit" }
+  artist: Gaou (がおう)
+  alt: { ja: "湊あくあの基本メイド服と水着を前後から描いたピンク背景の設定画", en: "Pink concept sheet showing Aqua's base maid outfit and swimsuit from several angles" }
+  image: ../../assets/art/concept/concept-base-swimsuit.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Concept_Illustration_Base_and_Swimsuit.png
+- id: concept-sailor
+  file: 02-official/concept-sheets/Minato_Aqua_-_Concept_Illustration_Sailor.png
+  section: concept
+  title: { ja: "設定画（セーラー私服）", en: "Concept sheet — casual sailor outfit" }
+  artist: Gaou (がおう)
+  alt: { ja: "セーラー服とカーディガンの私服を細部まで描いた湊あくあの設定画", en: "Concept sheet detailing Aqua's casual sailor dress and cardigan from front and back" }
+  image: ../../assets/art/concept/concept-sailor.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Concept_Illustration_Sailor.png
+- id: concept-super-dream
+  file: 02-official/concept-sheets/Minato_Aqua_-_Concept_Illustration_Aqua-iro_Super_Dream.png
+  section: concept
+  title: { ja: "設定画「あくあ色すーぱー☆どりーむ」", en: "Concept sheet — AQUA IRO SUPER☆DREAM dress" }
+  date: '2020-08-21'
+  artist: COVER Corp.
+  alt: { ja: "2020年ソロライブ用のパステルカラーのドレスを描いた設定画", en: "Concept sheet of the pastel live dress from her 2020 solo live" }
+  image: ../../assets/art/concept/concept-super-dream.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Concept_Illustration_Aqua-iro_Super_Dream.png
+- id: concept-wonderland
+  file: 02-official/concept-sheets/Minato_Aqua_-_Concept_Illustration_Aqua-iro_in_Wonderland.png
+  section: concept
+  title: { ja: "設定画「あくあ色 in わんだ～☆らんど」", en: "Concept sheet — Aqua-iro in Wonderland" }
+  date: '2022-01-28'
+  artist: COVER Corp.
+  alt: { ja: "青と白のアリス風ライブ衣装を前後から描いた設定画", en: "Concept sheet of the blue-and-white Alice-style live outfit, front and back" }
+  image: ../../assets/art/concept/concept-wonderland.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Concept_Illustration_Aqua-iro_in_Wonderland.png
+
+# ---------------- Anniversary, birthday, milestones ----------------
+- id: anniv-2018-birthday-fumi
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2018_Birthday_Illustration_by_fumi.jpg
+  section: anniversary
+  title: { ja: "2018年 誕生日", en: "2018 birthday" }
+  date: '2018-12-01'
+  artist: fumi
+  alt: { ja: "ウインクしながらピースをする誕生日の湊あくあ", en: "Aqua winking and making a peace sign for her 2018 birthday" }
+  image: ../../assets/art/anniversary/anniv-2018-birthday-fumi.jpg
+  credit: © COVER Corp. — illustration by fumi
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2018_Birthday_Illustration_by_fumi.jpg
+- id: anniv-2019-birthday-fumi
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2019_Birthday_Illustration_by_fumi.jpg
+  section: anniversary
+  title: { ja: "2019年 誕生日", en: "2019 birthday" }
+  date: '2019-12-01'
+  artist: fumi
+  alt: { ja: "「Happy Birthday」の文字とシャボン玉の中で笑顔を見せる湊あくあ", en: "Aqua beaming among bubbles under a \"Happy Birthday\" message" }
+  image: ../../assets/art/anniversary/anniv-2019-birthday-fumi.jpg
+  credit: © COVER Corp. — illustration by fumi
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2019_Birthday_Illustration_by_fumi.jpg
+- id: anniv-birthday-gaou
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_Birthday_Illustration_by_Gaou.jpg
+  section: anniversary
+  title: { ja: "誕生日イラスト", en: "Birthday illustration" }
+  date: '2018-12-01'
+  artist: Gaou (がおう)
+  alt: { ja: "大きなプレゼントの箱を抱えるメイド服の湊あくあ", en: "Aqua in her maid outfit hugging a large wrapped present" }
+  image: ../../assets/art/anniversary/anniv-birthday-gaou.jpg
+  credit: © COVER Corp. — illustration by Gaou
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Birthday_Illustration_by_Gaou.jpg
+- id: anniv-2020-birthday-gaou
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2020_Birthday_Illustration_by_Gaou.jpg
+  section: anniversary
+  title: { ja: "2020年 誕生日", en: "2020 birthday" }
+  date: '2020-12-01'
+  artist: Gaou (がおう)
+  alt: { ja: "ゲーミングチェアとモニターの前でくつろぐピンクのパーカー姿の湊あくあ", en: "Aqua in a pink hoodie lounging by her gaming chair and monitors" }
+  image: ../../assets/art/anniversary/anniv-2020-birthday-gaou.jpg
+  credit: © COVER Corp. — illustration by Gaou
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2020_Birthday_Illustration_by_Gaou.jpg
+- id: anniv-100k
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_100,000_Subscribers_Illustration_by_Sakura_Usagi_Remi.jpg
+  section: anniversary
+  title: { ja: "登録者10万人記念", en: "100K subscribers" }
+  date: '2019-06-02'
+  artist: Sakura Usagi Remi
+  alt: { ja: "「10万人」の文字と紙吹雪の中、上目づかいで見つめる湊あくあ", en: "Aqua looking up through confetti beside a \"100, 000\" message" }
+  image: ../../assets/art/anniversary/anniv-100k.jpg
+  credit: © COVER Corp. — illustration by Sakura Usagi Remi
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_100%2C000_Subscribers_Illustration_by_Sakura_Usagi_Remi.jpg
+- id: anniv-400k
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_400k_Subs_Celebration_Art_by_Gaou.jpg
+  section: anniversary
+  title: { ja: "登録者40万人記念", en: "400K subscribers" }
+  date: '2020-04-08'
+  artist: Gaou (がおう)
+  alt: { ja: "淡い色合いで描かれた、照れたように微笑むメイド服の湊あくあ", en: "Soft pastel portrait of Aqua in her maid outfit, smiling shyly" }
+  image: ../../assets/art/anniversary/anniv-400k.jpg
+  credit: © COVER Corp. — illustration by Gaou
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_400k_Subs_Celebration_Art_by_Gaou.jpg
+- id: anniv-600k
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_600k_subs_Illustration_by_Gaou.jpg
+  section: anniversary
+  title: { ja: "登録者60万人＆2周年", en: "600K subscribers + 2nd anniversary" }
+  date: '2020-08-05'
+  artist: Gaou (がおう)
+  alt: { ja: "水色のセーラー服でピースをしながら駆け寄ってくる湊あくあ", en: "Aqua in a light-blue sailor uniform running forward with a peace sign" }
+  image: ../../assets/art/anniversary/anniv-600k.jpg
+  credit: © COVER Corp. — illustration by Gaou
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_600k_subs_Illustration_by_Gaou.jpg
+- id: anniv-2nd-gaou
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_Second_Anniversary_Illustration_by_Gaou.jpg
+  section: anniversary
+  title: { ja: "2周年記念", en: "2nd anniversary" }
+  date: '2020-08-08'
+  artist: Gaou (がおう)
+  alt: { ja: "虹色のグラデーション背景に立つ、ライブドレス姿の湊あくあ", en: "Aqua in her live dress standing against a rainbow-gradient backdrop" }
+  image: ../../assets/art/anniversary/anniv-2nd-gaou.jpg
+  credit: © COVER Corp. — illustration by Gaou
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Second_Anniversary_Illustration_by_Gaou.jpg
+- id: anniv-calendar-2022-cover
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2022_Wall_Calendar_Cover.png
+  section: anniversary
+  title: { ja: "2022年カレンダー 表紙", en: "2022 wall calendar — cover" }
+  date: '2022'
+  artist: booota
+  alt: { ja: "オレンジと黄色の花に囲まれて笑うメイド服の湊あくあ", en: "Aqua in her maid outfit laughing among orange and yellow flowers" }
+  image: ../../assets/art/anniversary/anniv-calendar-2022-cover.jpg
+  credit: © COVER Corp. — illustration by booota
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2022_Wall_Calendar_Cover.png
+- id: anniv-calendar-2022-2
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2022_Wall_Calendar_Illustration_2.png
+  section: anniversary
+  title: { ja: "2022年カレンダー（2）", en: "2022 wall calendar (2)" }
+  date: '2022'
+  artist: booota
+  alt: { ja: "紫のメイド服でハンバーガーを手に座る湊あくあ", en: "Aqua in a purple maid dress sitting with a hamburger in hand" }
+  image: ../../assets/art/anniversary/anniv-calendar-2022-2.jpg
+  credit: © COVER Corp. — illustration by booota
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2022_Wall_Calendar_Illustration_2.png
+- id: anniv-calendar-2022-3
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2022_Wall_Calendar_Illustration_3.png
+  section: anniversary
+  title: { ja: "2022年カレンダー（3）", en: "2022 wall calendar (3)" }
+  date: '2022'
+  artist: booota
+  alt: { ja: "窓辺の緑のソファで伸びをする猫耳パーカーの湊あくあ", en: "Aqua in a cat-ear hoodie stretching on a green sofa by a sunny window" }
+  image: ../../assets/art/anniversary/anniv-calendar-2022-3.jpg
+  credit: © COVER Corp. — illustration by booota
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2022_Wall_Calendar_Illustration_3.png
+- id: anniv-calendar-2022-4
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2022_Wall_Calendar_Illustration_4.png
+  section: anniversary
+  title: { ja: "2022年カレンダー（4）", en: "2022 wall calendar (4)" }
+  date: '2022'
+  artist: booota
+  alt: { ja: "星空の中、ほうきに乗って飛ぶ魔女姿の湊あくあ", en: "Aqua dressed as a little witch, flying on a broom through a starry sky" }
+  image: ../../assets/art/anniversary/anniv-calendar-2022-4.jpg
+  credit: © COVER Corp. — illustration by booota
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2022_Wall_Calendar_Illustration_4.png
+- id: anniv-4th-booota
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_4th_Anniversary_Illustration_by_booota.png
+  section: anniversary
+  title: { ja: "4周年記念", en: "4th anniversary" }
+  date: '2022-08-08'
+  artist: booota
+  alt: { ja: "ピンクのゲーミング部屋でコントローラーを持ちくつろぐ湊あくあ", en: "Aqua relaxing with a controller in a pink gaming room" }
+  image: ../../assets/art/anniversary/anniv-4th-booota.jpg
+  credit: © COVER Corp. — illustration by booota
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_4th_Anniversary_Illustration_by_booota.png
+- id: anniv-4th-merch
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_4th_Anniversary_Merch_Illustration_by_Ayase_Rin.jpg
+  section: anniversary
+  title: { ja: "4周年記念グッズ", en: "4th anniversary merch" }
+  date: '2022-08'
+  artist: Ayase Rin
+  alt: { ja: "黒い猫のクッションを抱えて寝転ぶ水色の服の湊あくあ", en: "Aqua in light blue lying down and hugging a black cat cushion" }
+  image: ../../assets/art/anniversary/anniv-4th-merch.jpg
+  credit: © COVER Corp. — illustration by Ayase Rin
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_4th_Anniversary_Merch_Illustration_by_Ayase_Rin.jpg
+- id: anniv-4th-haiiro-to-ao
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_4th_Anniversary_Live_Haiiro_to_Ao_Illustration_by_Ayase_Rin.jpg
+  section: anniversary
+  title: { ja: "4周年ライブ「灰色と青」", en: "4th anniversary live \"Haiiro to Ao\"" }
+  date: '2022-08'
+  artist: Ayase Rin
+  alt: { ja: "ブランコに並んで座る、霧の中の湊あくあともう一人の少女", en: "Aqua and another girl sitting side by side on swings in a misty scene" }
+  image: ../../assets/art/anniversary/anniv-4th-haiiro-to-ao.jpg
+  credit: © COVER Corp. — illustration by Ayase Rin
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_4th_Anniversary_Live_Haiiro_to_Ao_Illustration_by_Ayase_Rin.jpg
+- id: anniv-4th-world-domination
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_4th_Anniversary_3D_Live_How_To_World_Domination_Illustration_by_Chihiro_Ayaka.jpg
+  section: anniversary
+  title: { ja: "4周年3Dライブ「How to World Domination」", en: "4th anniversary 3D live \"How to World Domination\"" }
+  date: '2022-08'
+  artist: Chihiro Ayaka
+  alt: { ja: "夕日の差し込む駅のベンチに座る黒い服の湊あくあと白髪の少女", en: "Aqua and a white-haired girl in dark coats sitting on a station bench at sunset" }
+  image: ../../assets/art/anniversary/anniv-4th-world-domination.jpg
+  credit: © COVER Corp. — illustration by Chihiro Ayaka
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_4th_Anniversary_3D_Live_How_To_World_Domination_Illustration_by_Chihiro_Ayaka.jpg
+- id: anniv-2022-birthday-merch
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2022_Birthday_Merch_Illustration_by_sencha.jpg
+  section: anniversary
+  title: { ja: "2022年 誕生日グッズ", en: "2022 birthday merch" }
+  date: '2022-12-01'
+  artist: sencha
+  alt: { ja: "いろいろな衣装を着たちびキャラの湊あくあ4人と猫", en: "Four chibi Aquas in different outfits with a grey cat" }
+  image: ../../assets/art/anniversary/anniv-2022-birthday-merch.jpg
+  credit: © COVER Corp. — illustration by sencha
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2022_Birthday_Merch_Illustration_by_sencha.jpg
+- id: anniv-2023-birthday-banner
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_Birthday_Celebration_2023_Banner_Design_by_Potori.jpg
+  section: anniversary
+  title: { ja: "2023年 誕生日バナー", en: "2023 birthday banner" }
+  date: '2023-12-01'
+  artist: Potori
+  alt: { ja: "「あくたん生誕祭2023」のピンクと水色のバナーデザイン", en: "Pink-and-blue banner design for Aqua's 2023 birthday celebration" }
+  image: ../../assets/art/anniversary/anniv-2023-birthday-banner.jpg
+  credit: © COVER Corp. — illustration by Potori
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Birthday_Celebration_2023_Banner_Design_by_Potori.jpg
+- id: anniv-2023-birthday-merch
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_2023_Birthday_Merch_Illustration_by_Hong.jpg
+  section: anniversary
+  title: { ja: "2023年 誕生日グッズ", en: "2023 birthday merch" }
+  date: '2023-12-01'
+  artist: Hong
+  alt: { ja: "ピンクのパーカーでベッドに寝転びゲーム機を持つ湊あくあ", en: "Aqua in a pink hoodie lying on a bed holding a handheld game console" }
+  image: ../../assets/art/anniversary/anniv-2023-birthday-merch.jpg
+  credit: © COVER Corp. — illustration by Hong
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2023_Birthday_Merch_Illustration_by_Hong.jpg
+- id: anniv-6th-sd
+  file: 02-official/anniversary-birthday-milestones/Minato_Aqua_6th_Anniversary_Merch_SD_Illustration_by_Pom.jpg
+  section: anniversary
+  title: { ja: "6周年記念グッズ（SD）", en: "6th anniversary merch (SD)" }
+  date: '2024-08-08'
+  artist: Pom
+  alt: { ja: "ハートの吹き出しと一緒に描かれたちびキャラのメイド服の湊あくあ", en: "Chibi Aqua in her maid outfit next to a heart speech bubble" }
+  image: ../../assets/art/anniversary/anniv-6th-sd.jpg
+  credit: © COVER Corp. — illustration by Pom
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_6th_Anniversary_Merch_SD_Illustration_by_Pom.jpg
+
+# ---------------- Music jackets ----------------
+- id: music-aqua-iro-palette
+  file: 02-official/music-covers/Minato_Aqua_Aqua_Color_Palette_Cover.png
+  section: music
+  title: { ja: "#あくあ色ぱれっと", en: "#AquaIroPalette" }
+  date: '2020-08-22'
+  artist: COVER Corp.
+  featured: true
+  alt: { ja: "ティアラと白いドレスで手を差し伸べる湊あくあの「#あくあ色ぱれっと」ジャケット", en: "#AquaIroPalette jacket: Aqua in a tiara and white dress reaching toward the viewer" }
+  image: ../../assets/art/music/music-aqua-iro-palette.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Aqua_Color_Palette_Cover.png
+- id: music-aqua-iro-palette-key-art
+  file: 02-official/music-covers/Minato_Aqua_-AquaIroPalette_Illustration.jpg
+  section: music
+  title: { ja: "#あくあ色ぱれっと イラスト", en: "#AquaIroPalette key art" }
+  date: '2020-12-01'
+  artist: Ceramic06
+  alt: { ja: "光の中で目を閉じて微笑む白いドレスの湊あくあ", en: "Aqua in a white dress smiling with eyes closed in soft light" }
+  image: ../../assets/art/music/music-aqua-iro-palette-key-art.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-AquaIroPalette_Illustration.jpg
+- id: music-kaisou-ressha
+  file: 02-official/music-covers/Minato_Aqua_Kaisou_Ressha_Cover.png
+  section: music
+  title: { ja: "海想列車", en: "KAISOU RESSHA" }
+  date: '2021-08-09'
+  artist: COVER Corp.
+  alt: { ja: "夕焼け色の光の中で振り返る湊あくあの「海想列車」ジャケット", en: "KAISOU RESSHA jacket: Aqua glancing back in warm sunset light" }
+  image: ../../assets/art/music/music-kaisou-ressha.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Kaisou_Ressha_Cover.png
+- id: music-aqua-iro-palette-en
+  file: 02-official/music-covers/Minato_Aqua_Aqua_Iro_Palette_EN_Cover.jpg
+  section: music
+  title: { ja: "aqua iro palette（英語版）", en: "aqua iro palette (English version)" }
+  date: '2021-09-26'
+  artist: COVER Corp.
+  alt: { ja: "花と額縁に囲まれたドレス姿の湊あくあの英語版ジャケット", en: "English-version jacket: Aqua in her dress framed by flowers and an ornate frame" }
+  image: ../../assets/art/music/music-aqua-iro-palette-en.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Aqua_Iro_Palette_EN_Cover.jpg
+- id: music-kira-kira
+  file: 02-official/music-covers/Minato_Aqua_Kira_Kira_Cover.jpg
+  section: music
+  title: { ja: "きらきら", en: "Kira Kira" }
+  date: '2021-11-09'
+  artist: COVER Corp.
+  alt: { ja: "うさ耳のカチューシャを着けた湊あくあの「きらきら」ジャケット", en: "Kira Kira jacket: Aqua wearing a bunny-ear headband over her title lettering" }
+  image: ../../assets/art/music/music-kira-kira.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Kira_Kira_Cover.jpg
+- id: music-uni-birth
+  file: 02-official/music-covers/Minato_Aqua_uni-birth_Cover.png
+  section: music
+  title: { ja: "uni-birth", en: "uni-birth" }
+  date: '2021-12-02'
+  artist: COVER Corp.
+  alt: { ja: "ピンクのパーカーで帽子に手をそえる湊あくあの「uni-birth」ジャケット", en: "uni-birth jacket: Aqua in a pink hoodie with a hand on her cap" }
+  image: ../../assets/art/music/music-uni-birth.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_uni-birth_Cover.png
+- id: music-aqutan-song
+  file: 02-official/music-covers/Minato_Aqua_-_aqutan_cover.jpg
+  section: music
+  title: { ja: "あくたんのこと好きすぎ☆ソング", en: "Aqutan no Koto Sukisugi☆Song" }
+  date: '2022-01-24'
+  artist: COVER Corp.
+  alt: { ja: "オムライスを差し出すメイド服の湊あくあのジャケット", en: "Jacket art of Aqua in her maid outfit holding out an omurice" }
+  image: ../../assets/art/music/music-aqutan-song.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_aqutan_cover.jpg
+- id: music-i-wanna
+  file: 02-official/music-covers/Minato_Aqua_-_I_wanna.jpg
+  section: music
+  title: { ja: "あいわな", en: "I wanna" }
+  date: '2022-01-29'
+  artist: COVER Corp.
+  alt: { ja: "顔の前にピンクの手を添えた湊あくあの「あいわな」ジャケット", en: "I wanna jacket: close-up of Aqua with a hand raised near her face" }
+  image: ../../assets/art/music/music-i-wanna.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_I_wanna.jpg
+- id: music-aquatime-select
+  file: 02-official/music-covers/Minato_Aqua_-_aquatime_select.jpg
+  section: music
+  title: { ja: "♡あくあたいむ・せれくと♡", en: "♡aquatime select♡" }
+  date: '2022-01-29'
+  artist: COVER Corp.
+  alt: { ja: "猫やペンギンと一緒に描かれた湊あくあのEPジャケット", en: "EP jacket of Aqua surrounded by a cat, a penguin and playful props" }
+  image: ../../assets/art/music/music-aquatime-select.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_aquatime_select.jpg
+- id: music-stay-blue
+  file: 02-official/music-covers/Minato_Aqua_-_Stay_Blue.jpg
+  section: music
+  title: { ja: "未だ、青い", en: "Stay Blue" }
+  date: '2022-08-09'
+  artist: COVER Corp.
+  alt: { ja: "青空の下で手を伸ばすセーラー服の湊あくあの「未だ、青い」ジャケット", en: "Stay Blue jacket: Aqua in a sailor uniform reaching up under a blue sky" }
+  image: ../../assets/art/music/music-stay-blue.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Stay_Blue.jpg
+- id: music-saioshi
+  file: 02-official/music-covers/Minato_Aqua_-_Let_me_be_your_SAIOSHI.jpg
+  section: music
+  title: { ja: "君の最推しにしてよ！", en: "Let me be your SAIOSHI" }
+  date: '2022-12-02'
+  artist: COVER Corp.
+  alt: { ja: "照れながら目元に手を当てる湊あくあのジャケット", en: "Jacket art of Aqua bashfully pressing a hand to her eye" }
+  image: ../../assets/art/music/music-saioshi.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Let_me_be_your_SAIOSHI.jpg
+- id: music-girl-loved-by-aim
+  file: 02-official/music-covers/Minato_Aqua_-_Girl_loved_by_Aim.jpg
+  section: music
+  title: { ja: "エイムに愛されしガール", en: "Girl loved by Aim" }
+  date: '2023-12-01'
+  artist: COVER Corp.
+  alt: { ja: "キャップをかぶりネオン色の背景で笑う湊あくあのジャケット", en: "Jacket art of Aqua in a cap grinning against a neon background" }
+  image: ../../assets/art/music/music-girl-loved-by-aim.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Girl_loved_by_Aim.jpg
+- id: music-princess-carry
+  file: 02-official/music-covers/Minato_Aqua_-_Princess_Carry.jpg
+  section: music
+  title: { ja: "プリンセス・キャリー", en: "Princess Carry" }
+  date: '2024-06-16'
+  artist: Miwashiba
+  alt: { ja: "水色とピンクの髪をなびかせる湊あくあの「プリンセス・キャリー」ジャケット", en: "Princess Carry jacket: Aqua with flowing pink-and-cyan hair in a neon room" }
+  image: ../../assets/art/music/music-princess-carry.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Princess_Carry.jpg
+- id: music-princess-carry-art
+  file: 02-official/music-covers/Minato_Aqua_Princess_Carrie_Song_Illustration_by_Miwashiba.png
+  section: music
+  title: { ja: "プリンセス・キャリー イラスト", en: "Princess Carry key art" }
+  date: '2024-06-16'
+  artist: Miwashiba
+  alt: { ja: "二つのゲーミングチェアに座る二人の湊あくあ", en: "Two versions of Aqua sitting in twin gaming chairs" }
+  image: ../../assets/art/music/music-princess-carry-art.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Princess_Carrie_Song_Illustration_by_Miwashiba.png
+- id: music-strategic-love
+  file: 02-official/music-covers/Minato_Aqua_-_Strategic_Love.jpg
+  section: music
+  title: { ja: "恋愛ストラテジック", en: "Strategic Love" }
+  date: '2024-08-08'
+  artist: COVER Corp.
+  alt: { ja: "パステルカラーの「恋愛ストラテジック」ロゴと湊あくあ", en: "Pastel \"Strategic Love\" lettering with Aqua surrounded by doodles" }
+  image: ../../assets/art/music/music-strategic-love.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Strategic_Love.jpg
+- id: music-kizuna-to-kiseki
+  file: 02-official/music-covers/Minato_Aqua_-_kizuna_to_kiseki.jpg
+  section: music
+  title: { ja: "キズナトキセキ", en: "Kizuna to Kiseki" }
+  date: '2024-08-27'
+  artist: COVER Corp.
+  alt: { ja: "青空を背景に微笑むメイド服の湊あくあ", en: "Aqua in her maid outfit smiling against a bright blue sky" }
+  image: ../../assets/art/music/music-kizuna-to-kiseki.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_kizuna_to_kiseki.jpg
+- id: music-kimiiro-princess
+  file: 02-official/music-covers/Minato_Aqua_-_kimiiro_princess.jpeg
+  section: music
+  title: { ja: "#きみいろプリンセス", en: "#kimiiro princess" }
+  date: '2024-08-28'
+  artist: Momoshiki
+  featured: true
+  alt: { ja: "海とシャボン玉を背に振り返る湊あくあの「#きみいろプリンセス」ジャケット", en: "#kimiiro princess jacket: Aqua turning toward us by the sea, surrounded by bubbles" }
+  image: ../../assets/art/music/music-kimiiro-princess.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_kimiiro_princess.jpeg
+- id: music-kimiiro-princess-art
+  file: 02-official/music-covers/Minato_Aqua_kimiiro_princess_Illustration.jpg
+  section: music
+  title: { ja: "#きみいろプリンセス イラスト", en: "#kimiiro princess key art" }
+  date: '2024-08-28'
+  artist: Momoshiki
+  alt: { ja: "海辺でシャボン玉に囲まれ、やさしく微笑む白い服の湊あくあ", en: "Aqua in white smiling gently by the sea among floating bubbles" }
+  image: ../../assets/art/music/music-kimiiro-princess-art.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_kimiiro_princess_Illustration.jpg
+- id: music-its-okay-now
+  file: 02-official/music-covers/Minato_Aqua_It's_okay_now_Illustration.jpg
+  section: music
+  title: { ja: "今はいいんだよ。", en: "It's okay now." }
+  date: '2024-08-27'
+  artist: Oshio
+  alt: { ja: "胸の前で手を組み目を伏せる湊あくあ", en: "Aqua with lowered eyes and hands clasped at her chest" }
+  image: ../../assets/art/music/music-its-okay-now.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_It%27s_okay_now_Illustration.jpg
+- id: music-indoor-kei
+  file: 02-official/music-covers/Minato_Aqua_Indoor_Kei_nara_Trackmaker_Illustration.jpg
+  section: music
+  title: { ja: "インドア系ならトラックメイカー", en: "Indoor Kei nara Trackmaker" }
+  date: '2019-02-14'
+  artist: Sakura Usagi Remi
+  alt: { ja: "カラフルな魚や星に囲まれてくつろぐメイド服の湊あくあ", en: "Aqua in her maid outfit lounging among colorful fish and stars" }
+  image: ../../assets/art/music/music-indoor-kei.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Indoor_Kei_nara_Trackmaker_Illustration.jpg
+- id: music-startend-832
+  file: 02-official/music-covers/Startend_8.32_Cover_Illustration.png
+  section: music
+  title: { ja: "Startend「8.32」", en: "Startend \"8.32\"" }
+  date: '2024-09-01'
+  artist: Okazaki Oka
+  alt: { ja: "海に立つ鳥居の前で水面に立つ白い服の三人", en: "Three girls in white standing on calm water before a torii gate under summer clouds" }
+  image: ../../assets/art/music/music-startend-832.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Startend_8.32_Cover_Illustration.png
+- id: music-umisea-domination
+  file: 02-official/music-covers/UMISEA_-_Domination!.jpg
+  section: music
+  title: { ja: "UMISEA「浸食!! 地球全域全おーしゃん」", en: "UMISEA \"Domination!!\"" }
+  date: '2021-09-18'
+  artist: COVER Corp.
+  alt: { ja: "海をテーマにしたUMISEAの5人が並ぶにぎやかなジャケット", en: "Busy ocean-themed jacket with the five UMISEA members" }
+  image: ../../assets/art/music/music-umisea-domination.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_-_Domination%21.jpg
+- id: music-umisea-ryuuu
+  file: 02-official/music-covers/UMISEA_-_It_Comes_Ryuuu_And_It_goes_Kyuuu.jpg
+  section: music
+  title: { ja: "UMISEA「りゅーーっときてきゅーーっ!!!」", en: "UMISEA \"Ryuuu and Kyuuu\"" }
+  date: '2022-08-29'
+  artist: COVER Corp.
+  alt: { ja: "海賊風の衣装をまとったUMISEAメンバーのジャケット", en: "Jacket of the UMISEA members in pirate-themed outfits" }
+  image: ../../assets/art/music/music-umisea-ryuuu.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_-_It_Comes_Ryuuu_And_It_goes_Kyuuu.jpg
+- id: music-umisea-sachihappy
+  file: 02-official/music-covers/UMISEA_-_UMISEA_no_Sachihappy!.webp
+  section: music
+  title: { ja: "UMISEA「うみシーのさちハピ！」", en: "UMISEA \"Sachihappy!\"" }
+  date: '2023-05-03'
+  artist: COVER Corp.
+  alt: { ja: "水色の背景に並ぶUMISEAメンバーと曲名ロゴ", en: "The UMISEA members posing on a light-blue background with the song logo" }
+  image: ../../assets/art/music/music-umisea-sachihappy.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_-_UMISEA_no_Sachihappy%21.webp
+- id: music-umisea-ocean-wave
+  file: 02-official/music-covers/UMISEA_-_Ocean_wave_Party_Live.jpg
+  section: music
+  title: { ja: "UMISEA「おーしゃんうぇーぶ・Party☆らぃ」", en: "UMISEA \"Ocean Wave Party Live\"" }
+  date: '2023-08-13'
+  artist: COVER Corp.
+  alt: { ja: "青いステージで楽器を持って演奏するUMISEAのジャケット", en: "UMISEA playing instruments on a blue concert stage" }
+  image: ../../assets/art/music/music-umisea-ocean-wave.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_-_Ocean_wave_Party_Live.jpg
+- id: music-negiu-kujikenai
+  file: 02-official/music-covers/NEGI_U_-_Tsumari_wa_Itsumo_Kujikenai_Cover.jpg
+  section: music
+  title: { ja: "NEGI☆U「つまりはいつもくじけない！」", en: "NEGI☆U \"Tsumari wa Itsumo Kujikenai!\"" }
+  date: '2021-08-01'
+  artist: COVER Corp.
+  alt: { ja: "メイド服の湊あくあ、大空スバル、桃鈴ねねのNEGI☆Uジャケット", en: "NEGI☆U jacket: Aqua, Subaru and Nene together in bright colors" }
+  image: ../../assets/art/music/music-negiu-kujikenai.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:NEGI_U_-_Tsumari_wa_Itsumo_Kujikenai_Cover.jpg
+- id: music-negiu-panaiuta
+  file: 02-official/music-covers/NEGI_U_-_NEGI_U_NO_PANAIUTA.jpg
+  section: music
+  title: { ja: "NEGI☆U「ねぎゆーのパないうた」", en: "NEGI☆U \"Negi U no Panai Uta\" EP" }
+  date: '2022-06-01'
+  artist: COVER Corp.
+  alt: { ja: "黄色い背景でポーズをとるNEGI☆Uの3人のEPジャケット", en: "The three NEGI☆U members posing on a yellow EP cover" }
+  image: ../../assets/art/music/music-negiu-panaiuta.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:NEGI_U_-_NEGI_U_NO_PANAIUTA.jpg
+- id: music-negiu-sushi
+  file: 02-official/music-covers/NEGI☆U_-_Sushi_Desho.jpg
+  section: music
+  title: { ja: "NEGI☆U「寿司☆でしょ！」", en: "NEGI☆U \"Sushi☆Desho!\"" }
+  date: '2023-05-18'
+  artist: COVER Corp.
+  alt: { ja: "制服姿で元気にジャンプするNEGI☆Uの3人", en: "The NEGI☆U trio jumping in school uniforms" }
+  image: ../../assets/art/music/music-negiu-sushi.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:NEGI%E2%98%86U_-_Sushi_Desho.jpg
+- id: music-blue-journey-hitori
+  file: 02-official/music-covers/Blue_Journey_-_Bokuha_Hitorida.jpg
+  section: music
+  title: { ja: "Blue Journey「僕は独りだ」", en: "Blue Journey \"Boku wa Hitori da\"" }
+  date: '2023-04-16'
+  artist: COVER Corp.
+  alt: { ja: "夜の駅のホームを描いた暗い緑色のジャケット", en: "Dark green jacket of a lonely night train platform" }
+  image: ../../assets/art/music/music-blue-journey-hitori.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Blue_Journey_-_Bokuha_Hitorida.jpg
+- id: music-blue-journey-anohi
+  file: 02-official/music-covers/Blue_Journey_-_Anohino_Bokurahe.jpg
+  section: music
+  title: { ja: "Blue Journey「あの日の僕らへ」", en: "Blue Journey \"Ano Hi no Bokura e\"" }
+  date: '2023-06-19'
+  artist: COVER Corp.
+  alt: { ja: "夜の海辺に人影が立つ深い青のジャケット", en: "Deep-blue jacket with distant figures by the sea at night" }
+  image: ../../assets/art/music/music-blue-journey-anohi.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Blue_Journey_-_Anohino_Bokurahe.jpg
+- id: music-blue-journey-mizutamari
+  file: 02-official/music-covers/Blue_Journey_-_Mizutamari.jpg
+  section: music
+  title: { ja: "Blue Journey「水たまり」", en: "Blue Journey \"Mizutamari\"" }
+  date: '2023-09-13'
+  artist: COVER Corp.
+  alt: { ja: "淡い紫の空と砂丘を描いた静かなジャケット", en: "Quiet jacket of a pale lavender sky over sand dunes" }
+  image: ../../assets/art/music/music-blue-journey-mizutamari.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Blue_Journey_-_Mizutamari.jpg
+- id: music-blue-journey-yoake
+  file: 02-official/music-covers/Blue_Journey_-_Yoake_no_Uta.jpg
+  section: music
+  title: { ja: "Blue Journey『夜明けのうた』", en: "Blue Journey \"Yoake no Uta\" album" }
+  date: '2023-09-06'
+  artist: COVER Corp.
+  alt: { ja: "星空の下に集まるメンバーを描いたアルバムジャケット", en: "Album jacket of the members gathered under a starry night sky" }
+  image: ../../assets/art/music/music-blue-journey-yoake.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Blue_Journey_-_Yoake_no_Uta.jpg
+- id: music-bouquet
+  file: 02-official/music-covers/Bouquet_Cover.png
+  section: music
+  title: { ja: "hololive IDOL PROJECT『Bouquet』", en: "hololive IDOL PROJECT \"Bouquet\"" }
+  date: '2021-04-21'
+  artist: COVER Corp.
+  alt: { ja: "大勢のホロライブメンバーが並ぶアルバム『Bouquet』のジャケット", en: "\"Bouquet\" album jacket with a large group of hololive members" }
+  image: ../../assets/art/music/music-bouquet.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Bouquet_Cover.png
+- id: music-candy-go-round
+  file: 02-official/music-covers/Candy-Go-Round_Cover.png
+  section: music
+  title: { ja: "Candy-Go-Round", en: "Candy-Go-Round" }
+  date: '2021-01-13'
+  artist: COVER Corp.
+  alt: { ja: "カラフルな背景に並ぶメンバーたちの「Candy-Go-Round」ジャケット", en: "Colorful \"Candy-Go-Round\" jacket with several members" }
+  image: ../../assets/art/music/music-candy-go-round.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Candy-Go-Round_Cover.png
+- id: music-asuiro-clear-sky
+  file: 02-official/music-covers/AsuiroClearSky_Cover.png
+  section: music
+  title: { ja: "あすいろClearSky", en: "Asuiro ClearSky" }
+  date: '2021-02-18'
+  artist: COVER Corp.
+  alt: { ja: "白地に水色の三角形とロゴだけのシンプルなジャケット", en: "Minimal white jacket with a light-blue triangle and the title" }
+  image: ../../assets/art/music/music-asuiro-clear-sky.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:AsuiroClearSky_Cover.png
+- id: music-spice-love
+  file: 02-official/music-covers/Curry_Meshi_Is_a_Miracle_Cover.png
+  section: music
+  title: { ja: "Spice Love「カレーメシ・イン・ミラクル」", en: "Spice Love \"Curry Meshi in Miracle\"" }
+  date: '2020-10-11'
+  artist: COVER Corp.
+  alt: { ja: "湊あくあ、大空スバル、兎田ぺこらのSpice Loveジャケット", en: "Spice Love jacket: Aqua, Subaru and Pekora in matching outfits" }
+  image: ../../assets/art/music/music-spice-love.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Curry_Meshi_Is_a_Miracle_Cover.png
+- id: music-shiny-smily-story
+  file: 02-official/music-covers/Hololive-SSS.webp
+  section: music
+  title: { ja: "Shiny Smily Story", en: "Shiny Smily Story" }
+  date: '2019-08-15'
+  artist: COVER Corp.
+  alt: { ja: "青空を背景に大勢のメンバーが集まる「Shiny Smily Story」ジャケット", en: "\"Shiny Smily Story\" jacket with many members under a blue sky" }
+  image: ../../assets/art/music/music-shiny-smily-story.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive-SSS.webp
+- id: music-kirameki-rider
+  file: 02-official/music-covers/Hololive-KiramekiRider.webp
+  section: music
+  title: { ja: "キラメキライダー☆", en: "Kirameki Rider☆" }
+  date: '2020-02-24'
+  artist: COVER Corp.
+  alt: { ja: "白と水色の衣装で並ぶメンバーたちのジャケット", en: "Members in white-and-blue stage outfits on the \"Kirameki Rider☆\" jacket" }
+  image: ../../assets/art/music/music-kirameki-rider.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive-KiramekiRider.webp
+- id: music-prism-melody
+  file: 02-official/music-covers/Hololive_IDOL_PROJECT_-_Prism_Melody_cover.jpg
+  section: music
+  title: { ja: "Prism Melody", en: "Prism Melody" }
+  date: '2022-03-13'
+  artist: COVER Corp.
+  alt: { ja: "プリズムのような光の中に並ぶメンバーたちのジャケット", en: "Members gathered in prism-like light on the \"Prism Melody\" jacket" }
+  image: ../../assets/art/music/music-prism-melody.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_IDOL_PROJECT_-_Prism_Melody_cover.jpg
+- id: music-seishun-archive
+  file: 02-official/music-covers/Hololive_IDOL_PROJECT_-_Seishun_Archive.jpg
+  section: music
+  title: { ja: "青春アーカイブ", en: "Seishun Archive" }
+  date: '2023-07-01'
+  artist: COVER Corp.
+  alt: { ja: "砂浜の写真のように並ぶメンバーたちの「青春アーカイブ」ジャケット", en: "\"Seishun Archive\" jacket styled like a beach photo of the members" }
+  image: ../../assets/art/music/music-seishun-archive.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_IDOL_PROJECT_-_Seishun_Archive.jpg
+- id: music-tonde-k
+  file: 02-official/music-covers/Hololive_IDOL_PROJECT_-_TondeK_hololive_Summer.png
+  section: music
+  title: { ja: "飛んでK！ホロライブサマー", en: "Tonde K! hololive Summer" }
+  date: '2022-08-18'
+  artist: COVER Corp.
+  alt: { ja: "水着姿のメンバーが集まる夏らしいジャケット", en: "Summery jacket with members in swimsuits around the title bubble" }
+  image: ../../assets/art/music/music-tonde-k.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_IDOL_PROJECT_-_TondeK_hololive_Summer.png
+- id: music-summer-2022
+  file: 02-official/music-covers/Hololive_IDOL_PROJECT_-_hololive_Summer_2022.jpg
+  section: music
+  title: { ja: "hololive Summer 2022", en: "hololive Summer 2022 EP" }
+  date: '2022-09-01'
+  artist: COVER Corp.
+  alt: { ja: "海賊船や浮き輪と一緒に描かれた夏のEPジャケット", en: "Summer EP jacket with members, a pirate theme and pool floats" }
+  image: ../../assets/art/music/music-summer-2022.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_IDOL_PROJECT_-_hololive_Summer_2022.jpg
+- id: music-ieru-kana-2024
+  file: 02-official/music-covers/Hololive_IDOL_PROJECT_-_Can_You_Do_the_hololive_hololive_SUPER_EXPO_2024_ver..jpg
+  section: music
+  title: { ja: "ホロライブ言えるかな？ SUPER EXPO 2024 ver.", en: "Can You Do the hololive? SUPER EXPO 2024 ver." }
+  date: '2024-03-13'
+  artist: COVER Corp.
+  alt: { ja: "ハート型に集まった大勢のちびキャラのジャケット", en: "Jacket of many chibi members arranged in a heart shape" }
+  image: ../../assets/art/music/music-ieru-kana-2024.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_IDOL_PROJECT_-_Can_You_Do_the_hololive_hololive_SUPER_EXPO_2024_ver..jpg
+- id: music-gensokyo-a
+  file: 02-official/music-covers/GENSOKYOholoismA.jpg
+  section: music
+  title: { ja: "#幻想郷ホロイズム（A）", en: "#GENSOKYOholoism (A)" }
+  date: '2020-07-10'
+  artist: COVER Corp.
+  alt: { ja: "海賊帽の宝鐘マリンを中心にした「#幻想郷ホロイズム」ジャケット", en: "\"#GENSOKYOholoism\" jacket centered on Houshou Marine in her pirate hat" }
+  image: ../../assets/art/music/music-gensokyo-a.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:GENSOKYOholoismA.jpg
+- id: music-gensokyo-b
+  file: 02-official/music-covers/GENSOKYOholoismB.jpg
+  section: music
+  title: { ja: "#幻想郷ホロイズム（B）", en: "#GENSOKYOholoism (B)" }
+  date: '2020-07-10'
+  artist: COVER Corp.
+  alt: { ja: "金髪の少女と宝鐘マリンが描かれた「#幻想郷ホロイズム」Bジャケット", en: "\"#GENSOKYOholoism\" B jacket with Marine and a blonde girl" }
+  image: ../../assets/art/music/music-gensokyo-b.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:GENSOKYOholoismB.jpg
+- id: music-doping
+  file: 02-official/music-covers/DOPING_-_Nanawo_Akari.jpg
+  section: music
+  title: { ja: "ナナヲアカリ『DOPING!!!!!!』", en: "Nanawo Akari \"DOPING!!!!!!\"" }
+  date: '2024-02-21'
+  artist: COVER Corp.
+  alt: { ja: "ネオンカラーのポップなキャラクターが描かれたEPジャケット", en: "Neon pop-art EP jacket with a cartoon character" }
+  image: ../../assets/art/music/music-doping.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:DOPING_-_Nanawo_Akari.jpg
+- id: music-naisho-no-hanashi
+  file: 02-official/music-covers/Meaqua_Naisho_no_Hanashi_Illustration.jpg
+  section: music
+  title: { ja: "ナイショの話（めあくあ）", en: "Naisho no Hanashi (Meaqua)" }
+  date: '2022-06-19'
+  artist: Chihiro Ayaka
+  alt: { ja: "夜の花火を背に並ぶ湊あくあと神楽めあ", en: "Aqua and Kagura Mea side by side under night fireworks" }
+  image: ../../assets/art/music/music-naisho-no-hanashi.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Meaqua_Naisho_no_Hanashi_Illustration.jpg
+- id: music-solasido
+  file: 02-official/music-covers/MeaAqua_So_La_Si_Do_~Nee_Nee~_Illustration_by_Momoshiki.jpg
+  section: music
+  title: { ja: "ソラシド〜ねえねえ〜（めあくあ）", en: "So La Si Do ~Nee Nee~ (Meaqua)" }
+  date: '2024-08-22'
+  artist: Momoshiki
+  alt: { ja: "ひまわりの花束を抱えて寄り添う湊あくあと神楽めあ", en: "Aqua and Mea holding a sunflower bouquet together" }
+  image: ../../assets/art/music/music-solasido.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:MeaAqua_So_La_Si_Do_~Nee_Nee~_Illustration_by_Momoshiki.jpg
+- id: music-umapyoi
+  file: 02-official/music-covers/Umapyoi_Densetsu_by_Ninomae_Ina'nis.jpg
+  section: music
+  title: { ja: "うまぴょい伝説", en: "Umapyoi Densetsu" }
+  date: '2021-10-03'
+  artist: Ninomae Ina'nis
+  alt: { ja: "「うまぴょい伝説」ロゴの上に並ぶ6人のメンバー", en: "Six members lined up above the \"Umapyoi Densetsu\" logo" }
+  image: ../../assets/art/music/music-umapyoi.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:Umapyoi_Densetsu_by_Ninomae_Ina%27nis.jpg
+- id: music-aqushio
+  file: 02-official/music-covers/AquShio_Magical_Girl_and_Chocolate_Illustration.jpg
+  section: music
+  title: { ja: "あくシオ「魔法少女とチョコレゐト」", en: "AquShio \"Magical Girl and Chocolate\"" }
+  date: '2021-09-05'
+  artist: rucaco
+  alt: { ja: "ピンクのしずくが垂れる背景に並ぶ湊あくあと紫咲シオン", en: "Aqua and Murasaki Shion against a dripping pink background" }
+  image: ../../assets/art/music/music-aqushio.jpg
+  credit: © COVER Corp. (and respective labels/illustrators)
+  source: https://virtualyoutuber.fandom.com/wiki/File:AquShio_Magical_Girl_and_Chocolate_Illustration.jpg
+
+# ---------------- Collabs and games ----------------
+- id: collab-azur-lane-submarine
+  file: 02-official/collabs-and-games/Minato_Aqua_-_Submarine_Azur_Lane_Illustration.png
+  section: collabs
+  title: { ja: "アズールレーン「潜水艦」スキン", en: "Azur Lane — Submarine skin" }
+  date: '2019-11-27'
+  artist: Yostar / Manjuu
+  alt: { ja: "潜水艦の上に座るメイド服の湊あくあ", en: "Aqua in her maid outfit perched on a submarine" }
+  image: ../../assets/art/collabs/collab-azur-lane-submarine.webp
+  credit: © Yostar / Manjuu / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Submarine_Azur_Lane_Illustration.png
+- id: collab-azur-lane-marine-maid
+  file: 02-official/collabs-and-games/Minato_Aqua_-_Marine_Maid_Azur_Lane_Illustration.png
+  section: collabs
+  title: { ja: "アズールレーン「マリンメイド」スキン", en: "Azur Lane — Marine Maid skin" }
+  date: '2019-11-27'
+  artist: Yostar / Manjuu
+  alt: { ja: "青い光の中でポーズを決めるメイド服の湊あくあ", en: "Aqua striking a pose in her maid outfit amid blue light effects" }
+  image: ../../assets/art/collabs/collab-azur-lane-marine-maid.webp
+  credit: © Yostar / Manjuu / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Marine_Maid_Azur_Lane_Illustration.png
+- id: collab-azur-lane-key-art
+  file: 02-official/collabs-and-games/Hololive_x_Azur_Lane_Illustration.jpeg
+  section: collabs
+  title: { ja: "ホロライブ×アズールレーン", en: "hololive × Azur Lane" }
+  date: '2019-11-27'
+  artist: Yostar / Manjuu
+  alt: { ja: "アズールレーンコラボのメンバーが並ぶキービジュアル", en: "Key art of the hololive members in the Azur Lane collaboration" }
+  image: ../../assets/art/collabs/collab-azur-lane-key-art.jpg
+  credit: © Yostar / Manjuu / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Azur_Lane_Illustration.jpeg
+- id: collab-dawn-of-the-breakers
+  file: 02-official/collabs-and-games/Aqua_Minato_-_Hololive_Resistance_Dawn_of_the_Breakers.png
+  section: collabs
+  title: { ja: "Dawn of the Breakers", en: "Dawn of the Breakers" }
+  date: '2019-04-04'
+  artist: Dawn of the Breakers
+  alt: { ja: "モップを持つメイド服の湊あくあとちびキャラ", en: "Aqua in her maid outfit with a mop beside a chibi version of herself" }
+  image: ../../assets/art/collabs/collab-dawn-of-the-breakers.webp
+  credit: © Dawn of the Breakers / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Aqua_Minato_-_Hololive_Resistance_Dawn_of_the_Breakers.png
+- id: collab-dawn-of-the-breakers-skin
+  file: 02-official/collabs-and-games/Aqua_Minato_-_Skin_Dawn_of_the_Breakers_Illustration_01.png
+  section: collabs
+  title: { ja: "Dawn of the Breakers スキン", en: "Dawn of the Breakers skin" }
+  artist: Dawn of the Breakers
+  alt: { ja: "スイカを頭上に掲げる水着姿の湊あくあ", en: "Aqua in a swimsuit holding a watermelon over her head in the sea" }
+  image: ../../assets/art/collabs/collab-dawn-of-the-breakers-skin.webp
+  credit: © Dawn of the Breakers / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Aqua_Minato_-_Skin_Dawn_of_the_Breakers_Illustration_01.png
+- id: collab-last-idea
+  file: 02-official/collabs-and-games/Minato_Aqua_-_Last_Idea_Illustration.png
+  section: collabs
+  title: { ja: "LAST IDEA", en: "LAST IDEA" }
+  date: '2019-07-23'
+  artist: SQUARE ENIX
+  alt: { ja: "金髪のキャラクターと手でハートを作る湊あくあ", en: "Aqua making a heart with her hands together with a blonde character" }
+  image: ../../assets/art/collabs/collab-last-idea.jpg
+  credit: © SQUARE ENIX / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_Last_Idea_Illustration.png
+- id: collab-neptunia
+  file: 02-official/collabs-and-games/Minato_Aqua_-_VVVtune_Illustration.jpg
+  section: collabs
+  title: { ja: "ネプテューヌ ヴァーチャル・ステーション", en: "Neptunia Virtual Stars" }
+  date: '2020-01-28'
+  artist: Idea Factory
+  alt: { ja: "「GUEST VTuber」の文字と並ぶメイド服の湊あくあ", en: "Aqua in her maid outfit next to \"GUEST VTuber\" lettering" }
+  image: ../../assets/art/collabs/collab-neptunia.jpg
+  credit: © Idea Factory / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_-_VVVtune_Illustration.jpg
+- id: collab-kakegurui-1
+  file: 02-official/collabs-and-games/V-Ani_2019_-_Kakeguruixx_Illustration_01.jpg
+  section: collabs
+  title: { ja: "V-Ani 2019 × 賭ケグルイ××", en: "V-Ani 2019 × Kakegurui××" }
+  date: '2019'
+  artist: respective rights holders
+  alt: { ja: "赤と黒の市松模様を背景に並ぶ5人のキャラクター", en: "Five characters lined up on a red-and-black checkered background" }
+  image: ../../assets/art/collabs/collab-kakegurui-1.jpg
+  credit: © respective rights holders / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:V-Ani_2019_-_Kakeguruixx_Illustration_01.jpg
+- id: collab-kakegurui-2
+  file: 02-official/collabs-and-games/V-Ani_2019_-_Kakeguruixx_Illustration_02.jpg
+  section: collabs
+  title: { ja: "V-Ani 2019 × 賭ケグルイ××（2）", en: "V-Ani 2019 × Kakegurui×× (2)" }
+  date: '2019'
+  artist: respective rights holders
+  alt: { ja: "制服姿で並ぶ賭ケグルイコラボのキャラクターたち", en: "Characters from the Kakegurui collaboration standing in school uniforms" }
+  image: ../../assets/art/collabs/collab-kakegurui-2.jpg
+  credit: © respective rights holders / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:V-Ani_2019_-_Kakeguruixx_Illustration_02.jpg
+- id: collab-curry-meshi-week
+  file: 02-official/collabs-and-games/Curry_Meshi_WEEK_x_hololive.jpg
+  section: collabs
+  title: { ja: "カレーメシWEEK × ホロライブ", en: "Curry Meshi WEEK × hololive" }
+  date: '2020-10-10'
+  artist: Nissin
+  alt: { ja: "黄色い背景に「スパイスラブ」の文字と3人のメンバー", en: "Yellow campaign art with the Spice Love trio and bold lettering" }
+  image: ../../assets/art/collabs/collab-curry-meshi-week.jpg
+  credit: © Nissin / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Curry_Meshi_WEEK_x_hololive.jpg
+- id: collab-d4dj
+  file: 02-official/collabs-and-games/D4DJ_X_Hololive_-_Aqua.jpeg
+  section: collabs
+  title: { ja: "D4DJ × ホロライブ", en: "D4DJ × hololive" }
+  artist: bushiroad
+  alt: { ja: "カラフルなDJブースの前で手でハートを作る湊あくあともう一人", en: "Aqua and a D4DJ character making hand hearts in front of a colorful DJ booth" }
+  image: ../../assets/art/collabs/collab-d4dj.jpg
+  credit: © bushiroad / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:D4DJ_X_Hololive_-_Aqua.jpeg
+- id: collab-lawson
+  file: 02-official/collabs-and-games/LAWSON_X_Hololive.jpg
+  section: collabs
+  title: { ja: "ローソン × ホロライブ", en: "LAWSON × hololive" }
+  artist: LAWSON
+  alt: { ja: "ローソンの青い制服を着たメンバーが並ぶキャンペーン画像", en: "Members in blue LAWSON staff uniforms on a campaign banner" }
+  image: ../../assets/art/collabs/collab-lawson.jpg
+  credit: © LAWSON / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:LAWSON_X_Hololive.jpg
+- id: collab-red-bull-tomari-duo
+  file: 02-official/collabs-and-games/Minato_Aqua_and_Shishiro_Botan_Red_Bull_Gaming_Collaboration_Illustration_by_トマリ.jpg
+  section: collabs
+  title: { ja: "Red Bull Gaming（あくあ・ぼたん）", en: "Red Bull Gaming — Aqua and Botan" }
+  date: '2021-06-07'
+  artist: トマリ (Tomari)
+  alt: { ja: "紫の衣装で並ぶ湊あくあと獅白ぼたん", en: "Aqua and Shishiro Botan standing together in purple outfits" }
+  image: ../../assets/art/collabs/collab-red-bull-tomari-duo.jpg
+  credit: © Red Bull / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_and_Shishiro_Botan_Red_Bull_Gaming_Collaboration_Illustration_by_%E3%83%88%E3%83%9E%E3%83%AA.jpg
+- id: collab-red-bull-tomari
+  file: 02-official/collabs-and-games/Red_Bull_x_Hololive_Collaboration_Illustration_by_Tomari.jpg
+  section: collabs
+  title: { ja: "Red Bull × ホロライブ", en: "Red Bull × hololive" }
+  date: '2021-06-07'
+  artist: Tomari
+  alt: { ja: "「Red Bull × Hololive」ロゴと並ぶ湊あくあと獅白ぼたん", en: "Aqua and Botan beside the \"Red Bull × Hololive\" logo" }
+  image: ../../assets/art/collabs/collab-red-bull-tomari.jpg
+  credit: © Red Bull / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Red_Bull_x_Hololive_Collaboration_Illustration_by_Tomari.jpg
+- id: collab-red-bull-2022
+  file: 02-official/collabs-and-games/Minato_Aqua_and_Shishiro_Botan_Red_Bull_December_2022_Collab.jpg
+  section: collabs
+  title: { ja: "Red Bull 2022年12月コラボ", en: "Red Bull December 2022" }
+  date: '2022-12'
+  artist: brat
+  alt: { ja: "白いパーカー姿でくつろぐ湊あくあと獅白ぼたん", en: "Aqua and Botan relaxing in white hoodies" }
+  image: ../../assets/art/collabs/collab-red-bull-2022.jpg
+  credit: © Red Bull / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_and_Shishiro_Botan_Red_Bull_December_2022_Collab.jpg
+- id: collab-red-bull-2023
+  file: 02-official/collabs-and-games/Shishiro_Botan,_Minato_Aqua_and_Redbull_2023_Summer_Campaign_Collab_Illustration_by_brat.jpg
+  section: collabs
+  title: { ja: "Red Bull 2023年夏キャンペーン", en: "Red Bull Summer 2023" }
+  date: '2023-07'
+  artist: brat
+  alt: { ja: "ゲーム部屋で並んで座る湊あくあと獅白ぼたん", en: "Aqua and Botan sitting together in a cozy gaming room" }
+  image: ../../assets/art/collabs/collab-red-bull-2023.jpg
+  credit: © Red Bull / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Shishiro_Botan%2C_Minato_Aqua_and_Redbull_2023_Summer_Campaign_Collab_Illustration_by_brat.jpg
+- id: collab-dengeki-bunko
+  file: 02-official/collabs-and-games/Dengeki_Bunko_Collaboration_Illustration_by_Gaou.jpg
+  section: collabs
+  title: { ja: "電撃文庫コラボ", en: "Dengeki Bunko collaboration" }
+  artist: Gaou (がおう)
+  alt: { ja: "黒髪の少女と背中合わせに立つ湊あくあ", en: "Aqua standing back to back with a black-haired girl" }
+  image: ../../assets/art/collabs/collab-dengeki-bunko.jpg
+  credit: © KADOKAWA / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Dengeki_Bunko_Collaboration_Illustration_by_Gaou.jpg
+- id: collab-weiss-schwarz
+  file: 02-official/collabs-and-games/Hololive_x_Weiß_Schwarz_illustration_by_Narumi-Nanami_pic_2.jpg
+  section: collabs
+  title: { ja: "ヴァイスシュヴァルツ × ホロライブ", en: "Weiß Schwarz × hololive" }
+  artist: Narumi-Nanami
+  alt: { ja: "白い背景に元気なポーズで並ぶメンバーたち", en: "Members in lively poses on a white background" }
+  image: ../../assets/art/collabs/collab-weiss-schwarz.jpg
+  credit: © bushiroad / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Wei%C3%9F_Schwarz_illustration_by_Narumi-Nanami_pic_2.jpg
+- id: collab-don-quijote
+  file: 02-official/collabs-and-games/Hololive_x_Don_Quijote_Mochiduru_Concept_Illustration.jpg
+  section: collabs
+  title: { ja: "ドン・キホーテ「もちづる」", en: "Don Quijote mochiduru plush" }
+  artist: COVER Corp.
+  alt: { ja: "ぬいぐるみ用にデフォルメされたメンバーの顔が並ぶ設定画", en: "Grid of plush-style chibi faces of the members" }
+  image: ../../assets/art/collabs/collab-don-quijote.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Don_Quijote_Mochiduru_Concept_Illustration.jpg
+- id: collab-joypolis
+  file: 02-official/collabs-and-games/Hololive_x_Joypolis_LOVELY_PARTY.png
+  section: collabs
+  title: { ja: "ジョイポリス「LOVELY PARTY」", en: "Joypolis \"LOVELY PARTY\"" }
+  artist: SEGA
+  alt: { ja: "パーティー衣装のメンバーが集まるジョイポリスコラボのビジュアル", en: "Members in party outfits on the Joypolis collaboration visual" }
+  image: ../../assets/art/collabs/collab-joypolis.jpg
+  credit: © SEGA / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Joypolis_LOVELY_PARTY.png
+- id: collab-holomart-valentine
+  file: 02-official/collabs-and-games/HoloMart_Vol.6_Happy_Holo_Valentine's_Day_Illustration_by_Namori.jpg
+  section: collabs
+  title: { ja: "ホロマート Vol.6 バレンタイン", en: "HoloMart Vol.6 Valentine's" }
+  artist: Namori
+  alt: { ja: "冬服で並ぶメンバーたちのバレンタインイラスト", en: "Valentine's illustration of members lined up in winter clothes" }
+  image: ../../assets/art/collabs/collab-holomart-valentine.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:HoloMart_Vol.6_Happy_Holo_Valentine%27s_Day_Illustration_by_Namori.jpg
+- id: collab-familymart-crunky
+  file: 02-official/collabs-and-games/Hololive_Family_Mart_Crunky_Collab_Illustration.jpg
+  section: collabs
+  title: { ja: "ファミリーマート × クランキー", en: "FamilyMart × Crunky" }
+  artist: Akakura
+  alt: { ja: "チョコレートをテーマにした衣装のメンバーたち", en: "Members in chocolate-themed outfits" }
+  image: ../../assets/art/collabs/collab-familymart-crunky.jpg
+  credit: © FamilyMart / Lotte / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Family_Mart_Crunky_Collab_Illustration.jpg
+- id: collab-familymart-crunky-aqua
+  file: 02-official/collabs-and-games/Minato_Aqua_Family_Mart_Crunky_Collab_Illustration.jpg
+  section: collabs
+  title: { ja: "クランキーコラボ（湊あくあ）", en: "Crunky collaboration — Aqua" }
+  artist: Akakura
+  alt: { ja: "「Happy Valentine's Day」の文字の前で手でハートを作る湊あくあ", en: "Aqua making a heart with her hands in front of \"Happy Valentine's Day\"" }
+  image: ../../assets/art/collabs/collab-familymart-crunky-aqua.jpg
+  credit: © FamilyMart / Lotte / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_Family_Mart_Crunky_Collab_Illustration.jpg
+- id: collab-familymart-summer
+  file: 02-official/collabs-and-games/Hololive_x_FamilyMart_Hololive_Early_Summer_Holo_Festival_2nd_Edition_by_Shugao.jpg
+  section: collabs
+  title: { ja: "ファミリーマート 初夏のホロ祭り", en: "FamilyMart Early Summer Holo Festival" }
+  artist: Shugao
+  alt: { ja: "夏服で並ぶ湊あくあと他のメンバーたち", en: "Aqua and other members in summer clothes" }
+  image: ../../assets/art/collabs/collab-familymart-summer.jpg
+  credit: © FamilyMart / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_FamilyMart_Hololive_Early_Summer_Holo_Festival_2nd_Edition_by_Shugao.jpg
+- id: collab-pasela
+  file: 02-official/collabs-and-games/Hololive_x_PASELA_collaboration_SD_characters_illustration_by_Yumenouchi.jpg
+  section: collabs
+  title: { ja: "パセラ × ホロライブ（SD）", en: "PASELA × hololive (SD)" }
+  artist: Yumenouchi
+  alt: { ja: "赤い背景に並ぶちびキャラのメンバーたち", en: "Chibi members arranged on a red background" }
+  image: ../../assets/art/collabs/collab-pasela.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_PASELA_collaboration_SD_characters_illustration_by_Yumenouchi.jpg
+- id: collab-skytree
+  file: 02-official/collabs-and-games/Hololive_x_Tokyo_Skytree_Town_(R)_2nd_Edition_Illustration_by_yuu.jpg
+  section: collabs
+  title: { ja: "東京スカイツリータウン 第2弾", en: "Tokyo Skytree Town 2nd edition" }
+  artist: yuu
+  alt: { ja: "夜景を背にした東京スカイツリーの前に並ぶメンバー", en: "Members lined up before Tokyo Skytree against the night skyline" }
+  image: ../../assets/art/collabs/collab-skytree.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Tokyo_Skytree_Town_%28R%29_2nd_Edition_Illustration_by_yuu.jpg
+- id: collab-lawson-cafeteria
+  file: 02-official/collabs-and-games/Hololive_Lottery_holo_Cooking_x_Lawson_3rd_Collab_~holo_Cafeteria~_Illustration_by_Tiv.jpg
+  section: collabs
+  title: { ja: "ローソン「ホロカフェテリア」", en: "LAWSON \"holo Cafeteria\"" }
+  artist: Tiv
+  alt: { ja: "カフェの制服を着たメンバーが輪になって並ぶイラスト", en: "Members in café uniforms arranged in a circle" }
+  image: ../../assets/art/collabs/collab-lawson-cafeteria.jpg
+  credit: © LAWSON / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Lottery_holo_Cooking_x_Lawson_3rd_Collab_~holo_Cafeteria~_Illustration_by_Tiv.jpg
+- id: collab-kanda-festival
+  file: 02-official/collabs-and-games/Hololive_x_Kanda_Festival_&_Atre_Akihabara_Collab_by_Fujima_Takuya.jpg
+  section: collabs
+  title: { ja: "神田祭 × アトレ秋葉原", en: "Kanda Festival × atré Akihabara" }
+  artist: Fujima Takuya
+  alt: { ja: "白と赤の祭り衣装で並ぶメンバーたち", en: "Members in white-and-red festival outfits" }
+  image: ../../assets/art/collabs/collab-kanda-festival.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Kanda_Festival_%26_Atre_Akihabara_Collab_by_Fujima_Takuya.jpg
+- id: collab-lawson-sankuro
+  file: 02-official/collabs-and-games/Hololive_x_Lawson_Collab_Illustration_by_Sankuro.jpg
+  section: collabs
+  title: { ja: "ローソン × ホロライブ（三九呂）", en: "LAWSON × hololive (Sankuro)" }
+  artist: Sankuro
+  alt: { ja: "青い制服でポーズをとるメンバーたち", en: "Members posing in blue store uniforms" }
+  image: ../../assets/art/collabs/collab-lawson-sankuro.jpg
+  credit: © LAWSON / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Lawson_Collab_Illustration_by_Sankuro.jpg
+- id: collab-umisea-sunshine-ayase
+  file: 02-official/collabs-and-games/UMISEA_in_Sunshine_City_Collab_Illustration_by_Ayase_Rin.jpg
+  section: collabs
+  title: { ja: "UMISEA in サンシャインシティ", en: "UMISEA in Sunshine City" }
+  artist: Ayase Rin
+  alt: { ja: "夏服で並ぶUMISEAのメンバー", en: "The UMISEA members in summer outfits" }
+  image: ../../assets/art/collabs/collab-umisea-sunshine-ayase.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_in_Sunshine_City_Collab_Illustration_by_Ayase_Rin.jpg
+- id: collab-umisea-sunshine-saito
+  file: 02-official/collabs-and-games/UMISEA_in_Sunshine_City_Collab_Illustration_by_Saito_Naoki.jpg
+  section: collabs
+  title: { ja: "UMISEA in サンシャインシティ（2）", en: "UMISEA in Sunshine City (2)" }
+  artist: Saito Naoki
+  alt: { ja: "南国のビーチで遊ぶ水着姿のUMISEAメンバー", en: "The UMISEA members playing on a tropical beach in swimwear" }
+  image: ../../assets/art/collabs/collab-umisea-sunshine-saito.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:UMISEA_in_Sunshine_City_Collab_Illustration_by_Saito_Naoki.jpg
+- id: collab-meiji
+  file: 02-official/collabs-and-games/Hololive_x_Meiji_Chocolate_Collab_Illustration_by_Momoshiki.jpg
+  section: collabs
+  title: { ja: "明治チョコレート × ホロライブ", en: "Meiji Chocolate × hololive" }
+  artist: Momoshiki
+  alt: { ja: "チョコレート色のルームウェアでくつろぐメンバーたち", en: "Members relaxing in chocolate-colored loungewear" }
+  image: ../../assets/art/collabs/collab-meiji.jpg
+  credit: © meiji / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_x_Meiji_Chocolate_Collab_Illustration_by_Momoshiki.jpg
+- id: collab-aniplus-singapore
+  file: 02-official/collabs-and-games/Hololive_and_Singapore_ANIPLUS_cafe_Collab_Illustration_by_Bshi_Edayo.jpg
+  section: collabs
+  title: { ja: "ANIPLUSカフェ（シンガポール）", en: "ANIPLUS café Singapore" }
+  artist: Bshi Edayo
+  alt: { ja: "白い背景に横一列で並ぶメンバーたち", en: "Members standing in a single row on a white background" }
+  image: ../../assets/art/collabs/collab-aniplus-singapore.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_and_Singapore_ANIPLUS_cafe_Collab_Illustration_by_Bshi_Edayo.jpg
+- id: collab-choco-crunch
+  file: 02-official/collabs-and-games/Hololive_Production_Choco_Crunch_vol.1_Illustration.png
+  section: collabs
+  title: { ja: "バンダイ チョコクランチ vol.1", en: "BANDAI Choco Crunch vol.1" }
+  artist: Marueri
+  alt: { ja: "パステルカラーの枠に並ぶちびキャラのメンバーたち", en: "Chibi members in pastel frames" }
+  image: ../../assets/art/collabs/collab-choco-crunch.jpg
+  credit: © BANDAI / COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Production_Choco_Crunch_vol.1_Illustration.png
+- id: collab-v-carnival
+  file: 02-official/collabs-and-games/V-Carnival_VOL._2_Illustration.jpg
+  section: collabs
+  title: { ja: "V-Carnival VOL.2", en: "V-Carnival VOL.2" }
+  artist: COVER Corp.
+  alt: { ja: "大勢のVTuberが集まるにぎやかなイベントイラスト", en: "Crowded event illustration of many VTubers" }
+  image: ../../assets/art/collabs/collab-v-carnival.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:V-Carnival_VOL._2_Illustration.jpg
+- id: collab-summer-fes-2021
+  file: 02-official/collabs-and-games/Hololive_Summer_Festival_2021_-_hololive_2nd_Gen_by_Tam-U.jpg
+  section: collabs
+  title: { ja: "ホロライブ夏祭り2021（2期生）", en: "hololive Summer Festival 2021 — 2nd Gen" }
+  date: '2021-08'
+  artist: Tam-U
+  alt: { ja: "屋台の前で並ぶ2期生のメンバー", en: "The 2nd Gen members together at a summer festival stall" }
+  image: ../../assets/art/collabs/collab-summer-fes-2021.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Summer_Festival_2021_-_hololive_2nd_Gen_by_Tam-U.jpg
+- id: collab-summer-fes-2021-sd
+  file: 02-official/collabs-and-games/Hololive_Summer_Festival_2021_-_hololive_2nd_Gen_SD_characters_by_Aeruusa.jpg
+  section: collabs
+  title: { ja: "ホロライブ夏祭り2021（SD）", en: "hololive Summer Festival 2021 (SD)" }
+  date: '2021-08'
+  artist: Aeruusa
+  alt: { ja: "水色のストライプを背景に並ぶ2期生のちびキャラ", en: "Chibi 2nd Gen members on a light-blue striped background" }
+  image: ../../assets/art/collabs/collab-summer-fes-2021-sd.jpg
+  credit: © COVER
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Summer_Festival_2021_-_hololive_2nd_Gen_SD_characters_by_Aeruusa.jpg
+- id: collab-ark-order
+  file: 02-official/collabs-and-games/Minato_Aqua_-_Ark_Order_Illustration_01.png
+  section: collabs
+  title: { ja: "アークオーダー", en: "Ark Order" }
+  artist: respective rights holders
+  alt: { ja: "水しぶきの上で元気にポーズをとるメイド服の湊あくあ", en: "Aqua in her maid outfit posing energetically over a splash of water" }
+  image: ../../assets/art/collabs/collab-ark-order.webp
+  credit: © respective rights holders / COVER
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Ark_Order_Illustration_01.png
+- id: collab-ark-order-2
+  file: 02-official/collabs-and-games/Minato_Aqua_-_Ark_Order_Illustration_02.png
+  section: collabs
+  title: { ja: "アークオーダー（2）", en: "Ark Order (2)" }
+  artist: respective rights holders
+  alt: { ja: "紫の魔女風ドレスでちびキャラに囲まれる湊あくあ", en: "Aqua in a purple witch-style dress surrounded by chibi figures" }
+  image: ../../assets/art/collabs/collab-ark-order-2.webp
+  credit: © respective rights holders / COVER
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_-_Ark_Order_Illustration_02.png
+
+# ---------------- Key visuals (group and event) ----------------
+- id: kv-hololive-vtubers
+  file: 02-official/group-and-event-visuals/Hololive_VTubers.jpg
+  section: key-visuals
+  title: { ja: "ホロライブ集合イラスト", en: "hololive group illustration" }
+  artist: Narumi-Nanami
+  alt: { ja: "ステージの上に集まる大勢のホロライブメンバー", en: "A large group of hololive members gathered on a stage" }
+  image: ../../assets/art/key-visuals/kv-hololive-vtubers.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_VTubers.jpg
+- id: kv-summer-19
+  file: "02-official/group-and-event-visuals/Hololive_Summer_'19.jpg"
+  section: key-visuals
+  title: { ja: "hololive Summer '19", en: "hololive Summer '19" }
+  date: '2019-08'
+  artist: Narumi-Nanami
+  alt: { ja: "「アツいぜ、ホロライブ。」の文字と夏服のメンバーたち", en: "Members in summer clothes under the \"It's hot, hololive\" slogan" }
+  image: ../../assets/art/key-visuals/kv-summer-19.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Summer_%2719.jpg
+- id: kv-1st-fes
+  file: 02-official/group-and-event-visuals/Hololive_1st_fes._Nonstop_Story.jpg
+  section: key-visuals
+  title: { ja: "1st fes.「Nonstop Story」", en: "1st fes. \"Nonstop Story\"" }
+  date: '2020-01-24'
+  artist: COVER Corp.
+  alt: { ja: "劇場の中に集まった大勢のメンバーを描いたキービジュアル", en: "Key visual of many members gathered inside a theater" }
+  image: ../../assets/art/key-visuals/kv-1st-fes.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_1st_fes._Nonstop_Story.jpg
+- id: kv-1st-fes-2
+  file: 02-official/group-and-event-visuals/Hololive_1st_fes._Nonstop_Story_02.png
+  section: key-visuals
+  title: { ja: "1st fes.「Nonstop Story」（2）", en: "1st fes. \"Nonstop Story\" (2)" }
+  date: '2020-01-24'
+  artist: Narumi-Nanami
+  alt: { ja: "横一列に並ぶアイドル衣装のメンバーたち", en: "Members in idol outfits standing in one long row" }
+  image: ../../assets/art/key-visuals/kv-1st-fes-2.webp
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_1st_fes._Nonstop_Story_02.png
+- id: kv-1st-fes-concept
+  file: 02-official/group-and-event-visuals/Hololive_1st_fes._2nd_Gen_and_Gamers_Concept_Illustration_by_おるだん.jpg
+  section: key-visuals
+  title: { ja: "1st fes. 2期生・ゲーマーズ衣装案", en: "1st fes. 2nd Gen and GAMERS concept" }
+  date: '2020-01-24'
+  artist: Ordan (おるだん)
+  alt: { ja: "2期生とゲーマーズのライブ衣装を並べた設定画", en: "Concept sheet of the 2nd Gen and GAMERS live outfits" }
+  image: ../../assets/art/key-visuals/kv-1st-fes-concept.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_1st_fes._2nd_Gen_and_Gamers_Concept_Illustration_by_%E3%81%8A%E3%82%8B%E3%81%A0%E3%82%93.jpg
+- id: kv-2nd-fes
+  file: 02-official/group-and-event-visuals/Hololive_2nd_fes._Beyond_the_Stage_Illustration_3_by_成海七海.jpg
+  section: key-visuals
+  title: { ja: "2nd fes.「Beyond the Stage」", en: "2nd fes. \"Beyond the Stage\"" }
+  date: '2020-12-22'
+  artist: Narumi-Nanami (成海七海)
+  alt: { ja: "ステージ衣装で並ぶメンバーたち", en: "Members in stage outfits side by side" }
+  image: ../../assets/art/key-visuals/kv-2nd-fes.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_2nd_fes._Beyond_the_Stage_Illustration_3_by_%E6%88%90%E6%B5%B7%E4%B8%83%E6%B5%B7.jpg
+- id: kv-4th-fes-concept
+  file: 02-official/group-and-event-visuals/Hololive_4th_fes._2nd_Gen,_GAMERS,_and_3rd_Gen_Concept_Illustration_by_Ordan.jpg
+  section: key-visuals
+  title: { ja: "4th fes. 衣装案", en: "4th fes. outfit concept" }
+  date: '2023-03-19'
+  artist: Ordan
+  alt: { ja: "2期生・ゲーマーズ・3期生の4th fes.衣装を並べた設定画", en: "Concept sheet of the 4th fes. outfits for 2nd Gen, GAMERS and 3rd Gen" }
+  image: ../../assets/art/key-visuals/kv-4th-fes-concept.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_4th_fes._2nd_Gen%2C_GAMERS%2C_and_3rd_Gen_Concept_Illustration_by_Ordan.jpg
+- id: kv-5th-fes
+  file: 02-official/group-and-event-visuals/Hololive_5th_fes._Capture_the_Moment_Key_Visual_3_by_Matsuo_Shogo.jpg
+  section: key-visuals
+  title: { ja: "5th fes.「Capture the Moment」", en: "5th fes. \"Capture the Moment\"" }
+  date: '2024-03-17'
+  artist: Matsuo Shogo
+  featured: true
+  alt: { ja: "青い光のステージに並ぶ大勢のメンバーのキービジュアル", en: "Key visual of many members on a stage lit in blue" }
+  image: ../../assets/art/key-visuals/kv-5th-fes.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_5th_fes._Capture_the_Moment_Key_Visual_3_by_Matsuo_Shogo.jpg
+- id: kv-5th-fes-2nd-gen
+  file: 02-official/group-and-event-visuals/Hololive_2nd_Gen_hololive_5th_fes._Capture_the_Moment_Illustration_by_Matsuo_Shogo.jpg
+  section: key-visuals
+  title: { ja: "5th fes. 2期生", en: "5th fes. — 2nd Gen" }
+  date: '2024-03-17'
+  artist: Matsuo Shogo
+  alt: { ja: "5th fes.衣装でポーズをとる2期生のメンバー", en: "The 2nd Gen members posing in their 5th fes. outfits" }
+  image: ../../assets/art/key-visuals/kv-5th-fes-2nd-gen.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_2nd_Gen_hololive_5th_fes._Capture_the_Moment_Illustration_by_Matsuo_Shogo.jpg
+- id: kv-500k-commemorative
+  file: 02-official/group-and-event-visuals/Hololive_500000_Subs_Conmemorative_Pic.png
+  section: key-visuals
+  title: { ja: "ホロライブ 50万人記念", en: "hololive 500K commemorative" }
+  artist: COVER Corp.
+  alt: { ja: "大勢のメンバーが集まった記念集合写真風のイラスト", en: "Commemorative group-photo-style illustration of many members" }
+  image: ../../assets/art/key-visuals/kv-500k-commemorative.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_500000_Subs_Conmemorative_Pic.png
+- id: kv-all-members
+  file: 02-official/group-and-event-visuals/Hololive_all_members_up_to_fifth_gen.jpg
+  section: key-visuals
+  title: { ja: "5期生までの全員集合", en: "All members up to 5th Gen" }
+  artist: COVER Corp.
+  alt: { ja: "5期生までのホロライブメンバー全員の集合イラスト", en: "Group illustration of every hololive member up to 5th Gen" }
+  image: ../../assets/art/key-visuals/kv-all-members.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_all_members_up_to_fifth_gen.jpg
+- id: kv-summer-scenes
+  file: 02-official/group-and-event-visuals/Hololive_summer_scenes.jpeg
+  section: key-visuals
+  title: { ja: "ホロライブ水着イラスト集", en: "hololive swimsuit illustrations" }
+  artist: COVER Corp.
+  alt: { ja: "メンバーの夏のイラストを並べたコラージュ", en: "Collage of summer illustrations of the members" }
+  image: ../../assets/art/key-visuals/kv-summer-scenes.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_summer_scenes.jpeg
+- id: kv-holocomi
+  file: 02-official/group-and-event-visuals/HOLOCOMI_SD_Illustration_1_by_Uekura_Eku.jpg
+  section: key-visuals
+  title: { ja: "ホロコミ SDイラスト", en: "HOLOCOMI SD illustration" }
+  artist: Uekura Eku
+  alt: { ja: "ちびキャラのメンバーたちが並ぶホロコミのイラスト", en: "HOLOCOMI illustration of chibi members" }
+  image: ../../assets/art/key-visuals/kv-holocomi.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:HOLOCOMI_SD_Illustration_1_by_Uekura_Eku.jpg
+- id: kv-holomira
+  file: 02-official/group-and-event-visuals/HOLOMIRA_Shirakami_Fubuki,_Minato_Aqua,_and_Tokino_Sora_Illustration_by_Ordan.jpg
+  section: key-visuals
+  title: { ja: "ホロミラ（フブキ・あくあ・そら）", en: "HOLOMIRA — Fubuki, Aqua and Sora" }
+  artist: Ordan
+  alt: { ja: "白上フブキ、湊あくあ、ときのそらが寄り添うイラスト", en: "Shirakami Fubuki, Aqua and Tokino Sora huddled together" }
+  image: ../../assets/art/key-visuals/kv-holomira.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:HOLOMIRA_Shirakami_Fubuki%2C_Minato_Aqua%2C_and_Tokino_Sora_Illustration_by_Ordan.jpg
+- id: kv-gensokyo-jacket
+  file: 02-official/group-and-event-visuals/Houshou_Marine_-GENSOKYOholoism_Jacket_Illustration_by_Ito_Life.jpg
+  section: key-visuals
+  title: { ja: "#幻想郷ホロイズム ジャケットイラスト", en: "#GENSOKYOholoism jacket illustration" }
+  date: '2020-07-10'
+  artist: Ito Life
+  alt: { ja: "宝鐘マリンを中心に東方キャラクターとメンバーが集まるイラスト", en: "Marine at the center of a crowd of members and Touhou characters" }
+  image: ../../assets/art/key-visuals/kv-gensokyo-jacket.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Houshou_Marine_-GENSOKYOholoism_Jacket_Illustration_by_Ito_Life.jpg
+- id: kv-animedia
+  file: 02-official/group-and-event-visuals/Animedia_September_Issue_Cover_Illustration_by_Gaou.jpg
+  section: key-visuals
+  title: { ja: "アニメディア 2020年9月号 表紙", en: "Animedia September 2020 cover" }
+  date: '2020-08'
+  artist: Gaou (がおう)
+  alt: { ja: "パフェを手に座るメイド服の湊あくあ", en: "Aqua in her maid outfit sitting with a parfait" }
+  image: ../../assets/art/key-visuals/kv-animedia.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Animedia_September_Issue_Cover_Illustration_by_Gaou.jpg
+- id: kv-new-year-postcard
+  file: "02-official/group-and-event-visuals/Hololive_New_Year's_Postcard_Illustration_by_Tam-U.jpg"
+  section: key-visuals
+  title: { ja: "2022年 年賀状", en: "2022 New Year's postcard" }
+  date: '2022-01'
+  artist: Tam-U
+  alt: { ja: "冬服で並ぶ湊あくあと紫咲シオン", en: "Aqua and Murasaki Shion side by side in winter clothes" }
+  image: ../../assets/art/key-visuals/kv-new-year-postcard.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_New_Year%27s_Postcard_Illustration_by_Tam-U.jpg
+- id: kv-card-choco
+  file: 02-official/group-and-event-visuals/Hololive_Card_Choco_3_(3)_Illustration_by_plus15.jpg
+  section: key-visuals
+  title: { ja: "ホロライブ カードチョコ3", en: "hololive Card Choco 3" }
+  artist: plus15
+  alt: { ja: "水兵風の衣装で並ぶ5人のメンバー", en: "Five members in sailor-style uniforms" }
+  image: ../../assets/art/key-visuals/kv-card-choco.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Card_Choco_3_%283%29_Illustration_by_plus15.jpg
+- id: kv-comiket-101-sd
+  file: 02-official/group-and-event-visuals/Hololive_Comiket_101_Merch_SD_Illustration_by_852_Box.jpg
+  section: key-visuals
+  title: { ja: "コミケ101 グッズ（SD）", en: "Comiket 101 merch (SD)" }
+  date: '2022-12'
+  artist: 852 Box
+  alt: { ja: "ちびキャラのメンバーが縦に並ぶグッズイラスト", en: "Merch illustration of chibi members in a tall grid" }
+  image: ../../assets/art/key-visuals/kv-comiket-101-sd.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Comiket_101_Merch_SD_Illustration_by_852_Box.jpg
+- id: kv-calendar-2023
+  file: 02-official/group-and-event-visuals/Hololive_Comiket_101_Merch_Illustration_by_hechima.jpg
+  section: key-visuals
+  title: { ja: "2023年カレンダー", en: "Calendar 2023" }
+  date: '2023'
+  artist: hechima
+  alt: { ja: "雨上がりの紫陽花の前に立つ湊あくあとメンバーたち", en: "Aqua and other members by hydrangeas after the rain" }
+  image: ../../assets/art/key-visuals/kv-calendar-2023.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Comiket_101_Merch_Illustration_by_hechima.jpg
+- id: kv-expo-2023
+  file: 02-official/group-and-event-visuals/Hololive_SUPER_EXPO_2023_Merch_SD_Illustration_2_by_Marueri.jpg
+  section: key-visuals
+  title: { ja: "SUPER EXPO 2023 グッズ", en: "SUPER EXPO 2023 merch" }
+  date: '2023-03'
+  artist: Marueri
+  alt: { ja: "SUPER EXPO 2023のちびキャラのメンバーたち", en: "Chibi members for SUPER EXPO 2023" }
+  image: ../../assets/art/key-visuals/kv-expo-2023.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_SUPER_EXPO_2023_Merch_SD_Illustration_2_by_Marueri.jpg
+- id: kv-expo-2024
+  file: 02-official/group-and-event-visuals/Hololive_SUPER_EXPO_2024_Merch_SD_Illustration_2_by_Kashiwase_Karune.jpg
+  section: key-visuals
+  title: { ja: "SUPER EXPO 2024 グッズ", en: "SUPER EXPO 2024 merch" }
+  date: '2024-03'
+  artist: Kashiwase Karune
+  alt: { ja: "SUPER EXPO 2024のロゴとちびキャラのメンバーたち", en: "Chibi members beside the SUPER EXPO 2024 logo" }
+  image: ../../assets/art/key-visuals/kv-expo-2024.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_SUPER_EXPO_2024_Merch_SD_Illustration_2_by_Kashiwase_Karune.jpg
+- id: kv-comiket-102
+  file: 02-official/group-and-event-visuals/Hololive_summer_2023_Comiket_102_Merch_SD_Illustration_by_Akebi_Ashita.jpg
+  section: key-visuals
+  title: { ja: "コミケ102 グッズ（SD）", en: "Comiket 102 merch (SD)" }
+  date: '2023-08'
+  artist: Akebi Ashita
+  alt: { ja: "カラフルな枠の中に並ぶちびキャラのメンバー", en: "Chibi members in a colorful frame" }
+  image: ../../assets/art/key-visuals/kv-comiket-102.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_summer_2023_Comiket_102_Merch_SD_Illustration_by_Akebi_Ashita.jpg
+- id: kv-startend-rosuuri
+  file: 02-official/group-and-event-visuals/Hololive_Creator_Contest_2023_pixiv_COLLECTION_-_Startend_by_Rosuuri.jpg
+  section: key-visuals
+  title: { ja: "Startend（pixivコレクション）", en: "Startend — pixiv collection" }
+  date: '2023'
+  artist: Rosuuri
+  alt: { ja: "紫色の光の中に浮かぶStartendの三人", en: "The three Startend members floating in violet light" }
+  image: ../../assets/art/key-visuals/kv-startend-rosuuri.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Creator_Contest_2023_pixiv_COLLECTION_-_Startend_by_Rosuuri.jpg
+- id: kv-city-24
+  file: 02-official/group-and-event-visuals/Hololive_CITY24_SD_Illustration_by_Sameanko.jpg
+  section: key-visuals
+  title: { ja: "hololive CITY'24（SD）", en: "hololive CITY'24 (SD)" }
+  date: '2024'
+  artist: Sameanko
+  alt: { ja: "大勢のちびキャラのメンバーが集まるイラスト", en: "A crowd of chibi members" }
+  image: ../../assets/art/key-visuals/kv-city-24.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_CITY24_SD_Illustration_by_Sameanko.jpg
+- id: kv-acrylic-mini
+  file: 02-official/group-and-event-visuals/Hololive_production_acrylic_block_mascot_mini_Merch_Illustration_by_Rizu.jpg
+  section: key-visuals
+  title: { ja: "アクリルブロックマスコット mini", en: "Acrylic block mascot mini" }
+  artist: Rizu
+  alt: { ja: "黒い背景に並ぶ小さなちびキャラのメンバー", en: "Tiny chibi members arranged on a black background" }
+  image: ../../assets/art/key-visuals/kv-acrylic-mini.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_production_acrylic_block_mascot_mini_Merch_Illustration_by_Rizu.jpg
+- id: kv-festival-shinjuku
+  file: 02-official/group-and-event-visuals/Hololive_Festival_in_Shinjuku_from_Hololive_Summer_2022_Illustration_by_ICOMOCHI.jpg
+  section: key-visuals
+  title: { ja: "ホロライブ夏祭り in 新宿（Summer 2022）", en: "Festival in Shinjuku — Summer 2022" }
+  date: '2022-08'
+  artist: ICOMOCHI
+  alt: { ja: "浴衣姿で並ぶ5人のメンバー", en: "Five members in yukata standing side by side" }
+  image: ../../assets/art/key-visuals/kv-festival-shinjuku.jpg
+  credit: © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Hololive_Festival_in_Shinjuku_from_Hololive_Summer_2022_Illustration_by_ICOMOCHI.jpg
+- id: kv-3d-live-announcement-2021
+  file: 03-news-and-related/Minato_Aqua_2021_3D_Live_and_announcement.jpg
+  section: key-visuals
+  title: { ja: "2021年 3Dライブ重大発表", en: "2021 3D live announcement" }
+  date: '2021'
+  artist: COVER Corp.
+  alt: { ja: "「重大発表 3DLive」の文字の横で驚いた顔の湊あくあ", en: "Aqua looking surprised beside \"Big announcement — 3D Live\" lettering" }
+  image: ../../assets/art/key-visuals/kv-3d-live-announcement-2021.jpg
+  credit: © COVER Corp.
+  source: https://hololive.wiki/wiki/File:Minato_Aqua_2021_3D_Live_and_announcement.jpg
+
+# ---------------- Designer art (Gaou) ----------------
+- id: gaou-aquart-1
+  file: 02-official/character-designer-gaou/AQUART_Cover_Illustration_by_Gaou.jpg
+  section: designer
+  title: { ja: "AQUART 表紙", en: "AQUART cover" }
+  artist: Gaou (がおう)
+  featured: true
+  alt: { ja: "胸元に手を添え頬を染めるメイド服の湊あくあ", en: "Aqua in her maid outfit blushing with a hand at her chest" }
+  image: ../../assets/art/designer/gaou-aquart-1.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:AQUART_Cover_Illustration_by_Gaou.jpg
+- id: gaou-aquart-2
+  file: 02-official/character-designer-gaou/AQUART2_Cover_Illustration_by_Gaou.jpg
+  section: designer
+  title: { ja: "AQUART2 表紙", en: "AQUART2 cover" }
+  artist: Gaou (がおう)
+  alt: { ja: "水辺でウインクしながらペットボトルを持つセーラー水着の湊あくあ", en: "Aqua in a sailor-style swimsuit winking by the water with a drink bottle" }
+  image: ../../assets/art/designer/gaou-aquart-2.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:AQUART2_Cover_Illustration_by_Gaou.jpg
+- id: gaou-aquart-3
+  file: 02-official/character-designer-gaou/AQUART3_Cover_Illustration_by_Gaou.jpg
+  section: designer
+  title: { ja: "AQUART3 表紙", en: "AQUART3 cover" }
+  artist: Gaou (がおう)
+  alt: { ja: "桜の下で猫耳を着け手を差し出すセーラー服の湊あくあ", en: "Aqua with cat ears under cherry blossoms, reaching out a hand" }
+  image: ../../assets/art/designer/gaou-aquart-3.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:AQUART3_Cover_Illustration_by_Gaou.jpg
+- id: gaou-rushiaqua
+  file: 02-official/character-designer-gaou/RushiAqua_Magazine_Cover_Illustration_by_Gaou.jpg
+  section: designer
+  title: { ja: "るしあくあ本 表紙", en: "RushiAqua magazine cover" }
+  artist: Gaou (がおう)
+  alt: { ja: "逆さまにのぞき込む緑髪の少女と見上げる湊あくあ", en: "A green-haired girl peeking upside down at Aqua, who looks up surprised" }
+  image: ../../assets/art/designer/gaou-rushiaqua.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:RushiAqua_Magazine_Cover_Illustration_by_Gaou.jpg
+- id: gaou-merushiaqua
+  file: 02-official/character-designer-gaou/MeRushiAqua_Magazine_Cover.jpg
+  section: designer
+  title: { ja: "めるしあくあ本 表紙", en: "MeRushiAqua magazine cover" }
+  artist: Gaou (がおう)
+  alt: { ja: "寄り添って笑う湊あくあと二人の少女", en: "Aqua and two other girls cuddled together and smiling" }
+  image: ../../assets/art/designer/gaou-merushiaqua.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:MeRushiAqua_Magazine_Cover.jpg
+- id: gaou-white-dress
+  file: 02-official/character-designer-gaou/Minato_Aqua_by_Gaou.jpg
+  section: designer
+  title: { ja: "白いワンピース", en: "White summer dress" }
+  artist: Gaou (がおう)
+  alt: { ja: "青空の下、麦わら帽子と白いワンピースで振り返る湊あくあ", en: "Aqua in a straw hat and white sundress under a blue summer sky" }
+  image: ../../assets/art/designer/gaou-white-dress.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_by_Gaou.jpg
+- id: gaou-sailor-leg
+  file: 02-official/character-designer-gaou/Minato_Aqua_by_がおう.jpeg
+  section: designer
+  title: { ja: "セーラー服", en: "Sailor uniform" }
+  artist: Gaou (がおう)
+  alt: { ja: "白い背景で元気に笑うネイビーのセーラー服の湊あくあ", en: "Aqua grinning in a navy sailor uniform on a white background" }
+  image: ../../assets/art/designer/gaou-sailor-leg.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_by_%E3%81%8C%E3%81%8A%E3%81%86.jpeg
+- id: gaou-v2
+  file: 02-official/character-designer-gaou/Minato_Aqua_V2_by_がおう.jpeg
+  section: designer
+  title: { ja: "Ver.2.0", en: "Ver. 2.0" }
+  date: '2019-09-14'
+  artist: Gaou (がおう)
+  alt: { ja: "ウインクしながら両手でピースをするメイド服の湊あくあ", en: "Aqua in her maid outfit winking with a double peace sign" }
+  image: ../../assets/art/designer/gaou-v2.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_V2_by_%E3%81%8C%E3%81%8A%E3%81%86.jpeg
+- id: gaou-yukata
+  file: 02-official/character-designer-gaou/Minato_Aqua_in_Yukata_by_Gaou.jpg
+  section: designer
+  title: { ja: "浴衣", en: "Yukata" }
+  artist: Gaou (がおう)
+  alt: { ja: "提灯の灯る夜に紫の浴衣でりんご飴を持つ湊あくあ", en: "Aqua in a purple yukata holding a candy apple among glowing lanterns" }
+  image: ../../assets/art/designer/gaou-yukata.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_in_Yukata_by_Gaou.jpg
+- id: gaou-with-fubuki
+  file: 02-official/character-designer-gaou/MInato_Aqua_and_Shirakami_Fubuki_by_Gaou.jpg
+  section: designer
+  title: { ja: "あくあとフブキ", en: "Aqua and Fubuki" }
+  artist: Gaou (がおう)
+  alt: { ja: "パジャマ姿で寄り添う湊あくあと白上フブキ", en: "Aqua and Shirakami Fubuki leaning together in pajamas" }
+  image: ../../assets/art/designer/gaou-with-fubuki.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:MInato_Aqua_and_Shirakami_Fubuki_by_Gaou.jpg
+- id: gaou-with-shion
+  file: 02-official/character-designer-gaou/Minato_Aqua_and_Murasaki_Shion_by_Gaou.jpg
+  section: designer
+  title: { ja: "あくあとシオン", en: "Aqua and Shion" }
+  artist: Gaou (がおう)
+  alt: { ja: "ピンクのハートの服で抱き合う湊あくあと紫咲シオン", en: "Aqua and Murasaki Shion hugging, Aqua in a pink heart-print dress" }
+  image: ../../assets/art/designer/gaou-with-shion.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_and_Murasaki_Shion_by_Gaou.jpg
+- id: gaou-01
+  file: 02-official/character-designer-gaou/Minato_Aqua_1_by_Gaou.jpg
+  section: designer
+  title: { ja: "冬のマフラー", en: "Winter scarf" }
+  artist: Gaou (がおう)
+  alt: { ja: "雪の中、マフラーとコートで白い息を吐く湊あくあ", en: "Aqua in a coat and scarf breathing white air in the snow" }
+  image: ../../assets/art/designer/gaou-01.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_1_by_Gaou.jpg
+- id: gaou-02
+  file: 02-official/character-designer-gaou/Minato_Aqua_2_by_Gaou.jpg
+  section: designer
+  title: { ja: "髪を結ぶあくあ", en: "Tying her hair" }
+  artist: Gaou (がおう)
+  alt: { ja: "白いブラウス姿で髪を結びながら笑う湊あくあ", en: "Aqua in a white blouse laughing as she ties up her hair" }
+  image: ../../assets/art/designer/gaou-02.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_2_by_Gaou.jpg
+- id: gaou-04
+  file: 02-official/character-designer-gaou/Minato_Aqua_4_by_Gaou.jpg
+  section: designer
+  title: { ja: "がおー！", en: "Rawr!" }
+  artist: Gaou (がおう)
+  alt: { ja: "両手を爪のように構えて「がおー」のポーズをするメイド服の湊あくあ", en: "Aqua in her maid outfit making a playful \"rawr\" pose with clawed hands" }
+  image: ../../assets/art/designer/gaou-04.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_4_by_Gaou.jpg
+- id: gaou-05
+  file: 02-official/character-designer-gaou/Minato_Aqua_5_by_Gaou.jpg
+  section: designer
+  title: { ja: "クリスマス", en: "Christmas" }
+  artist: Gaou (がおう)
+  alt: { ja: "トナカイの角とサンタ服で微笑む湊あくあ", en: "Aqua smiling in a Santa outfit with reindeer antlers" }
+  image: ../../assets/art/designer/gaou-05.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_5_by_Gaou.jpg
+- id: gaou-08
+  file: 02-official/character-designer-gaou/Minato_Aqua_8_by_Gaou.jpg
+  section: designer
+  title: { ja: "ゲーム中", en: "Gaming break" }
+  artist: Gaou (がおう)
+  alt: { ja: "ソファに寝そべってゲーム機を持つ湊あくあ", en: "Aqua sprawled on a sofa holding a game console" }
+  image: ../../assets/art/designer/gaou-08.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_8_by_Gaou.jpg
+- id: gaou-12
+  file: 02-official/character-designer-gaou/Minato_Aqua_12_by_Gaou.jpg
+  section: designer
+  title: { ja: "百合の花", en: "Lilies" }
+  artist: Gaou (がおう)
+  alt: { ja: "百合の花に囲まれた猫耳帽子とセーラー服の湊あくあ", en: "Aqua in a cat-ear cap and sailor dress surrounded by lilies" }
+  image: ../../assets/art/designer/gaou-12.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_12_by_Gaou.jpg
+- id: gaou-13
+  file: 02-official/character-designer-gaou/Minato_Aqua_13_by_Gaou.jpg
+  section: designer
+  title: { ja: "白いドレス", en: "White frills" }
+  artist: Gaou (がおう)
+  alt: { ja: "白いフリルのドレスでピンクの髪を広げる湊あくあ", en: "Aqua in a white frilled dress with her pink hair spread around her" }
+  image: ../../assets/art/designer/gaou-13.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_13_by_Gaou.jpg
+- id: gaou-15
+  file: 02-official/character-designer-gaou/Minato_Aqua_15_by_Gaou.jpg
+  section: designer
+  title: { ja: "ぬいぐるみと", en: "With plushies" }
+  artist: Gaou (がおう)
+  alt: { ja: "ピンクのパーカーでぬいぐるみに囲まれてゲームをする湊あくあ", en: "Aqua in a pink hoodie playing games among plushies" }
+  image: ../../assets/art/designer/gaou-15.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_15_by_Gaou.jpg
+- id: gaou-16
+  file: 02-official/character-designer-gaou/Minato_Aqua_16_by_Gaou.jpg
+  section: designer
+  title: { ja: "チョコレート", en: "Chocolate" }
+  artist: Gaou (がおう)
+  alt: { ja: "チョコレートが流れる中でブランコに乗る湊あくあ", en: "Aqua on a swing amid flowing chocolate and sweets" }
+  image: ../../assets/art/designer/gaou-16.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_16_by_Gaou.jpg
+- id: gaou-17
+  file: 02-official/character-designer-gaou/Minato_Aqua_17_by_Gaou.jpg
+  section: designer
+  title: { ja: "ナース風メイド", en: "Nurse-style maid" }
+  artist: Gaou (がおう)
+  alt: { ja: "ピンクのナース風メイド服で座る湊あくあ", en: "Aqua sitting in a pink nurse-style maid outfit" }
+  image: ../../assets/art/designer/gaou-17.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_17_by_Gaou.jpg
+- id: gaou-20
+  file: 02-official/character-designer-gaou/Minato_Aqua_20_by_Gaou.jpg
+  section: designer
+  title: { ja: "お掃除メイド", en: "Cleaning-day maid" }
+  artist: Gaou (がおう)
+  alt: { ja: "メイド服で元気に飛び跳ねる湊あくあ", en: "Aqua bounding forward in her maid outfit" }
+  image: ../../assets/art/designer/gaou-20.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_20_by_Gaou.jpg
+- id: gaou-21
+  file: 02-official/character-designer-gaou/Minato_Aqua_21_by_Gaou.jpg
+  section: designer
+  title: { ja: "白いメイド服", en: "White maid dress" }
+  artist: Gaou (がおう)
+  alt: { ja: "白いメイド服で床に座り微笑む湊あくあ", en: "Aqua sitting on the floor in a white maid dress, smiling" }
+  image: ../../assets/art/designer/gaou-21.jpg
+  credit: © Gaou (がおう) — character © COVER Corp.
+  source: https://virtualyoutuber.fandom.com/wiki/File:Minato_Aqua_21_by_Gaou.jpg
+
+# ---------------- AQUARIUM. (her visual novel) ----------------
+- id: aquarium-header
+  file: 03-news-and-related/aquarium-game/aquarium_header.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 ヘッダー", en: "AQUARIUM. header art" }
+  date: '2022-10-27'
+  artist: Entergram
+  featured: true
+  alt: { ja: "「あくありうむ。」のロゴと空を背景に笑う湊あくあ", en: "Aqua smiling under the \"AQUARIUM.\" logo against a pastel sky" }
+  image: ../../assets/art/aquarium/aquarium-header.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-01
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_01.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 1", en: "AQUARIUM. screenshot 1" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "洋館の部屋で並ぶメイド服の湊あくあと二人の少女", en: "Aqua in her maid outfit with two girls in a mansion room" }
+  image: ../../assets/art/aquarium/aquarium-shot-01.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-02
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_02.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 2", en: "AQUARIUM. screenshot 2" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "黒いメイド服で目を閉じてくつろぐ湊あくあのゲーム画面", en: "Game scene of Aqua in a black maid dress resting with eyes closed" }
+  image: ../../assets/art/aquarium/aquarium-shot-02.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-03
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_03.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 3", en: "AQUARIUM. screenshot 3" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "ちびキャラの湊あくあと白髪のキャラクターのコミカルな場面", en: "Comical chibi scene of Aqua and a white-haired character" }
+  image: ../../assets/art/aquarium/aquarium-shot-03.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-04
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_04.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 4", en: "AQUARIUM. screenshot 4" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "果物に囲まれた水色のドレスの湊あくあ", en: "Aqua in a light-blue dress surrounded by fruit" }
+  image: ../../assets/art/aquarium/aquarium-shot-04.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-05
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_05.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 5", en: "AQUARIUM. screenshot 5" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "洋館の居間で楽しそうに歌う湊あくあのゲーム画面", en: "Game scene of Aqua happily humming in a mansion living room" }
+  image: ../../assets/art/aquarium/aquarium-shot-05.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-06
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_06.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 6", en: "AQUARIUM. screenshot 6" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "ソファに座るちびキャラの湊あくあ", en: "Chibi Aqua sitting on a sofa with a deadpan face" }
+  image: ../../assets/art/aquarium/aquarium-shot-06.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-07
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_07.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 7", en: "AQUARIUM. screenshot 7" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "本棚のある部屋で驚いた表情を見せる湊あくあ", en: "Aqua looking surprised in a room lined with bookshelves" }
+  image: ../../assets/art/aquarium/aquarium-shot-07.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/
+- id: aquarium-shot-08
+  file: 03-news-and-related/aquarium-game/aquarium_screenshot_08.jpg
+  section: aquarium
+  title: { ja: "あくありうむ。 スクリーンショット 8", en: "AQUARIUM. screenshot 8" }
+  date: '2022-10-27'
+  artist: Entergram
+  alt: { ja: "窓の光の中でこちらに手を伸ばす湊あくあ", en: "Aqua reaching toward the viewer in window light" }
+  image: ../../assets/art/aquarium/aquarium-shot-08.jpg
+  credit: © Entergram / COVER Corp.
+  source: https://store.steampowered.com/app/2515070/

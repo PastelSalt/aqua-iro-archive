@@ -1,0 +1,124 @@
+/* Keyframes and motion hooks. Every animation is gated by html[data-motion='on'] (§8, §20). */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--rot, 0deg));
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes drop {
+  0% {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) rotate(var(--tilt, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+}
+@keyframes thunk {
+  0% {
+    transform: translateY(-40px) scale(1.04) rotate(var(--tilt, 0deg));
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(3px) scale(1) rotate(var(--tilt, 0deg));
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+html[data-motion='on'] .stamp__ring {
+  animation: spin 20s linear infinite;
+}
+html[data-motion='on'] .float {
+  animation: float-y 5s var(--ease-float) infinite;
+}
+html[data-motion='on'] .float:nth-of-type(2n) {
+  animation-duration: 6.5s;
+  animation-delay: -2s;
+}
+html[data-motion='on'] .float:nth-of-type(3n) {
+  animation-duration: 7.5s;
+  animation-delay: -4s;
+}
+html[data-motion='on'] .rise {
+  animation: rise-in var(--dur-3) var(--ease-float) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+html[data-motion='on'] .skeleton {
+  background-image: linear-gradient(90deg, transparent 0, rgb(255 255 255 / 0.7) 50%, transparent 100%);
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* ClientRouter scene change: a soft pink/mint wipe (§4.3 of the concept) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-3);
+  animation-timing-function: var(--ease-float);
+}
+html[data-motion='off']::view-transition-old(root),
+html[data-motion='off']::view-transition-new(root) {
+  animation: none;
+}

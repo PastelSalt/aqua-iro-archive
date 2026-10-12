@@ -1,0 +1,335 @@
+---
+/** No.05 Events (EXECUTIONPLAN §9.5): a vertical "voyage" timeline. Works without JS (details/summary). */
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Icon from '../components/ui/Icon.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
+import Stamp from '../components/ui/Stamp.astro';
+import { dotDate } from '../lib/format';
+
+const events = (await getCollection('events')).sort((a, b) => a.data.date.localeCompare(b.data.date) || 0);
+const brands = await getCollection('brands');
+const rels = await getCollection('relationships');
+const visualIds = [...new Set(events.map((e) => e.data.visual).filter(Boolean))] as string[];
+const visuals = Object.fromEntries(
+  await Promise.all(visualIds.map(async (id) => [id, (await getEntry('arts', id))?.data] as const)),
+);
+const years = [...new Set(events.map((e) => e.data.date.slice(0, 4)))];
+
+const TYPE: Record<string, { ja: string; en: string; icon: string }> = {
+  news: { ja: 'ニュース', en: 'News', icon: 'note' },
+  milestone: { ja: 'マイルストーン', en: 'Milestone', icon: 'spark' },
+  live: { ja: 'ライブ', en: 'Concert', icon: 'music' },
+  collab: { ja: 'コラボ', en: 'Collab', icon: 'heart' },
+  music: { ja: '音楽', en: 'Music', icon: 'note' },
+  game: { ja: 'ゲーム', en: 'Game', icon: 'pad' },
+  brand: { ja: 'ブランド', en: 'Brand', icon: 'bow' },
+  announcement: { ja: 'お知らせ', en: 'Announcement', icon: 'flag' },
+  graduation: { ja: '卒業', en: 'Graduation', icon: 'anchor' },
+  model: { ja: '衣装', en: 'Outfit', icon: 'headdress' },
+  unit: { ja: 'ユニット', en: 'Unit', icon: 'heart' },
+  lore: { ja: 'おなじみ', en: 'Lore', icon: 'onion' },
+  award: { ja: '受賞', en: 'Award', icon: 'trophy' },
+};
+const expandable = (e: (typeof events)[number]) =>
+  !!(e.data.visual || e.data.youtube || e.data.venue || e.data.setlist);
+---
+
+<Page
+  chapter="events"
+  description="2018年のオーディションから2024年の卒業ライブまで、湊あくあの航海の記録。Minato Aqua's career timeline, from the 2018 casting call to the 2024 graduation live."
+  h1="Events"
+  subtitle="イベント"
+  intro={{
+    ja: '2018年7月のメイド募集から、2024年8月28日の卒業ライブまで。ソロライブ、ホロライブfesの全回出演、自分が主演のゲーム。港から港へ、六年間の航海の記録です。',
+    en: 'From a maid casting call in July 2018 to the record-breaking graduation live on 28 August 2024 — solo lives, every hololive fes from the 1st to the 5th, and a game of her own. Six years, port by port.',
+  }}
+  vert={{ small: 'VOYAGE LOG', text: '六年間の', em: '航海' }}
+  marquee={[
+    'VOYAGE LOG',
+    '#湊あくあ3Dライブ',
+    'hololive fes.',
+    'あくありうむ。',
+    'UMISEA',
+    'Startend',
+    '2018 → 2024',
+    '⚓',
+  ]}
+>
+  <Fragment slot="visual">
+    <div class="events-visual">
+      {visuals['kv-5th-fes'] && (
+        <Image
+          src={visuals['kv-5th-fes'].image}
+          alt={`${visuals['kv-5th-fes'].alt.ja} / ${visuals['kv-5th-fes'].alt.en}`}
+          width={560}
+          densities={[1, 1.5]}
+          loading="eager"
+          class="events-visual__img"
+        />
+      )}
+      <span class="sticker" style="--tilt:5deg">
+        2018 → 2024
+      </span>
+    </div>
+  </Fragment>
+
+  <section class="section voyage-sec" aria-labelledby="timeline-title" data-voyage>
+    <div class="wrap">
+      <SectionTitle no="01" en="Voyage timeline" ja="航海のきろく" id="timeline-title" />
+    </div>
+    <div class="voyage-tl wrap">
+      <svg class="voyage-tl__rope" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 40 1000">
+        <path
+          d="M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 30 960, 20 1000"
+          data-rope
+          pathLength="1"
+        />
+      </svg>
+      <ol class="voyage-tl__list" role="list">
+        {years.map((y) => (
+          <li class="port">
+            <h3 class="port__year" id={`y${y}`}>
+              <span class="port__buoy" aria-hidden="true">
+                <Icon name="anchor" />
+              </span>
+              <span class="num">{y}</span>
+              <small>PORT</small>
+            </h3>
+            <ol class="port__events" role="list">
+              {events
+                .filter((e) => e.data.date.startsWith(y))
+                .map((e, i) => {
+                  const t = TYPE[e.data.type]!;
+                  const v = e.data.visual ? visuals[e.data.visual] : undefined;
+                  const body = (
+                    <>
+                      <span class="ev__date num">
+                        {e.data.dateLabel ? dotDate(e.data.dateLabel) : dotDate(e.data.date)}
+                      </span>
+                      <span class={`ev__type ev__type--${e.data.type}`}>
+                        <Icon name={t.icon} />
+                        <span data-l="ja" lang="ja">
+                          {t.ja}
+                        </span>
+                        <span data-l="en" lang="en">
+                          {t.en}
+                        </span>
+                      </span>
+                      <span class="ev__title">
+                        {e.data.title.ja && (
+                          <span data-l="ja" lang="ja">
+                            {e.data.title.ja}
+                          </span>
+                        )}
+                        <span data-l="en" lang="en">
+                          {e.data.title.en ?? e.data.title.ja}
+                        </span>
+                      </span>
+                    </>
+                  );
+                  return (
+                    <li class={`ev ev--${i % 2 ? 'r' : 'l'} ev--${e.data.type}`} data-buoy>
+                      <span class="ev__dot" aria-hidden="true" />
+                      {expandable(e) ? (
+                        <details class="ev__card" data-event-id={e.id}>
+                          <summary>
+                            {body}
+                            <span class="ev__more" aria-hidden="true">
+                              <Icon name="chevron" />
+                            </span>
+                          </summary>
+                          <div class="ev__detail">
+                            {v && (
+                              <Image
+                                src={v.image}
+                                alt={`${v.alt.ja} / ${v.alt.en}`}
+                                width={520}
+                                densities={[1, 1.5]}
+                                loading="lazy"
+                                class="ev__visual"
+                              />
+                            )}
+                            {v && (
+                              <p class="credit">
+                                {v.artist} · {v.credit}
+                              </p>
+                            )}
+                            {e.data.venue && (
+                              <p>
+                                <b>Venue · 会場</b> {e.data.venue}
+                              </p>
+                            )}
+                            {e.data.youtube && (
+                              <a
+                                class="btn btn--secondary"
+                                href={`https://www.youtube.com/watch?v=${e.data.youtube}`}
+                                data-lb="video"
+                                data-yt={e.data.youtube}
+                                data-title={e.data.title.ja ?? e.data.title.en}
+                                data-credit="© COVER Corp. · Official YouTube"
+                              >
+                                <Icon name="play" />{' '}
+                                <span data-l="ja" lang="ja">
+                                  アーカイブを見る
+                                </span>
+                                <span data-l="en" lang="en">
+                                  Watch the archive
+                                </span>
+                              </a>
+                            )}
+                            {e.data.setlist && (
+                              <a href={e.data.setlist} rel="noopener">
+                                Setlist ↗
+                              </a>
+                            )}
+                            {e.data.url && (
+                              <a href={e.data.url} rel="noopener">
+                                Source ↗
+                              </a>
+                            )}
+                          </div>
+                        </details>
+                      ) : (
+                        <div class="ev__card ev__card--plain">{body}</div>
+                      )}
+                    </li>
+                  );
+                })}
+            </ol>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="lighthouse wrap" aria-labelledby="end-title">
+      <div class="lighthouse__art" aria-hidden="true">
+        <span class="lighthouse__beam"></span>
+        <Icon name="lighthouse" class="lighthouse__icon" />
+        <span class="lighthouse__sea"></span>
+      </div>
+      <div class="lighthouse__text">
+        <p class="label">
+          <b>2024.08.28</b> · GRADUATION
+        </p>
+        <h2 id="end-title" class="mincho" lang="ja">
+          ありがとう、あくたん
+        </h2>
+        <p class="muted">
+          <span data-l="ja" lang="ja">
+            航海はここで港に着きました。灯台の明かりは、いつでもここに。
+          </span>
+          <span data-l="en" lang="en">
+            The voyage made port here. The lighthouse stays lit.
+          </span>
+        </p>
+        <a class="btn btn--primary" href="/messages">
+          <span data-l="ja" lang="ja">
+            寄せ書きを残す
+          </span>
+          <span data-l="en" lang="en">
+            Leave her a note
+          </span>{' '}
+          <Icon name="anchor" />
+        </a>
+      </div>
+      <Stamp text="SEE YOU ⚓ またね ⚓ AQUA CREW ⚓ " size={120} />
+    </div>
+  </section>
+
+  <section class="section wrap" aria-labelledby="brands-title">
+    <SectionTitle no="02" en="Brand & game collaborations" ja="コラボのリボン" id="brands-title" />
+    <ul class="ribbon-cloud" role="list">
+      {brands.map((b, i) => (
+        <li
+          class="ribbon-tag"
+          style={`--tilt:${[-2, 1.5, -1, 2.5, 0][i % 5]}deg;--hue:${['var(--note-pink)', 'var(--note-sky)', 'var(--note-lav)', 'var(--note-mint)', 'var(--note-cream)'][i % 5]}`}
+        >
+          {b.data.name}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap" aria-labelledby="crew-title">
+    <SectionTitle no="03" en="Core relationships" ja="いつものメンバー" id="crew-title" />
+    <ul class="rel-cards" role="list">
+      {rels.map((r) => (
+        <li class="rel-card card card--dashed">
+          <b>
+            <span lang="ja">{r.data.name.ja}</span> <small lang="en">{r.data.name.en}</small>
+          </b>
+          <span class="muted">{r.data.members.join(' · ')}</span>
+        </li>
+      ))}
+    </ul>
+    <p style="margin-top:var(--s-4)">
+      <a href="/about#rel-title">
+        <span data-l="ja" lang="ja">
+          プロフィールでなかよしの輪を見る →
+        </span>
+        <span data-l="en" lang="en">
+          See the relationship map on About →
+        </span>
+      </a>
+    </p>
+  </section>
+</Page>
+
+<script>
+  import { onPage, onMotion } from '../lib/lifecycle';
+  import { track } from '../lib/analytics';
+
+  onPage(() => {
+    const root = document.querySelector<HTMLElement>('[data-voyage]');
+    if (!root) return;
+    const cleanups: (() => void)[] = [];
+    root
+      .querySelectorAll<HTMLDetailsElement>('details[data-event-id]')
+      .forEach((d) =>
+        d.addEventListener('toggle', () => d.open && track('event_open', { id: d.dataset.eventId })),
+      );
+
+    // rope draws as you scroll (Motion ON); fully drawn and static otherwise
+    let ctx: { revert: () => void } | null = null;
+    const rope = root.querySelector<SVGPathElement>('[data-rope]')!;
+    cleanups.push(
+      onMotion(async (on) => {
+        ctx?.revert();
+        ctx = null;
+        rope.style.strokeDashoffset = '0';
+        if (!on) return;
+        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+          import('gsap'),
+          import('gsap/ScrollTrigger'),
+        ]);
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          gsap.fromTo(
+            rope,
+            { strokeDashoffset: 1 },
+            {
+              strokeDashoffset: 0,
+              ease: 'none',
+              scrollTrigger: { trigger: '.voyage-tl', start: 'top 70%', end: 'bottom 80%', scrub: 0.6 },
+            },
+          );
+          gsap.utils.toArray<HTMLElement>('[data-buoy]').forEach((el) =>
+            gsap.from(el, {
+              y: 18,
+              opacity: 0,
+              duration: 0.6,
+              ease: 'sine.inOut',
+              scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+            }),
+          );
+        }, root);
+      }),
+    );
+    return () => {
+      ctx?.revert();
+      cleanups.forEach((f) => f());
+    };
+  });
+</script>

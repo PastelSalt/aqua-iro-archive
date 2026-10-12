@@ -1,0 +1,77 @@
+---
+/**
+ * "Setting sail…" splash (EXECUTIONPLAN §7.5). First visit only (html[data-splash=seen] hides it before paint).
+ * A separate fixed layer (opacity only) so the page and the LCP hero render underneath; max 2.5 s; Skip is focusable.
+ */
+import Icon from '../ui/Icon.astro';
+---
+
+<div class="splash" data-splash-root role="status" aria-live="polite">
+  <div class="splash__inner">
+    <Icon name="anchor" class="splash__anchor" />
+    <p class="maru" style="font-weight:700;letter-spacing:.2em">
+      <span data-l="ja" lang="ja">
+        出航準備中…
+      </span>
+      <span data-l="en" lang="en">
+        Setting sail…
+      </span>
+    </p>
+    <div class="splash__water" aria-hidden="true">
+      <i data-splash-bar></i>
+    </div>
+    <span class="splash__pct" data-splash-pct>
+      0%
+    </span>
+    <p class="splash__fine">Aqua Iro Archive · Unofficial, non-profit fan site</p>
+  </div>
+  <button type="button" class="btn btn--secondary splash__skip" data-splash-skip>
+    <span data-l="ja" lang="ja">
+      スキップ
+    </span>
+    <span data-l="en" lang="en">
+      Skip
+    </span>{' '}
+    ▸▸
+  </button>
+</div>
+
+<script>
+  import { markSplashSeen } from '../../lib/prefs';
+  const root = document.querySelector<HTMLElement>('[data-splash-root]');
+  if (root && document.documentElement.dataset.splash !== 'seen') {
+    const bar = root.querySelector<HTMLElement>('[data-splash-bar]')!;
+    const pct = root.querySelector<HTMLElement>('[data-splash-pct]')!;
+    let p = 0;
+    let done = false;
+    const set = (v: number) => {
+      p = Math.max(p, Math.min(100, v));
+      bar.style.setProperty('--p', `${p}%`);
+      pct.textContent = `${Math.round(p)}%`;
+    };
+    const finish = () => {
+      if (done) return;
+      done = true;
+      set(100);
+      markSplashSeen();
+      root.classList.add('is-done');
+      setTimeout(() => root.remove(), 700);
+    };
+    const tick = setInterval(() => set(p + (90 - p) * 0.08), 120);
+    const hero = document.querySelector<HTMLImageElement>('[data-hero-img]');
+    Promise.all([
+      document.fonts?.ready.then(() => set(p + 30)),
+      hero
+        ? hero
+            .decode()
+            .catch(() => undefined)
+            .then(() => set(p + 30))
+        : Promise.resolve(),
+    ]).then(() => setTimeout(finish, 250));
+    setTimeout(finish, 2500);
+    root.querySelector('[data-splash-skip]')?.addEventListener('click', finish);
+    root.addEventListener('transitionend', () => clearInterval(tick));
+  } else {
+    root?.remove();
+  }
+</script>

@@ -1,0 +1,191 @@
+---
+/** Moderation queue (EXECUTIONPLAN §15.3): keyboard-first (J/K move · A approve · R remove), bulk, 5 s undo. */
+import Keeper from '../../layouts/Keeper.astro';
+import { dbTx } from '../../server/db/pool';
+import { queue } from '../../server/board/moderation';
+export const prerender = false;
+const tab = Astro.url.searchParams.get('tab') === 'held' ? 'held' : 'reported';
+const items = await queue(dbTx() as never, tab);
+const REASON = ['Spam', 'Hate', 'Sexual', 'Personal info', 'Impersonation', 'Off-topic', 'Other'];
+const fmt = (d: string) => new Date(d).toLocaleString('en-GB', { timeZone: 'Asia/Tokyo' }) + ' JST';
+const rel = (d: string) => {
+  const m = Math.round((Date.now() - new Date(d).getTime()) / 60000);
+  return m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
+};
+---
+
+<Keeper title="Queue" active="/keeper/queue">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <h1>Queue</h1>
+    <nav class="k-tabs" aria-label="Queue tabs">
+      <a href="/keeper/queue" aria-current={tab === 'reported' ? 'page' : undefined}>
+        Reported
+      </a>
+      <a href="/keeper/queue?tab=held" aria-current={tab === 'held' ? 'page' : undefined}>
+        Held
+      </a>
+    </nav>
+  </div>
+  <p class="k-item__meta">
+    Keys: <b>J/K</b> move · <b>A</b> approve · <b>R</b> remove · <b>X</b> select. Actions commit after 5 s
+    (Undo in the toast).
+  </p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end" data-bulk>
+    <button type="button" class="k-btn" data-select-all>
+      Select all
+    </button>
+    <button type="button" class="k-btn k-btn--ok" data-bulk-approve>
+      Approve selected
+    </button>
+    <label class="k-field">
+      <span>Remove reason</span>
+      <select data-bulk-reason>
+        {REASON.map((r) => (
+          <option>{r}</option>
+        ))}
+      </select>
+    </label>
+    <button type="button" class="k-btn k-btn--danger" data-bulk-remove>
+      Remove selected
+    </button>
+  </div>
+  {items.length === 0 && <p class="k-card">Nothing waiting. ⚓</p>}
+  <ol style="list-style:none;display:grid;gap:10px" data-queue>
+    {items.map((m) => (
+      <li class="k-item" data-id={m.id} data-crew={m.crew_no} tabindex="-1" aria-selected="false">
+        <input type="checkbox" aria-label={`Select note #${m.crew_no}`} data-check />
+        <div style="display:grid;gap:6px">
+          <div class="k-item__meta">
+            <b>#{m.crew_no}</b>
+            <span class={`k-pill${m.status !== 'visible' ? ' k-pill--warn' : ''}`}>{m.status}</span>
+            {m.held_reason && <span class="k-pill">held: {m.held_reason}</span>}
+            {m.approved_at && <span class="k-pill">approved before</span>}
+            <time datetime={m.created_at} title={fmt(m.created_at)}>
+              {fmt(m.created_at)} · {rel(m.created_at)}
+            </time>
+          </div>
+          <p class="k-item__body">{m.body}</p>
+          {m.reasons && (
+            <div class="k-item__meta">
+              {m.reasons.map((r) => (
+                <span class="k-pill k-pill--warn">
+                  {r.reason} ×{r.n}
+                </span>
+              ))}
+            </div>
+          )}
+          {m.notes && (
+            <ul class="k-item__meta" style="display:grid">
+              {m.notes.map((n) => (
+                <li>“{n}”</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div class="k-acts">
+          <button type="button" class="k-btn k-btn--ok" data-approve>
+            Approve
+          </button>
+          <select aria-label={`Remove reason for #${m.crew_no}`} data-reason class="k-btn">
+            {REASON.map((r) => (
+              <option>{r}</option>
+            ))}
+          </select>
+          <button type="button" class="k-btn k-btn--danger" data-remove>
+            Remove
+          </button>
+        </div>
+      </li>
+    ))}
+  </ol>
+</Keeper>
+
+<script>
+  import { actions } from 'astro:actions';
+  import { toast } from '../../scripts/keeper-client';
+  const list = document.querySelector<HTMLElement>('[data-queue]');
+  const items = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-queue] .k-item:not(.is-done)'));
+  let cur = 0;
+  const focus = (i: number) => {
+    const all = items();
+    if (!all.length) return;
+    cur = Math.max(0, Math.min(all.length - 1, i));
+    all.forEach((x, j) => x.setAttribute('aria-selected', String(j === cur)));
+    all[cur]!.focus();
+  };
+  function schedule(els: HTMLElement[], label: string, commit: (ids: string[]) => Promise<unknown>) {
+    els.forEach((e) => e.classList.add('is-done'));
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      if (cancelled) return;
+      try {
+        await commit(els.map((e) => e.dataset.id!));
+        els.forEach((e) => e.remove());
+      } catch {
+        els.forEach((e) => e.classList.remove('is-done'));
+        toast('Failed — nothing changed.');
+      }
+    }, 5000);
+    toast(label, () => {
+      cancelled = true;
+      clearTimeout(t);
+      els.forEach((e) => e.classList.remove('is-done'));
+    });
+    focus(cur);
+  }
+  const approve = (els: HTMLElement[]) =>
+    schedule(els, `Approved ${els.map((e) => '#' + e.dataset.crew).join(', ')}`, async (ids) => {
+      const { error } = await actions.keeper.approve({ ids });
+      if (error) throw error;
+    });
+  const remove = (els: HTMLElement[], reason: string) =>
+    schedule(els, `Removed ${els.map((e) => '#' + e.dataset.crew).join(', ')} (${reason})`, async (ids) => {
+      const { error } = await actions.keeper.remove({ ids, reason });
+      if (error) throw error;
+    });
+  list?.addEventListener('click', (e) => {
+    const li = (e.target as HTMLElement).closest<HTMLElement>('.k-item');
+    if (!li) return;
+    if ((e.target as HTMLElement).matches('[data-approve]')) approve([li]);
+    if ((e.target as HTMLElement).matches('[data-remove]'))
+      remove([li], li.querySelector<HTMLSelectElement>('[data-reason]')!.value);
+  });
+  const selected = () => items().filter((li) => li.querySelector<HTMLInputElement>('[data-check]')!.checked);
+  document
+    .querySelector('[data-select-all]')
+    ?.addEventListener('click', () =>
+      items().forEach((li) => (li.querySelector<HTMLInputElement>('[data-check]')!.checked = true)),
+    );
+  document
+    .querySelector('[data-bulk-approve]')
+    ?.addEventListener('click', () => selected().length && approve(selected()));
+  document
+    .querySelector('[data-bulk-remove]')
+    ?.addEventListener(
+      'click',
+      () =>
+        selected().length &&
+        remove(selected(), document.querySelector<HTMLSelectElement>('[data-bulk-reason]')!.value),
+    );
+  document.addEventListener('keydown', (e) => {
+    if (
+      (e.target as HTMLElement).matches('input[type=text],textarea,select') ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.altKey
+    )
+      return;
+    const li = items()[cur];
+    if (e.key === 'j') focus(cur + 1);
+    else if (e.key === 'k') focus(cur - 1);
+    else if (e.key === 'a' && li) approve([li]);
+    else if (e.key === 'r' && li) remove([li], li.querySelector<HTMLSelectElement>('[data-reason]')!.value);
+    else if (e.key === 'x' && li) {
+      const c = li.querySelector<HTMLInputElement>('[data-check]')!;
+      c.checked = !c.checked;
+    } else return;
+    e.preventDefault();
+  });
+  focus(0);
+</script>

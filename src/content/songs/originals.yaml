@@ -1,0 +1,230 @@
+# imported from RAWDATA.md 2026-10-11 — edit here from now on
+- id: aquairopalette
+  date: "2020-08-22"
+  title: "#あくあ色ぱれっと"
+  titleEn: "#AquaIroPalette"
+  kind: original
+  credits: Junky
+  with: []
+  youtube: 6bnaBnd4kyU
+  views: 38200000
+  notes:
+    en: 1st single, premiered at her 2020 solo live; MV 2020-12-01
+  highlight: true
+  jacket: music-aqua-iro-palette
+- id: for-the-win
+  date: "2020-10-26"
+  title: For The Win
+  kind: original
+  credits: Neko Hacker
+  with: []
+  youtube: CZGFm-O5IOU
+  views: 4000000
+  notes:
+    en: 2nd original
+  highlight: false
+- id: sweet-carnival
+  date: "2021-07-15"
+  title: ヨーコソ！Sweet Carnival！
+  kind: original
+  credits: 松井洋平 / 本多友紀 / 河合泰志
+  with: []
+  youtube: gP8iNSq6Kwc
+  views: 1700000
+  notes:
+    en: Yokosuka Seaside Fes theme
+  highlight: false
+- id: kaisou-ressha
+  date: "2021-08-09"
+  title: 海想列車
+  titleEn: KAISOU RESSHA
+  kind: original
+  credits: 40mP
+  with: []
+  youtube: tuWw5EQPGlc
+  views: 5400000
+  notes:
+    en: 3rd anniversary single
+  highlight: false
+  jacket: music-kaisou-ressha
+- id: aqua-iro-palette
+  date: "2021-09-26"
+  title: aqua iro palette
+  kind: original
+  credits: Junky
+  with: []
+  link: https://music.youtube.com/playlist?list=OLAK5uy_k_3V0c9QSROD92thetFO2S-DfiS2en7I8
+  notes:
+    en: English version
+  highlight: false
+  jacket: music-aqua-iro-palette-en
+- id: kira-kira
+  date: "2021-11-09"
+  title: きらきら
+  titleEn: Kira Kira
+  kind: original
+  credits: DECO*27 / Rockwell
+  with: []
+  youtube: fXeM0fXvOp8
+  views: 4300000
+  notes:
+    en: Anime MV
+  highlight: false
+  jacket: music-kira-kira
+- id: uni-birth
+  date: "2021-12-02"
+  title: uni-birth
+  kind: original
+  credits: TOKOTOKO
+  with: []
+  youtube: awHMIHpmeIo
+  views: 1500000
+  notes:
+    en: Birthday song; MV 2022-12-09
+  highlight: false
+  jacket: music-uni-birth
+- id: original-yhfc0m3cgw0
+  date: "2022-01-24"
+  title: あくたんのこと好きすぎ☆ソング
+  kind: original
+  credits: まろん (IOSYS) / ARM
+  with: []
+  youtube: YHfc0M3CGw0
+  views: 2400000
+  notes:
+    en: Double A-side with For The Win (2022 ver.)
+  highlight: false
+  jacket: music-aqutan-song
+- id: for-the-win-2022-ver
+  date: "2022-01-24"
+  title: For The Win (2022 ver.)
+  kind: original
+  credits: Neko Hacker
+  with: []
+  link: https://cover.lnk.to/aqutan
+  notes:
+    en: Re-recording
+  highlight: false
+- id: i-wanna
+  date: "2022-01-29"
+  title: あいわな
+  titleEn: I wanna
+  kind: original
+  credits: みきとP
+  with: []
+  youtube: swX1O_a_vAk
+  views: 6700000
+  notes:
+    en: Anime MV 2022-02-18
+  highlight: false
+  jacket: music-i-wanna
+- id: tekina-remix
+  date: "2022"
+  title: あくあ色ぱれっと -TEKINA//remix-
+  kind: original
+  credits: TEKINA
+  with: []
+  link: https://db.holoplayer.jp/talent/72/
+  notes:
+    en: Remix
+  highlight: false
+- id: stay-blue
+  date: "2022-08-09"
+  title: 未だ、青い
+  titleEn: Stay Blue
+  kind: original
+  credits: じん
+  with: []
+  youtube: 16WxRVoTAx0
+  views: 5200000
+  notes:
+    en: Aquarium opening theme
+  highlight: false
+  jacket: music-stay-blue
+- id: cassiopeia
+  date: "2022-10-20"
+  title: カシオペア
+  titleEn: Cassiopeia
+  kind: original
+  credits: ハム
+  with: []
+  youtube: 9hPA5g8Nylo
+  notes:
+    en: Aquarium song
+  highlight: false
+- id: let-me-be-your-saioshi
+  date: "2022-12-02"
+  title: 君の最推しにしてよ！
+  titleEn: Let me be your SAIOSHI
+  kind: original
+  credits: HoneyWorks
+  with: []
+  youtube: S1Ln9-ksIQY
+  views: 3000000
+  notes:
+    en: MV 2023-08-15 (5th anniversary)
+  highlight: false
+  jacket: music-saioshi
+- id: girl-loved-by-aim
+  date: "2023-12-01"
+  title: エイムに愛されしガール
+  titleEn: Girl loved by Aim
+  kind: original
+  credits: Chinozo
+  with: []
+  youtube: qfw9z5rLmm4
+  views: 3600000
+  notes:
+    en: Birthday release
+  highlight: false
+  jacket: music-girl-loved-by-aim
+- id: princess-carry
+  date: "2024-06-16"
+  title: プリンセス・キャリー
+  titleEn: Princess Carry
+  kind: original
+  credits: ピノキオピー
+  with: []
+  youtube: LydxNm0P0RA
+  views: 1500000
+  notes:
+    en: Art by Miwashiba
+  highlight: false
+  jacket: music-princess-carry
+- id: strategic-love
+  date: "2024-08-08"
+  title: 恋愛ストラテジック
+  titleEn: Strategic Love
+  kind: original
+  credits: Len / 烏屋茶房
+  with: []
+  youtube: lFcB1xKOwEw
+  views: 2100000
+  notes:
+    en: 6th anniversary
+  highlight: false
+  jacket: music-strategic-love
+- id: with-hololive-jp
+  date: "2024-08-27"
+  title: キズナトキセキ with hololive JP
+  kind: original
+  with: []
+  youtube: xtYdo3HteYU
+  views: 2500000
+  notes:
+    en: "Farewell song with all JP members; #10 Japan Digital Singles"
+  highlight: false
+  jacket: music-kizuna-to-kiseki
+- id: kimiiro-princess
+  date: "2024-08-28"
+  title: "#きみいろプリンセス"
+  titleEn: kimiiro princess
+  kind: original
+  credits: Junky, lyrics co-written by Aqua
+  with: []
+  youtube: RBBwfP1rtkE
+  views: 2300000
+  notes:
+    en: Final original, released on graduation day
+  highlight: false
+  jacket: music-kimiiro-princess

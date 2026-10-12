@@ -1,0 +1,16 @@
+# Idle chatter — types in by itself every 20–30 s while the box is idle (Motion ON only). Fan-written lines.
+- { id: idle-yawn, exp: sleepy, ja: "ふぁ～……ちょっと眠くなってきたかも", en: "Yawn... I'm getting a little sleepy.", when: [night] }
+- { id: idle-still-up, exp: calm, ja: "こんな時間まで起きてるの？えらいね……？", en: "Still up at this hour? Impressive...?", when: [night] }
+- { id: idle-morning, exp: cheerful, ja: "おはよう、ご主人様！朝ごはん食べた？", en: "Good morning, Master! Did you eat breakfast?", when: [morning] }
+- { id: idle-lunch, exp: smile, ja: "お昼はなに食べよう……オムライスかな", en: "What should I have for lunch... omurice, maybe.", when: [day] }
+- { id: idle-evening, exp: calm, ja: "夕焼け、きれいだね。今日もおつかれさま", en: "What a pretty sunset. Good work today.", when: [evening] }
+- { id: idle-game, exp: excited, ja: "あとでいっしょにゲームしよーね！", en: "Let's play a game together later!", when: [any] }
+- { id: idle-dust, exp: flustered, ja: "あっ、ほこり発見……モップどこだっけ", en: "Oh, I spotted some dust... where's my mop?", when: [any] }
+- { id: idle-hum, exp: smile, ja: "ふんふ～ん♪ あくあ色ぱれっと～♪", en: "Hm-hmm~♪ Aqua iro palette~♪", when: [any] }
+- { id: idle-cat, exp: cheerful, ja: "ねこが窓の外を見てる……なにかいるのかな", en: "The cat's staring out the window... is something there?", when: [any] }
+- { id: idle-click, exp: smile, ja: "この箱をクリックすると、お話しできるよ", en: "Click this box and we can chat.", when: [first-visit] }
+- { id: idle-welcome-back, exp: cheerful, ja: "また来てくれたんだ！うれしいな", en: "You came back! I'm so happy.", when: [returning] }
+- { id: idle-palette, exp: calm, ja: "いろんな色がまざって、パレットができるんだね", en: "Mix lots of colors and you get a palette, huh.", when: [any] }
+- { id: idle-anchor, exp: smile, ja: "いかり、ちゃんと下ろした？迷子にならないでね", en: "Did you drop anchor? Don't drift off and get lost.", when: [any] }
+- { id: idle-stretch, exp: cheerful, ja: "ん～っ、のびのび！ずっと座ってると肩こるよね", en: "Mmm, a big stretch! Sitting all day makes you stiff.", when: [any] }
+- { id: idle-bubbles, exp: smile, ja: "あわあわ……シャボン玉、好きなんだ", en: "Bubbles... I really like bubbles.", when: [any] }

@@ -1,0 +1,146 @@
+/* Design tokens (EXECUTIONPLAN §6.1). Variables only. */
+:root {
+  /* brand */
+  --aqua-pink: #f2a7cf;
+  --aqua-pink-deep: #c47fb6;
+  --aqua-blue: #8ec9ee;
+  --aqua-cyan: #7fd9f2;
+  --aqua-mint: #c9f0ee;
+  --navy: #3b4583;
+  --lavender: #cdb8ea;
+  --paper: #fffbfe;
+  --ink-soft: #5e668f;
+  /* text-safe (AA on paper) */
+  --pink-ink: #9a4f8c;
+  --link-blue: #2a6f9a;
+  --placeholder: #6e6a90;
+  /* soft surfaces */
+  --pink-wash: #fde7f3;
+  --lav-line: #e6d6f0;
+  --lav-dash: #e9d8f2;
+  --mint-row: #eefaf8;
+  --note-ink: #454e86;
+  /* note papers (board) */
+  --note-pink: #ffeff7;
+  --note-mint: #e8faf6;
+  --note-cream: #fffdf2;
+  --note-lav: #f2ecfc;
+  --note-sky: #eaf6fe;
+  /* page tints (palette dots in the dock) */
+  --tint-home: #f2a7cf;
+  --tint-about: #cdb8ea;
+  --tint-clips: #f7c3b5;
+  --tint-disco: #8ec9ee;
+  --tint-stream: #9fe3d8;
+  --tint-events: #3b4583;
+  --tint-arts: #7fd9f2;
+  --tint-messages: #ffcf9e;
+  --tint: var(--tint-home); /* overridden per page via [data-chapter] */
+  /* gradients */
+  --iro: linear-gradient(100deg, #f28cc4 0%, #c890e6 45%, #6fcdeb 100%);
+  --wash:
+    radial-gradient(1200px 700px at 78% 10%, #ffe3f2 0%, transparent 60%),
+    radial-gradient(900px 600px at 10% 90%, #d9f6f3 0%, transparent 60%),
+    linear-gradient(160deg, #fff6fb 0%, #f4fbff 55%, #eafbf8 100%);
+  /* type */
+  /* --font-maru / --font-mincho arrive with /fonts/jp.css; the fallbacks keep text styled until then */
+  --jp-round-fallback: 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  --font-display:
+    var(--font-fredoka, system-ui), var(--font-maru, var(--jp-round-fallback)), system-ui, sans-serif;
+  --font-jp-round: var(--font-maru, var(--jp-round-fallback)), var(--font-fredoka, system-ui), sans-serif;
+  --font-jp-serif: var(--font-mincho, 'Hiragino Mincho ProN'), 'Yu Mincho', 'YuMincho', serif;
+  --font-text: var(--font-maru, var(--jp-round-fallback)), var(--font-fredoka, system-ui), sans-serif;
+  /* scale (fluid, 360 → 1600 px) */
+  --step--2: clamp(0.66rem, 0.64rem + 0.08vw, 0.7rem);
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0: clamp(0.94rem, 0.9rem + 0.2vw, 1rem);
+  --step-1: clamp(1.13rem, 1.05rem + 0.35vw, 1.25rem);
+  --step-2: clamp(1.35rem, 1.2rem + 0.7vw, 1.6rem);
+  --step-3: clamp(1.6rem, 1.3rem + 1.4vw, 2.4rem);
+  --step-4: clamp(2.2rem, 1.6rem + 3vw, 4.75rem); /* h1 "Aqua Iro Archive" ≈ 76px at 1600 */
+  --tracking-label: 0.24em;
+  --tracking-wide: 0.3em;
+  /* space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --gutter: clamp(16px, 4vw, 64px);
+  /* radius */
+  --r-chip: 999px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --r-note: 6px 6px 16px 6px;
+  /* shadow */
+  --sh-1: 0 4px 12px rgb(59 69 131 / 0.12);
+  --sh-2: 0 14px 34px rgb(59 69 131 / 0.14);
+  --sh-3: 0 20px 44px rgb(59 69 131 / 0.26);
+  --ring: 0 0 0 3px #fff, 0 0 0 5px var(--navy); /* focus ring */
+  /* layers */
+  --z-bg: 0;
+  --z-content: 2;
+  --z-deco: 4;
+  --z-chrome: 6;
+  --z-dialog: 8;
+  --z-dock: 10;
+  --z-drawer: 20;
+  --z-lightbox: 30;
+  --z-splash: 40;
+  --z-toast: 50;
+  /* dock geometry */
+  --dock-h: 74px;
+  --dock-gap: 24px;
+  --dock-reserve: calc(var(--dock-h) + var(--dock-gap) + 24px + env(safe-area-inset-bottom));
+  /* motion */
+  --ease-float: cubic-bezier(0.37, 0, 0.63, 1); /* ≈ sine.inOut */
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 600ms;
+}
+html[data-motion='off'] {
+  --dur-1: 0ms;
+  --dur-2: 0ms;
+  --dur-3: 0ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='on']) {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+  }
+}
+@media (max-width: 720px) {
+  :root {
+    --dock-h: 64px;
+    --dock-gap: 10px;
+  }
+}
+
+[data-chapter='about'] {
+  --tint: var(--tint-about);
+}
+[data-chapter='clips'] {
+  --tint: var(--tint-clips);
+}
+[data-chapter='discography'] {
+  --tint: var(--tint-disco);
+}
+[data-chapter='streaming'] {
+  --tint: var(--tint-stream);
+}
+[data-chapter='events'] {
+  --tint: var(--tint-events);
+}
+[data-chapter='arts'] {
+  --tint: var(--tint-arts);
+}
+[data-chapter='messages'] {
+  --tint: var(--tint-messages);
+}
