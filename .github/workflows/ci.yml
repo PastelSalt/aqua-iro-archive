@@ -56,7 +56,7 @@ jobs:
 
       - run: npx playwright install --with-deps chromium webkit
       - run: npx playwright test --project=chromium --project=webkit
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
