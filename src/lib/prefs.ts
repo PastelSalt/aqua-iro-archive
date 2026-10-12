@@ -36,6 +36,7 @@ if (isBrowser) {
   });
   effect(() => {
     html().dataset.lang = lang.value;
+    html().lang = lang.value; // keep <html lang> in step with the language actually shown
   });
 }
 
@@ -76,6 +77,7 @@ if (isBrowser) {
   document.addEventListener('astro:after-swap', () => {
     html().dataset.motion = motion.value;
     html().dataset.lang = lang.value;
+    html().lang = lang.value;
     if (splashSeen || read<Prefs>(KEYS.prefs, {}).splash) html().dataset.splash = 'seen';
   });
   window.addEventListener('aia:splash-seen', () => (splashSeen = true));

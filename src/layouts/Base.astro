@@ -59,9 +59,11 @@ const ld = jsonLd ?? {
 ---
 
 <!doctype html>
-<html lang="ja" data-motion="on" data-lang="ja">
+<html lang="ja" data-motion="on" data-lang="ja" translate="no">
   <head>
     <meta charset="utf-8" />
+    <!-- the site ships both languages with its own JP/EN toggle; browser auto-translate garbles names and breaks islands -->
+    <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -94,6 +96,7 @@ const ld = jsonLd ?? {
           const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
           d.dataset.motion = s.motion ?? (rm ? 'off' : 'on');
           d.dataset.lang = s.lang ?? ((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
+          d.lang = d.dataset.lang;
           if (s.splash) d.dataset.splash = 'seen';
         };
         a();

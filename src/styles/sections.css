@@ -620,6 +620,27 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
     grid-template-columns: minmax(280px, 380px) minmax(0, 1fr) 210px 72px;
   }
 }
+/* short laptop screens (e.g. 1366×649 usable): the 820px floor pushed the Talk box below the fold and the
+   dock sat over the timeline. Let the hero size to its content and put the Talk box in flow under the copy. */
+@media (min-width: 1181px) and (max-height: 860px) {
+  .home-hero {
+    min-height: 0;
+    grid-template-areas:
+      'copy stage reel side'
+      'dialog stage reel side';
+    grid-template-rows: auto 1fr;
+    padding-top: clamp(112px, 17vh, 150px);
+    padding-bottom: var(--s-7);
+  }
+  .home-hero__dialog {
+    position: relative;
+    grid-area: dialog;
+    left: auto;
+    bottom: auto;
+    align-self: start;
+    margin-top: var(--s-6);
+  }
+}
 @media (max-width: 1180px) {
   .home-hero {
     grid-template-columns: minmax(260px, 1fr) minmax(0, 1.1fr);
