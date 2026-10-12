@@ -25,7 +25,7 @@ jobs:
           cache: npm
       - run: npm ci
       # Astro's font + image caches: Google Fonts downloads (~400 files) are flaky without it
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: node_modules/.astro
           key: astro-cache-${{ hashFiles('astro.config.ts', 'src/content/arts/arts.yaml') }}
