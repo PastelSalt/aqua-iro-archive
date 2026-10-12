@@ -1065,18 +1065,39 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
 .wardrobe__card:hover {
   color: var(--navy);
 }
+/* one frame for every outfit: same backdrop, figure standing on the bottom edge. Art on white is
+   multiplied into the backdrop so it doesn't show as a white box; wide art gets a blurred fill behind it. */
 .wardrobe__img {
+  position: relative;
   height: 300px;
   border-radius: 14px;
   background: linear-gradient(180deg, #ffe9f5, #e7ddf8 60%, #d8eef7);
-  display: grid;
-  place-items: end center;
   overflow: hidden;
+  isolation: isolate;
 }
 .wardrobe__img img {
-  max-height: 100%;
-  width: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  object-position: center bottom;
+  mix-blend-mode: multiply;
+  padding: 10px 8px 0;
+}
+.wardrobe__img--wide img {
+  object-position: center;
+  mix-blend-mode: normal;
+  padding: 0 6px;
+  border-radius: 10px;
+}
+.wardrobe__img .wardrobe__fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  object-fit: cover;
+  padding: 0;
+  filter: blur(18px) saturate(1.15);
+  opacity: 0.55;
+  transform: scale(1.2);
 }
 .wardrobe__meta {
   display: grid;
@@ -1198,6 +1219,7 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   list-style: none;
   columns: 3 280px;
   column-gap: 22px;
+  padding-top: 8px;
 }
 .clip {
   position: relative;
@@ -1257,9 +1279,12 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   height: 13px;
 }
 .clip__rank {
+  /* overhang via transform, not negative offsets: in a multi-column list Chrome paints a negatively
+     offset child in the previous column, which left a sliver of it under the column before */
   position: absolute;
-  top: -8px;
-  left: -8px;
+  top: 0;
+  left: 0;
+  translate: -8px -8px;
   z-index: 2;
   font-size: var(--step--1);
 }
@@ -1379,8 +1404,7 @@ html[data-motion='on'] .record__disc {
 .disco-bar {
   display: grid;
   gap: 14px;
-  position: sticky;
-  top: 8px;
+  position: relative;
   z-index: 5;
   padding: 10px;
   border-radius: 24px;
@@ -1744,8 +1768,7 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
 .stream-controls {
   display: grid;
   gap: 12px;
-  position: sticky;
-  top: 8px;
+  position: relative;
   z-index: 5;
   padding: 12px;
   border-radius: 24px;
@@ -1957,23 +1980,27 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   position: relative;
   padding-block: 10px 40px;
 }
+/* a straight rope through the centre of every dot: a dotted guide line, with the twisted rope
+   filling it from the top (scaleY, scrubbed by scroll when Motion is on) */
 .voyage-tl__rope {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 40px;
-  height: 100%;
-  transform: translateX(-50%);
-  overflow: visible;
+  bottom: 0;
+  width: 6px;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: repeating-linear-gradient(180deg, var(--lav-line) 0 8px, transparent 8px 16px);
 }
-.voyage-tl__rope path {
-  fill: none;
-  stroke: #c9a979;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 2px 0 rgb(59 69 131 / 0.12));
+.voyage-tl__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: top center;
+  background:
+    repeating-linear-gradient(160deg, rgb(255 255 255 / 0.35) 0 3px, transparent 3px 7px),
+    linear-gradient(90deg, #b8955f, #d9bd8c 50%, #b8955f);
+  box-shadow: 0 2px 0 rgb(59 69 131 / 0.12);
 }
 .voyage-tl__list {
   list-style: none;
@@ -2321,12 +2348,13 @@ html[data-motion='on'] .lighthouse__beam {
   flex: none;
   color: var(--aqua-pink-deep);
 }
-.art-nav {
-  position: sticky;
-  top: 8px;
-  z-index: 6;
+.art-nav-slot {
   margin: var(--s-5) auto 0;
   width: min(1200px, 100% - 2 * var(--gutter));
+}
+.art-nav {
+  position: relative;
+  z-index: 6;
 }
 .art-nav ul {
   list-style: none;

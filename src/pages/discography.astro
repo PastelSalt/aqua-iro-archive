@@ -117,42 +117,44 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
   </Fragment>
 
   <section class="section wrap" aria-label="Songs" data-disco>
-    <div class="disco-bar">
-      <div class="disco-tabs" role="tablist" aria-label="Song lists">
-        {groups.map((g, i) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${g.id}`}
-            aria-controls={g.id}
-            aria-selected={i === 0 ? 'true' : 'false'}
-            tabindex={i === 0 ? 0 : -1}
-            data-tab={g.id}
-          >
-            <span lang="ja">{g.ja}</span>
-            <small lang="en">{g.en}</small>
-            <span class="count">{g.songs.length}</span>
-          </button>
-        ))}
-      </div>
-      <div class="disco-tools">
-        <label class="search">
-          <Icon name="search" />
-          <span class="sr-only">Search songs</span>
-          <input
-            type="search"
-            placeholder="曲名・作曲者・メンバー / title, credits, with"
-            data-disco-search
-            autocomplete="off"
-          />
-        </label>
-        <div class="seg" role="radiogroup" aria-label="View">
-          <button type="button" role="radio" aria-checked="true" data-view="grid">
-            <Icon name="grid" /> GRID
-          </button>
-          <button type="button" role="radio" aria-checked="false" data-view="timeline">
-            <Icon name="timeline" /> TIMELINE
-          </button>
+    <div class="topbar-slot">
+      <div class="disco-bar" data-topbar>
+        <div class="disco-tabs" role="tablist" aria-label="Song lists">
+          {groups.map((g, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${g.id}`}
+              aria-controls={g.id}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={g.id}
+            >
+              <span lang="ja">{g.ja}</span>
+              <small lang="en">{g.en}</small>
+              <span class="count">{g.songs.length}</span>
+            </button>
+          ))}
+        </div>
+        <div class="disco-tools">
+          <label class="search">
+            <Icon name="search" />
+            <span class="sr-only">Search songs</span>
+            <input
+              type="search"
+              placeholder="曲名・作曲者・メンバー / title, credits, with"
+              data-disco-search
+              autocomplete="off"
+            />
+          </label>
+          <div class="seg" role="radiogroup" aria-label="View">
+            <button type="button" role="radio" aria-checked="true" data-view="grid">
+              <Icon name="grid" /> GRID
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-view="timeline">
+              <Icon name="timeline" /> TIMELINE
+            </button>
+          </div>
         </div>
       </div>
     </div>

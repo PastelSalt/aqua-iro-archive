@@ -3,10 +3,11 @@
  * Opened by the dock's ☰ LOG button, Esc, or the dialogue box (window event "aia:log").
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { lang, shortcuts, setShortcuts } from '../../lib/prefs';
+import { shortcuts, setShortcuts } from '../../lib/prefs';
 import { backlog, album, loadScript } from '../../lib/talk/store';
 import { track } from '../../lib/analytics';
 import type { Conversation } from '../../lib/talk/types';
+import { useLang } from '../../lib/useLang';
 
 type Tab = 'backlog' | 'album' | 'credits' | 'shortcuts';
 const TABS: { id: Tab; ja: string; en: string }[] = [
@@ -23,7 +24,7 @@ export default function LogDrawer() {
   const [convs, setConvs] = useState<Conversation[] | null>(null);
   const ref = useRef<HTMLElement>(null);
   const returnTo = useRef<HTMLElement | null>(null);
-  const L = lang.value;
+  const L = useLang();
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
 
   useEffect(() => {
@@ -33,10 +34,13 @@ export default function LogDrawer() {
       setOpen((v) => (d.open !== undefined ? d.open : d.toggle ? !v : true));
     };
     const onNav = () => setOpen(false);
+    const onHelp = () => setOpen(false); // one drawer at a time
     window.addEventListener('aia:log', onLog);
+    window.addEventListener('aia:help', onHelp);
     document.addEventListener('astro:before-swap', onNav);
     return () => {
       window.removeEventListener('aia:log', onLog);
+      window.removeEventListener('aia:help', onHelp);
       document.removeEventListener('astro:before-swap', onNav);
     };
   }, []);
@@ -76,7 +80,7 @@ export default function LogDrawer() {
       document.addEventListener('keydown', onKey, true);
       return () => document.removeEventListener('keydown', onKey, true);
     } else {
-      document.body.classList.remove('has-drawer');
+      if (!document.querySelector('.drawer.is-open')) document.body.classList.remove('has-drawer');
       returnTo.current?.focus?.();
       returnTo.current = null;
     }
@@ -111,7 +115,7 @@ export default function LogDrawer() {
       {open && <div class="scrim" onClick={() => setOpen(false)} />}
       <aside
         ref={ref}
-        class={`drawer${open ? ' is-open' : ''}`}
+        class={`drawer drawer--log${open ? ' is-open' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="log-title"

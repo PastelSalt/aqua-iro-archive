@@ -24,7 +24,11 @@ import Splash from '../components/chrome/Splash.astro';
 import Dock from '../components/chrome/Dock.tsx';
 import LogDrawer from '../components/chrome/LogDrawer.tsx';
 import BgmCapsule from '../components/chrome/BgmCapsule.tsx';
-import { SITE_NAME } from '../lib/site';
+import HelpDrawer from '../components/chrome/HelpDrawer.tsx';
+import Tour from '../components/chrome/Tour.tsx';
+import { getImage } from 'astro:assets';
+import moesoftLogo from '../assets/logo/moesoft.png';
+import { PORTFOLIO, SITE_NAME } from '../lib/site';
 import type { ChapterId } from '../lib/chapters';
 
 export interface Props {
@@ -46,6 +50,7 @@ const {
   jsonLd,
   footer = true,
 } = Astro.props;
+const maker = await getImage({ src: moesoftLogo, height: 72, format: 'webp' });
 const canonical = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site);
 const ogUrl = new URL(og, Astro.site);
 const ld = jsonLd ?? {
@@ -97,7 +102,13 @@ const ld = jsonLd ?? {
           d.dataset.motion = s.motion ?? (rm ? 'off' : 'on');
           d.dataset.lang = s.lang ?? ((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
           d.lang = d.dataset.lang;
-          if (s.splash) d.dataset.splash = 'seen';
+          // splash once per browser session, and again when HELP replays the tour
+          let ss = null;
+          try {
+            ss = sessionStorage;
+          } catch {}
+          if (ss && ss.getItem('aia:splash') === '1' && ss.getItem('aia:replay') !== '1')
+            d.dataset.splash = 'seen';
         };
         a();
         document.addEventListener('astro:after-swap', a);
@@ -145,6 +156,8 @@ const ld = jsonLd ?? {
     <Dock client:load transition:persist="dock" initialPath={Astro.url.pathname} />
     <LogDrawer client:idle transition:persist="log" />
     <BgmCapsule client:idle transition:persist="bgm" />
+    <HelpDrawer client:idle transition:persist="help" makerLogo={maker.src} makerUrl={PORTFOLIO.url} />
+    <Tour client:idle transition:persist="tour" />
     <script>
       import '../scripts/lightbox';
       import '../scripts/global';

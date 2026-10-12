@@ -1,13 +1,22 @@
 ---
 /**
- * "Setting sail…" splash (EXECUTIONPLAN §7.5). First visit only (html[data-splash=seen] hides it before paint).
- * A separate fixed layer (opacity only) so the page and the LCP hero render underneath; max 2.5 s; Skip is focusable.
+ * "Setting sail…" splash (EXECUTIONPLAN §7.5). Once per browser session, and again when the tour is
+ * replayed from HELP (html[data-splash=seen] hides it before paint). A separate fixed layer (opacity only)
+ * so the page and the LCP hero render underneath. Shows for 1.6–3.2 s; Skip is focusable.
  */
+import { Image } from 'astro:assets';
+import channel from '../../assets/logo/channel.png';
+import moesoft from '../../assets/logo/moesoft.png';
 import Icon from '../ui/Icon.astro';
+import { PORTFOLIO } from '../../lib/site';
 ---
 
 <div class="splash" data-splash-root role="status" aria-live="polite">
   <div class="splash__inner">
+    <div class="splash__brand">
+      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={260} densities={[1, 2]} loading="eager" />
+      <small>AQUA IRO ARCHIVE</small>
+    </div>
     <Icon name="anchor" class="splash__anchor" />
     <p class="maru" style="font-weight:700;letter-spacing:.2em">
       <span data-l="ja" lang="ja">
@@ -25,6 +34,17 @@ import Icon from '../ui/Icon.astro';
     </span>
     <p class="splash__fine">Aqua Iro Archive · Unofficial, non-profit fan site</p>
   </div>
+  <a class="splash__by" href={PORTFOLIO.url} rel="noopener" target="_blank">
+    <small>
+      <span data-l="ja" lang="ja">
+        制作
+      </span>
+      <span data-l="en" lang="en">
+        Made by
+      </span>
+    </small>
+    <Image src={moesoft} alt="Moesoft" height={40} densities={[1, 2]} loading="eager" />
+  </a>
   <button type="button" class="btn btn--secondary splash__skip" data-splash-skip>
     <span data-l="ja" lang="ja">
       スキップ
@@ -38,10 +58,13 @@ import Icon from '../ui/Icon.astro';
 
 <script>
   import { markSplashSeen } from '../../lib/prefs';
+  const MIN_MS = 1600; // long enough to read the logos, short enough not to be in the way
+  const MAX_MS = 3200;
   const root = document.querySelector<HTMLElement>('[data-splash-root]');
   if (root && document.documentElement.dataset.splash !== 'seen') {
     const bar = root.querySelector<HTMLElement>('[data-splash-bar]')!;
     const pct = root.querySelector<HTMLElement>('[data-splash-pct]')!;
+    const t0 = performance.now();
     let p = 0;
     let done = false;
     const set = (v: number) => {
@@ -52,25 +75,21 @@ import Icon from '../ui/Icon.astro';
     const finish = () => {
       if (done) return;
       done = true;
+      clearInterval(tick);
       set(100);
       markSplashSeen();
       root.classList.add('is-done');
       setTimeout(() => root.remove(), 700);
     };
-    const tick = setInterval(() => set(p + (90 - p) * 0.08), 120);
+    // the bar follows elapsed time (towards 92% at MIN_MS), and jumps ahead as real work completes
+    const tick = setInterval(() => set(((performance.now() - t0) / MIN_MS) * 92), 80);
     const hero = document.querySelector<HTMLImageElement>('[data-hero-img]');
     Promise.all([
-      document.fonts?.ready.then(() => set(p + 30)),
-      hero
-        ? hero
-            .decode()
-            .catch(() => undefined)
-            .then(() => set(p + 30))
-        : Promise.resolve(),
-    ]).then(() => setTimeout(finish, 250));
-    setTimeout(finish, 2500);
+      document.fonts?.ready,
+      hero ? hero.decode().catch(() => undefined) : Promise.resolve(),
+    ]).then(() => setTimeout(finish, Math.max(250, MIN_MS - (performance.now() - t0))));
+    setTimeout(finish, MAX_MS);
     root.querySelector('[data-splash-skip]')?.addEventListener('click', finish);
-    root.addEventListener('transitionend', () => clearInterval(tick));
   } else {
     root?.remove();
   }

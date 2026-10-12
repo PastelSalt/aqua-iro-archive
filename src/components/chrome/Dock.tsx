@@ -8,6 +8,7 @@ import { CHAPTERS, chapterForPath, type Chapter } from '../../lib/chapters';
 import { motion, lang, bgmOn, shortcuts, toggleMotion, toggleLang } from '../../lib/prefs';
 import { KEYS, read, write } from '../../lib/storage';
 import { track } from '../../lib/analytics';
+import { useLang } from '../../lib/useLang';
 
 type DockState = 'expanded' | 'compact' | 'peek';
 const LONG_PAGES = new Set(['/streaming', '/arts', '/messages']);
@@ -34,6 +35,9 @@ function isTyping(el: EventTarget | null) {
 function openLog() {
   window.dispatchEvent(new CustomEvent('aia:log', { detail: { toggle: true } }));
 }
+function openHelp() {
+  window.dispatchEvent(new CustomEvent('aia:help', { detail: { toggle: true } }));
+}
 function toggleBgm() {
   window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { toggle: true } }));
 }
@@ -59,9 +63,14 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       setSheet(false);
       setSysPop(false);
     };
+    const onHintOff = () => setHint(false);
     document.addEventListener('astro:page-load', onLoad);
+    window.addEventListener('aia:hint-off', onHintOff);
     setHint(!read<boolean>(KEYS.dockHint, false));
-    return () => document.removeEventListener('astro:page-load', onLoad);
+    return () => {
+      document.removeEventListener('astro:page-load', onLoad);
+      window.removeEventListener('aia:hint-off', onHintOff);
+    };
   }, []);
 
   // --- name plate types in like dialogue ---
@@ -92,8 +101,14 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     let lastT = performance.now();
     let idle: ReturnType<typeof setTimeout> | undefined;
     let focused = false;
+    let held = false; // the onboarding tour keeps the dock open while it points at its buttons
     let raf = 0;
     const host = hostRef.current;
+    const onHold = (e: Event) => {
+      held = !!(e as CustomEvent<boolean>).detail;
+      if (held) setState('expanded');
+    };
+    window.addEventListener('aia:dock-hold', onHold);
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -104,13 +119,13 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
         const v = (Math.abs(dy) / Math.max(1, now - lastT)) * 1000;
         lastY = y;
         lastT = now;
-        if (focused) return;
+        if (focused || held) return;
         if (y < 80) setState('expanded');
         else if (dy > 0 && v > 1200 && LONG_PAGES.has(currentPath())) setState('peek');
         else if (dy > 0) setState((s) => (s === 'peek' ? 'peek' : 'compact'));
         else if (dy < 0) setState((s) => (s === 'peek' ? 'compact' : s));
         clearTimeout(idle);
-        idle = setTimeout(() => !focused && setState('expanded'), 2000);
+        idle = setTimeout(() => !focused && !held && setState('expanded'), 2000);
       });
     };
     const onPointer = (e: PointerEvent) => {
@@ -129,6 +144,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     host?.addEventListener('focusin', onFocusIn);
     host?.addEventListener('focusout', onFocusOut);
     return () => {
+      window.removeEventListener('aia:dock-hold', onHold);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('pointermove', onPointer);
       host?.removeEventListener('focusin', onFocusIn);
@@ -213,12 +229,13 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     e.preventDefault();
   }
 
-  const L = lang.value;
+  const L = useLang();
   const sysButtons = (
     <>
       <button
         type="button"
         class="sysbtn"
+        data-sys="bgm"
         aria-pressed={bgmOn.value}
         onClick={sysBgm}
         aria-label={L === 'ja' ? 'BGM オン・オフ' : 'BGM on/off'}
@@ -229,6 +246,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       <button
         type="button"
         class="sysbtn"
+        data-sys="motion"
         aria-pressed={motion.value === 'on'}
         onClick={sysMotion}
         aria-label={L === 'ja' ? 'モーション オン・オフ (Alt+M)' : 'Motion on/off (Alt+M)'}
@@ -239,6 +257,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       <button
         type="button"
         class="sysbtn"
+        data-sys="lang"
         onClick={sysLang}
         aria-label={L === 'ja' ? '言語を英語に切り替え (Alt+L)' : 'Switch language to Japanese (Alt+L)'}
       >
@@ -250,11 +269,22 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       <button
         type="button"
         class="sysbtn"
+        data-sys="log"
         onClick={() => openLog()}
         aria-label={L === 'ja' ? 'ログを開く (Esc)' : 'Open the log (Esc)'}
       >
         <Icon name="menu" />
         LOG
+      </button>
+      <button
+        type="button"
+        class="sysbtn"
+        data-sys="help"
+        onClick={() => openHelp()}
+        aria-label={L === 'ja' ? 'ヘルプ・使い方' : 'Help and how-to'}
+      >
+        <Icon name="help" />
+        HELP
       </button>
     </>
   );

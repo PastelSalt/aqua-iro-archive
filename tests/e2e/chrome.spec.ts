@@ -7,15 +7,16 @@ test('dock: number keys navigate, aria-current follows, prefs persist across pag
   await page.goto('/');
   await hydrated(page);
   await expect(page.locator('.chap[aria-current="page"]')).toContainText('ホーム');
-  await page.keyboard.press('5');
-  await expect(page).toHaveURL(/\/streaming$/);
-  await expect(page.locator('.chap[aria-current="page"]')).toContainText('配信');
+  // a light page: /streaming is ~0.5 MB of HTML and WebKit on CI can take >5 s to swap it in
+  await page.keyboard.press('3');
+  await expect(page).toHaveURL(/\/clips$/, { timeout: 15_000 });
+  await expect(page.locator('.chap[aria-current="page"]')).toContainText('切り抜き');
   // language toggle
   await page.getByRole('button', { name: /言語を英語に/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');
   await hydrated(page);
   await page.keyboard.press('2');
-  await expect(page).toHaveURL(/\/about$/);
+  await expect(page).toHaveURL(/\/about$/, { timeout: 15_000 });
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');
   // motion toggle
   await page.keyboard.press('Alt+KeyM');
@@ -30,7 +31,7 @@ test('LOG drawer opens with Esc, traps focus and closes', async ({ page, errors 
   await page.goto('/about');
   await hydrated(page);
   await page.keyboard.press('Escape');
-  const drawer = page.locator('aside.drawer');
+  const drawer = page.locator('aside.drawer--log');
   await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole('tab', { name: /ショートカット|Shortcuts/ }).click();
   await expect(drawer).toContainText('Alt');
@@ -58,12 +59,46 @@ test('Motion OFF stops CSS animations', async ({ page, errors }) => {
 });
 
 test('first visit shows the splash, which can be skipped', async ({ page, errors }) => {
-  await page.addInitScript(() => localStorage.setItem('aia:prefs', '{}'));
+  await page.addInitScript(() => {
+    localStorage.setItem('aia:prefs', '{}');
+    sessionStorage.removeItem('aia:splash');
+  });
   await page.goto('/about');
+  await expect(page.locator('.splash__by')).toHaveAttribute('href', /moesoft/);
   const skip = page.getByRole('button', { name: /スキップ|Skip/ }).first();
-  // the splash also finishes on its own (≤ 2.5 s) and fades out, so a click may race the fade
+  // the splash also finishes on its own (≤ 3.2 s) and fades out, so a click may race the fade
   if (await skip.isVisible()) await skip.click({ timeout: 2000 }).catch(() => {});
-  await expect(page.locator('[data-splash-root]')).toHaveCount(0, { timeout: 4000 });
+  await expect(page.locator('[data-splash-root]')).toHaveCount(0, { timeout: 5000 });
   await expect(page.locator('html')).toHaveAttribute('data-splash', 'seen');
+  void errors;
+});
+
+test('first-visit tour walks through the controls, and HELP replays it after a reload', async ({
+  page,
+  errors,
+}) => {
+  await page.addInitScript(() => localStorage.removeItem('aia:tour.done'));
+  await page.goto('/');
+  const card = page.locator('.tour__card');
+  await expect(card).toBeVisible({ timeout: 5000 });
+  await expect(card).toContainText('1 / 7');
+  for (let n = 0; n < 7; n++) await card.locator('[data-next]').click();
+  await expect(page.locator('.tour')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('aia:tour.done'))).toBe('true');
+
+  await hydrated(page);
+  await page.getByRole('button', { name: /ヘルプ|Help and how-to/ }).click();
+  const help = page.locator('aside.drawer--help');
+  await expect(help).toHaveClass(/is-open/);
+  await help.getByRole('button', { name: /ツアーをもう一度|Replay the tour/ }).click();
+  await Promise.all([
+    page.waitForEvent('load'),
+    help.getByRole('button', { name: /再生する|Yes, replay/ }).click(),
+  ]);
+  // the replay shows the loading screen again even though it was seen this session
+  await expect(page.locator('[data-splash-root]')).toBeVisible();
+  await expect(page.locator('.tour__card')).toBeVisible({ timeout: 8000 });
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.tour')).toHaveCount(0);
   void errors;
 });

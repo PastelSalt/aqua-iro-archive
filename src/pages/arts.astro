@@ -117,19 +117,21 @@ let eager = 4;
     </aside>
   </div>
 
-  <nav class="art-nav" aria-label="Gallery sections" data-art-nav>
-    <ul role="list">
-      {sections.map((s) => (
-        <li>
-          <a class="ribbon-tab" href={`#${s.id}`} data-section-link={s.id}>
-            <span lang="ja">{s.label.ja}</span>
-            <small lang="en">{s.label.en}</small>
-            <span class="count">{s.items.length}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+  <div class="topbar-slot art-nav-slot">
+    <nav class="art-nav" aria-label="Gallery sections" data-art-nav data-topbar>
+      <ul role="list">
+        {sections.map((s) => (
+          <li>
+            <a class="ribbon-tab" href={`#${s.id}`} data-section-link={s.id}>
+              <span lang="ja">{s.label.ja}</span>
+              <small lang="en">{s.label.en}</small>
+              <span class="count">{s.items.length}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
 
   <div class="wrap gallery" data-gallery>
     {sections.map((s, si) => (

@@ -13,6 +13,7 @@ import { activeContexts, matches } from '../../lib/talk/context';
 import { pickChoices, pickConversation, cryptoRand } from '../../lib/talk/picker';
 import { loadScript, logLine, markFound } from '../../lib/talk/store';
 import type { Choice, CompiledScript, Conversation, Line } from '../../lib/talk/types';
+import { useLang } from '../../lib/useLang';
 
 type Phase = 'idle' | 'speaking' | 'choosing' | 'ended';
 type Props = { first: { ja: string; en: string } };
@@ -51,7 +52,7 @@ export default function DialogueBox({ first }: Props) {
   const hovered = useRef(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const loadedAt = useRef(Date.now());
-  const L = lang.value;
+  const L = useLang();
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
 
   // ---------- load ----------

@@ -80,13 +80,9 @@ const expandable = (e: (typeof events)[number]) =>
       <SectionTitle no="01" en="Voyage timeline" ja="航海のきろく" id="timeline-title" />
     </div>
     <div class="voyage-tl wrap">
-      <svg class="voyage-tl__rope" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 40 1000">
-        <path
-          d="M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 30 960, 20 1000"
-          data-rope
-          pathLength="1"
-        />
-      </svg>
+      <span class="voyage-tl__rope" aria-hidden="true">
+        <span class="voyage-tl__fill" data-rope></span>
+      </span>
       <ol class="voyage-tl__list" role="list">
         {years.map((y) => (
           <li class="port">
@@ -291,14 +287,14 @@ const expandable = (e: (typeof events)[number]) =>
         d.addEventListener('toggle', () => d.open && track('event_open', { id: d.dataset.eventId })),
       );
 
-    // rope draws as you scroll (Motion ON); fully drawn and static otherwise
+    // rope fills in as you scroll (Motion ON); full and static otherwise
     let ctx: { revert: () => void } | null = null;
-    const rope = root.querySelector<SVGPathElement>('[data-rope]')!;
+    const rope = root.querySelector<HTMLElement>('[data-rope]')!;
     cleanups.push(
       onMotion(async (on) => {
         ctx?.revert();
         ctx = null;
-        rope.style.strokeDashoffset = '0';
+        rope.style.transform = 'scaleY(1)';
         if (!on) return;
         const [{ gsap }, { ScrollTrigger }] = await Promise.all([
           import('gsap'),
@@ -306,13 +302,14 @@ const expandable = (e: (typeof events)[number]) =>
         ]);
         gsap.registerPlugin(ScrollTrigger);
         ctx = gsap.context(() => {
+          // the rope pays out down to the middle of the screen as you scroll
           gsap.fromTo(
             rope,
-            { strokeDashoffset: 1 },
+            { scaleY: 0 },
             {
-              strokeDashoffset: 0,
+              scaleY: 1,
               ease: 'none',
-              scrollTrigger: { trigger: '.voyage-tl', start: 'top 70%', end: 'bottom 80%', scrub: 0.6 },
+              scrollTrigger: { trigger: '.voyage-tl', start: 'top 55%', end: 'bottom 55%', scrub: 0.4 },
             },
           );
           gsap.utils.toArray<HTMLElement>('[data-buoy]').forEach((el) =>

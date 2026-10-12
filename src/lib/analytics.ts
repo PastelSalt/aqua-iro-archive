@@ -33,6 +33,9 @@ export type EventName =
   | 'board_sort'
   | 'board_more'
   | 'outbound'
+  | 'help_open'
+  | 'tour'
+  | 'tour_replay'
   | 'cwv'
   | 'not_found';
 

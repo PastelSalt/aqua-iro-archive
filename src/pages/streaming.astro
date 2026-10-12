@@ -159,63 +159,65 @@ const totalHours = summary.hours;
 
   <section class="section wrap" aria-labelledby="log-title" data-streams>
     <SectionTitle no="02" en="Stream log" ja="全配信リスト" id="log-title" />
-    <div class="stream-controls">
-      <div class="year-tabs chips" role="radiogroup" aria-label="Year">
-        <button type="button" class="chip" role="radio" aria-checked="true" data-year="all">
-          <span data-l="ja" lang="ja">
-            すべて
-          </span>
-          <span data-l="en" lang="en">
-            All
-          </span>
-        </button>
-        {years.map((y) => (
-          <button type="button" class="chip" role="radio" aria-checked="false" data-year={y.year}>
-            {y.year} <span class="count">{y.count}</span>
-          </button>
-        ))}
-      </div>
-      <div class="stream-controls__row">
-        <label class="search">
-          <Icon name="search" />
-          <span class="sr-only">Search stream titles</span>
-          <input
-            type="search"
-            placeholder="タイトルで検索 / search titles (耐久, minecraft…)"
-            data-stream-search
-            autocomplete="off"
-          />
-        </label>
-        <label class="select">
-          <span class="sr-only">Sort</span>
-          <select data-stream-sort>
-            <option value="date-desc">新しい順 · Newest</option>
-            <option value="date-asc">古い順 · Oldest</option>
-            <option value="views">再生数 · Most viewed</option>
-            <option value="length">長さ · Longest</option>
-          </select>
-        </label>
-        <div class="seg" role="radiogroup" aria-label="View">
-          <button type="button" role="radio" aria-checked="true" data-sview="list">
-            <Icon name="list" /> LIST
-          </button>
-          <button type="button" role="radio" aria-checked="false" data-sview="calendar">
-            <Icon name="calendar" /> CALENDAR
-          </button>
-        </div>
-      </div>
-      <div class="chips tag-chips" role="group" aria-label="Tags">
-        {STREAM_TAGS.map((t) => (
-          <button type="button" class="chip" aria-pressed="false" data-tag={t}>
+    <div class="topbar-slot">
+      <div class="stream-controls" data-topbar>
+        <div class="year-tabs chips" role="radiogroup" aria-label="Year">
+          <button type="button" class="chip" role="radio" aria-checked="true" data-year="all">
             <span data-l="ja" lang="ja">
-              {TAG_LABEL[t]!.ja}
+              すべて
             </span>
             <span data-l="en" lang="en">
-              {TAG_LABEL[t]!.en}
+              All
             </span>
-            <span class="count">{summary.tags[t as keyof typeof summary.tags]}</span>
           </button>
-        ))}
+          {years.map((y) => (
+            <button type="button" class="chip" role="radio" aria-checked="false" data-year={y.year}>
+              {y.year} <span class="count">{y.count}</span>
+            </button>
+          ))}
+        </div>
+        <div class="stream-controls__row">
+          <label class="search">
+            <Icon name="search" />
+            <span class="sr-only">Search stream titles</span>
+            <input
+              type="search"
+              placeholder="タイトルで検索 / search titles (耐久, minecraft…)"
+              data-stream-search
+              autocomplete="off"
+            />
+          </label>
+          <label class="select">
+            <span class="sr-only">Sort</span>
+            <select data-stream-sort>
+              <option value="date-desc">新しい順 · Newest</option>
+              <option value="date-asc">古い順 · Oldest</option>
+              <option value="views">再生数 · Most viewed</option>
+              <option value="length">長さ · Longest</option>
+            </select>
+          </label>
+          <div class="seg" role="radiogroup" aria-label="View">
+            <button type="button" role="radio" aria-checked="true" data-sview="list">
+              <Icon name="list" /> LIST
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-sview="calendar">
+              <Icon name="calendar" /> CALENDAR
+            </button>
+          </div>
+        </div>
+        <div class="chips tag-chips" role="group" aria-label="Tags">
+          {STREAM_TAGS.map((t) => (
+            <button type="button" class="chip" aria-pressed="false" data-tag={t}>
+              <span data-l="ja" lang="ja">
+                {TAG_LABEL[t]!.ja}
+              </span>
+              <span data-l="en" lang="en">
+                {TAG_LABEL[t]!.en}
+              </span>
+              <span class="count">{summary.tags[t as keyof typeof summary.tags]}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
     <p class="result-count" aria-live="polite" data-stream-count>

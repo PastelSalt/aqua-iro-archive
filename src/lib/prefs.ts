@@ -3,7 +3,7 @@
  * sets html[data-motion] / html[data-lang] before first paint; these signals take over after hydration.
  */
 import { signal, effect } from '@preact/signals';
-import { KEYS, read, write } from './storage';
+import { KEYS, read, write, remove } from './storage';
 
 export type Lang = 'ja' | 'en';
 export type Prefs = {
@@ -60,6 +60,8 @@ export function setShortcuts(v: boolean) {
 }
 export function markSplashSeen() {
   save({ splash: true });
+  write(KEYS.splashSession, 1, 'session');
+  remove(KEYS.replay, 'session');
   if (isBrowser) {
     html().dataset.splash = 'seen';
     window.dispatchEvent(new Event('aia:splash-seen'));
@@ -78,7 +80,7 @@ if (isBrowser) {
     html().dataset.motion = motion.value;
     html().dataset.lang = lang.value;
     html().lang = lang.value;
-    if (splashSeen || read<Prefs>(KEYS.prefs, {}).splash) html().dataset.splash = 'seen';
+    if (splashSeen || read<number>(KEYS.splashSession, 0, 'session')) html().dataset.splash = 'seen';
   });
   window.addEventListener('aia:splash-seen', () => (splashSeen = true));
 }

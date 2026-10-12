@@ -1,6 +1,6 @@
 import { test as base, expect, type Page } from '@playwright/test';
 
-/** Every test fails on uncaught errors or CSP violations. Splash is pre-dismissed unless a test opts in. */
+/** Every test fails on uncaught errors or CSP violations. Splash and tour are pre-dismissed unless a test opts in. */
 export const test = base.extend<{ errors: string[] }>({
   errors: async ({ page }, use) => {
     const errors: string[] = [];
@@ -15,6 +15,8 @@ export const test = base.extend<{ errors: string[] }>({
       if (!localStorage.getItem('aia:prefs'))
         localStorage.setItem('aia:prefs', JSON.stringify({ splash: true, lang: 'ja' }));
       localStorage.setItem('aia:hint.dock', 'true');
+      if (!localStorage.getItem('aia:tour.done')) localStorage.setItem('aia:tour.done', 'true');
+      if (!sessionStorage.getItem('aia:splash')) sessionStorage.setItem('aia:splash', '1');
     });
     await use(errors);
     expect(errors, errors.join('\n')).toEqual([]);

@@ -1,10 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../../assets/logo/channel.png';
+import moesoft from '../../assets/logo/moesoft.png';
 import Icon from '../ui/Icon.astro';
 import T from '../ui/T.astro';
 import { CHAPTERS } from '../../lib/chapters';
-import { SISTER_SITES } from '../../lib/site';
+import { PORTFOLIO, SISTER_SITES } from '../../lib/site';
 ---
 
 <footer class="footer">
@@ -18,6 +19,26 @@ import { SISTER_SITES } from '../../lib/site';
         <p>
           <T k="copyright" />
         </p>
+        <a class="maker-card" href={PORTFOLIO.url} rel="noopener" target="_blank">
+          <small>
+            <span data-l="ja" lang="ja">
+              制作
+            </span>
+            <span data-l="en" lang="en">
+              Made by
+            </span>
+          </small>
+          <Image src={moesoft} alt="Moesoft" height={44} densities={[1, 2]} />
+          <span class="maker-card__go">
+            <span data-l="ja" lang="ja">
+              ほかの作品を見る
+            </span>
+            <span data-l="en" lang="en">
+              See more work
+            </span>{' '}
+            ↗
+          </span>
+        </a>
       </div>
       <nav aria-labelledby="ft-archive">
         <h2 id="ft-archive">
@@ -70,9 +91,9 @@ import { SISTER_SITES } from '../../lib/site';
       </div>
     </div>
     <div class="footer__fine">
-      <span>
-        <T k="footer.madeBy" /> · 2026
-      </span>
+      <a class="footer__by" href={PORTFOLIO.url} rel="noopener" target="_blank">
+        <T k="footer.madeBy" /> · 2026 ↗
+      </a>
       <a class="back-top" href="#top">
         <Icon name="arrow-up" /> <T k="footer.backTop" /> ⚓
       </a>

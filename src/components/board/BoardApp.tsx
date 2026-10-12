@@ -10,6 +10,7 @@ import { track } from '../../lib/analytics';
 import { checkText, graphemeCount, LIMITS } from '../../lib/text/normalize';
 import { jstDate } from '../../lib/format';
 import { mountTurnstile, type Widget } from './turnstile';
+import { useLang } from '../../lib/useLang';
 
 type Note = {
   id: string;
@@ -92,7 +93,7 @@ function readMine(): Mine[] {
 }
 
 export default function BoardApp({ siteKey }: { siteKey: string }) {
-  const L = lang.value;
+  const L = useLang();
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
 
   // ---------- board state ----------
@@ -597,7 +598,7 @@ function ReportPopover({
   onClose: () => void;
   onDone: () => void;
 }) {
-  const L = lang.value;
+  const L = lang.value; // mounted on click, never hydrated
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
   const [reason, setReason] = useState<string | null>(null);
   const [text, setText] = useState('');

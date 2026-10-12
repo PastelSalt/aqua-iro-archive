@@ -4,8 +4,9 @@
  * across ClientRouter navigations so music keeps playing between chapters. Official uploads only.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { bgmOn, lang } from '../../lib/prefs';
+import { bgmOn } from '../../lib/prefs';
 import { track } from '../../lib/analytics';
+import { useLang } from '../../lib/useLang';
 
 export const BGM_TRACKS = [
   { id: '6bnaBnd4kyU', ja: '#あくあ色ぱれっと', en: '#AquaIroPalette' },
@@ -65,7 +66,7 @@ export default function BgmCapsule() {
   const [failed, setFailed] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<YTPlayer | null>(null);
-  const L = lang.value;
+  const L = useLang();
   const current = BGM_TRACKS.find((t) => t.id === trackId) ?? { id: trackId, ja: trackId, en: trackId };
 
   async function start(id: string) {

@@ -62,3 +62,7 @@ self-hosted Umami, Vercel Hobby.
 - **Event schema** gained `model`, `unit`, `lore`, `award` types; the graduation-announcement entry doesn't quote a reason.
 - **Board**: composer + board are one island (shared crew-number preview / optimistic insert / undo).
 - **Integration tests** run on PGlite (in-process Postgres) instead of a Neon branch, so they run everywhere.
+- **Splash** shows once per browser session (not once ever), for 1.6–3.2 s, with the logo tab and a Moesoft credit.
+- **Onboarding**: a first-visit spotlight tour (`Tour.tsx`) and a HELP drawer in the dock (`HelpDrawer.tsx`) that can
+  replay it — the replay reloads the page and shows the splash again; settings and the memory album are kept.
+- **Filter bars** on Discography / Streaming / Arts dock beside the logo tab once scrolled past (`src/scripts/topbar.ts`).

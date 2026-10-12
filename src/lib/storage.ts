@@ -54,4 +54,9 @@ export const KEYS = {
   boardDraft: 'aia:board.draft',
   boardReported: 'aia:board.reported',
   boardSort: 'aia:board.sort',
+  tourDone: 'aia:tour.done',
+  /** sessionStorage: the splash has shown in this browser session */
+  splashSession: 'aia:splash',
+  /** sessionStorage: HELP → "Replay the tour" asked for the splash + tour after the reload */
+  replay: 'aia:replay',
 } as const;

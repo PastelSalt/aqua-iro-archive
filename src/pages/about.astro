@@ -254,7 +254,12 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
             data-source={a.data.source}
             data-event="art_open"
           >
-            <span class="wardrobe__img">
+            <span
+              class={`wardrobe__img${a.data.image.width > a.data.image.height * 1.2 ? ' wardrobe__img--wide' : ''}`}
+            >
+              {a.data.image.width > a.data.image.height * 1.2 && (
+                <Image class="wardrobe__fill" src={a.data.image} alt="" width={160} loading="lazy" />
+              )}
               <Image
                 src={a.data.image}
                 alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
