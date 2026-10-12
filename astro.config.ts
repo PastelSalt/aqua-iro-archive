@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig, envField, fontProviders } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import preact from '@astrojs/preact';
@@ -70,5 +71,9 @@ export default defineConfig({
       DISCORD_WEBHOOK_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },
-  vite: { build: { cssMinify: 'lightningcss' } },
+  vite: {
+    build: { cssMinify: 'lightningcss' },
+    // see src/stubs/empty.js — keeps the build-only bundler out of the serverless function
+    resolve: { alias: { rolldown: fileURLToPath(new URL('./src/stubs/empty.js', import.meta.url)) } },
+  },
 });
