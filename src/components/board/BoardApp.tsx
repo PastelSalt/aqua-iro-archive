@@ -359,7 +359,7 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
                 </svg>
               </button>
             </div>
-            <div class="compose__ts" ref={tsEl} aria-label="Bot check" />
+            <div class="compose__ts" ref={tsEl} role="group" aria-label="Bot check" />
             {error && (
               <p class="compose__error" id="note-error" role="alert">
                 <span aria-hidden="true">⚠ </span>

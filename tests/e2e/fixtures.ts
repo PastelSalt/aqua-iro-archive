@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, type Page } from '@playwright/test';
 
 /** Every test fails on uncaught errors or CSP violations. Splash is pre-dismissed unless a test opts in. */
 export const test = base.extend<{ errors: string[] }>({
@@ -21,3 +21,7 @@ export const test = base.extend<{ errors: string[] }>({
   },
 });
 export { expect };
+
+/** Wait until every Preact island has hydrated (WebKit hydrates later than Chromium). */
+export const hydrated = (page: Page) =>
+  page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));

@@ -1,10 +1,11 @@
-import { test, expect } from './fixtures';
+import { test, expect, hydrated } from './fixtures';
 
 test('dock: number keys navigate, aria-current follows, prefs persist across pages', async ({
   page,
   errors,
 }) => {
   await page.goto('/');
+  await hydrated(page);
   await expect(page.locator('.chap[aria-current="page"]')).toContainText('ホーム');
   await page.keyboard.press('5');
   await expect(page).toHaveURL(/\/streaming$/);
@@ -12,6 +13,7 @@ test('dock: number keys navigate, aria-current follows, prefs persist across pag
   // language toggle
   await page.getByRole('button', { name: /言語を英語に/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');
+  await hydrated(page);
   await page.keyboard.press('2');
   await expect(page).toHaveURL(/\/about$/);
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');
@@ -19,13 +21,14 @@ test('dock: number keys navigate, aria-current follows, prefs persist across pag
   await page.keyboard.press('Alt+KeyM');
   await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
   await page.reload();
+  await hydrated(page);
   await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
   void errors;
 });
 
 test('LOG drawer opens with Esc, traps focus and closes', async ({ page, errors }) => {
   await page.goto('/about');
-  await page.waitForFunction(() => !document.querySelector('astro-island[ssr]')); // islands hydrated
+  await hydrated(page);
   await page.keyboard.press('Escape');
   const drawer = page.locator('aside.drawer');
   await expect(drawer).toHaveClass(/is-open/);
@@ -58,7 +61,8 @@ test('first visit shows the splash, which can be skipped', async ({ page, errors
   await page.addInitScript(() => localStorage.setItem('aia:prefs', '{}'));
   await page.goto('/about');
   const skip = page.getByRole('button', { name: /スキップ|Skip/ }).first();
-  if (await skip.isVisible()) await skip.click();
+  // the splash also finishes on its own (≤ 2.5 s) and fades out, so a click may race the fade
+  if (await skip.isVisible()) await skip.click({ timeout: 2000 }).catch(() => {});
   await expect(page.locator('[data-splash-root]')).toHaveCount(0, { timeout: 4000 });
   await expect(page.locator('html')).toHaveAttribute('data-splash', 'seen');
   void errors;
