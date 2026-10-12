@@ -18,7 +18,7 @@ jobs:
       TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
       HAS_NEON: ${{ secrets.NEON_API_KEY != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
