@@ -658,20 +658,6 @@ html[data-motion='on'] .marquee__track {
     padding var(--dur-2) var(--ease-float),
     border-radius var(--dur-2) var(--ease-float);
 }
-/* sailor double rule along the top */
-.dock::before {
-  content: '';
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  top: 5px;
-  height: 6px;
-  border-top: 1.5px solid var(--navy);
-  border-bottom: 1.5px solid var(--navy);
-  opacity: 0.18;
-  border-radius: 2px;
-  pointer-events: none;
-}
 .dock__plate {
   position: absolute;
   top: -17px;
@@ -816,10 +802,6 @@ html[data-motion='on'] .marquee__track {
   border-radius: 999px;
 }
 .dock-host[data-state='compact'] .dock__plate {
-  display: none;
-}
-/* the sailor double rule only fits the full dock; on the slim pill it cut across the chips */
-.dock-host[data-state='compact'] .dock::before {
   display: none;
 }
 .dock-host[data-state='compact'] .chap {
