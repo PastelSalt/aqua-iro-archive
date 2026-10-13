@@ -620,32 +620,39 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
     grid-template-columns: minmax(280px, 380px) minmax(0, 1fr) 210px 72px;
   }
 }
-/* short laptop screens (e.g. 1366×649 usable): the 820px floor pushed the Talk box below the fold and the
-   dock sat over the timeline. Let the hero size to its content and put the Talk box in flow under the copy. */
+/* short laptop screens (1366×768 → ~650px usable, or less with bookmarks/taskbar): the hero is exactly one
+   viewport tall and everything sits above the dock. The Talk box moves to the bottom of the stage column,
+   over the character's feet like a visual-novel text box, and the Three Moments cards get short thumbnails. */
 @media (min-width: 1181px) and (max-height: 860px) {
   .home-hero {
     min-height: 0;
-    grid-template-areas:
-      'copy stage reel side'
-      'dialog stage reel side';
-    grid-template-rows: auto 1fr;
-    padding-top: clamp(112px, 17vh, 150px);
-    padding-bottom: var(--s-7);
+    height: max(100dvh, 560px);
+    grid-template-rows: minmax(0, 1fr);
+    padding-top: clamp(96px, 16vh, 140px);
+    padding-bottom: calc(var(--dock-reserve) - 4px);
+  }
+  .hero-circle {
+    width: min(36vw, 640px, calc(100dvh - 220px));
+    margin-top: -56px;
   }
   .home-hero__dialog {
     position: relative;
-    grid-area: dialog;
+    grid-area: stage;
     left: auto;
     bottom: auto;
-    align-self: start;
-    margin-top: var(--s-6);
+    align-self: end;
+    justify-self: center;
+    width: min(540px, 100%);
+  }
+  .home-hero__reel {
+    margin-top: 6px;
+    gap: 12px;
+  }
+  .film__th {
+    height: clamp(52px, 100dvh - 590px, 104px);
   }
 }
-/* very short (≤ 700px, e.g. a laptop with bookmarks + download bar): tighten the copy so the timeline clears the dock */
 @media (min-width: 1181px) and (max-height: 700px) {
-  .home-hero {
-    padding-top: 96px;
-  }
   .home-hero h1 {
     margin-top: 8px;
   }
@@ -654,6 +661,12 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   }
   .home-hero .voyage {
     margin-top: 22px;
+  }
+  .home-hero__reel {
+    gap: 10px;
+  }
+  .film__dt {
+    display: none;
   }
 }
 @media (max-width: 1180px) {

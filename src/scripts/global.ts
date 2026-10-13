@@ -1,6 +1,8 @@
 /** Site-wide behaviors: outbound-link analytics and Core Web Vitals → Umami (EXECUTIONPLAN §16). */
 import { track } from '../lib/analytics';
 import './topbar';
+import './reveal';
+import './sparkle';
 
 // Japanese webfonts load without blocking first paint (system fonts show until they swap in).
 for (const l of document.querySelectorAll<HTMLLinkElement>('link[data-jp-fonts]')) l.media = 'all';

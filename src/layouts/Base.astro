@@ -157,7 +157,7 @@ const ld = jsonLd ?? {
     <LogDrawer client:idle transition:persist="log" />
     <BgmCapsule client:idle transition:persist="bgm" />
     <HelpDrawer client:idle transition:persist="help" makerLogo={maker.src} makerUrl={PORTFOLIO.url} />
-    <Tour client:idle transition:persist="tour" />
+    <Tour client:idle={{ timeout: 1500 }} transition:persist="tour" />
     <script>
       import '../scripts/lightbox';
       import '../scripts/global';

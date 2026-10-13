@@ -13,10 +13,35 @@ const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),[tabinde
 type Item = { icon: string; glyph?: string; name: string; ja: string; en: string };
 const ITEMS: Item[] = [
   {
+    icon: 'anchor',
+    name: 'LOGO',
+    ja: '左上のロゴから、いつでもホームに戻れます。',
+    en: 'The logo in the top-left corner takes you home from anywhere.',
+  },
+  {
     icon: 'heart',
     name: 'TALK',
     ja: 'ホームのテキストボックスをクリック（または Enter）すると、ノベルゲームのように会話が進みます。選択肢はクリックか 1–3 キーで。',
     en: 'On Home, click the text box (or press Enter) to move the conversation on, like a visual novel. Pick a choice with a click or the 1–3 keys.',
+  },
+  {
+    icon: '',
+    glyph: '▸▸',
+    name: 'SKIP · AUTO · LOG · ×',
+    ja: '会話の文字送りを飛ばす・自動で進める・履歴を見る・会話をかくす。',
+    en: 'In a conversation: finish the line, play it by itself, see what was said, or tuck the box away.',
+  },
+  {
+    icon: 'headdress',
+    name: 'OUTFITS',
+    ja: 'ホームのドットで衣装を切り替え。⏸ でスライドショーを止められます。',
+    en: 'On Home, the dots under Aqua switch her outfit and ⏸ pauses the slideshow.',
+  },
+  {
+    icon: 'play',
+    name: 'THREE MOMENTS',
+    ja: 'ホームの3本の動画。その場で再生、または「BGMで流す」で曲を流しながら見て回れます。',
+    en: 'Three key videos on Home: play one right there, or press Play as BGM to keep the song going.',
   },
   {
     icon: 'anchor',
@@ -27,8 +52,8 @@ const ITEMS: Item[] = [
   {
     icon: 'music',
     name: 'BGM',
-    ja: '曲を流しながら見て回れます（自動再生はしません）。',
-    en: 'Play a song while you browse (it never starts on its own).',
+    ja: '曲を流しながら見て回れます（自動再生はしません）。ページを移動しても止まらず、プレーヤーで曲送り・停止もできます。',
+    en: 'Play her songs while you browse (never on its own). It keeps going between pages; the little player can skip or stop.',
   },
   {
     icon: 'anchor',

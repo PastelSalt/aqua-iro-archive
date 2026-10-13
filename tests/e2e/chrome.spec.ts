@@ -63,8 +63,16 @@ test('first visit shows the splash, which can be skipped', async ({ page, errors
     localStorage.setItem('aia:prefs', '{}');
     sessionStorage.removeItem('aia:splash');
   });
+  // record what the page showed at DOMContentLoaded (the splash only lasts 1.6–3.2 s, so a slow
+  // runner can miss it); module scripts have run by then, so a skipped splash is already removed
+  await page.addInitScript(() =>
+    document.addEventListener('DOMContentLoaded', () => {
+      const w = window as unknown as { __splash?: string | null };
+      w.__splash = document.querySelector('[data-splash-root] .splash__by')?.getAttribute('href') ?? null;
+    }),
+  );
   await page.goto('/about');
-  await expect(page.locator('.splash__by')).toHaveAttribute('href', /moesoft/);
+  expect(await page.evaluate(() => (window as unknown as { __splash?: string }).__splash)).toMatch(/moesoft/);
   const skip = page.getByRole('button', { name: /スキップ|Skip/ }).first();
   // the splash also finishes on its own (≤ 3.2 s) and fades out, so a click may race the fade
   if (await skip.isVisible()) await skip.click({ timeout: 2000 }).catch(() => {});
@@ -77,12 +85,15 @@ test('first-visit tour walks through the controls, and HELP replays it after a r
   page,
   errors,
 }) => {
+  test.slow(); // two splash + tour runs and a full reload
   await page.addInitScript(() => localStorage.removeItem('aia:tour.done'));
   await page.goto('/');
   const card = page.locator('.tour__card');
-  await expect(card).toBeVisible({ timeout: 5000 });
-  await expect(card).toContainText('1 / 7');
-  for (let n = 0; n < 7; n++) await card.locator('[data-next]').click();
+  await expect(card).toBeVisible({ timeout: 10_000 });
+  await expect(card).toContainText(/1 \/ \d+/);
+  const total = Number((await card.locator('.tour__count b').textContent())!.split('/')[1]);
+  expect(total).toBeGreaterThanOrEqual(10); // Home has every step, including BGM and the Talk buttons
+  for (let n = 0; n < total; n++) await card.locator('[data-next]').click();
   await expect(page.locator('.tour')).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem('aia:tour.done'))).toBe('true');
 
@@ -91,13 +102,15 @@ test('first-visit tour walks through the controls, and HELP replays it after a r
   const help = page.locator('aside.drawer--help');
   await expect(help).toHaveClass(/is-open/);
   await help.getByRole('button', { name: /ツアーをもう一度|Replay the tour/ }).click();
+  // check at DOMContentLoaded: by the full load event the 1.6 s splash may already be fading out
   await Promise.all([
-    page.waitForEvent('load'),
+    page.waitForEvent('domcontentloaded'),
     help.getByRole('button', { name: /再生する|Yes, replay/ }).click(),
   ]);
   // the replay shows the loading screen again even though it was seen this session
-  await expect(page.locator('[data-splash-root]')).toBeVisible();
-  await expect(page.locator('.tour__card')).toBeVisible({ timeout: 8000 });
+  // (without a replay the splash removes itself at once on a session that has already seen it)
+  await expect(page.locator('[data-splash-root]')).toBeAttached();
+  await expect(page.locator('.tour__card')).toBeVisible({ timeout: 10_000 });
   await page.keyboard.press('Escape');
   await expect(page.locator('.tour')).toHaveCount(0);
   void errors;
