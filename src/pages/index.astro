@@ -535,6 +535,17 @@ const ld = {
         if (i === cur && img?.loading === 'lazy') img.loading = 'eager';
       });
     };
+    // the other outfits load in the background once the page has settled, ready for the first change
+    const arm = () =>
+      poses.forEach((p) => {
+        const img = p.tagName === 'IMG' ? (p as HTMLImageElement) : p.querySelector('img');
+        if (img?.loading === 'lazy') img.loading = 'eager';
+      });
+    const armTimer = setTimeout(
+      () => ('requestIdleCallback' in window ? requestIdleCallback(arm) : arm()),
+      2500,
+    );
+    cleanups.push(() => clearTimeout(armTimer));
     const picked = read<string>(KEYS.heroOutfit, 'random');
     if (picked !== 'random' && poses[Number(picked)]) {
       select.value = picked;

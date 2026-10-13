@@ -1,4 +1,5 @@
-/** Bubble field (EXECUTIONPLAN §9.0): ≤ 40 bubbles, 30 fps cap, reacts to the cursor, paused when hidden or Motion OFF. */
+/** Bubble field (EXECUTIONPLAN §9.0): ≤ 40 bubbles, 30 fps cap, reacts to the cursor, paused when hidden,
+ * scrolled out of view or Motion OFF. */
 import { onMotion } from '../lib/lifecycle';
 
 type B = { x: number; y: number; r: number; vy: number; ph: number; pop: number };
@@ -72,8 +73,15 @@ export function startBubbles(canvas: HTMLCanvasElement, max = 40): () => void {
     ctx.clearRect(0, 0, w, h);
   };
   let motionOn = false;
-  const sync = () => (motionOn && !document.hidden ? start() : stop());
+  let onscreen = true;
+  const sync = () => (motionOn && onscreen && !document.hidden ? start() : stop());
+  const io = new IntersectionObserver(([e]) => {
+    onscreen = !!e?.isIntersecting;
+    sync();
+  });
+  io.observe(canvas);
   const onMove = (e: PointerEvent) => {
+    if (!running) return;
     const r = canvas.getBoundingClientRect();
     mouse.x = e.clientX - r.left;
     mouse.y = e.clientY - r.top;
@@ -89,6 +97,7 @@ export function startBubbles(canvas: HTMLCanvasElement, max = 40): () => void {
   window.addEventListener('pointermove', onMove, { passive: true });
   return () => {
     stop();
+    io.disconnect();
     ro.disconnect();
     offMotion();
     document.removeEventListener('visibilitychange', sync);

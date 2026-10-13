@@ -160,9 +160,26 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
     </div>
     <p class="result-count" aria-live="polite" data-disco-count></p>
 
-    {groups.map((g) => (
-      <div class="disco-panel" role="tabpanel" id={g.id} aria-labelledby={`tab-${g.id}`} data-panel={g.id}>
-        <h2 class="disco-panel__title">
+    {/* rendered in the state the tab script starts from (first list open, titles hidden), so the page
+        isn't laid out with all five lists and then re-laid out when the script hides four of them */}
+    <noscript>
+      <style is:inline>
+        .disco-panel[hidden],
+        .disco-panel__title[hidden] {
+          display: block !important;
+        }
+      </style>
+    </noscript>
+    {groups.map((g, gi) => (
+      <div
+        class="disco-panel"
+        role="tabpanel"
+        id={g.id}
+        aria-labelledby={`tab-${g.id}`}
+        data-panel={g.id}
+        hidden={gi > 0}
+      >
+        <h2 class="disco-panel__title" hidden>
           <span lang="ja">{g.ja}</span> <small lang="en">{g.en}</small>
         </h2>
         <ol class="jackets" role="list">

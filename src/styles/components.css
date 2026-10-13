@@ -826,7 +826,7 @@ html[data-motion='on'] .marquee__track {
   gap: 8px;
 }
 .dock-host[data-state='compact'] .chap__dot {
-  position: static;
+  position: relative; /* not static: the current-chapter pulse ring (motion.css) anchors to it */
   width: 11px;
   height: 11px;
   box-shadow: 0 0 0 2px #fff;
@@ -1117,7 +1117,7 @@ body.has-modal .dock-host {
   color: var(--navy);
 }
 html[data-motion='on'] .tour__card {
-  animation: splash-rise 320ms var(--ease-float) both;
+  animation: splash-rise 320ms var(--ease-float) backwards;
 }
 .tour__card h2 {
   font-size: var(--step-1);
@@ -1789,7 +1789,7 @@ html[data-splash='seen'] .splash {
   color: var(--pink-ink);
 }
 html[data-motion='on'] .splash__brand {
-  animation: splash-rise 700ms var(--ease-float) both;
+  animation: splash-rise 700ms var(--ease-float) backwards;
 }
 @keyframes splash-rise {
   from {
@@ -1825,7 +1825,7 @@ html[data-motion='on'] .splash__brand {
   opacity: 1;
 }
 html[data-motion='on'] .splash__anchor {
-  animation: drop 1.4s var(--ease-float) both;
+  animation: drop 1.4s var(--ease-float) backwards;
 }
 .splash__water {
   position: relative;

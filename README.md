@@ -23,6 +23,8 @@ self-hosted Umami, Vercel Hobby.
 | `npm run admin:create`                           | One-time keeper account (asks for the passphrase; sign-up is disabled in the app)                         |
 | `tsx scripts/reset-2fa.ts`                       | Runbook §25.5 — reset the keeper's two-factor                                                             |
 | `tsx scripts/make-og.ts`                         | Regenerate the 1200×630 share images in `public/og/`                                                      |
+| `node scripts/dev/perf.mjs`                      | Per-page load + idle/scroll rendering cost on this machine (serve the build on :4321 first)               |
+| `node scripts/dev/visual-diff.mjs`               | Pixel-diff every page against the live site — proves an optimisation changed nothing visible              |
 
 ## Where things live
 
@@ -42,6 +44,7 @@ self-hosted Umami, Vercel Hobby.
    Turnstile site/secret keys (local + CI use Cloudflare's testing keys already in `.env.example`), `DISCORD_WEBHOOK_URL`,
    `PUBLIC_CONTACT_EMAIL` (removal requests — still to decide).
 5. **Keeper**: `ADMIN_EMAIL=… npm run admin:create`, sign in at `/keeper/login`, enroll TOTP (forced).
+   **Opening the message board** (Turnstile keys, keeper account, unpausing): see [docs/BOARD-SETUP.md](docs/BOARD-SETUP.md).
 6. **Umami**: separate Vercel project + Neon DB; set `PUBLIC_UMAMI_WEBSITE_ID` and the `UMAMI_API_*` view-only user.
    Update the two rewrites in `vercel.json` if the Umami domain differs from `aqua-umami.vercel.app`.
 7. **Backups**: put your `age` public key in `ops/backup-recipient.txt`; add `DATABASE_URL_UNPOOLED` to the GitHub

@@ -100,8 +100,9 @@ const ld = jsonLd ?? {
           } catch {}
           const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
           d.dataset.motion = s.motion ?? (rm ? 'off' : 'on');
-          d.dataset.lang = s.lang ?? ((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
-          d.lang = d.dataset.lang;
+          const l = s.lang ?? ((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
+          if (d.dataset.lang !== l) d.dataset.lang = l;
+          if (d.lang !== l) d.lang = l;
           // splash once per browser session, and again when HELP replays the tour
           let ss = null;
           try {

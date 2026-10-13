@@ -35,8 +35,9 @@ if (isBrowser) {
     window.dispatchEvent(new CustomEvent('aia:motion', { detail: motion.value }));
   });
   effect(() => {
-    html().dataset.lang = lang.value;
-    html().lang = lang.value; // keep <html lang> in step with the language actually shown
+    // only write when it changes: rewriting lang re-matches every :lang() rule on the page
+    if (html().dataset.lang !== lang.value) html().dataset.lang = lang.value;
+    if (html().lang !== lang.value) html().lang = lang.value; // keep <html lang> in step with the language shown
   });
 }
 
@@ -78,8 +79,8 @@ if (isBrowser) {
   let splashSeen = html().dataset.splash === 'seen';
   document.addEventListener('astro:after-swap', () => {
     html().dataset.motion = motion.value;
-    html().dataset.lang = lang.value;
-    html().lang = lang.value;
+    if (html().dataset.lang !== lang.value) html().dataset.lang = lang.value;
+    if (html().lang !== lang.value) html().lang = lang.value;
     if (splashSeen || read<number>(KEYS.splashSession, 0, 'session')) html().dataset.splash = 'seen';
   });
   window.addEventListener('aia:splash-seen', () => (splashSeen = true));

@@ -191,6 +191,10 @@ html[data-motion='on'] .hero-circle__ring {
 .hero-pose.is-on {
   opacity: 1;
 }
+/* the other outfits stay out of the first load; index.astro switches them to eager once the page settles */
+.hero-pose[loading='lazy']:not(.is-on) {
+  display: none;
+}
 .hero-pose--expr:not([src]) {
   display: none;
 }
@@ -2825,7 +2829,7 @@ html[data-motion='on'] .lighthouse__beam {
   transform: rotate(var(--tilt, 0deg));
 }
 html[data-motion='on'] .note.thunk {
-  animation: thunk 600ms var(--ease-float) both;
+  animation: thunk 600ms var(--ease-float) backwards;
 }
 .note.is-pending {
   opacity: 0.7;
