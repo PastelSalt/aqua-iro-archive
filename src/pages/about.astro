@@ -292,16 +292,7 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
               <b>{l.data.label}</b> · {l.data.text}
             </span>
           </a>
-          {l.data.note && (
-            <p class="credit link-note">
-              <span data-l="ja" lang="ja">
-                卒業後にタレントページは削除されました。Wayback Machineのアーカイブをどうぞ。
-              </span>
-              <span data-l="en" lang="en">
-                The talent page was removed after graduation — use the Wayback Machine archive.
-              </span>
-            </p>
-          )}
+          {l.data.note && <p class="credit link-note">{l.data.note}</p>}
         </li>
       ))}
     </ul>

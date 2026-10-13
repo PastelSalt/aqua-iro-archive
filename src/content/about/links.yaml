@@ -9,9 +9,8 @@
   url: https://x.com/minatoaqua
 - id: hololive-official-site
   label: hololive official site
-  text: hololive.hololivepro.com
-  url: https://hololive.hololivepro.com/en/
-  note: talent page removed after graduation; use the Wayback Machine for the archived profile
+  text: "[Alum] Minato Aqua talent page"
+  url: https://hololive.hololivepro.com/en/talents/minato-aqua/
 - id: wikipedia
   label: Wikipedia
   text: Minato Aqua
