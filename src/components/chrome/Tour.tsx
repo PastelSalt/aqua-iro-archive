@@ -65,11 +65,11 @@ const STEPS: Step[] = [
   },
   {
     id: 'outfits',
-    targets: ['.hero-dots'],
-    title: ['衣装を切り替え', 'Change her outfit'],
+    targets: ['.hero-outfit'],
+    title: ['衣装を選ぶ', 'Choose her outfit'],
     body: [
-      'ドットで衣装を切り替えられます。⏸ でスライドショーを止められます。',
-      'The dots switch her outfit, and ⏸ pauses the slideshow.',
+      'このメニューで衣装を選べます。「ランダム」なら自動で切り替わり、選んだ衣装は次に来たときもそのままです。',
+      'Pick her outfit from this menu. Random keeps them changing on their own; a picked outfit stays for next time.',
     ],
     homeOnly: true,
   },

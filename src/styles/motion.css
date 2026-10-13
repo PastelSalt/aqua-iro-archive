@@ -274,7 +274,7 @@ html[data-motion='on'][data-splash='seen'] .home-hero__reel > :nth-child(4) {
 html[data-motion='on'][data-splash='seen'] .home-hero__dialog {
   animation: enter-up 760ms cubic-bezier(0.22, 1, 0.36, 1) 520ms both;
 }
-html[data-motion='on'][data-splash='seen'] :is(.home-vert, .vert-col) {
+html[data-motion='on'][data-splash='seen'] .vert-col {
   animation: enter-down 900ms cubic-bezier(0.22, 1, 0.36, 1) 260ms both;
 }
 

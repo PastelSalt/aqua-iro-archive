@@ -284,28 +284,28 @@ const ld = {
               <use href="#i-cat"></use>
             </svg>
           </span>
-          <div class="hero-dots" role="group" aria-label="Outfits">
-            {outfits.map((o, i) => (
-              <button
-                type="button"
-                class:list={{ 'is-on': i === 0 }}
-                data-dot={i}
-                aria-pressed={i === 0 ? 'true' : 'false'}
-                aria-label={`${o.ja} / ${o.en}`}
-              />
-            ))}
-            <button
-              type="button"
-              class="hero-dots__pause"
-              data-pager-pause
-              aria-pressed="false"
-              aria-label="Pause outfit slideshow"
-            >
-              <svg class="icon" aria-hidden="true">
-                <use href="#i-pause"></use>
-              </svg>
-            </button>
-          </div>
+          <label class="hero-outfit">
+            <svg class="icon" aria-hidden="true">
+              <use href="#i-headdress"></use>
+            </svg>
+            <span class="hero-outfit__label" aria-hidden="true">
+              <span data-l="ja" lang="ja">
+                衣装
+              </span>
+              <span data-l="en" lang="en">
+                Outfit
+              </span>
+            </span>
+            <span class="sr-only">Outfit · 衣装</span>
+            <select data-outfit>
+              <option value="random">ランダム · Random</option>
+              {outfits.map((o, i) => (
+                <option value={String(i)}>
+                  {o.ja} · {o.en}
+                </option>
+              ))}
+            </select>
+          </label>
           <Stamp class="home-stamp" />
           <span
             class="sticker sticker--round home-hero__sleep"
@@ -393,13 +393,15 @@ const ld = {
         ))}
       </div>
 
+      <!-- same vertical title block as every other chapter (layouts/Page.astro) -->
+      <div class="vert-col" aria-hidden="true">
+        <span class="vert-small">MINATO AQUA</span>
+        <span class="vert">
+          ありがとう、<em>あくたん</em>
+        </span>
+      </div>
+
       <aside class="home-hero__side" aria-label="Minato Aqua">
-        <div class="home-vert" aria-hidden="true">
-          <span class="vert-small">MINATO AQUA</span>
-          <span class="vert">
-            ありがとう、<em>あくたん</em>
-          </span>
-        </div>
         <div class="social">
           <a href={OFFICIAL.youtube} rel="noopener" aria-label="YouTube — Aqua Ch. 湊あくあ">
             <Icon name="youtube" />
@@ -510,19 +512,19 @@ const ld = {
   import { onPage, onMotion } from '../lib/lifecycle';
   import { track } from '../lib/analytics';
   import { startBubbles } from '../scripts/bubbles';
+  import { KEYS, read, write } from '../lib/storage';
 
   onPage(() => {
     const root = document.querySelector<HTMLElement>('[data-home]');
     if (!root) return;
     const cleanups: (() => void)[] = [];
 
-    // ---- outfit pager: every 8 s when Motion is ON; pauses on hover/focus/Motion OFF/pause button ----
+    // ---- outfit: "Random" (the default) changes outfit every 8 s when Motion is ON, pausing on
+    // hover/focus/Motion OFF; picking one from the menu stops the rotation and is remembered ----
     const poses = Array.from(root.querySelectorAll<HTMLElement>('[data-pose]'));
-    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-dot]'));
-    const pauseBtn = root.querySelector<HTMLButtonElement>('[data-pager-pause]')!;
+    const select = root.querySelector<HTMLSelectElement>('[data-outfit]')!;
     const expr = root.querySelector<HTMLImageElement>('[data-hero-expr]')!;
     let cur = 0;
-    let paused = false;
     let hover = false;
     let motionOn = true;
     const show = (n: number) => {
@@ -532,15 +534,16 @@ const ld = {
         const img = p.tagName === 'IMG' ? (p as HTMLImageElement) : p.querySelector('img');
         if (i === cur && img?.loading === 'lazy') img.loading = 'eager';
       });
-      dots.forEach((d, i) => {
-        d.classList.toggle('is-on', i === cur);
-        d.setAttribute('aria-pressed', String(i === cur));
-      });
     };
-    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
-    pauseBtn.addEventListener('click', () => {
-      paused = !paused;
-      pauseBtn.setAttribute('aria-pressed', String(paused));
+    const picked = read<string>(KEYS.heroOutfit, 'random');
+    if (picked !== 'random' && poses[Number(picked)]) {
+      select.value = picked;
+      show(Number(picked));
+    }
+    select.addEventListener('change', () => {
+      write(KEYS.heroOutfit, select.value);
+      track('outfit_pick', { outfit: select.value });
+      if (select.value !== 'random') show(Number(select.value));
     });
     const hero = root.querySelector<HTMLElement>('[data-hero]')!;
     const enter = () => (hover = true);
@@ -551,8 +554,10 @@ const ld = {
     hero.addEventListener('focusout', leave);
     cleanups.push(onMotion((on) => (motionOn = on)));
     const timer = setInterval(() => {
-      if (!paused && !hover && motionOn && !document.hidden && !expr.classList.contains('is-on'))
-        show(cur + 1);
+      if (select.value !== 'random' || hover || !motionOn || document.hidden) return;
+      if (expr.classList.contains('is-on')) return;
+      // a random different outfit each time
+      show(cur + 1 + Math.floor(Math.random() * (poses.length - 1)));
     }, 8000);
     cleanups.push(() => clearInterval(timer));
 

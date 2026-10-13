@@ -34,8 +34,8 @@ const ITEMS: Item[] = [
   {
     icon: 'headdress',
     name: 'OUTFITS',
-    ja: 'ホームのドットで衣装を切り替え。⏸ でスライドショーを止められます。',
-    en: 'On Home, the dots under Aqua switch her outfit and ⏸ pauses the slideshow.',
+    ja: 'ホームの「衣装」メニューで選べます。「ランダム」なら自動で切り替わり、選んだ衣装は次回もそのままです。',
+    en: 'On Home, the Outfit menu picks what she wears. Random keeps changing; a picked outfit stays for next time.',
   },
   {
     icon: 'play',

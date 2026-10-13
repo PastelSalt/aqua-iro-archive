@@ -36,6 +36,7 @@ export type EventName =
   | 'help_open'
   | 'tour'
   | 'tour_replay'
+  | 'outfit_pick'
   | 'cwv'
   | 'not_found';
 

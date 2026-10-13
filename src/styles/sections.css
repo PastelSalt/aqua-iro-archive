@@ -194,45 +194,64 @@ html[data-motion='on'] .hero-circle__ring {
 .hero-pose--expr:not([src]) {
   display: none;
 }
-.hero-dots {
+/* sits in the empty corner outside the circle's top-left, clear of her face and of the Talk box */
+.hero-outfit {
   position: absolute;
-  left: 15%;
-  bottom: 11%;
-  z-index: 5;
-  display: flex;
-  gap: 4px;
+  right: 74%;
+  top: -1%;
+  z-index: 7;
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 999px;
+  background: rgb(255 251 254 / 0.95);
+  box-shadow:
+    0 0 0 2px var(--aqua-pink) inset,
+    var(--sh-1);
+  color: var(--navy);
+  rotate: -4deg;
 }
-.hero-dots button {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
+.hero-outfit:focus-within {
+  box-shadow: var(--ring);
 }
-.hero-dots button::before {
-  content: '';
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid var(--aqua-pink-deep);
+.hero-outfit .icon {
+  width: 20px;
+  height: 12px;
+  color: var(--aqua-pink-deep);
 }
-.hero-dots button.is-on::before {
-  background: var(--aqua-pink-deep);
-}
-.hero-dots .hero-dots__pause::before {
-  display: none;
-}
-.hero-dots__pause {
+.hero-outfit__label {
+  font: 700 10px/1 var(--font-display);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--pink-ink);
 }
-.hero-dots__pause .icon {
-  width: 12px;
-  height: 12px;
+.hero-outfit select {
+  appearance: none;
+  border: 0;
+  outline: none;
+  min-height: 30px;
+  padding: 0 26px 0 10px;
+  border-radius: 999px;
+  background: var(--pink-wash)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%233b4583' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+    no-repeat right 10px center / 10px 6px;
+  font: 700 12px/1 var(--font-jp-round);
+  color: var(--navy);
+  cursor: pointer;
+  max-width: 158px;
+  text-overflow: ellipsis;
 }
-.hero-dots__pause[aria-pressed='true'] {
-  background: var(--pink-wash);
+@media (max-width: 1180px) {
+  /* the Talk box no longer overlaps the circle here: centre the menu under her */
+  .hero-outfit {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: -4%;
+    translate: -50% 0;
+    rotate: 0deg;
+  }
 }
 .home-stamp {
   position: absolute;
@@ -441,13 +460,6 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   align-items: flex-end;
   height: calc(100% + 120px);
   margin-top: -120px;
-}
-.home-vert {
-  display: flex;
-  gap: 4px;
-}
-.home-vert .vert {
-  font-size: 30px;
 }
 .social {
   margin-top: auto;
