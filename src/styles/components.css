@@ -818,6 +818,10 @@ html[data-motion='on'] .marquee__track {
 .dock-host[data-state='compact'] .dock__plate {
   display: none;
 }
+/* the sailor double rule only fits the full dock; on the slim pill it cut across the chips */
+.dock-host[data-state='compact'] .dock::before {
+  display: none;
+}
 .dock-host[data-state='compact'] .chap {
   min-width: 30px;
   min-height: 36px;
@@ -841,6 +845,17 @@ html[data-motion='on'] .marquee__track {
 .dock-host[data-state='compact'] .chap[aria-current='page'] b {
   display: block;
   font-size: 13px;
+}
+/* the current chapter's name in the visitor's language (the full dock shows both) */
+html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] b {
+  display: none;
+}
+html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] small {
+  display: block;
+  margin: 0;
+  font: 700 12px/1.2 var(--font-display);
+  letter-spacing: 0.12em;
+  color: #fff;
 }
 .dock-host[data-state='compact'] .chap:hover .chap__tip,
 .dock-host[data-state='compact'] .chap:focus-visible .chap__tip {
@@ -1383,14 +1398,36 @@ html[data-motion='on'] .tour__card {
   transition: transform var(--dur-2) var(--ease-float);
   cursor: zoom-in;
 }
-.lightbox__stage.is-zoomed {
+.lightbox__pan {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.lightbox__pan img {
+  min-height: 0;
+}
+/* zoomed: the pan box scrolls; auto margins centre the image while it's smaller than the box and let
+   it scroll edge to edge once it's bigger (centring an overflowing grid item would cut off its left side) */
+.lightbox__stage.is-zoomed .lightbox__pan {
   overflow: auto;
   place-items: start;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+  cursor: grab;
+}
+.lightbox__stage.is-zoomed .lightbox__pan:active {
+  cursor: grabbing;
 }
 .lightbox__stage.is-zoomed img {
   max-width: none;
   max-height: none;
+  height: auto;
+  margin: auto;
   cursor: zoom-out;
+  transition: none;
 }
 .lightbox__video {
   width: min(1100px, 100%);

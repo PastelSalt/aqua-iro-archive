@@ -45,7 +45,9 @@ function ensureDialog(): HTMLDialogElement {
   dialog.querySelector('.lightbox__top')!.append(close);
   dialog.addEventListener('close', onClose);
   dialog.addEventListener('click', (e) => {
-    if (e.target === dialog || (e.target as HTMLElement).matches('[data-stage]')) dialog!.close();
+    const t = e.target as HTMLElement;
+    if (t.closest('.lightbox__stage.is-zoomed')) return; // empty space while zoomed: just panning
+    if (e.target === dialog || t.matches('[data-stage], .lightbox__pan')) dialog!.close();
   });
   dialog.addEventListener('keydown', (e) => {
     if (group.length < 2) return;
@@ -58,7 +60,8 @@ function ensureDialog(): HTMLDialogElement {
     passive: true,
   });
   dialog.addEventListener('touchend', (e) => {
-    if (x0 == null || group.length < 2) return;
+    // a zoomed image pans with the finger instead of switching pictures
+    if (x0 == null || group.length < 2 || dialog!.querySelector('.lightbox__stage.is-zoomed')) return;
     const dx = e.changedTouches[0]!.clientX - x0;
     if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
     x0 = null;
@@ -131,12 +134,11 @@ function renderImage(t: Trigger) {
     decoding: 'async',
     ...(t.dataset.srcset ? { srcset: t.dataset.srcset, sizes: '100vw' } : {}),
   });
-  img.addEventListener('dblclick', () => stage.classList.toggle('is-zoomed'));
-  img.addEventListener('click', (e) => {
-    e.stopPropagation();
-    stage.classList.toggle('is-zoomed');
-  });
-  stage.append(img);
+  // the image sits in its own pan box, so the prev/next arrows (stage children) stay put while it scrolls
+  const pan = el('div', { class: 'lightbox__pan' });
+  pan.append(img);
+  stage.append(pan);
+  setupZoom(stage, pan, img);
   if (group.length > 1) {
     const prev = iconBtn('lightbox__nav lightbox__nav--prev', 'chevron', say('前の画像', 'Previous image'));
     (prev.firstElementChild as SVGElement).style.transform = 'scaleX(-1)';
@@ -146,6 +148,61 @@ function renderImage(t: Trigger) {
     stage.append(prev, next);
   }
   if (t.dataset.id) history.replaceState(history.state, '', `#art=${t.dataset.id}`);
+}
+
+/**
+ * Click to zoom in around the point you clicked (at least 2×, or the image's full resolution, up to 4×),
+ * drag or scroll to look around, click again to zoom out.
+ */
+function setupZoom(stage: HTMLElement, pan: HTMLElement, img: HTMLImageElement) {
+  let drag: { x: number; y: number; sl: number; st: number; moved: boolean } | null = null;
+  const zoomIn = (cx: number, cy: number) => {
+    const r = img.getBoundingClientRect();
+    if (!r.width) return;
+    const fx = (cx - r.left) / r.width;
+    const fy = (cy - r.top) / r.height;
+    const z = Math.min(4, Math.max(2, (img.naturalWidth || r.width) / r.width));
+    stage.classList.add('is-zoomed');
+    img.style.width = `${Math.round(r.width * z)}px`;
+    const n = img.getBoundingClientRect(); // new layout: keep the clicked point under the pointer
+    pan.scrollLeft += n.left + fx * n.width - cx;
+    pan.scrollTop += n.top + fy * n.height - cy;
+  };
+  const zoomOut = () => {
+    stage.classList.remove('is-zoomed');
+    img.style.width = '';
+    pan.scrollTo(0, 0);
+  };
+  // zoomed, a click anywhere in the pan box zooms out (unless it ended a drag); otherwise a click on
+  // the image zooms in. Pointer capture starts only once a drag really moves, so plain clicks still land.
+  pan.addEventListener('click', (e) => {
+    const zoomed = stage.classList.contains('is-zoomed');
+    if (!zoomed && e.target !== img) return; // empty space: the dialog's click-outside closes it
+    e.stopPropagation();
+    if (drag?.moved) return;
+    if (zoomed) zoomOut();
+    else zoomIn(e.clientX, e.clientY);
+  });
+  pan.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !stage.classList.contains('is-zoomed')) return;
+    drag = { x: e.clientX, y: e.clientY, sl: pan.scrollLeft, st: pan.scrollTop, moved: false };
+  });
+  pan.addEventListener('pointermove', (e) => {
+    if (!drag || !(e.buttons & 1)) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) {
+      drag.moved = true;
+      pan.setPointerCapture(e.pointerId);
+    }
+    if (!drag.moved) return;
+    e.preventDefault();
+    pan.scrollLeft = drag.sl - dx;
+    pan.scrollTop = drag.st - dy;
+  });
+  const end = () => setTimeout(() => (drag = null), 0); // after the click that follows pointerup
+  pan.addEventListener('pointerup', end);
+  pan.addEventListener('pointercancel', end);
 }
 
 function show(t: Trigger) {

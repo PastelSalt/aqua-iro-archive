@@ -2593,11 +2593,6 @@ html[data-motion='on'] .lighthouse__beam {
 }
 
 /* ---- polish after the first visual pass ---- */
-.disco-bar,
-.stream-controls,
-.art-nav {
-  top: 70px;
-}
 .ribbon-tab .count {
   color: var(--navy);
 }
