@@ -8,7 +8,8 @@
  */
 import { onPage } from '../lib/lifecycle';
 
-const DOCK_AT = 10; // px from the top of the viewport
+const DOCK_AT = 10; // dock once the slot's top passes this many px from the viewport top…
+const UNDOCK_AT = 28; // …and undock only once it's back below this, so resting near the line can't flicker
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 function setup(bar: HTMLElement): () => void {
@@ -40,7 +41,8 @@ function setup(bar: HTMLElement): () => void {
 
   const update = () => {
     raf = 0;
-    const want = slot.getBoundingClientRect().top < DOCK_AT;
+    const top = slot.getBoundingClientRect().top;
+    const want = docked ? top < UNDOCK_AT : top < DOCK_AT;
     if (want !== docked) {
       docked = want;
       set(want);

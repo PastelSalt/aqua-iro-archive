@@ -1,6 +1,7 @@
 /**
  * Bottom VN dock (EXECUTIONPLAN §7.3). Persisted across ClientRouter navigations.
- * States: expanded (top / near bottom edge / focus / 2 s idle) · compact (scrolling down) · peek (fast scroll on long pages).
+ * States: expanded (top / pointer on it / keyboard focus / 2 s idle) · compact (scrolling down) ·
+ * peek (a very fast fling down a long page).
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { navigate } from 'astro:transitions/client';
@@ -96,17 +97,30 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
   }, [path]);
 
   // --- scroll-driven states ---
+  // expanded at the top, while the pointer is on the dock, while keyboard focus is inside it, and 2 s
+  // after scrolling stops; compact while scrolling down; peek (tucked away) only on a really fast fling
+  // down a long page. Scroll jumps the page makes itself (page changes, Back, in-page anchors, the
+  // tour) don't count as the visitor scrolling.
   useEffect(() => {
     let lastY = window.scrollY;
     let lastT = performance.now();
     let idle: ReturnType<typeof setTimeout> | undefined;
-    let focused = false;
+    let focused = false; // keyboard focus only — a mouse click leaves focus on the button it pressed
+    let hovered = false;
     let held = false; // the onboarding tour keeps the dock open while it points at its buttons
+    let quietUntil = 0;
     let raf = 0;
     const host = hostRef.current;
+    const pinned = () => focused || hovered || held;
+    const quiet = (ms: number) => {
+      quietUntil = Math.max(quietUntil, performance.now() + ms);
+      lastY = window.scrollY;
+      lastT = performance.now();
+    };
     const onHold = (e: Event) => {
       held = !!(e as CustomEvent<boolean>).detail;
       if (held) setState('expanded');
+      quiet(600);
     };
     window.addEventListener('aia:dock-hold', onHold);
     const onScroll = () => {
@@ -119,34 +133,65 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
         const v = (Math.abs(dy) / Math.max(1, now - lastT)) * 1000;
         lastY = y;
         lastT = now;
-        if (focused || held) return;
-        if (y < 80) setState('expanded');
-        else if (dy > 0 && v > 1200 && LONG_PAGES.has(currentPath())) setState('peek');
+        clearTimeout(idle);
+        if (pinned()) return;
+        if (y < 80) {
+          setState('expanded');
+          return;
+        }
+        if (now < quietUntil) return; // a jump the page made, not the visitor
+        if (dy > 0 && v > 2600 && LONG_PAGES.has(currentPath())) setState('peek');
         else if (dy > 0) setState((s) => (s === 'peek' ? 'peek' : 'compact'));
         else if (dy < 0) setState((s) => (s === 'peek' ? 'compact' : s));
-        clearTimeout(idle);
-        idle = setTimeout(() => !focused && !held && setState('expanded'), 2000);
+        idle = setTimeout(() => !pinned() && setState('expanded'), 2000);
       });
     };
-    const onPointer = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return;
-      if (window.innerHeight - e.clientY < 120) setState('expanded');
+    const onEnter = () => {
+      hovered = true;
+      setState('expanded');
     };
-    const onFocusIn = () => {
+    const onLeave = () => {
+      hovered = false;
+    };
+    const onFocusIn = (e: FocusEvent) => {
+      if (!(e.target as HTMLElement).matches?.(':focus-visible')) return;
       focused = true;
       setState('expanded');
     };
     const onFocusOut = (e: FocusEvent) => {
       if (!host?.contains(e.relatedTarget as Node)) focused = false;
     };
+    // page changes and history moves restore or reset the scroll position
+    const onSwap = () => {
+      quiet(900);
+      setState('expanded');
+    };
+    const onPop = () => quiet(900);
+    // in-page anchors (Back to top, gallery sections) scroll smoothly by themselves
+    const onAnchor = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest?.('a[href*="#"]') as HTMLAnchorElement | null;
+      if (a && a.pathname === location.pathname && a.hash) quiet(1500);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('popstate', onPop);
+    window.addEventListener('hashchange', onPop);
+    document.addEventListener('astro:after-swap', onSwap);
+    document.addEventListener('astro:page-load', onSwap);
+    document.addEventListener('click', onAnchor, true);
+    host?.addEventListener('pointerenter', onEnter);
+    host?.addEventListener('pointerleave', onLeave);
     host?.addEventListener('focusin', onFocusIn);
     host?.addEventListener('focusout', onFocusOut);
     return () => {
       window.removeEventListener('aia:dock-hold', onHold);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('hashchange', onPop);
+      document.removeEventListener('astro:after-swap', onSwap);
+      document.removeEventListener('astro:page-load', onSwap);
+      document.removeEventListener('click', onAnchor, true);
+      host?.removeEventListener('pointerenter', onEnter);
+      host?.removeEventListener('pointerleave', onLeave);
       host?.removeEventListener('focusin', onFocusIn);
       host?.removeEventListener('focusout', onFocusOut);
       clearTimeout(idle);

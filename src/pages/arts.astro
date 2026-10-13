@@ -218,11 +218,18 @@ let eager = 4;
               ? a.setAttribute('aria-current', 'true')
               : a.removeAttribute('aria-current'),
           );
-          nav.querySelector(`[data-section-link="${id}"]`)?.scrollIntoView({
-            block: 'nearest',
-            inline: 'center',
-            behavior: document.documentElement.dataset.motion === 'on' ? 'smooth' : 'auto',
-          });
+          // centre the current tab inside the menu's own sideways scroller — never scroll the page
+          // (scrollIntoView would also move the window whenever the menu wasn't fully on screen)
+          const link = nav.querySelector<HTMLElement>(`[data-section-link="${id}"]`);
+          const strip = nav.querySelector<HTMLElement>('ul');
+          if (link && strip) {
+            const l = link.getBoundingClientRect();
+            const r = strip.getBoundingClientRect();
+            strip.scrollTo({
+              left: strip.scrollLeft + (l.left - r.left) - (strip.clientWidth - l.width) / 2,
+              behavior: document.documentElement.dataset.motion === 'on' ? 'smooth' : 'auto',
+            });
+          }
         }
       },
       { rootMargin: '-35% 0px -60% 0px' },

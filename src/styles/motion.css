@@ -138,6 +138,9 @@ html[data-motion='on'] .skeleton {
 ::view-transition-old(logo-tab) {
   display: none;
 }
+/* no morph either: the group would otherwise stretch the dock / logo tab from the old size to the new */
+::view-transition-group(dock),
+::view-transition-group(logo-tab),
 ::view-transition-new(dock),
 ::view-transition-new(logo-tab) {
   animation: none;
@@ -367,4 +370,17 @@ html[data-motion='on'] .chap[aria-current='page'] .chap__dot::after {
 [data-offscreen],
 [data-offscreen] * {
   animation-play-state: paused !important;
+}
+
+/* dock size changes: labels and system buttons fade in and out with the padding/radius change instead
+   of popping (display is animated discretely, so the hidden state still takes no space) */
+html[data-motion='on'] :is(.chap b, .chap small, .dock__sys, .dock__gear, .dock__sep) {
+  transition:
+    opacity var(--dur-2) var(--ease-float),
+    display var(--dur-2) allow-discrete;
+}
+@starting-style {
+  html[data-motion='on'] :is(.chap b, .chap small, .dock__sys, .dock__gear, .dock__sep) {
+    opacity: 0;
+  }
 }

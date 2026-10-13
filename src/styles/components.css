@@ -794,6 +794,7 @@ html[data-motion='on'] .marquee__track {
 .dock__gear,
 .dock__more {
   display: none;
+  opacity: 0;
 }
 
 /* compact: palette dots + current chapter name */
@@ -820,20 +821,24 @@ html[data-motion='on'] .marquee__track {
 .dock-host[data-state='compact'] .chap b,
 .dock-host[data-state='compact'] .chap small {
   display: none;
+  opacity: 0;
 }
 .dock-host[data-state='compact'] .chap[aria-current='page'] {
   padding: 0 14px 0 10px;
 }
 .dock-host[data-state='compact'] .chap[aria-current='page'] b {
   display: block;
+  opacity: 1;
   font-size: 13px;
 }
 /* the current chapter's name in the visitor's language (the full dock shows both) */
 html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] b {
   display: none;
+  opacity: 0;
 }
 html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] small {
   display: block;
+  opacity: 1;
   margin: 0;
   font: 700 12px/1.2 var(--font-display);
   letter-spacing: 0.12em;
@@ -845,9 +850,11 @@ html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page']
 }
 .dock-host[data-state='compact'] .dock__sys {
   display: none;
+  opacity: 0;
 }
 .dock-host[data-state='compact'] .dock__gear {
   display: grid;
+  opacity: 1;
   width: 36px;
   height: 36px;
 }
@@ -996,12 +1003,14 @@ body.has-modal .dock-host {
   }
   .dock__more {
     display: flex;
+    opacity: 1;
   }
   .dock__sys {
     display: none !important;
   }
   .dock__gear {
     display: grid !important;
+    opacity: 1;
     width: 40px;
     height: 48px;
   }
