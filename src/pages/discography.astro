@@ -119,7 +119,7 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
   <section class="section wrap" aria-label="Songs" data-disco>
     <div class="topbar-slot">
       <div class="disco-bar" data-topbar>
-        <div class="disco-tabs" role="tablist" aria-label="Song lists">
+        <div class="disco-tabs" role="tablist" aria-label="Song lists" data-topbar-primary>
           {groups.map((g, i) => (
             <button
               type="button"
@@ -136,7 +136,16 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
             </button>
           ))}
         </div>
-        <div class="disco-tools">
+        <button type="button" class="topbar__more" data-topbar-more aria-expanded="false">
+          <Icon name="search" />
+          <span data-l="ja" lang="ja">
+            絞り込み
+          </span>
+          <span data-l="en" lang="en">
+            Filters
+          </span>
+        </button>
+        <div class="disco-tools" data-topbar-secondary>
           <label class="search">
             <Icon name="search" />
             <span class="sr-only">Search songs</span>

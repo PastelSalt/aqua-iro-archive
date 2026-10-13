@@ -1,18 +1,19 @@
 /**
  * Bottom VN dock (EXECUTIONPLAN §7.3). Persisted across ClientRouter navigations.
- * States: expanded (top / pointer on it / keyboard focus / 2 s idle) · compact (scrolling down) ·
- * peek (a very fast fling down a long page).
+ * Two states, one rule: expanded at the top of the page and whenever you scroll up; compact while you
+ * scroll down. The pointer on the dock or keyboard focus inside it keeps it expanded. The size change
+ * animates the dock's width from the old size to the new one (contents never reflow mid-animation).
  */
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { navigate } from 'astro:transitions/client';
 import { CHAPTERS, chapterForPath, type Chapter } from '../../lib/chapters';
 import { motion, lang, bgmOn, shortcuts, toggleMotion, toggleLang } from '../../lib/prefs';
-import { KEYS, read, write } from '../../lib/storage';
 import { track } from '../../lib/analytics';
 import { useLang } from '../../lib/useLang';
 
-type DockState = 'expanded' | 'compact' | 'peek';
-const LONG_PAGES = new Set(['/streaming', '/arts', '/messages']);
+type DockState = 'expanded' | 'compact';
+const TOP = 80; // px: within this of the top the dock is always expanded
+const SWITCH = 24; // px of travel in one direction before the state flips (no jitter on small wobbles)
 const MOBILE_SET = ['home', 'clips', 'discography', 'streaming', 'messages'];
 
 const Icon = ({ name, cls = 'icon' }: { name: string; cls?: string }) => (
@@ -53,7 +54,6 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
   const [typing, setTyping] = useState(false);
   const [sheet, setSheet] = useState(false);
   const [sysPop, setSysPop] = useState(false);
-  const [hint, setHint] = useState(false);
   const hostRef = useRef<HTMLDivElement>(null);
   const active = chapterForPath(path);
 
@@ -64,14 +64,8 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       setSheet(false);
       setSysPop(false);
     };
-    const onHintOff = () => setHint(false);
     document.addEventListener('astro:page-load', onLoad);
-    window.addEventListener('aia:hint-off', onHintOff);
-    setHint(!read<boolean>(KEYS.dockHint, false));
-    return () => {
-      document.removeEventListener('astro:page-load', onLoad);
-      window.removeEventListener('aia:hint-off', onHintOff);
-    };
+    return () => document.removeEventListener('astro:page-load', onLoad);
   }, []);
 
   // --- name plate types in like dialogue ---
@@ -96,63 +90,43 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     return () => clearInterval(id);
   }, [path]);
 
-  // --- scroll-driven states ---
-  // expanded at the top, while the pointer is on the dock, while keyboard focus is inside it, and 2 s
-  // after scrolling stops; compact while scrolling down; peek (tucked away) only on a really fast fling
-  // down a long page. Scroll jumps the page makes itself (page changes, Back, in-page anchors, the
-  // tour) don't count as the visitor scrolling.
+  // --- scroll-driven state ---
   useEffect(() => {
     let lastY = window.scrollY;
-    let lastT = performance.now();
-    let idle: ReturnType<typeof setTimeout> | undefined;
+    let travel = 0; // signed distance scrolled in the current direction
     let focused = false; // keyboard focus only — a mouse click leaves focus on the button it pressed
     let hovered = false;
     let held = false; // the onboarding tour keeps the dock open while it points at its buttons
-    let quietUntil = 0;
     let raf = 0;
     const host = hostRef.current;
     const pinned = () => focused || hovered || held;
-    const quiet = (ms: number) => {
-      quietUntil = Math.max(quietUntil, performance.now() + ms);
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      const dy = y - lastY;
+      lastY = y;
+      travel = Math.sign(dy) === Math.sign(travel) ? travel + dy : dy;
+      if (y < TOP || pinned() || travel < -SWITCH) setState('expanded');
+      else if (travel > SWITCH) setState('compact');
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    // a new page (or Back/Forward) starts expanded, measured from where it lands
+    const onArrive = () => {
       lastY = window.scrollY;
-      lastT = performance.now();
+      travel = 0;
+      setState('expanded');
     };
     const onHold = (e: Event) => {
       held = !!(e as CustomEvent<boolean>).detail;
       if (held) setState('expanded');
-      quiet(600);
-    };
-    window.addEventListener('aia:dock-hold', onHold);
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const y = window.scrollY;
-        const now = performance.now();
-        const dy = y - lastY;
-        const v = (Math.abs(dy) / Math.max(1, now - lastT)) * 1000;
-        lastY = y;
-        lastT = now;
-        clearTimeout(idle);
-        if (pinned()) return;
-        if (y < 80) {
-          setState('expanded');
-          return;
-        }
-        if (now < quietUntil) return; // a jump the page made, not the visitor
-        if (dy > 0 && v > 2600 && LONG_PAGES.has(currentPath())) setState('peek');
-        else if (dy > 0) setState((s) => (s === 'peek' ? 'peek' : 'compact'));
-        else if (dy < 0) setState((s) => (s === 'peek' ? 'compact' : s));
-        idle = setTimeout(() => !pinned() && setState('expanded'), 2000);
-      });
     };
     const onEnter = () => {
       hovered = true;
       setState('expanded');
     };
-    const onLeave = () => {
-      hovered = false;
-    };
+    const onLeave = () => (hovered = false);
     const onFocusIn = (e: FocusEvent) => {
       if (!(e.target as HTMLElement).matches?.(':focus-visible')) return;
       focused = true;
@@ -161,42 +135,52 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     const onFocusOut = (e: FocusEvent) => {
       if (!host?.contains(e.relatedTarget as Node)) focused = false;
     };
-    // page changes and history moves restore or reset the scroll position
-    const onSwap = () => {
-      quiet(900);
-      setState('expanded');
-    };
-    const onPop = () => quiet(900);
-    // in-page anchors (Back to top, gallery sections) scroll smoothly by themselves
-    const onAnchor = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest?.('a[href*="#"]') as HTMLAnchorElement | null;
-      if (a && a.pathname === location.pathname && a.hash) quiet(1500);
-    };
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('popstate', onPop);
-    window.addEventListener('hashchange', onPop);
-    document.addEventListener('astro:after-swap', onSwap);
-    document.addEventListener('astro:page-load', onSwap);
-    document.addEventListener('click', onAnchor, true);
+    window.addEventListener('aia:dock-hold', onHold);
+    document.addEventListener('astro:page-load', onArrive);
     host?.addEventListener('pointerenter', onEnter);
     host?.addEventListener('pointerleave', onLeave);
     host?.addEventListener('focusin', onFocusIn);
     host?.addEventListener('focusout', onFocusOut);
     return () => {
-      window.removeEventListener('aia:dock-hold', onHold);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('popstate', onPop);
-      window.removeEventListener('hashchange', onPop);
-      document.removeEventListener('astro:after-swap', onSwap);
-      document.removeEventListener('astro:page-load', onSwap);
-      document.removeEventListener('click', onAnchor, true);
+      window.removeEventListener('aia:dock-hold', onHold);
+      document.removeEventListener('astro:page-load', onArrive);
       host?.removeEventListener('pointerenter', onEnter);
       host?.removeEventListener('pointerleave', onLeave);
       host?.removeEventListener('focusin', onFocusIn);
       host?.removeEventListener('focusout', onFocusOut);
-      clearTimeout(idle);
       cancelAnimationFrame(raf);
     };
+  }, []);
+
+  // --- size change: animate the dock's width from the old size to the new one ---
+  const lastWidth = useRef(0);
+  useLayoutEffect(() => {
+    const dock = hostRef.current?.querySelector<HTMLElement>('.dock');
+    if (!dock) return;
+    const to = dock.getBoundingClientRect().width;
+    const from = lastWidth.current;
+    lastWidth.current = to;
+    if (!from || Math.abs(from - to) < 2 || motion.value !== 'on') return;
+    // the outline animates its width in both directions; while it does, the contents are clipped
+    // sideways only (the plate above and the shadow stay visible), so nothing reflows or squashes
+    dock.classList.add('is-resizing');
+    const anim = dock.animate([{ width: `${from}px` }, { width: `${to}px` }], {
+      duration: 300,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    });
+    anim.onfinish = anim.oncancel = () => dock.classList.remove('is-resizing');
+  }, [state]);
+  useEffect(() => {
+    // keep the remembered width current when the content changes for other reasons (route, language)
+    const dock = hostRef.current?.querySelector<HTMLElement>('.dock');
+    if (!dock) return;
+    const ro = new ResizeObserver(() => {
+      if (!dock.getAnimations().length) lastWidth.current = dock.getBoundingClientRect().width;
+    });
+    ro.observe(dock);
+    return () => ro.disconnect();
   }, []);
 
   // --- keyboard shortcuts (§7.3, WCAG 2.1.4: can be turned off in the LOG drawer) ---
@@ -234,21 +218,13 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [sheet, sysPop]);
 
-  function dismissHint() {
-    if (hint) {
-      setHint(false);
-      write(KEYS.dockHint, true);
-    }
-  }
   function go(c: Chapter, via: 'click' | 'key' | 'talk') {
     track('dock_nav', { to: c.id, via });
-    dismissHint();
     navigate(c.href);
   }
   function onChapterClick(e: MouseEvent, c: Chapter) {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     track('dock_nav', { to: c.id, via: 'click' });
-    dismissHint();
     setSheet(false);
   }
   function sysMotion() {
@@ -341,12 +317,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
 
   return (
     <div class="dock-host" data-state={state} ref={hostRef}>
-      {hint && (
-        <span class="dock-hint sticker sticker--soft" role="status">
-          {L === 'ja' ? 'チャプターをえらんでね ⚓' : 'Choose a chapter ⚓'}
-        </span>
-      )}
-      <nav class="dock" aria-label={L === 'ja' ? 'チャプター' : 'Chapters'} onClick={dismissHint}>
+      <nav class="dock" aria-label={L === 'ja' ? 'チャプター' : 'Chapters'}>
         <span class={`dock__plate${typing ? ' is-typing' : ''}`} aria-hidden="true">
           {plate}
           <span class="caret" />
@@ -370,7 +341,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
                   {c.no} {c.title.en}
                 </span>
                 <span class="chap__tip" aria-hidden="true">
-                  {c.ja} · {c.en}
+                  {L === 'ja' ? c.ja : c.en}
                 </span>
               </a>
             </li>

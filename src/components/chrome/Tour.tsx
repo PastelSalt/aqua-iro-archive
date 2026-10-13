@@ -235,8 +235,6 @@ export default function Tour() {
 
   function end(skipped: boolean) {
     write(KEYS.tourDone, true);
-    write(KEYS.dockHint, true);
-    window.dispatchEvent(new Event('aia:hint-off'));
     window.dispatchEvent(new CustomEvent('aia:dock-hold', { detail: false }));
     track('tour', { done: skipped ? `skip@${steps[i ?? 0]?.id}` : 'finish' });
     setI(null);

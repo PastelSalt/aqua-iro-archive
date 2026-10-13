@@ -119,7 +119,7 @@ let eager = 4;
 
   <div class="topbar-slot art-nav-slot">
     <nav class="art-nav" aria-label="Gallery sections" data-art-nav data-topbar>
-      <ul role="list">
+      <ul role="list" data-topbar-primary>
         {sections.map((s) => (
           <li>
             <a class="ribbon-tab" href={`#${s.id}`} data-section-link={s.id}>

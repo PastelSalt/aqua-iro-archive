@@ -25,6 +25,21 @@
   position: relative;
   padding-top: clamp(112px, 14vh, 156px);
   padding-bottom: var(--s-7);
+  overflow-x: clip; /* key visuals (the vinyl, tilted stickers) never widen the page */
+}
+/* desktop: every chapter opens with one full-screen title card, centred in the space above the dock,
+   so the first section always starts below the fold — never half under the dock */
+@media (min-width: 901px) and (min-height: 560px) {
+  .page-head {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: var(--dock-reserve);
+  }
+  .page-head > .wrap {
+    width: min(1200px, 100% - 2 * var(--gutter));
+  }
 }
 .page-head__grid {
   display: grid;
@@ -118,6 +133,7 @@
 }
 .page-body {
   position: relative;
+  overflow-x: clip; /* decorations that hang over a card's edge never widen the page on phones */
 }
 .page-end {
   padding-bottom: var(--dock-reserve);

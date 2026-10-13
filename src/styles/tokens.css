@@ -95,6 +95,9 @@
   --z-splash: 40;
   --z-toast: 50;
   /* dock geometry */
+  /* small uppercase labels: only these two sizes, nothing below 10px */
+  --label-s: 10px;
+  --label-m: 11px;
   --dock-h: 74px;
   --dock-gap: 24px;
   --dock-reserve: calc(var(--dock-h) + var(--dock-gap) + 24px + env(safe-area-inset-bottom));

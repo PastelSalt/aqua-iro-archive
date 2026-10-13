@@ -46,75 +46,117 @@
 .topbar-slot {
   position: relative;
 }
+/* docked: one row — the primary strip (scrolls sideways) + a Filters button; secondary controls open
+   below it. The same size, radius, padding and shadow for all three bars. */
 [data-topbar].is-docked {
   position: fixed;
-  top: 10px;
+  top: var(--topbar-top, 10px);
   left: var(--topbar-left);
   right: clamp(12px, 2vw, 28px);
   width: auto;
   max-width: none;
   margin: 0;
   z-index: var(--z-chrome);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 20px;
+  background: rgb(255 251 254 / 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 10px 28px rgb(59 69 131 / 0.16);
 }
-/* one tidy line per row while docked: rows scroll sideways instead of wrapping */
-[data-topbar].is-docked .chips,
-[data-topbar].is-docked .stream-controls__row,
-[data-topbar].is-docked .disco-tools {
+[data-topbar].is-docked > [data-topbar-primary] {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
   flex-wrap: nowrap;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
+  scroll-padding-inline: 32px;
+  /* the Arts strip carries its own card styling in the page; the docked bar provides it instead */
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  border-radius: 14px;
 }
-[data-topbar].is-docked .chips > *,
-[data-topbar].is-docked .stream-controls__row > * {
+[data-topbar].is-docked > [data-topbar-primary] > * {
   flex: none;
 }
-[data-topbar].is-docked .search {
-  flex: 1 0 200px;
-  max-width: 300px;
-  min-width: 180px;
+[data-topbar] > [data-topbar-primary].fade-l {
+  mask-image: linear-gradient(90deg, transparent 0, #000 32px);
 }
-[data-topbar].is-docked .search input,
-[data-topbar].is-docked .select select {
-  min-height: 36px;
+[data-topbar] > [data-topbar-primary].fade-r {
+  mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent 100%);
 }
-.disco-bar.is-docked {
-  grid-template-columns: minmax(0, 1fr) auto;
+[data-topbar] > [data-topbar-primary].fade-l.fade-r {
+  mask-image: linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+}
+/* every tab / chip in a docked bar is the same height */
+[data-topbar].is-docked > [data-topbar-primary] :is([role='tab'], .ribbon-tab, .chip) {
+  min-height: 40px;
+  padding-block: 6px;
+}
+[data-topbar].is-docked > [data-topbar-secondary] {
+  display: none;
+}
+[data-topbar].is-docked.is-open > [data-topbar-secondary] {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  gap: 10px;
-  padding: 6px;
-  border-radius: 20px;
+  margin: 0;
+  padding: 4px 2px 2px;
 }
-.disco-bar.is-docked .disco-tabs [role='tab'] {
-  padding: 6px 12px;
+.topbar__more {
+  display: none;
 }
-.stream-controls.is-docked {
-  grid-template-columns: minmax(0, 1fr) auto;
+[data-topbar].is-docked .topbar__more {
+  flex: none;
+  display: inline-flex;
   align-items: center;
-  gap: 8px 10px;
-  padding: 8px;
-  border-radius: 20px;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px var(--lav-line) inset;
+  font: 700 12px/1 var(--font-display);
+  letter-spacing: 0.08em;
+  color: var(--navy);
 }
-.stream-controls.is-docked .tag-chips {
-  grid-column: 1 / -1;
+[data-topbar].is-docked .topbar__more[aria-expanded='true'] {
+  background: var(--navy);
+  color: #fff;
+  box-shadow: none;
 }
-.art-nav.is-docked ul {
-  padding: 6px;
+.topbar__more .icon {
+  width: 14px;
+  height: 14px;
 }
 @media (max-width: 760px) {
-  /* no room beside the logo on phones: the bar takes the whole top edge and the logo steps aside */
+  /* no room beside the logo on phones: the bar spans the width just under the shrunken logo tab */
   [data-topbar].is-docked {
     left: 8px;
     right: 8px;
-    top: 8px;
   }
-  .disco-bar.is-docked,
-  .stream-controls.is-docked {
-    grid-template-columns: minmax(0, 1fr);
+  /* icon only on phones; the label stays for screen readers */
+  [data-topbar].is-docked .topbar__more span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
-  html.has-topbar .logo-tab {
-    opacity: 0;
-    pointer-events: none;
+  [data-topbar].is-docked .topbar__more {
+    padding: 0 12px;
   }
 }
 
@@ -562,7 +604,7 @@ html[data-motion='on'] .marquee__track {
 }
 .maker-card small {
   grid-column: 1 / -1;
-  font: 600 9px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--pink-ink);
@@ -709,7 +751,7 @@ html[data-motion='on'] .marquee__track {
   white-space: nowrap;
 }
 .chap small {
-  font: 600 9.5px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.24em;
   color: var(--ink-soft);
   margin-top: 4px;
@@ -771,7 +813,7 @@ html[data-motion='on'] .marquee__track {
   place-items: center;
   align-content: center;
   gap: 3px;
-  font: 600 8.5px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.14em;
   color: var(--ink-soft);
   transition: background var(--dur-1);
@@ -794,7 +836,48 @@ html[data-motion='on'] .marquee__track {
 .dock__gear,
 .dock__more {
   display: none;
-  opacity: 0;
+}
+
+.dock.is-resizing {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+.dock.is-resizing > * {
+  flex-shrink: 0; /* keep the new layout while the outline catches up */
+}
+/* the chapter label follows the visitor's language: Japanese mode shows ホーム with HOME under it,
+   English mode shows HOME alone (the same in the full and compact dock and the chapter sheet) */
+html[data-lang='en'] .chap b,
+html[data-lang='en'] .swatch b {
+  display: none;
+}
+html[data-lang='en'] .chap small {
+  margin-top: 0;
+  font: 700 12px/1.2 var(--font-display);
+  letter-spacing: 0.12em;
+  color: var(--navy);
+}
+html[data-lang='en'] .chap[aria-current='page'] small {
+  color: #fff;
+}
+html[data-lang='en'] .swatch small[lang='en'] {
+  font: 700 var(--step-0) / 1.2 var(--font-display);
+  letter-spacing: 0.08em;
+}
+/* chapter tooltips: none on touch screens; the first and last stay inside the dock */
+@media (hover: none) {
+  .chap__tip {
+    display: none;
+  }
+}
+.dock__chapters > li:first-child .chap__tip {
+  left: 0;
+  transform: none;
+}
+.dock__chapters > li:nth-last-child(2) .chap__tip {
+  left: auto;
+  right: 0;
+  transform: none;
 }
 
 /* compact: palette dots + current chapter name */
@@ -821,28 +904,21 @@ html[data-motion='on'] .marquee__track {
 .dock-host[data-state='compact'] .chap b,
 .dock-host[data-state='compact'] .chap small {
   display: none;
-  opacity: 0;
 }
 .dock-host[data-state='compact'] .chap[aria-current='page'] {
   padding: 0 14px 0 10px;
 }
 .dock-host[data-state='compact'] .chap[aria-current='page'] b {
   display: block;
-  opacity: 1;
   font-size: 13px;
 }
 /* the current chapter's name in the visitor's language (the full dock shows both) */
 html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] b {
   display: none;
-  opacity: 0;
 }
 html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page'] small {
   display: block;
-  opacity: 1;
-  margin: 0;
-  font: 700 12px/1.2 var(--font-display);
-  letter-spacing: 0.12em;
-  color: #fff;
+  font-size: 12px;
 }
 .dock-host[data-state='compact'] .chap:hover .chap__tip,
 .dock-host[data-state='compact'] .chap:focus-visible .chap__tip {
@@ -850,30 +926,14 @@ html[data-lang='en'] .dock-host[data-state='compact'] .chap[aria-current='page']
 }
 .dock-host[data-state='compact'] .dock__sys {
   display: none;
-  opacity: 0;
 }
 .dock-host[data-state='compact'] .dock__gear {
   display: grid;
-  opacity: 1;
   width: 36px;
   height: 36px;
 }
 .dock-host[data-state='compact'] .dock__sep {
   margin: 6px 6px;
-}
-/* peek: slides down leaving a thin gradient strip */
-.dock-host[data-state='peek'] {
-  transform: translateY(calc(100% - 6px));
-}
-.dock-host[data-state='peek']::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 6px;
-  background: linear-gradient(90deg, var(--aqua-pink), var(--lavender), var(--aqua-cyan));
-  pointer-events: auto;
 }
 body.has-modal .dock-host {
   transform: translateY(140%);
@@ -892,15 +952,6 @@ body.has-modal .dock-host {
   background: var(--paper);
   border-radius: 20px;
   box-shadow: var(--sh-3);
-}
-
-/* first-visit hint */
-.dock-hint {
-  position: absolute;
-  bottom: calc(100% + 26px);
-  left: 50%;
-  transform: translateX(-50%) rotate(-3deg);
-  pointer-events: auto;
 }
 
 /* chapter-select sheet (mobile "More") */
@@ -960,6 +1011,12 @@ body.has-modal .dock-host {
     padding: 12px 8px 10px;
   }
 }
+/* narrower screens show one label per chip: in English mode that's the English one */
+@media (max-width: 1180px) {
+  html[data-lang='en'] .chap small {
+    display: block;
+  }
+}
 @media (max-width: 920px) {
   .chap {
     min-width: 54px;
@@ -1003,14 +1060,16 @@ body.has-modal .dock-host {
   }
   .dock__more {
     display: flex;
-    opacity: 1;
+  }
+  html[data-lang='en'] .chap small {
+    font-size: var(--label-s);
+    letter-spacing: 0.02em;
   }
   .dock__sys {
     display: none !important;
   }
   .dock__gear {
     display: grid !important;
-    opacity: 1;
     width: 40px;
     height: 48px;
   }
@@ -1228,7 +1287,7 @@ html[data-motion='on'] .tour__card {
   letter-spacing: 0.06em;
 }
 .drawer__maker small {
-  font: 600 9px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--pink-ink);
@@ -1717,7 +1776,7 @@ html[data-motion='on'] .bgm.is-playing .bgm__disc {
   display: grid;
 }
 .bgm__meta small {
-  font: 600 9px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.2em;
   color: var(--pink-ink);
   text-transform: uppercase;
@@ -1840,7 +1899,7 @@ html[data-motion='on'] .splash__brand {
   opacity: 0.9;
 }
 .splash__by small {
-  font: 600 9px/1 var(--font-display);
+  font: 600 var(--label-s)/1 var(--font-display);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink-soft);

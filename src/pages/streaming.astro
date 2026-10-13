@@ -161,7 +161,7 @@ const totalHours = summary.hours;
     <SectionTitle no="02" en="Stream log" ja="全配信リスト" id="log-title" />
     <div class="topbar-slot">
       <div class="stream-controls" data-topbar>
-        <div class="year-tabs chips" role="radiogroup" aria-label="Year">
+        <div class="year-tabs chips" role="radiogroup" aria-label="Year" data-topbar-primary>
           <button type="button" class="chip" role="radio" aria-checked="true" data-year="all">
             <span data-l="ja" lang="ja">
               すべて
@@ -176,7 +176,16 @@ const totalHours = summary.hours;
             </button>
           ))}
         </div>
-        <div class="stream-controls__row">
+        <button type="button" class="topbar__more" data-topbar-more aria-expanded="false">
+          <Icon name="search" />
+          <span data-l="ja" lang="ja">
+            絞り込み
+          </span>
+          <span data-l="en" lang="en">
+            Filters
+          </span>
+        </button>
+        <div class="stream-controls__row" data-topbar-secondary>
           <label class="search">
             <Icon name="search" />
             <span class="sr-only">Search stream titles</span>
@@ -205,7 +214,7 @@ const totalHours = summary.hours;
             </button>
           </div>
         </div>
-        <div class="chips tag-chips" role="group" aria-label="Tags">
+        <div class="chips tag-chips" role="group" aria-label="Tags" data-topbar-secondary>
           {STREAM_TAGS.map((t) => (
             <button type="button" class="chip" aria-pressed="false" data-tag={t}>
               <span data-l="ja" lang="ja">
