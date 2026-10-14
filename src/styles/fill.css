@@ -1879,7 +1879,7 @@ html[data-motion='on'] .ocean__bubble {
 .odo__face {
   display: inline-flex;
   align-items: baseline;
-  white-space: pre;
+  white-space: nowrap;
 }
 .odo__d {
   display: inline-block;
@@ -1890,8 +1890,14 @@ html[data-motion='on'] .ocean__bubble {
 }
 .odo__strip {
   display: block;
-  line-height: 1.2em;
   transform: translateY(calc(var(--n) * -1.2em));
+}
+/* each digit is a fixed-height block, so the strip's step is exactly 1.2em whatever the font metrics */
+.odo__strip i {
+  display: block;
+  height: 1.2em;
+  line-height: 1.2em;
+  font-style: normal;
 }
 @keyframes odo-roll {
   from {

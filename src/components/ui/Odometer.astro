@@ -11,6 +11,7 @@ interface Props {
 }
 const { text, class: cls } = Astro.props;
 const chars = [...text];
+const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 ---
 
 <span class:list={['odo', cls]} data-odo>
@@ -20,7 +21,9 @@ const chars = [...text];
       /\d/.test(ch) ? (
         <span class="odo__d">
           <span class="odo__strip" style={`--n:${ch}`}>
-            0<br />1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9
+            {DIGITS.map((d) => (
+              <i>{d}</i>
+            ))}
           </span>
         </span>
       ) : (
