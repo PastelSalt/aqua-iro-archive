@@ -41,7 +41,9 @@ onPage(() => {
   if (document.documentElement.dataset.motion !== 'on' || !('IntersectionObserver' in window)) return;
   const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR)).filter(
     // (not inside hidden tabs/panels either: those appear instantly when switched to, as before)
-    (el) => !el.closest('[data-topbar], .drawer, .tour, [hidden]'),
+    // (Clips' rank stickers roll their numbers instead: a pop on top of 30 rolling counters re-rasters every
+    // card each frame, which made Clips scroll badly)
+    (el) => !el.closest('[data-topbar], .drawer, .tour, [hidden]') && !el.matches('.clip__rank'),
   );
   if (!els.length) return;
   const done = (el: HTMLElement) => {

@@ -22,10 +22,19 @@ body {
   line-height: 1.75;
   color: var(--navy);
   background: var(--paper);
-  background-image: var(--wash);
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+}
+/* the page wash on its own fixed layer — the same look as a fixed body background, but composited, so
+   scrolling never repaints the whole window (background-attachment: fixed did, every frame) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-bg);
+  background: var(--paper);
+  background-image: var(--wash);
+  pointer-events: none;
 }
 /* seigaiha wave texture, fixed behind everything */
 .waves {

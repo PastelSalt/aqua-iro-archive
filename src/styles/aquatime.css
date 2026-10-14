@@ -26,9 +26,6 @@ html[data-season='winter'] {
     radial-gradient(900px 600px at 10% 90%, #e2f1fb 0%, transparent 60%),
     linear-gradient(160deg, #f4f6fd 0%, #f2f7fc 55%, #eaf1fa 100%);
 }
-body {
-  transition: background-image 600ms;
-}
 
 /* ---- dock button ---- */
 .sysbtn.is-time {

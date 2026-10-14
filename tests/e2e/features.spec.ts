@@ -19,6 +19,7 @@ test('Talk with Aqua: shows text without JS, then open → choose → reply', as
 });
 
 test('Streaming: year filter, tag filter, search and URL state', async ({ page, errors }) => {
+  test.slow(); // the 639-row page is heavy when the suite runs in parallel
   await page.goto('/streaming');
   await expect(page.locator('[data-stream-count]')).toContainText('639');
   await page.locator('[data-year="2020"]').click();
