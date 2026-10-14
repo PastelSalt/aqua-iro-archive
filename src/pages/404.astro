@@ -3,6 +3,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
+import Seam from '../components/ui/Seam.astro';
 import pose from '../assets/poses/portrait-06.webp';
 import { SITE_NAME } from '../lib/site';
 ---
@@ -13,6 +14,23 @@ import { SITE_NAME } from '../lib/site';
   noindex
 >
   <main id="main" class="lost" tabindex="-1">
+    <div class="ocean" aria-hidden="true">
+      <span class="ocean__boat">
+        <svg viewBox="0 0 64 56">
+          <path class="voyage-ship__sail" d="M30 4 L30 34 L10 34 Z" />
+          <path class="voyage-ship__sail2" d="M34 10 L34 34 L52 34 Z" />
+          <path class="voyage-ship__hull" d="M4 38 H60 L52 50 H12 Z" />
+          <rect x="30" y="2" width="4" height="36" rx="2" class="voyage-ship__mast" />
+        </svg>
+      </span>
+      {[8, 22, 37, 55, 71, 86].map((x, i) => (
+        <i class="ocean__bubble" style={`left:${x}%;--d:${-i * 1.3}s;--s:${8 + (i % 3) * 5}px`} />
+      ))}
+      <div class="ocean__waves">
+        <Seam kind="wave" />
+        <Seam kind="wave" />
+      </div>
+    </div>
     <div class="lost__art" aria-hidden="true">
       <Image src={pose} alt="" height={420} densities={[1, 1.5]} />
       <span class="fx c-cyan" style="left:-10px;top:30px;width:60px;height:70px">
@@ -44,7 +62,8 @@ import { SITE_NAME } from '../lib/site';
           We couldn't find that page. Let's head back to the harbor.
         </span>
       </p>
-      <a class="btn btn--primary" href="/">
+      <a class="btn btn--primary buoy-btn" href="/" data-buoy-btn>
+        <span class="buoy-btn__ring" aria-hidden="true"></span>
         <span data-l="ja" lang="ja">
           アーカイブへ戻る
         </span>
@@ -59,5 +78,76 @@ import { SITE_NAME } from '../lib/site';
 
 <script>
   import { track } from '../lib/analytics';
+  import { onPage } from '../lib/lifecycle';
   setTimeout(() => track('not_found', { path: location.pathname.slice(0, 60) }), 2000);
+
+  // the "back" buoy can be grabbed and thrown; it springs back to its spot. A plain click still navigates.
+  onPage(() => {
+    const b = document.querySelector<HTMLAnchorElement>('[data-buoy-btn]');
+    if (!b) return;
+    let x = 0,
+      y = 0,
+      vx = 0,
+      vy = 0,
+      sx = 0,
+      sy = 0,
+      dragging = false,
+      moved = false,
+      raf = 0,
+      last = 0;
+    const put = () => (b.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`);
+    const spring = () => {
+      raf = 0;
+      if (dragging) return;
+      vx = (vx - x * 0.12) * 0.86;
+      vy = (vy - y * 0.12) * 0.86;
+      x += vx;
+      y += vy;
+      put();
+      if (Math.abs(x) + Math.abs(y) + Math.abs(vx) + Math.abs(vy) > 0.3) raf = requestAnimationFrame(spring);
+      else {
+        x = y = 0;
+        put();
+      }
+    };
+    const down = (e: PointerEvent) => {
+      if (e.button !== 0 || document.documentElement.dataset.motion !== 'on') return;
+      dragging = true;
+      moved = false;
+      sx = e.clientX - x;
+      sy = e.clientY - y;
+      last = performance.now();
+      b.setPointerCapture(e.pointerId);
+      cancelAnimationFrame(raf);
+    };
+    const move = (e: PointerEvent) => {
+      if (!dragging) return;
+      const nx = e.clientX - sx,
+        ny = e.clientY - sy;
+      const now = performance.now(),
+        dt = Math.max(1, now - last);
+      vx = ((nx - x) / dt) * 16;
+      vy = ((ny - y) / dt) * 16;
+      last = now;
+      if (Math.abs(nx) + Math.abs(ny) > 6) moved = true;
+      x = nx;
+      y = ny;
+      put();
+    };
+    const up = () => {
+      if (!dragging) return;
+      dragging = false;
+      raf = requestAnimationFrame(spring);
+    };
+    const click = (e: MouseEvent) => {
+      if (moved) e.preventDefault(); // it was a throw, not a click
+    };
+    b.addEventListener('pointerdown', down);
+    b.addEventListener('pointermove', move);
+    b.addEventListener('pointerup', up);
+    b.addEventListener('pointercancel', up);
+    b.addEventListener('click', click);
+    b.addEventListener('dragstart', (e) => e.preventDefault());
+    return () => cancelAnimationFrame(raf);
+  });
 </script>

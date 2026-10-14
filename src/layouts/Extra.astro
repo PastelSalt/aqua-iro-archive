@@ -1,6 +1,11 @@
 ---
 /** Simple document layout for Credits, Privacy and other non-chapter pages. */
 import Base from './Base.astro';
+import CreditRails from '../components/chrome/CreditRails.astro';
+import Stamp from '../components/ui/Stamp.astro';
+import Seam from '../components/ui/Seam.astro';
+import { Image } from 'astro:assets';
+import pose from '../assets/poses/main-icon.webp';
 import { SITE_NAME } from '../lib/site';
 interface Props {
   title: { ja: string; en: string };
@@ -18,7 +23,12 @@ const { title, label, description, noindex } = Astro.props;
   noindex={noindex}
 >
   <main id="main" class="extra" tabindex="-1">
-    <header class="page-head wrap">
+    <CreditRails />
+    <header class="page-head wrap extra-head">
+      <div class="extra-head__art" aria-hidden="true">
+        <Image src={pose} alt="" height={240} loading="eager" />
+        <Stamp text="AQUA IRO ARCHIVE ⚓ CREDITS & POLICY ⚓ " size={110} />
+      </div>
       <p class="label">
         <b>{label}</b>
       </p>
@@ -27,6 +37,7 @@ const { title, label, description, noindex } = Astro.props;
         {title.ja}
       </p>
     </header>
+    <Seam kind="wave" />
     <div class="wrap prose">
       <slot />
     </div>

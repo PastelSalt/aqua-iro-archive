@@ -95,6 +95,9 @@ const totalHours = summary.hours;
                 rx="10"
                 fill={y.year === 2020 ? 'var(--aqua-pink)' : 'var(--aqua-blue)'}
               />
+              {y.count === maxCount && (
+                <use href="#i-trophy" class="yb-crown" x={i * 64 + 19} y={110 - h} width="26" height="26" />
+              )}
               <text x={i * 64 + 32} y={143 - h} text-anchor="middle" class="yb-n">
                 {y.count}
               </text>
@@ -252,7 +255,15 @@ const totalHours = summary.hours;
           >
             <rect class="heatmap__bg" width="100%" height="100%" />
             {heat(y.year).map((c) => (
-              <rect x={c.x} y={c.y} width={CELL} height={CELL} rx="3" class={`lv${c.lvl}`}>
+              <rect
+                x={c.x}
+                y={c.y}
+                width={CELL}
+                height={CELL}
+                rx="3"
+                class={`lv${c.lvl}`}
+                style={`--w:${Math.round(c.x / (CELL + 2))}`}
+              >
                 <title>{c.label}</title>
               </rect>
             ))}
@@ -274,6 +285,21 @@ const totalHours = summary.hours;
       </p>
     </div>
 
+    {/* a giant ghost year behind the list and a running "hours so far" (IMPROVEMENT-PLAN §1.5) */}
+    <div class="stream-ghostbox" aria-hidden="true">
+      <span class="stream-ghost num" data-ghost-year>
+        {years.at(-1)!.year}
+      </span>
+      <span class="stream-hours num">
+        <b data-hours>0</b>
+        <span data-l="ja" lang="ja">
+          時間 ここまで
+        </span>
+        <span data-l="en" lang="en">
+          h so far
+        </span>
+      </span>
+    </div>
     <ol class="streams" role="list" data-stream-list>
       {streams.map((s) => (
         <li
@@ -328,6 +354,28 @@ const totalHours = summary.hours;
 <script>
   import { onPage } from '../lib/lifecycle';
   import { track, debounced } from '../lib/analytics';
+
+  // the ghost year follows the row in the middle of the screen; the counter adds up the hours above it
+  onPage(() => {
+    const list = document.querySelector<HTMLElement>('[data-stream-list]');
+    const year = document.querySelector<HTMLElement>('[data-ghost-year]');
+    const hours = document.querySelector<HTMLElement>('[data-hours]');
+    if (!list || !year || !hours) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.find((e) => e.isIntersecting)?.target as HTMLElement | undefined;
+        if (!hit) return;
+        if (year.textContent !== hit.dataset.y) year.textContent = hit.dataset.y ?? '';
+        let sec = 0;
+        for (let r: Element | null = hit; r; r = r.previousElementSibling)
+          if (!(r as HTMLElement).hidden) sec += Number((r as HTMLElement).dataset.s) || 0;
+        hours.textContent = Math.round(sec / 3600).toLocaleString('en-US');
+      },
+      { rootMargin: '-48% 0px -51% 0px' },
+    );
+    list.querySelectorAll('.srow').forEach((r) => io.observe(r));
+    return () => io.disconnect();
+  });
   import { searchForm } from '../lib/text/kana';
   import { applyFilter, type Row } from '../lib/streams/filter';
 

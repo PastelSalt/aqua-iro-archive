@@ -146,8 +146,41 @@ function renderImage(t: Trigger) {
     prev.addEventListener('click', (e) => (e.stopPropagation(), step(-1)));
     next.addEventListener('click', (e) => (e.stopPropagation(), step(1)));
     stage.append(prev, next);
+    stage.append(filmstrip());
   }
   if (t.dataset.id) history.replaceState(history.state, '', `#art=${t.dataset.id}`);
+}
+
+/** A strip of the neighbouring pieces in the group along the bottom; click one to jump to it. */
+function filmstrip() {
+  const strip = el('div', {
+    class: 'lightbox__strip',
+    role: 'group',
+    'aria-label': say('ほかの作品', 'More pieces'),
+  });
+  const span = 4;
+  for (let d = -span; d <= span; d++) {
+    const i = (index + d + group.length) % group.length;
+    const tr = group[i]!;
+    const src = tr.querySelector<HTMLImageElement>('img')?.currentSrc;
+    if (!src || (d !== 0 && i === index)) continue;
+    const b = el('button', {
+      type: 'button',
+      class: `lightbox__thumb${d === 0 ? ' is-current' : ''}`,
+      'aria-label': tr.dataset.title || say('作品', 'Piece'),
+      ...(d === 0 ? { 'aria-current': 'true' } : {}),
+    });
+    const im = el('img', { src, alt: '', loading: 'lazy', decoding: 'async' });
+    b.append(im);
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (d === 0) return;
+      index = i;
+      show(group[i]!);
+    });
+    strip.append(b);
+  }
+  return strip;
 }
 
 /**

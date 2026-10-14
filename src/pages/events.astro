@@ -83,6 +83,14 @@ const expandable = (e: (typeof events)[number]) =>
       <span class="voyage-tl__rope" aria-hidden="true">
         <span class="voyage-tl__fill" data-rope></span>
       </span>
+      <span class="voyage-ship" aria-hidden="true" data-ship>
+        <svg viewBox="0 0 64 56">
+          <path class="voyage-ship__sail" d="M30 4 L30 34 L10 34 Z" />
+          <path class="voyage-ship__sail2" d="M34 10 L34 34 L52 34 Z" />
+          <path class="voyage-ship__hull" d="M4 38 H60 L52 50 H12 Z" />
+          <rect x="30" y="2" width="4" height="36" rx="2" class="voyage-ship__mast" />
+        </svg>
+      </span>
       <ol class="voyage-tl__list" role="list">
         {years.map((y) => (
           <li class="port">
@@ -92,6 +100,7 @@ const expandable = (e: (typeof events)[number]) =>
               </span>
               <span class="num">{y}</span>
               <small>PORT</small>
+              <span class="port__flag" aria-hidden="true" />
             </h3>
             <ol class="port__events" role="list">
               {events
@@ -199,6 +208,7 @@ const expandable = (e: (typeof events)[number]) =>
       </ol>
     </div>
 
+    <div class="dusk" aria-hidden="true" data-dusk></div>
     <div class="lighthouse wrap" aria-labelledby="end-title">
       <div class="lighthouse__art" aria-hidden="true">
         <span class="lighthouse__beam"></span>
@@ -312,18 +322,46 @@ const expandable = (e: (typeof events)[number]) =>
               scrollTrigger: { trigger: '.voyage-tl', start: 'top 55%', end: 'bottom 55%', scrub: 0.4 },
             },
           );
-          gsap.utils.toArray<HTMLElement>('[data-buoy]').forEach((el) =>
-            gsap.from(el, {
-              y: 18,
-              opacity: 0,
-              duration: 0.6,
-              ease: 'sine.inOut',
-              scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-            }),
-          );
+          // a little ship sails down the rope with you (event cards swing in via reveal.ts)
+          const ship = root.querySelector<HTMLElement>('[data-ship]');
+          const tl = root.querySelector<HTMLElement>('.voyage-tl')!;
+          if (ship)
+            gsap.fromTo(
+              ship,
+              { y: 0 },
+              {
+                y: () => tl.offsetHeight - 80,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: tl,
+                  start: 'top 55%',
+                  end: 'bottom 55%',
+                  scrub: 0.4,
+                  invalidateOnRefresh: true,
+                },
+              },
+            );
         }, root);
       }),
     );
+    // graduation: while the lighthouse is in view the page dims slightly and its beam sweeps across
+    const light = root.querySelector<HTMLElement>('.lighthouse');
+    const dusk = document.querySelector<HTMLElement>('[data-dusk]');
+    if (light && dusk) {
+      const io = new IntersectionObserver(
+        ([e]) => {
+          const on = !!e?.isIntersecting && document.documentElement.dataset.motion === 'on';
+          dusk.classList.toggle('is-on', on);
+          light.classList.toggle('is-lit', on);
+        },
+        { threshold: 0.6 },
+      );
+      io.observe(light);
+      cleanups.push(() => {
+        io.disconnect();
+        dusk.classList.remove('is-on');
+      });
+    }
     return () => {
       ctx?.revert();
       cleanups.forEach((f) => f());

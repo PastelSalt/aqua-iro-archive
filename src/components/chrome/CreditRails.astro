@@ -1,0 +1,31 @@
+---
+/**
+ * Side rails for the text pages (Credits, Privacy) at ≥ 1440 px (IMPROVEMENT-PLAN §1.5): a slow vertical
+ * credits roll of every artist and clipper the archive credits — fitting for these pages.
+ */
+import { getCollection } from 'astro:content';
+const arts = await getCollection('arts');
+const clips = await getCollection('clips');
+const names = [...new Set([...arts.map((a) => a.data.artist), ...clips.map((c) => c.data.clipper)])]
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b, 'ja'));
+const half = Math.ceil(names.length / 2);
+const cols = [names.slice(0, half), names.slice(half)];
+---
+
+<div class="rails rails--credits" aria-hidden="true">
+  {cols.map((col, i) => (
+    <div class={`rail rail--roll rail--roll-${i ? 'r' : 'l'}`}>
+      <div class="rail__roll">
+        {[0, 1].map(() => (
+          <ul>
+            <li class="rail__roll-head">{i ? 'CLIPPERS & ARTISTS' : 'ARTISTS'}</li>
+            {col.map((n) => (
+              <li>{n}</li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>

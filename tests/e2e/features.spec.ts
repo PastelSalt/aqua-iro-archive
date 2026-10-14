@@ -54,9 +54,9 @@ test('Arts: lightbox opens, arrows move, Esc closes and returns focus', async ({
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('[data-credit]')).toContainText('©');
   await expect(page).toHaveURL(/#art=/);
-  const before = await dialog.locator('img').getAttribute('src');
+  const before = await dialog.locator('.lightbox__pan img').getAttribute('src');
   await page.keyboard.press('ArrowRight');
-  await expect(dialog.locator('img')).not.toHaveAttribute('src', before!);
+  await expect(dialog.locator('.lightbox__pan img')).not.toHaveAttribute('src', before!);
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   await expect(first).toBeFocused();

@@ -31,6 +31,8 @@ const SELECTOR = [
   '.spread__item',
   '.jacket',
   '.bside',
+  '.ev',
+  '.port__year',
   '.ending__sign',
   '.farewell__sign',
 ].join(',');

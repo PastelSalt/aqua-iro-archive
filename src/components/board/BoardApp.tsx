@@ -92,6 +92,24 @@ function readMine(): Mine[] {
   return read<Mine[]>(KEYS.boardMine, []).slice(-20);
 }
 
+/** Sleepy-cat scene for an empty or resting board (IMPROVEMENT-PLAN §1.5 Messages): Zzz, a lantern, bubbles. */
+function SleepyScene() {
+  return (
+    <div class="sleepy" aria-hidden="true">
+      <span class="sleepy__lantern" />
+      <svg class="icon sleepy__cat">
+        <use href="#i-catsleep" />
+      </svg>
+      <span class="sleepy__z sleepy__z--1">Z</span>
+      <span class="sleepy__z sleepy__z--2">z</span>
+      <span class="sleepy__z sleepy__z--3">z</span>
+      <i class="sleepy__bubble sleepy__bubble--1" />
+      <i class="sleepy__bubble sleepy__bubble--2" />
+      <i class="sleepy__bubble sleepy__bubble--3" />
+    </div>
+  );
+}
+
 export default function BoardApp({ siteKey }: { siteKey: string }) {
   const L = useLang();
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
@@ -315,6 +333,7 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
       <div class="composer-col">
         {paused ? (
           <div class="compose compose--resting card" role="status">
+            <SleepyScene />
             <p class="maru">
               {say(
                 'ボードは今日はお休みです。また来てね ⚓',
@@ -555,9 +574,7 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
 
         {!loading && !failed && shown.length === 0 && (
           <div class="empty">
-            <svg class="icon" aria-hidden="true">
-              <use href="#i-catsleep" />
-            </svg>
+            <SleepyScene />
             <p>
               {say(
                 'まだ寄せ書きはありません。最初の一枚をどうぞ ⚓',

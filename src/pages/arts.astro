@@ -1,6 +1,6 @@
 ---
 /** No.06 Arts — the VN "CG gallery" (EXECUTIONPLAN §9.6). Credit on every tile and in the viewer. */
-import { Picture, getImage } from 'astro:assets';
+import { Image, Picture, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
@@ -136,13 +136,26 @@ let eager = 4;
   <div class="wrap gallery" data-gallery>
     {sections.map((s, si) => (
       <section class="gallery__sec" id={s.id} aria-labelledby={`h-${s.id}`} data-section={s.id}>
-        <h2 class="gallery__title" id={`h-${s.id}`}>
-          <span class="label">
-            <b>{String(si + 1).padStart(2, '0')}</b>
-          </span>
-          <span lang="ja">{s.label.ja}</span>
-          <small lang="en">{s.label.en}</small>
-        </h2>
+        <div class="gallery__banner">
+          {s.items[0] && (
+            <Image
+              class="gallery__banner-img"
+              src={s.items[0].a.data.image}
+              alt=""
+              width={1200}
+              quality={55}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          <h2 class="gallery__title" id={`h-${s.id}`}>
+            <span class="label">
+              <b>{String(si + 1).padStart(2, '0')}</b>
+            </span>
+            <span lang="ja">{s.label.ja}</span>
+            <small lang="en">{s.label.en}</small>
+          </h2>
+        </div>
         <ul class="art-masonry" role="list">
           {s.items.map(({ a, srcset, href }) => {
             const title = [a.data.title.ja, a.data.title.en].filter(Boolean).join(' / ');
@@ -201,6 +214,19 @@ let eager = 4;
 <script>
   import { onPage } from '../lib/lifecycle';
   import { track } from '../lib/analytics';
+  // tiles "develop" from blurry to sharp as their image arrives
+  onPage(() => {
+    const gallery = document.querySelector<HTMLElement>('[data-gallery]');
+    if (!gallery) return;
+    gallery.classList.add('js-develop');
+    const dev = (img: HTMLImageElement) => img.closest('.art-tile')?.classList.add('is-dev');
+    gallery.querySelectorAll<HTMLImageElement>('.art-tile img').forEach((img) => {
+      if (img.complete && img.naturalWidth) dev(img);
+      else img.addEventListener('load', () => dev(img), { once: true });
+      img.addEventListener('error', () => dev(img), { once: true });
+    });
+  });
+
   onPage(() => {
     const nav = document.querySelector<HTMLElement>('[data-art-nav]');
     if (!nav) return;
