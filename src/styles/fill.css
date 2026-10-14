@@ -18,8 +18,8 @@
   height: 112%;
   max-width: none;
   object-fit: cover;
-  opacity: 0.3;
-  filter: blur(3px) saturate(1.1);
+  opacity: 0.55;
+  filter: blur(1px) saturate(1.1);
 }
 /* the wash keeps the title readable: solid on the copy side, art showing through on the visual side */
 .page-head__kv::after {
@@ -29,12 +29,21 @@
   background:
     linear-gradient(
       90deg,
-      var(--paper) 0%,
-      rgb(255 251 254 / 0.82) 38%,
-      rgb(255 251 254 / 0.35) 75%,
-      rgb(255 251 254 / 0.55) 100%
+      rgb(255 251 254 / 0.86) 0%,
+      rgb(255 251 254 / 0.6) 36%,
+      rgb(255 251 254 / 0.1) 62%,
+      rgb(255 251 254 / 0.25) 100%
     ),
-    linear-gradient(180deg, transparent 60%, var(--paper) 100%);
+    linear-gradient(180deg, transparent 70%, var(--paper) 100%);
+}
+/* the site's dot grid continues through the wash, so the washed side isn't a flat colour */
+.page-head__kv::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: radial-gradient(circle, #e3cdee 1.3px, transparent 1.8px);
+  background-size: 22px 22px;
 }
 @keyframes ken-burns {
   0% {
@@ -435,25 +444,6 @@ html[data-motion='on'] .motif {
 }
 
 /* ================= Sticker kit ================= */
-/* translucent washi tape across the top of a card */
-.tape {
-  position: absolute;
-  z-index: 3;
-  top: -10px;
-  left: 50%;
-  width: 78px;
-  height: 22px;
-  translate: -50% 0;
-  rotate: var(--tape-tilt, -4deg);
-  background: repeating-linear-gradient(
-    -45deg,
-    rgb(242 167 207 / 0.75) 0 6px,
-    rgb(255 255 255 / 0.75) 6px 12px
-  );
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgb(59 69 131 / 0.12);
-  pointer-events: none;
-}
 @keyframes sway {
   0%,
   100% {
@@ -753,4 +743,378 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
 }
 ::view-transition-old(shutter) {
   display: none;
+}
+
+/* ================= Home ================= */
+/* halo: a slow ring of tiny official key visuals around the hero circle, where the 1080p hero is bare */
+.halo {
+  display: none;
+}
+@media (min-width: 1500px) {
+  .halo {
+    display: block;
+    position: absolute;
+    inset: -9%;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 50%;
+  }
+  .halo__frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    padding: 3px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--sh-1);
+    transform: rotate(var(--a)) translateY(calc(-1 * min(26vw, 380px, 46vh))) rotate(calc(-1 * var(--a)));
+    opacity: 0.92;
+  }
+  .halo__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 7px;
+  }
+  @keyframes halo-turn {
+    to {
+      rotate: 360deg;
+    }
+  }
+  html[data-motion='on'] .halo {
+    animation: halo-turn 140s linear infinite;
+  }
+}
+/* chapter cards deal in from a deck, flipping over, then breathe gently while idle */
+@keyframes deal {
+  from {
+    opacity: 0;
+    transform: perspective(900px) translateY(70px) rotateY(-75deg) rotate(-10deg) scale(0.85);
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.012;
+  }
+}
+html[data-motion='on'] .spread__item[data-reveal].is-in {
+  animation: deal 640ms cubic-bezier(0.22, 1, 0.36, 1) var(--rd, 0ms) backwards;
+}
+html[data-motion='on'] .vn-card {
+  animation: breathe 6s var(--ease-float) infinite;
+  animation-delay: calc(var(--i, 0) * -0.8s);
+}
+/* the eighth card: talk with Aqua */
+.vn-card__art--talk {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  background:
+    radial-gradient(circle at 50% 110%, #fff 0 30%, transparent 31%),
+    linear-gradient(160deg, var(--pink-wash), #e7ddf8 60%, #d8eef7);
+}
+.vn-card__art--talk img {
+  width: auto;
+  height: 92%;
+  object-fit: contain;
+}
+.vn-card__art--talk .speech {
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  font-size: var(--step--1);
+}
+/* farewell: the anchor stamp spins in */
+@keyframes spin-in {
+  from {
+    opacity: 0;
+    rotate: -200deg;
+    scale: 0.4;
+  }
+}
+html[data-motion='on'] .farewell .stamp[data-reveal].is-in {
+  animation: spin-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* ================= About ================= */
+/* the ID card flips in like a trading card */
+@keyframes card-flip {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) rotateY(-80deg) translateX(-60px);
+  }
+}
+html[data-motion='on'] .id-card[data-reveal].is-in {
+  animation: card-flip 760ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.id-card__photo img {
+  transition: opacity 200ms;
+}
+/* sticky notes: the tape lifts a little when you hover the note */
+.scrap .tape {
+  transition: transform var(--dur-2) var(--ease-float);
+}
+.scrap:hover .tape {
+  transform: translateX(-50%) translateY(-4px) rotate(-11deg) scaleX(0.94);
+}
+/* relationship map: the ropes flow, the friends' circles drift around their spots */
+@keyframes rope-flow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+@keyframes orbit {
+  0% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 5px -4px;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+  75% {
+    translate: -5px -4px;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+html[data-motion='on'] .rope:not(.is-on) {
+  animation: rope-flow 1.6s linear infinite;
+}
+html[data-motion='on'] .relmap__node {
+  animation: orbit 7s linear infinite;
+}
+html[data-motion='on'] .relmap__node:nth-of-type(2n) {
+  animation-duration: 9s;
+  animation-direction: reverse;
+}
+.relmap__doodle {
+  position: absolute;
+  width: clamp(40px, 6vw, 84px);
+  height: clamp(40px, 6vw, 84px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.relmap__doodle .icon {
+  width: 100%;
+  height: 100%;
+}
+.relmap__doodle--1 {
+  left: -14%;
+  top: 8%;
+  rotate: -12deg;
+}
+.relmap__doodle--2 {
+  right: -14%;
+  top: 18%;
+  rotate: 10deg;
+}
+.relmap__doodle--3 {
+  left: -10%;
+  bottom: 14%;
+}
+.relmap__doodle--4 {
+  right: -12%;
+  bottom: 8%;
+  rotate: -8deg;
+}
+html[data-motion='on'] .relmap__doodle {
+  animation: seam-bob 6s var(--ease-float) infinite;
+}
+html[data-motion='on'] .relmap__doodle:nth-of-type(2n) {
+  animation-delay: -3s;
+}
+@media (max-width: 900px) {
+  .relmap__doodle {
+    display: none;
+  }
+}
+/* model history: cards lean toward the cursor (about.astro sets --lean) */
+.wardrobe__card {
+  transform: perspective(900px) rotateY(var(--lean, 0deg));
+  transition: transform 300ms var(--ease-float);
+}
+
+/* ================= Clips ================= */
+@keyframes play-bounce {
+  0% {
+    scale: 0.6;
+  }
+  55% {
+    scale: 1.25;
+  }
+  80% {
+    scale: 0.94;
+  }
+  100% {
+    scale: 1.08;
+  }
+}
+html[data-motion='on'] .clip__link:hover .clip__play,
+html[data-motion='on'] .clip__link:focus-visible .clip__play {
+  animation: play-bounce 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: var(--aqua-pink);
+}
+
+/* ================= Hover tilt (tilt.ts) ================= */
+[data-tilt] {
+  transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 260ms var(--ease-float);
+  transform-style: preserve-3d;
+}
+[data-tilt].is-tilting {
+  transition: transform 80ms linear;
+}
+[data-tilt]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 0%),
+    rgb(255 255 255 / 0.55),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 200ms;
+  pointer-events: none;
+}
+[data-tilt].is-tilting::after {
+  opacity: 1;
+}
+
+/* ================= Discography ================= */
+/* the hero vinyl spins while a song plays in the BGM capsule */
+html[data-motion='on'] body:has(.bgm.is-playing) .record__disc {
+  animation: spin 4.5s linear infinite;
+}
+/* jackets slide out as they arrive */
+@keyframes jacket-out {
+  from {
+    opacity: 0;
+    transform: translateX(-34px) rotate(-6deg) scale(0.92);
+  }
+}
+html[data-motion='on'] .jacket[data-reveal].is-in,
+html[data-motion='on'] .bside[data-reveal].is-in {
+  animation: jacket-out 560ms cubic-bezier(0.22, 1, 0.36, 1) var(--rd, 0ms) backwards;
+}
+/* B-side fact cards in the empty slots at the end of a grid */
+.bside {
+  position: relative;
+  list-style: none;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  min-height: 190px;
+  padding: 20px 16px;
+  border-radius: 12px;
+  background:
+    repeating-radial-gradient(circle at 100% 100%, transparent 0 9px, rgb(201 178 232 / 0.25) 9px 10px),
+    var(--paper);
+  box-shadow: var(--sh-1);
+  rotate: var(--tilt);
+  overflow: hidden;
+  color: var(--navy);
+}
+.bside[hidden] {
+  display: none;
+}
+.bside__label {
+  justify-self: start;
+  font: 700 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.24em;
+  color: #fff;
+  background: var(--navy);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+.bside__disc {
+  position: absolute;
+  right: -40px;
+  bottom: -40px;
+  width: 130px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--paper) 0 8%, var(--aqua-pink) 8.5% 20%, transparent 20.5%),
+    repeating-radial-gradient(circle, #2c3266 0 2px, #3b4583 2px 4px);
+  opacity: 0.85;
+}
+html[data-motion='on'] .bside__disc {
+  animation: spin 8s linear infinite;
+}
+.bside p {
+  position: relative;
+  font: 700 var(--step--1) / 1.6 var(--font-jp-round);
+  padding-right: 60px;
+}
+/* timeline view: a tonearm that swings across as you scroll through the years */
+.ruler {
+  position: relative;
+}
+.ruler__arm {
+  position: absolute;
+  right: 2%;
+  top: -10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--navy);
+  box-shadow:
+    0 0 0 5px var(--paper),
+    0 0 0 7px var(--lavender);
+  transform-origin: 50% 50%;
+  rotate: 8deg;
+  pointer-events: none;
+}
+.ruler__arm i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: min(60vh, 520px);
+  margin-left: -2px;
+  background: linear-gradient(180deg, #8a91b8, #c9cde4);
+  border-radius: 2px;
+  transform-origin: 50% 0;
+}
+.ruler__arm i::after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  bottom: -14px;
+  width: 18px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--aqua-pink-deep);
+}
+@supports (animation-timeline: view()) {
+  @keyframes arm-sweep {
+    from {
+      rotate: 8deg;
+    }
+    to {
+      rotate: 34deg;
+    }
+  }
+  html[data-motion='on'] .ruler__arm {
+    animation: arm-sweep linear both;
+    animation-timeline: view();
+  }
+}
+@media (max-width: 900px) {
+  .ruler__arm {
+    display: none;
+  }
 }

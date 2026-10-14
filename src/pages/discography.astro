@@ -47,6 +47,30 @@ const PALETTES = [
 ];
 const hash = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
 const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
+// B-side cards (IMPROVEMENT-PLAN §1.5): facts that fill the empty slots at the end of each grid
+const bsides = (g: (typeof groups)[number]) => {
+  const songs = g.songs;
+  const views = songs.reduce((t, s) => t + (s.data.views ?? 0), 0);
+  const top = [...songs].sort((a, b) => (b.data.views ?? 0) - (a.data.views ?? 0))[0];
+  const first = songs[0];
+  const last = songs.at(-1);
+  return [
+    first &&
+      last && {
+        ja: `${songs.length}曲 · ${first.data.date.slice(0, 4)} → ${last.data.date.slice(0, 4)}`,
+        en: `${songs.length} songs · ${first.data.date.slice(0, 4)} → ${last.data.date.slice(0, 4)}`,
+      },
+    views > 0 && { ja: `合計 ${compactJa(views)}回 再生`, en: `${compactEn(views)} views in total` },
+    top?.data.views && {
+      ja: `いちばん再生された曲：${top.data.title}`,
+      en: `Most played: ${top.data.title}`,
+    },
+    first && {
+      ja: `最初の一曲：${first.data.title}（${dotDate(first.data.date)}）`,
+      en: `The first: ${first.data.title} (${dotDate(first.data.date)})`,
+    },
+  ].filter(Boolean) as { ja: string; en: string }[];
+};
 ---
 
 <Page
@@ -214,7 +238,7 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
                   data-event="song_play"
                   data-id={s.id}
                 >
-                  <span class="jacket__case">
+                  <span class="jacket__case" data-tilt>
                     <span class="jacket__disc" aria-hidden="true" />
                     <span class="jacket__art">
                       {s.data.jacket && jackets[s.data.jacket] ? (
@@ -268,8 +292,27 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
               </li>
             );
           })}
+          {bsides(g).map((f, i) => (
+            <li class="bside" data-bside style={`--tilt:${i % 2 ? 2 : -2}deg`}>
+              <span class="bside__label" aria-hidden="true">
+                B-SIDE
+              </span>
+              <span class="bside__disc" aria-hidden="true" />
+              <p>
+                <span data-l="ja" lang="ja">
+                  {f.ja}
+                </span>
+                <span data-l="en" lang="en">
+                  {f.en}
+                </span>
+              </p>
+            </li>
+          ))}
         </ol>
         <div class="ruler" hidden data-ruler>
+          <span class="ruler__arm" aria-hidden="true">
+            <i />
+          </span>
           {years.map((y) => (
             <div class="ruler__year">
               <span class="ruler__label num">{y}</span>
@@ -347,6 +390,20 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
     let view = 'grid';
     let matches: Set<string> | null = null;
 
+    // B-side cards only fill the last row of each grid: any that would start a new row are hidden
+    const fitBsides = () => {
+      requestAnimationFrame(() => {
+        for (const ol of root.querySelectorAll<HTMLElement>('.jackets')) {
+          const cards = Array.from(ol.querySelectorAll<HTMLElement>('[data-bside]'));
+          cards.forEach((c) => (c.hidden = !!matches));
+          if (matches || ol.hidden || !ol.offsetParent) continue;
+          const real = Array.from(ol.querySelectorAll<HTMLElement>('.jacket')).filter((j) => !j.hidden);
+          const lastTop = real.at(-1)?.offsetTop ?? 0;
+          cards.forEach((c) => (c.hidden = c.offsetTop > lastTop + 4));
+        }
+      });
+    };
+    window.addEventListener('resize', fitBsides);
     const render = () => {
       tabs.forEach((t) => {
         const on = t.dataset.tab === active;
@@ -373,6 +430,7 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
         if (!p.hidden) shown += visibleInPanel;
       });
       empty.hidden = shown > 0;
+      fitBsides();
       const ja = document.documentElement.dataset.lang === 'ja';
       count.textContent = ja ? `${shown}曲` : `${shown} song${shown === 1 ? '' : 's'}`;
       viewBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.view === view)));
@@ -444,5 +502,6 @@ const n = (id: string) => groups.find((g) => g.id === id)!.songs.length;
     input.addEventListener('input', run);
 
     render();
+    return () => window.removeEventListener('resize', fitBsides);
   });
 </script>

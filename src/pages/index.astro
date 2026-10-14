@@ -1,12 +1,13 @@
 ---
 /** No.00 Home (EXECUTIONPLAN §9.0). */
 import { Image, Picture } from 'astro:assets';
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
 import Stamp from '../components/ui/Stamp.astro';
 import VoyageLine from '../components/ui/VoyageLine.astro';
 import Marquee from '../components/chrome/Marquee.astro';
+import Seam from '../components/ui/Seam.astro';
 import DialogueBox from '../components/talk/DialogueBox.tsx';
 import { CHAPTERS } from '../lib/chapters';
 import { OFFICIAL, SITE_NAME } from '../lib/site';
@@ -16,6 +17,7 @@ import full06 from '../assets/poses/full-06.webp';
 import full07 from '../assets/poses/full-07.webp';
 import heart3d from '../assets/poses/3d-heart.webp';
 import signature from '../assets/logo/signature.png';
+import mmdSmile from '../assets/poses/mmd-smile.webp';
 
 const outfits = [
   { img: full08, ja: '最後の新衣装', en: 'Final outfit' },
@@ -35,6 +37,8 @@ const cardArt: Record<string, string> = {
   arts: 'gaou-aquart-1',
   messages: 'music-kimiiro-princess-art',
 };
+// a ring of tiny official key visuals around the hero circle (IMPROVEMENT-PLAN §1.5 Home)
+const halo = (await getCollection('arts', (a) => a.data.section === 'key-visuals')).slice(0, 12);
 const cards = await Promise.all(
   CHAPTERS.filter((c) => c.id !== 'home').map(async (c) => ({
     c,
@@ -236,6 +240,13 @@ const ld = {
         <div class="hero-circle" data-hero>
           <div class="hero-circle__ring" aria-hidden="true"></div>
           <div class="hero-circle__ring2" aria-hidden="true"></div>
+          <div class="halo" aria-hidden="true">
+            {halo.map((a, i) => (
+              <span class="halo__frame" style={`--a:${(360 / halo.length) * i}deg`}>
+                <Image src={a.data.image} alt="" width={96} quality={55} loading="lazy" decoding="async" />
+              </span>
+            ))}
+          </div>
           <div class="hero-circle__disc" aria-hidden="true">
             <div class="hero-circle__lace"></div>
             <i class="hero-bubble" style="width:46px;height:46px;left:11%;top:23%"></i>
@@ -460,8 +471,35 @@ const ld = {
             </a>
           </li>
         ))}
+        <li class="spread__item spread__item--talk" style="--i:7;--dot:var(--aqua-pink)">
+          <a class="vn-card vn-card--talk" href="#main" data-talk-card>
+            <span class="vn-card__no" aria-hidden="true">
+              EXTRA
+            </span>
+            <span class="vn-card__art vn-card__art--talk">
+              <Image src={mmdSmile} alt="" height={260} loading="lazy" />
+              <span class="speech" lang="ja">
+                こんあくあ〜！
+              </span>
+            </span>
+            <span class="vn-card__body">
+              <b lang="ja">あくあとお話し</b>
+              <small lang="en">TALK WITH AQUA</small>
+              <span class="vn-card__line">
+                <span data-l="ja" lang="ja">
+                  上のテキストボックスをクリックして会話しよう
+                </span>
+                <span data-l="en" lang="en">
+                  Click the text box up top to chat with her
+                </span>
+              </span>
+            </span>
+          </a>
+        </li>
       </ol>
     </section>
+
+    <Seam kind="rope" />
 
     <section class="farewell" aria-labelledby="farewell-title">
       <div class="farewell__waves" aria-hidden="true"></div>
@@ -597,6 +635,49 @@ const ld = {
           window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { play: b.dataset.bgmPlay } })),
         ),
       );
+    // ---- "Talk with Aqua" card: back up to the dialogue box and open it ----
+    const talkCard = root.ownerDocument.querySelector<HTMLAnchorElement>('[data-talk-card]');
+    const onTalk = (e: MouseEvent) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: document.documentElement.dataset.motion === 'on' ? 'smooth' : 'auto',
+      });
+      setTimeout(
+        () => document.querySelector<HTMLElement>('.dialog-box__open')?.focus({ preventScroll: true }),
+        500,
+      );
+    };
+    talkCard?.addEventListener('click', onTalk);
+    cleanups.push(() => talkCard?.removeEventListener('click', onTalk));
+
+    // ---- Three Moments: hovering a card flips through YouTube's own frame thumbnails (1 → 2 → 3) ----
+    root.querySelectorAll<HTMLAnchorElement>('.film__link[data-yt]').forEach((a) => {
+      const img = a.querySelector<HTMLImageElement>('.film__th img');
+      if (!img || !img.src.includes('i.ytimg.com')) return;
+      const home = img.src;
+      const frames = [1, 2, 3].map((n) => `https://i.ytimg.com/vi/${a.dataset.yt}/${n}.jpg`);
+      let t = 0;
+      let k = 0;
+      const start = () => {
+        if (document.documentElement.dataset.motion !== 'on') return;
+        frames.forEach((f) => (new Image().src = f));
+        t = window.setInterval(() => (img.src = frames[k++ % frames.length]!), 520);
+      };
+      const stop = () => {
+        clearInterval(t);
+        k = 0;
+        img.src = home;
+      };
+      a.addEventListener('pointerenter', start);
+      a.addEventListener('pointerleave', stop);
+      cleanups.push(() => {
+        stop();
+        a.removeEventListener('pointerenter', start);
+        a.removeEventListener('pointerleave', stop);
+      });
+    });
+
     // ---- chapter cards ----
     document
       .querySelectorAll<HTMLAnchorElement>('[data-chapter-card]')

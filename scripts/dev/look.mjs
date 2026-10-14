@@ -1,4 +1,5 @@
-// temp: screenshots of pages at a size and scroll positions → contact sheet
+// Dev helper: screenshots of pages at one size and scroll positions, as a contact sheet.
+//   node scripts/dev/look.mjs out.png 1920x953 /about@0 /about@1500 /clips@end
 import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 const [, , out, size = '1920x953', ...specs] = process.argv; // specs: /path@y

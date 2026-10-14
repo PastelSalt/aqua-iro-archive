@@ -376,6 +376,10 @@ html[data-motion='on'] .chap[aria-current='page'] .chap__dot::after {
     .ending__track,
     .postcard__doodle,
     .page-head__kv img,
+    .halo,
+    .rope,
+    .relmap__node,
+    .relmap__doodle,
     .sway
   ) {
   animation-play-state: paused !important;

@@ -2,12 +2,14 @@
 /** No.02 Clips (EXECUTIONPLAN §9.2). Works without JS: every card is visible and links to YouTube. */
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
+import Postcard from '../components/ui/Postcard.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
 import { CLIP_TAGS } from '../content.config';
 import { compactEn, compactJa } from '../lib/format';
 
 const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
+const totalViews = clips.reduce((n, c) => n + c.data.views, 0);
 const TAG_LABEL: Record<string, { ja: string; en: string }> = {
   animated: { ja: '手描き', en: 'Animated' },
   gaming: { ja: 'ゲーム', en: 'Gaming' },
@@ -138,7 +140,9 @@ const hasDates = clips.every((c) => c.data.published);
               style={`--tilt:${c.data.rank % 2 ? -4 : 3}deg`}
               aria-hidden="true"
             >
-              #{c.data.rank}
+              <span data-countup data-to={c.data.rank} data-prefix="#">
+                #{c.data.rank}
+              </span>
             </span>
             <span class="clip__title">{c.data.title}</span>
           </a>
@@ -154,10 +158,10 @@ const hasDates = clips.every((c) => c.data.published);
               )}
             </span>
             <span class="num" title={`${c.data.views.toLocaleString('en-US')} views`}>
-              <span data-l="ja" lang="ja">
+              <span data-l="ja" lang="ja" data-countup data-to={c.data.views}>
                 {compactJa(c.data.views)}回
               </span>
-              <span data-l="en" lang="en">
+              <span data-l="en" lang="en" data-countup data-to={c.data.views}>
                 {compactEn(c.data.views)} views
               </span>
             </span>
@@ -176,6 +180,24 @@ const hasDates = clips.every((c) => c.data.published);
           </span>
         </li>
       ))}
+      {/* masonry tails (IMPROVEMENT-PLAN §1.3): filler cards at the column ends, always kept last */}
+      <Postcard
+        kind="quote"
+        icon="heart"
+        ja={clips[1]!.data.title}
+        en={clips[1]!.data.title}
+        note={`#2 · ${clips[1]!.data.clipper}`}
+        tilt={2}
+      />
+      <Postcard
+        kind="fact"
+        icon="play"
+        ja={`この30本で合計 ${compactJa(totalViews)}回 再生`}
+        en={`These 30 clips have ${compactEn(totalViews)} views between them`}
+        note="as of 2026-10-11"
+        tilt={-2}
+      />
+      <Postcard kind="doodle" icon="catsleep" tilt={3} />
     </ol>
     <p class="credit asof">
       <span data-l="ja" lang="ja">
@@ -216,6 +238,7 @@ const hasDates = clips.every((c) => c.data.published);
           : Number(b.dataset.views) - Number(a.dataset.views),
       );
       sorted.forEach((el) => list.appendChild(el));
+      list.querySelectorAll('.postcard').forEach((el) => list.appendChild(el)); // filler cards stay last
       tagBtns.forEach((b) => {
         b.setAttribute('aria-checked', String(b.dataset.tag === tag));
         b.tabIndex = b.dataset.tag === tag ? 0 : -1;

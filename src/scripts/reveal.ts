@@ -28,6 +28,9 @@ const SELECTOR = [
   '.sticker',
   '.stamp',
   '.postcard',
+  '.spread__item',
+  '.jacket',
+  '.bside',
   '.ending__sign',
   '.farewell__sign',
 ].join(',');

@@ -8,8 +8,17 @@ import SectionTitle from '../components/ui/SectionTitle.astro';
 import Stamp from '../components/ui/Stamp.astro';
 import portrait from '../assets/poses/portrait-01.webp';
 import sailor from '../assets/poses/full-06.webp';
+import portrait3 from '../assets/poses/portrait-03.webp';
+import portrait4 from '../assets/poses/portrait-04.webp';
+import portrait6 from '../assets/poses/portrait-06.webp';
 import { dotDate } from '../lib/format';
 
+// hovering the ID-card photo cycles her official portraits (IMPROVEMENT-PLAN §1.5 About)
+const portraitCycle = await Promise.all(
+  [portrait, portrait3, portrait4, portrait6].map(
+    async (src) => (await getImage({ src, width: 340, format: 'webp' })).src,
+  ),
+);
 const profile = (await getCollection('profile')).sort((a, b) => a.data.order - b.data.order);
 const lore = await getCollection('lore');
 const rels = await getCollection('relationships');
@@ -103,7 +112,7 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
   <section class="section wrap" aria-labelledby="profile-title">
     <SectionTitle no="01" en="Profile" ja="プロフィールカード" id="profile-title" />
     <article class="id-card card">
-      <div class="id-card__photo">
+      <div class="id-card__photo" data-portraits={JSON.stringify(portraitCycle)}>
         <span class="id-card__clip" aria-hidden="true"></span>
         <Image
           src={portrait}
@@ -203,6 +212,18 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
           <small lang="en">{n.r.data.name.en}</small>
         </button>
       ))}
+      <span class="relmap__doodle relmap__doodle--1 c-pink" aria-hidden="true">
+        <Icon name="heart" />
+      </span>
+      <span class="relmap__doodle relmap__doodle--2 c-cyan" aria-hidden="true">
+        <Icon name="anchor" />
+      </span>
+      <span class="relmap__doodle relmap__doodle--3 c-lav" aria-hidden="true">
+        <Icon name="spark" />
+      </span>
+      <span class="relmap__doodle relmap__doodle--4 c-deep" aria-hidden="true">
+        <Icon name="onion" />
+      </span>
       <p class="relmap__detail card" id="rel-detail" aria-live="polite" data-rel-detail>
         <span data-l="ja" lang="ja">
           気になる輪をえらんでね。
@@ -301,6 +322,93 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
 
 <script>
   import { onPage } from '../lib/lifecycle';
+
+  // ID card: hovering the photo cycles through her official portraits
+  onPage(() => {
+    const box = document.querySelector<HTMLElement>('.id-card__photo[data-portraits]');
+    const img = box?.querySelector<HTMLImageElement>('img');
+    if (!box || !img) return;
+    const list = JSON.parse(box.dataset.portraits!) as string[];
+    const first = { src: img.src, srcset: img.srcset };
+    let t = 0;
+    let k = 1;
+    const start = () => {
+      if (document.documentElement.dataset.motion !== 'on') return;
+      list.forEach((u) => (new Image().src = u));
+      t = window.setInterval(() => {
+        img.srcset = '';
+        img.src = list[k++ % list.length]!;
+      }, 900);
+    };
+    const stop = () => {
+      clearInterval(t);
+      k = 1;
+      img.src = first.src;
+      img.srcset = first.srcset;
+    };
+    box.addEventListener('pointerenter', start);
+    box.addEventListener('pointerleave', stop);
+    return () => {
+      stop();
+      box.removeEventListener('pointerenter', start);
+      box.removeEventListener('pointerleave', stop);
+    };
+  });
+
+  // Model history: the outfit strip drifts along by itself (pauses on hover, focus or when you scroll
+  // it yourself), and cards lean toward the cursor
+  onPage(() => {
+    const strip = document.querySelector<HTMLElement>('.wardrobe');
+    if (!strip) return;
+    let raf = 0;
+    let visible = false;
+    let paused = false;
+    let resumeAt = 0;
+    const tick = () => {
+      raf = 0;
+      if (!visible || document.documentElement.dataset.motion !== 'on') return;
+      if (!paused && performance.now() > resumeAt) {
+        const max = strip.scrollWidth - strip.clientWidth;
+        strip.scrollLeft = strip.scrollLeft >= max - 1 ? 0 : strip.scrollLeft + 0.5;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(([e]) => {
+      visible = !!e?.isIntersecting;
+      if (visible && !raf) raf = requestAnimationFrame(tick);
+    });
+    io.observe(strip);
+    const hold = () => (paused = true);
+    const free = () => (paused = false);
+    const manual = () => (resumeAt = performance.now() + 4000);
+    const lean = (e: PointerEvent) => {
+      for (const c of strip.querySelectorAll<HTMLElement>('.wardrobe__card')) {
+        const r = c.getBoundingClientRect();
+        const dx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / 400));
+        c.style.setProperty('--lean', `${(dx * 8).toFixed(1)}deg`);
+      }
+    };
+    strip.style.scrollSnapType = 'none';
+    strip.addEventListener('pointerenter', hold);
+    strip.addEventListener('pointerleave', free);
+    strip.addEventListener('focusin', hold);
+    strip.addEventListener('focusout', free);
+    strip.addEventListener('wheel', manual, { passive: true });
+    strip.addEventListener('touchstart', manual, { passive: true });
+    strip.addEventListener('pointermove', lean);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      strip.removeEventListener('pointerenter', hold);
+      strip.removeEventListener('pointerleave', free);
+      strip.removeEventListener('focusin', hold);
+      strip.removeEventListener('focusout', free);
+      strip.removeEventListener('wheel', manual);
+      strip.removeEventListener('touchstart', manual);
+      strip.removeEventListener('pointermove', lean);
+    };
+  });
+
   onPage(() => {
     const map = document.querySelector<HTMLElement>('[data-relmap]');
     if (!map) return;

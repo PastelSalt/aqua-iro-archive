@@ -47,3 +47,5 @@ document.addEventListener('astro:page-load', () => {
   lastY = window.scrollY;
   onScroll();
 });
+
+export {}; // a module, so its names stay private
