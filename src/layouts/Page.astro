@@ -3,10 +3,15 @@
  * NO.0X page skeleton (EXECUTIONPLAN §9): key visual → bilingual title + intro → main → related → marquee → footer.
  * Slots: "visual" (right side of the head), default (main module), "related", "after-head".
  */
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
 import Base from './Base.astro';
 import Marquee from '../components/chrome/Marquee.astro';
+import SideRails from '../components/chrome/SideRails.astro';
 import Icon from '../components/ui/Icon.astro';
+import Seam from '../components/ui/Seam.astro';
 import { CHAPTERS, type ChapterId } from '../lib/chapters';
+import { CHAPTER_ART } from '../lib/chapter-art';
 import { SITE_NAME } from '../lib/site';
 
 export interface Props {
@@ -26,6 +31,10 @@ const idx = CHAPTERS.findIndex((x) => x.id === chapter);
 const c = CHAPTERS[idx]!;
 const prev = CHAPTERS[(idx + CHAPTERS.length - 1) % CHAPTERS.length]!;
 const next = CHAPTERS[(idx + 1) % CHAPTERS.length]!;
+const art = CHAPTER_ART[chapter];
+const kv = (await getEntry('arts', art.kv))?.data.image;
+const railFrames = (await getCollection('arts', (a) => a.data.section === art.rail)).map((a) => a.data);
+const no = c.no.slice(3); // "04"
 const title =
   chapter === 'home'
     ? `${SITE_NAME} — あくあ色アーカイブ`
@@ -35,7 +44,16 @@ const title =
 <Base title={title} description={description} chapter={chapter} og={og ?? `/og/${chapter}.jpg`}>
   <slot name="head" slot="head" />
   <main id="main" class="page" data-chapter={chapter} tabindex="-1">
-    <header class="page-head">
+    <SideRails frames={railFrames} title={art.railTitle} no={no} />
+    <header class="page-head" data-page-head>
+      {kv && (
+        <div class="page-head__kv" aria-hidden="true">
+          <Image src={kv} alt="" width={960} quality={50} loading="eager" fetchpriority="low" />
+        </div>
+      )}
+      <span class="page-head__ghost" aria-hidden="true">
+        {no}
+      </span>
       {vert && (
         <div class="vert-col" aria-hidden="true">
           <span class="vert-small">{vert.small}</span>
@@ -76,6 +94,7 @@ const title =
         </div>
       </div>
     </header>
+    <Seam kind="wave" />
     <slot name="after-head" />
     <div class="page-body">
       <slot />

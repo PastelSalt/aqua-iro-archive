@@ -25,6 +25,11 @@ const SELECTOR = [
   '.related__card',
   '.footer__inner > *',
   '.maker-card',
+  '.sticker',
+  '.stamp',
+  '.postcard',
+  '.ending__sign',
+  '.farewell__sign',
 ].join(',');
 
 onPage(() => {

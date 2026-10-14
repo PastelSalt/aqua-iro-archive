@@ -30,14 +30,14 @@
 /* desktop: every chapter opens with one full-screen title card, centred in the space above the dock,
    so the first section always starts below the fold — never half under the dock */
 @media (min-width: 901px) and (min-height: 560px) {
-  .page-head {
+  .page > .page-head {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding-bottom: var(--dock-reserve);
   }
-  .page-head > .wrap {
+  .page > .page-head > .wrap {
     width: min(1200px, 100% - 2 * var(--gutter));
   }
 }

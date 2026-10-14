@@ -1,0 +1,47 @@
+---
+/**
+ * Postcard (IMPROVEMENT-PLAN §1.3 "masonry tails"): a small filler card placed at the end of masonry
+ * lists so columns don't end on bare space — a quote, a fact or a doodle. Facts and quotes come from
+ * the archive's own data; fan-written lines carry the "fan-written" note like Talk does.
+ */
+import Icon from './Icon.astro';
+interface Props {
+  kind?: 'quote' | 'fact' | 'doodle';
+  icon?: string;
+  ja?: string;
+  en?: string;
+  note?: string; // small line under the text (source, "fan-written", …)
+  tilt?: number;
+}
+const { kind = 'fact', icon = 'anchor', ja, en, note, tilt = -2 } = Astro.props;
+---
+
+<li
+  class:list={['postcard', `postcard--${kind}`]}
+  style={`--tilt:${tilt}deg`}
+  aria-hidden={kind === 'doodle' ? 'true' : undefined}
+>
+  <span class="tape" aria-hidden="true"></span>
+  <span class="postcard__stamp" aria-hidden="true">
+    <Icon name={icon} />
+  </span>
+  {kind === 'doodle' ? (
+    <span class="postcard__doodle" aria-hidden="true">
+      <Icon name={icon} />
+    </span>
+  ) : (
+    <p class="postcard__text">
+      {ja && (
+        <span data-l="ja" lang="ja">
+          {ja}
+        </span>
+      )}
+      {en && (
+        <span data-l="en" lang="en">
+          {en}
+        </span>
+      )}
+    </p>
+  )}
+  {note && <small class="postcard__note">{note}</small>}
+</li>

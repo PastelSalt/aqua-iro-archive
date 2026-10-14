@@ -120,20 +120,6 @@ html[data-motion='on'] .skeleton {
 .logo-tab {
   view-transition-name: logo-tab;
 }
-@keyframes vt-iris {
-  from {
-    clip-path: circle(0% at 50% 100%);
-  }
-  to {
-    clip-path: circle(145% at 50% 100%);
-  }
-}
-@keyframes vt-settle {
-  to {
-    opacity: 0.55;
-    transform: scale(0.985);
-  }
-}
 ::view-transition-old(dock),
 ::view-transition-old(logo-tab) {
   display: none;
@@ -145,11 +131,12 @@ html[data-motion='on'] .skeleton {
 ::view-transition-new(logo-tab) {
   animation: none;
 }
-html[data-motion='on']::view-transition-old(root) {
-  animation: vt-settle 620ms var(--ease-float) both;
-}
-html[data-motion='on']::view-transition-new(root) {
-  animation: vt-iris 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+/* the shutter (shutter.ts) covers the swap, so the root itself doesn't animate: the page changes
+   behind the closed panels and the view transition finishes at once */
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
 }
 html[data-motion='off']::view-transition-old(root),
 html[data-motion='off']::view-transition-new(root),
@@ -381,7 +368,15 @@ html[data-motion='on'] .chap[aria-current='page'] .chap__dot::after {
     .home-hero__sleep,
     .film__eq i,
     .dialog-box__cursor,
-    .lighthouse__beam
+    .lighthouse__beam,
+    .seam__wave,
+    .seam__float,
+    .seam__track,
+    .seam__buoy,
+    .ending__track,
+    .postcard__doodle,
+    .page-head__kv img,
+    .sway
   ) {
   animation-play-state: paused !important;
 }

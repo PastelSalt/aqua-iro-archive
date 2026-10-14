@@ -2,12 +2,49 @@
 import { Image } from 'astro:assets';
 import logo from '../../assets/logo/channel.png';
 import moesoft from '../../assets/logo/moesoft.png';
+import signature from '../../assets/logo/signature.png';
+import Seam from '../ui/Seam.astro';
 import Icon from '../ui/Icon.astro';
 import T from '../ui/T.astro';
 import { CHAPTERS } from '../../lib/chapters';
 import { PORTFOLIO, SISTER_SITES } from '../../lib/site';
+interface Props {
+  /** Home ends on its own farewell (with the signature), so its ending card skips it */
+  signature?: boolean;
+}
+const { signature: showSignature = true } = Astro.props;
+const THANKS = [
+  'ありがとう、あくたん',
+  'THANK YOU AKUTAN',
+  'お疲れ様でした',
+  'SEE YOU ⚓ またね',
+  'あくあクルーより',
+  'FROM THE AQUA CREW',
+];
 ---
 
+<div class="ending" aria-hidden="true">
+  <Seam kind="wave" />
+  <div class="ending__band">
+    {showSignature && (
+      <Image class="ending__sign" src={signature} alt="" width={280} loading="lazy" decoding="async" />
+    )}
+    <div class="ending__marquee">
+      <div class="ending__track">
+        {[0, 1].map(() => (
+          <span class="ending__group">
+            {THANKS.map((t) => (
+              <>
+                <span>{t}</span>
+                <Icon name="heart" />
+              </>
+            ))}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
 <footer class="footer">
   <div class="wrap">
     <div class="footer__inner">

@@ -5,7 +5,7 @@
  */
 import { onPage } from '../lib/lifecycle';
 
-const ZONES = '.home-hero, .marquee, .page-head, .lighthouse, .farewell, .stamp';
+const ZONES = '.home-hero, .marquee, .page-head, .lighthouse, .farewell, .stamp, .seam, .ending, .postcard';
 
 onPage(() => {
   if (!('IntersectionObserver' in window)) return;

@@ -17,7 +17,10 @@ import '../styles/layout.css';
 import '../styles/components.css';
 import '../styles/sections.css';
 import '../styles/motion.css';
+import '../styles/fill.css';
 import Sprite from '../components/chrome/Sprite.astro';
+import Motifs from '../components/chrome/Motifs.astro';
+import Shutter from '../components/chrome/Shutter.astro';
 import LogoTab from '../components/chrome/LogoTab.astro';
 import Footer from '../components/chrome/Footer.astro';
 import Splash from '../components/chrome/Splash.astro';
@@ -147,18 +150,20 @@ const ld = jsonLd ?? {
       </span>
     </a>
     <div class="waves" aria-hidden="true"></div>
+    <Motifs />
     <Sprite />
     <Splash />
     <div class="site">
       <LogoTab />
       <slot />
-      {footer && <Footer />}
+      {footer && <Footer signature={chapter !== 'home'} />}
     </div>
     <Dock client:load transition:persist="dock" initialPath={Astro.url.pathname} />
     <LogDrawer client:idle transition:persist="log" />
     <BgmCapsule client:idle transition:persist="bgm" />
     <HelpDrawer client:idle transition:persist="help" makerLogo={maker.src} makerUrl={PORTFOLIO.url} />
     <Tour client:idle={{ timeout: 1500 }} transition:persist="tour" />
+    <Shutter />
     <script>
       import '../scripts/lightbox';
       import '../scripts/global';

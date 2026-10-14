@@ -90,6 +90,36 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     return () => clearInterval(id);
   }, [path]);
 
+  // --- chapter change: the new chapter's dot sends up a short trail of bubbles ---
+  useEffect(() => {
+    if (motion.value !== 'on') return;
+    const dot = hostRef.current?.querySelector<HTMLElement>('.chap[aria-current="page"] .chap__dot');
+    if (!dot) return;
+    const r = dot.getBoundingClientRect();
+    const made: HTMLElement[] = [];
+    for (let i = 0; i < 3; i++) {
+      const b = document.createElement('i');
+      b.className = 'dock-bubble';
+      b.style.left = `${r.left + r.width / 2}px`;
+      b.style.top = `${r.top}px`;
+      document.body.append(b);
+      made.push(b);
+      b.animate(
+        [
+          { transform: 'translate(-50%, 0) scale(0.4)', opacity: 0.9 },
+          { transform: `translate(calc(-50% + ${(i - 1) * 10}px), -${46 + i * 16}px) scale(1)`, opacity: 0 },
+        ],
+        {
+          duration: 900 + i * 160,
+          delay: i * 120,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          fill: 'backwards',
+        },
+      ).onfinish = () => b.remove();
+    }
+    return () => made.forEach((b) => b.remove());
+  }, [path]);
+
   // --- scroll-driven state ---
   useEffect(() => {
     let lastY = window.scrollY;
@@ -318,6 +348,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
   return (
     <div class="dock-host" data-state={state} ref={hostRef}>
       <nav class="dock" aria-label={L === 'ja' ? 'チャプター' : 'Chapters'}>
+        <span class="dock__progress" aria-hidden="true" />
         <span class={`dock__plate${typing ? ' is-typing' : ''}`} aria-hidden="true">
           {plate}
           <span class="caret" />

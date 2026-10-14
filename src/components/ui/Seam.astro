@@ -1,0 +1,64 @@
+---
+/**
+ * Section seam (IMPROVEMENT-PLAN §1.3): the gap between two sections becomes a visual. Three kinds:
+ * "wave" (two undulating wave bands), "ticker" (a tilted pink marquee), "rope" (a rope with bobbing
+ * buoys). All motion is transform-only and stops with Motion OFF.
+ */
+import Icon from './Icon.astro';
+interface Props {
+  kind?: 'wave' | 'ticker' | 'rope';
+  items?: string[];
+}
+const {
+  kind = 'wave',
+  items = ['THANK YOU AKUTAN', '#あくあクルー', 'AQUA IRO ARCHIVE', 'またね', '#湊あくあ', '2018 → 2024'],
+} = Astro.props;
+---
+
+{kind === 'wave' && (
+  <div class="seam seam--wave" aria-hidden="true">
+    <svg class="seam__wave seam__wave--back" viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path d="M0 30 Q 75 0 150 30 T 300 30 T 450 30 T 600 30 T 750 30 T 900 30 T 1050 30 T 1200 30 V60 H0Z" />
+    </svg>
+    <svg class="seam__wave seam__wave--front" viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path d="M0 34 Q 100 8 200 34 T 400 34 T 600 34 T 800 34 T 1000 34 T 1200 34 V60 H0Z" />
+    </svg>
+    <span class="seam__float seam__float--1">
+      <Icon name="anchor" />
+    </span>
+    <span class="seam__float seam__float--2">
+      <Icon name="spark" />
+    </span>
+    <span class="seam__float seam__float--3">
+      <Icon name="heart" />
+    </span>
+  </div>
+)}
+{kind === 'ticker' && (
+  <div class="seam seam--ticker" aria-hidden="true">
+    <div class="seam__track">
+      {[0, 1].map(() => (
+        <div class="seam__group">
+          {items.map((it) => (
+            <>
+              <span>{it}</span>
+              <Icon name="spark" />
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+{kind === 'rope' && (
+  <div class="seam seam--rope" aria-hidden="true">
+    <svg class="seam__rope" viewBox="0 0 1200 40" preserveAspectRatio="none">
+      <path d="M0 14 Q 150 34 300 14 T 600 14 T 900 14 T 1200 14" />
+    </svg>
+    {[12, 37, 63, 88].map((x, i) => (
+      <span class="seam__buoy" style={`left:${x}%;--d:${i * -0.7}s`}>
+        <Icon name="anchor" />
+      </span>
+    ))}
+  </div>
+)}
