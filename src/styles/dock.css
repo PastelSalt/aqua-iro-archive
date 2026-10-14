@@ -1,0 +1,242 @@
+/* ================= Bottom dock (DOCK-PLAN v2) =================
+   One dock, one size. Every button is the same .dbtn: icon + one label in the visitor's language.
+   Wide (≥ 1024 px): 8 chapters + 6 system buttons. Narrow: 5 chapters + MORE (a sheet with everything).
+   Styles: rest, hover, focus, current chapter (the navy pill), on (toggles). Nothing else. */
+
+.dock-host {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-dock);
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  padding: 0 12px calc(var(--dock-gap) + env(safe-area-inset-bottom));
+  transition:
+    transform var(--dur-2) var(--ease-float),
+    opacity var(--dur-2);
+}
+/* the MORE sheet is modal: while it's open the dock's layer sits above toasts and players too */
+.dock-host.has-sheet {
+  z-index: calc(var(--z-toast) + 1);
+}
+/* the only time the dock moves: a drawer, lightbox or deck is open */
+body.has-modal .dock-host {
+  transform: translateY(140%);
+  opacity: 0;
+}
+.dock {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px;
+  border-radius: 22px;
+  background: rgb(255 251 254 / 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 18px 40px rgb(59 69 131 / 0.2),
+    0 0 0 1.5px #fff inset;
+  max-width: 100%;
+}
+.dock__chapters,
+.dock__sys {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+}
+.dock__more {
+  display: none;
+}
+
+/* ---- the button ---- */
+.dbtn {
+  position: relative;
+  z-index: 1; /* above the sliding pill */
+  width: 64px;
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 16px;
+  color: var(--navy);
+  text-decoration: none;
+  transition:
+    background-color var(--dur-1),
+    color var(--dur-2);
+}
+.dbtn__icon {
+  --ph-op: 0.55;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  transition: translate var(--dur-1) var(--ease-float);
+}
+.dbtn__label {
+  display: block;
+  height: 12px;
+  font: 700 var(--label-s) / 12px var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  transition: color var(--dur-2);
+}
+.dbtn__label .l-ja {
+  font: 700 11px/12px var(--font-jp-round);
+  letter-spacing: 0.02em;
+}
+html[data-lang='en'] .dbtn__label .l-ja,
+html:not([data-lang='en']) .dbtn__label .l-en {
+  display: none;
+}
+
+/* hover (mouse only) */
+@media (hover: hover) {
+  .dbtn:hover {
+    background-color: var(--pink-wash);
+  }
+  html[data-motion='on'] .dbtn:hover .dbtn__icon {
+    translate: 0 -2px;
+  }
+}
+/* press */
+html[data-motion='on'] .dbtn {
+  transition:
+    background-color var(--dur-1),
+    color var(--dur-2),
+    scale 100ms ease-out;
+}
+html[data-motion='on'] .dbtn:active {
+  scale: 0.94;
+}
+/* on (BGM playing, Motion on, Aqua Time travelled) */
+.dbtn[aria-pressed='true'] {
+  background-color: var(--pink-wash);
+  color: var(--pink-ink);
+}
+.dbtn[aria-pressed='true'] .dbtn__label {
+  color: var(--pink-ink);
+}
+/* current chapter: a navy pill. Before the dock is hydrated (and in the MORE sheet) the button paints
+   it itself; in the dock the pill behind the buttons takes over so it can slide between chapters. */
+.dbtn[aria-current='page'],
+.dbtn[aria-current='page']:hover {
+  background-color: var(--navy);
+  color: #fff;
+}
+.dbtn[aria-current='page'] .dbtn__label {
+  color: #fff;
+}
+.dbtn[aria-current='page'] .dbtn__icon {
+  --ph-op: 0.9;
+}
+.dock.has-pill .dbtn[aria-current='page'],
+.dock.has-pill .dbtn[aria-current='page']:hover {
+  background-color: transparent;
+}
+.dock__pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  border-radius: 16px;
+  background: var(--navy);
+  opacity: 0;
+  pointer-events: none;
+}
+.dock.has-pill .dock__pill {
+  opacity: 1;
+}
+.dock.pill-ready .dock__pill {
+  transition: transform var(--dur-2) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- narrow: tablets and phones ---- */
+@media (max-width: 1023px) {
+  .dock-host {
+    padding-inline: 8px;
+  }
+  .dock {
+    width: min(100%, 520px);
+    padding: 4px;
+    gap: 0;
+  }
+  .dock__sys {
+    display: none;
+  }
+  .dock__chapters {
+    flex: 1;
+  }
+  .dock__chapters > li {
+    flex: 1;
+    min-width: 0;
+  }
+  .dock__chapters > li.is-extra {
+    display: none;
+  }
+  .dock__chapters > li.dock__more {
+    display: block;
+  }
+  .dock .dbtn {
+    width: 100%;
+    height: 52px;
+  }
+}
+
+/* ---- MORE sheet (narrow): every chapter and every system button ---- */
+.dock-sheet__scrim {
+  pointer-events: auto;
+}
+.dock-sheet {
+  pointer-events: auto;
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--z-drawer);
+  background: var(--paper);
+  border-radius: 28px 28px 0 0;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: var(--sh-3);
+  max-height: 85dvh;
+  overflow: auto;
+}
+html[data-motion='on'] .dock-sheet {
+  animation: dock-sheet-up 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes dock-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+.dock-sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dock-sheet__grid,
+.dock-sheet__sys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  list-style: none;
+  margin-top: 14px;
+}
+.dock-sheet__sys {
+  grid-template-columns: repeat(6, 1fr);
+  padding-top: 14px;
+  border-top: 1.5px dashed #e3d5ee;
+}
+.dock-sheet .dbtn {
+  width: 100%;
+  height: 60px;
+}
+@media (max-width: 359px) {
+  .dock-sheet__sys {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

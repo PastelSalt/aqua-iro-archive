@@ -1,6 +1,6 @@
 /**
  * First-visit onboarding: a ~30-second spotlight tour of the logo, Talk and its buttons, the outfit dots,
- * Three Moments, the chapter dock, BGM, AUTO (motion), JP/EN, LOG and HELP (Home-only steps drop out elsewhere). Starts once the splash has gone; Esc / Skip ends it; finishing or skipping stores
+ * Three Moments, the chapter dock, BGM, MOTION, JP/EN, LOG and HELP (Home-only steps drop out elsewhere). Starts once the splash has gone; Esc / Skip ends it; finishing or skipping stores
  * KEYS.tourDone. HELP → "Replay the tour" clears that flag and reloads.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
@@ -95,7 +95,7 @@ const STEPS: Step[] = [
   },
   {
     id: 'bgm',
-    targets: ['.dock__sys [data-sys="bgm"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="bgm"]', '.dock__more'],
     title: ['BGM', 'BGM'],
     body: [
       'あくあの曲を流しながら見て回れます（自動では流れません）。ページを移動しても止まらず、プレーヤーで曲送り・停止もできます。',
@@ -105,24 +105,24 @@ const STEPS: Step[] = [
   },
   {
     id: 'motion',
-    targets: ['.dock__sys [data-sys="motion"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="motion"]', '.dock__more'],
     title: ['アニメーション', 'Motion'],
     body: [
-      'AUTO でアニメーションのオン・オフ（Alt+M）。いつでも切り替えられます。',
-      'AUTO turns animation on or off (Alt+M), whenever you like.',
+      'MOTION でアニメーションのオン・オフ（Alt+M）。いつでも切り替えられます。',
+      'MOTION turns animation on or off (Alt+M), whenever you like.',
     ],
     dock: true,
   },
   {
     id: 'lang',
-    targets: ['.dock__sys [data-sys="lang"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="lang"]', '.dock__more'],
     title: ['言語', 'Language'],
     body: ['日本語 ⇄ English をいつでも切り替え（Alt+L）。', 'Switch Japanese ⇄ English any time (Alt+L).'],
     dock: true,
   },
   {
     id: 'time',
-    targets: ['.dock__sys [data-sys="time"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="time"]', '.dock__more'],
     title: ['あくあ時間', 'Aqua Time'],
     body: [
       'TIME でアーカイブ全体を好きな日付へ。その日の衣装、配信、歌、あくあのひとことに変わります。',
@@ -132,7 +132,7 @@ const STEPS: Step[] = [
   },
   {
     id: 'log',
-    targets: ['.dock__sys [data-sys="log"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="log"]', '.dock__more'],
     title: ['LOG', 'LOG'],
     body: [
       '会話のバックログ、見つけた会話の思い出アルバム、クレジット、ショートカット（Esc）。',
@@ -142,7 +142,7 @@ const STEPS: Step[] = [
   },
   {
     id: 'help',
-    targets: ['.dock__sys [data-sys="help"]', '.dock__gear'],
+    targets: ['.dock__sys [data-sys="help"]', '.dock__more'],
     title: ['HELP', 'HELP'],
     body: [
       '使い方の確認や、このツアーをもう一度見たいときはここから。それでは、いってらっしゃいませ！',
@@ -190,10 +190,9 @@ export default function Tour() {
 
   const step = i === null ? null : (steps[i] ?? null);
 
-  // follow the target (it can move: dock expanding, page scroll, resize)
+  // follow the target (it can move: page scroll, resize)
   useEffect(() => {
     if (!step) return;
-    window.dispatchEvent(new CustomEvent('aia:dock-hold', { detail: true }));
     let raf = 0;
     const el = findTarget(step);
     // only scroll when the target isn't already fully on screen above the dock
@@ -245,7 +244,6 @@ export default function Tour() {
 
   function end(skipped: boolean) {
     write(KEYS.tourDone, true);
-    window.dispatchEvent(new CustomEvent('aia:dock-hold', { detail: false }));
     track('tour', { done: skipped ? `skip@${steps[i ?? 0]?.id}` : 'finish' });
     setI(null);
   }

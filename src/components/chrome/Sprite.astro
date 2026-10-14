@@ -4,7 +4,52 @@
  * Colors come from currentColor. Motifs: anchor, cat, catsleep, onion, pad, bow, note, spark, heart, wave,
  * headdress, flag, pin; UI: play, external, close, chevron, music, menu, gear, search, trophy, arrow-up,
  * youtube, x; emotes (Talk fallback stickers): pout, shy, smug, sleepy, sweat, excited.
+ *
+ * Dock icons come from Phosphor Icons (duotone, MIT, @phosphor-icons/core), copied in at build time as
+ * #ph-<name>. Their soft fill layer takes --ph-fill / --ph-op from the <svg> that uses them.
  */
+import house from '@phosphor-icons/core/duotone/house-duotone.svg?raw';
+import idCard from '@phosphor-icons/core/duotone/identification-card-duotone.svg?raw';
+import scissors from '@phosphor-icons/core/duotone/scissors-duotone.svg?raw';
+import vinyl from '@phosphor-icons/core/duotone/vinyl-record-duotone.svg?raw';
+import broadcast from '@phosphor-icons/core/duotone/broadcast-duotone.svg?raw';
+import sailboat from '@phosphor-icons/core/duotone/sailboat-duotone.svg?raw';
+import palette from '@phosphor-icons/core/duotone/palette-duotone.svg?raw';
+import pushPin from '@phosphor-icons/core/duotone/push-pin-duotone.svg?raw';
+import musicNotes from '@phosphor-icons/core/duotone/music-notes-duotone.svg?raw';
+import sparkle from '@phosphor-icons/core/duotone/sparkle-duotone.svg?raw';
+import translate from '@phosphor-icons/core/duotone/translate-duotone.svg?raw';
+import bookOpen from '@phosphor-icons/core/duotone/book-open-duotone.svg?raw';
+import cassette from '@phosphor-icons/core/duotone/cassette-tape-duotone.svg?raw';
+import question from '@phosphor-icons/core/duotone/question-duotone.svg?raw';
+import dots from '@phosphor-icons/core/duotone/dots-three-outline-duotone.svg?raw';
+
+const PH: Record<string, string> = {
+  house,
+  'identification-card': idCard,
+  scissors,
+  'vinyl-record': vinyl,
+  broadcast,
+  sailboat,
+  palette,
+  'push-pin': pushPin,
+  'music-notes': musicNotes,
+  sparkle,
+  translate,
+  'book-open': bookOpen,
+  'cassette-tape': cassette,
+  question,
+  'dots-three-outline': dots,
+};
+const phSymbols = Object.entries(PH)
+  .map(([name, svg]) => {
+    const inner = svg
+      .replace(/^[\s\S]*?<svg[^>]*>/, '')
+      .replace(/<\/svg>\s*$/, '')
+      .replace(' opacity="0.2"', ' style="fill:var(--ph-fill,currentColor);opacity:var(--ph-op,0.2)"');
+    return `<symbol id="ph-${name}" viewBox="0 0 256 256"><g fill="currentColor">${inner}</g></symbol>`;
+  })
+  .join('');
 ---
 
 <svg
@@ -305,5 +350,6 @@
         <path d="M40 20l20-8M40 24l22 2M24 20L4 12M24 24L2 26" stroke-width="2.4" opacity=".6"></path>
       </g>
     </symbol>
+    <Fragment set:html={phSymbols} />
   </defs>
 </svg>

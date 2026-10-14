@@ -36,6 +36,16 @@
   --tint-arts: #7fd9f2;
   --tint-messages: #ffcf9e;
   --tint: var(--tint-home); /* overridden per page via [data-chapter] */
+  /* dock icon fills: one clearly different colour per chapter (the duotone layer of each Phosphor icon) */
+  --icon-home: #f2a7cf;
+  --icon-about: #c3aeea;
+  --icon-clips: #f7a58f;
+  --icon-disco: #8ec9ee;
+  --icon-stream: #5fd3c0;
+  --icon-events: #7c86d6;
+  --icon-arts: #f6c34e;
+  --icon-messages: #9fd67a;
+  --icon-sys: #cdb8ea;
   /* gradients */
   --iro: linear-gradient(100deg, #f28cc4 0%, #c890e6 45%, #6fcdeb 100%);
   --wash:
@@ -98,7 +108,7 @@
   /* small uppercase labels: only these two sizes, nothing below 10px */
   --label-s: 10px;
   --label-m: 11px;
-  --dock-h: 74px;
+  --dock-h: 68px;
   --dock-gap: 24px;
   --dock-reserve: calc(var(--dock-h) + var(--dock-gap) + 24px + env(safe-area-inset-bottom));
   /* motion */
@@ -121,8 +131,8 @@ html[data-motion='off'] {
 }
 @media (max-width: 720px) {
   :root {
-    --dock-h: 64px;
-    --dock-gap: 10px;
+    --dock-h: 60px;
+    --dock-gap: 8px;
   }
 }
 

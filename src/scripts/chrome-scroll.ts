@@ -1,9 +1,8 @@
 /**
  * One scroll reader for the decorative chrome (IMPROVEMENT-PLAN §1.4: one scroll listener):
- * - the dock's thin progress line (how far down the page you are),
  * - the side rail's running percentage,
  * - the logo tab's gentle swing (rotates with scroll speed, springs back when you stop).
- * Writes only to those three elements (transform / text), never to <html>, so nothing else restyles.
+ * Writes only to those two elements (transform / text), never to <html>, so nothing else restyles.
  */
 let raf = 0;
 let lastY = window.scrollY;
@@ -18,7 +17,6 @@ function frame() {
   const y = window.scrollY;
   const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
   const p = Math.min(1, Math.max(0, y / max));
-  document.querySelector<HTMLElement>('.dock__progress')?.style.setProperty('transform', `scaleX(${p})`);
   const pct = document.querySelector<HTMLElement>('.rail__progress');
   if (pct) pct.textContent = `${Math.round(p * 100)}%`;
 

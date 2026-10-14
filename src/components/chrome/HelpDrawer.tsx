@@ -50,32 +50,31 @@ const ITEMS: Item[] = [
     en: 'Jump between chapters from the dock at the bottom, or press 1–8.',
   },
   {
-    icon: 'music',
+    icon: 'ph-music-notes',
     name: 'BGM',
     ja: '曲を流しながら見て回れます（自動再生はしません）。ページを移動しても止まらず、プレーヤーで曲送り・停止もできます。',
     en: 'Play her songs while you browse (never on its own). It keeps going between pages; the little player can skip or stop.',
   },
   {
-    icon: 'anchor',
-    name: 'AUTO',
+    icon: 'ph-sparkle',
+    name: 'MOTION',
     ja: 'アニメーションのオン・オフ（Alt+M）。',
     en: 'Turns animation on or off (Alt+M).',
   },
   {
-    icon: '',
-    glyph: '文A',
+    icon: 'ph-translate',
     name: 'JP/EN',
     ja: '日本語 ⇄ English の切り替え（Alt+L）。',
     en: 'Switches Japanese ⇄ English (Alt+L).',
   },
   {
-    icon: 'tape',
+    icon: 'ph-cassette-tape',
     name: 'TIME',
     ja: 'あくあ時間：2018.08.08〜2024.08.28の好きな日へ。衣装・配信・歌・ひとことがその日に変わります。「現在へ」で戻れます。',
     en: 'Aqua Time: travel to any day from 2018.08.08 to 2024.08.28 — outfit, streams, songs and greeting follow. "Now" brings you back.',
   },
   {
-    icon: 'menu',
+    icon: 'ph-book-open',
     name: 'LOG',
     ja: '会話のバックログ、思い出アルバム、クレジット、ショートカット（Esc）。',
     en: 'Your conversation backlog, memory album, credits and shortcuts (Esc).',
@@ -199,7 +198,7 @@ export default function HelpDrawer({ makerLogo, makerUrl }: { makerLogo: string;
                     <span class="glyph">{it.glyph}</span>
                   ) : (
                     <svg class="icon">
-                      <use href={`#i-${it.icon}`} />
+                      <use href={it.icon.startsWith('ph-') ? `#${it.icon}` : `#i-${it.icon}`} />
                     </svg>
                   )}
                 </span>

@@ -10,6 +10,10 @@ export type Chapter = {
   title: { ja: string; en: string }; // full chapter title
   href: string;
   tint: string; // CSS var name
+  /** dock button: Phosphor icon (#ph-…), its fill colour (CSS var) and a short one-line label */
+  icon: string;
+  iconTint: string;
+  label: { ja: string; en: string };
 };
 
 export const CHAPTERS: Chapter[] = [
@@ -21,6 +25,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: 'ホーム', en: 'Home' },
     href: '/',
     tint: '--tint-home',
+    icon: 'house',
+    iconTint: '--icon-home',
+    label: { ja: 'ホーム', en: 'HOME' },
   },
   {
     id: 'about',
@@ -30,6 +37,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: 'プロフィール', en: 'About' },
     href: '/about',
     tint: '--tint-about',
+    icon: 'identification-card',
+    iconTint: '--icon-about',
+    label: { ja: 'プロフ', en: 'ABOUT' },
   },
   {
     id: 'clips',
@@ -39,6 +49,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: '切り抜き', en: 'Clips' },
     href: '/clips',
     tint: '--tint-clips',
+    icon: 'scissors',
+    iconTint: '--icon-clips',
+    label: { ja: '切り抜き', en: 'CLIPS' },
   },
   {
     id: 'discography',
@@ -48,6 +61,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: 'ディスコグラフィ', en: 'Discography' },
     href: '/discography',
     tint: '--tint-disco',
+    icon: 'vinyl-record',
+    iconTint: '--icon-disco',
+    label: { ja: 'ディスコ', en: 'DISCO' },
   },
   {
     id: 'streaming',
@@ -57,6 +73,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: '配信アーカイブ', en: 'Streaming' },
     href: '/streaming',
     tint: '--tint-stream',
+    icon: 'broadcast',
+    iconTint: '--icon-stream',
+    label: { ja: '配信', en: 'STREAM' },
   },
   {
     id: 'events',
@@ -66,6 +85,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: 'イベント', en: 'Events' },
     href: '/events',
     tint: '--tint-events',
+    icon: 'sailboat',
+    iconTint: '--icon-events',
+    label: { ja: 'イベント', en: 'EVENTS' },
   },
   {
     id: 'arts',
@@ -75,6 +97,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: 'アート', en: 'Arts' },
     href: '/arts',
     tint: '--tint-arts',
+    icon: 'palette',
+    iconTint: '--icon-arts',
+    label: { ja: 'アート', en: 'ARTS' },
   },
   {
     id: 'messages',
@@ -84,6 +109,9 @@ export const CHAPTERS: Chapter[] = [
     title: { ja: '寄せ書き', en: 'Message Board' },
     href: '/messages',
     tint: '--tint-messages',
+    icon: 'push-pin',
+    iconTint: '--icon-messages',
+    label: { ja: '寄せ書き', en: 'BOARD' },
   },
 ];
 

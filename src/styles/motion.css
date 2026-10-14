@@ -215,19 +215,6 @@ html[data-motion='off']::view-transition-group(*) {
     rotate: -6deg;
   }
 }
-/* a ring that grows from the dot and fades — scale/opacity only, so it never repaints the dock */
-@keyframes dot-pulse {
-  0%,
-  100% {
-    scale: 1;
-    opacity: 0.7;
-  }
-  60% {
-    scale: 2.7;
-    opacity: 0;
-  }
-}
-
 /* the entrance waits for the splash to lift (html[data-splash=seen]); on chapter changes it plays at once */
 html[data-motion='on'][data-splash='seen'] .home-hero__copy > *,
 html[data-motion='on'][data-splash='seen'] .page-head__copy > * {
@@ -322,17 +309,6 @@ html[data-motion='on'] .btn:hover {
 }
 html[data-motion='on'] .btn:active {
   scale: 0.95;
-}
-
-/* the current chapter's dot keeps a soft heartbeat */
-html[data-motion='on'] .chap[aria-current='page'] .chap__dot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--dot);
-  animation: dot-pulse 2.2s ease-out infinite;
-  pointer-events: none;
 }
 
 /* click sparkles (src/scripts/sparkle.ts) */

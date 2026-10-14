@@ -1,39 +1,11 @@
 /**
  * Layout and chrome regressions from the 13 Oct 2026 audit (docs/AUDIT-2026-10-13.md):
- * the dock never balloons while changing size, filter bars undock at the end of their section,
+ * filter bars undock at the end of their section,
  * no page is wider than a phone, and no chapter's first section starts under the dock.
  */
 import { test, expect, hydrated } from './fixtures';
 
 const CHAPTERS = ['/about', '/clips', '/discography', '/streaming', '/events', '/arts', '/messages'];
-
-test('dock: size changes never overshoot (#1) and follow scroll direction (#3)', async ({ page, errors }) => {
-  await page.setViewportSize({ width: 1366, height: 649 });
-  await page.goto('/clips');
-  await hydrated(page);
-  const expanded = await page.locator('.dock').evaluate((d) => d.getBoundingClientRect().width);
-  await page.evaluate(() => {
-    const w: number[] = [];
-    (window as unknown as { __w: number[] }).__w = w;
-    const d = document.querySelector('.dock')!;
-    const t0 = performance.now();
-    const tick = () => {
-      w.push(d.getBoundingClientRect().width);
-      if (performance.now() - t0 < 1500) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
-  await page.mouse.move(683, 150);
-  await page.mouse.wheel(0, 400); // down → compact
-  await expect(page.locator('.dock-host')).toHaveAttribute('data-state', 'compact');
-  await page.waitForTimeout(700);
-  await page.mouse.wheel(0, -200); // up → expanded
-  await expect(page.locator('.dock-host')).toHaveAttribute('data-state', 'expanded');
-  await page.waitForTimeout(900);
-  const widths = await page.evaluate(() => (window as unknown as { __w: number[] }).__w);
-  expect(Math.max(...widths)).toBeLessThanOrEqual(expanded + 2);
-  void errors;
-});
 
 for (const path of ['/discography', '/streaming', '/arts']) {
   test(`${path}: the filter bar docks in its section and undocks at the end (#2)`, async ({

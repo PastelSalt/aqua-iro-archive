@@ -27,12 +27,6 @@ html[data-season='winter'] {
     linear-gradient(160deg, #f4f6fd 0%, #f2f7fc 55%, #eaf1fa 100%);
 }
 
-/* ---- dock button ---- */
-.sysbtn.is-time {
-  background: var(--navy);
-  color: #fff;
-}
-
 /* ---- the badge under the logo tab ---- */
 .time-badge {
   position: fixed;

@@ -414,29 +414,6 @@ html[data-motion='on'] .motif {
   }
 }
 
-/* ================= Dock: page progress line + chapter-change bubbles ================= */
-.dock__progress {
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  top: 0;
-  height: 2.5px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--aqua-pink), var(--lavender), var(--aqua-cyan));
-  transform: scaleX(0);
-  transform-origin: left center;
-  pointer-events: none;
-}
-.dock-bubble {
-  position: fixed;
-  z-index: calc(var(--z-dock) + 1);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid #9ed2f2;
-  background: radial-gradient(circle at 32% 30%, #fff 0 22%, transparent 24%);
-  pointer-events: none;
-}
 /* the logo tab swings with scroll speed (chrome-scroll.ts sets rotate) */
 .logo-tab img {
   transform-origin: 50% 0;

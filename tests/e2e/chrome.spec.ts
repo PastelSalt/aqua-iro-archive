@@ -6,11 +6,11 @@ test('dock: number keys navigate, aria-current follows, prefs persist across pag
 }) => {
   await page.goto('/');
   await hydrated(page);
-  await expect(page.locator('.chap[aria-current="page"]')).toContainText('ホーム');
+  await expect(page.locator('.dock .dbtn[aria-current="page"]')).toContainText('ホーム');
   // a light page: /streaming is ~0.5 MB of HTML and WebKit on CI can take >5 s to swap it in
   await page.keyboard.press('3');
   await expect(page).toHaveURL(/\/clips$/, { timeout: 15_000 });
-  await expect(page.locator('.chap[aria-current="page"]')).toContainText('切り抜き');
+  await expect(page.locator('.dock .dbtn[aria-current="page"]')).toContainText('切り抜き');
   // language toggle
   await page.getByRole('button', { name: /言語を英語に/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');

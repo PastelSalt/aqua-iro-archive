@@ -1,8 +1,9 @@
 /**
- * Bottom VN dock (EXECUTIONPLAN §7.3). Persisted across ClientRouter navigations.
- * Two states, one rule: expanded at the top of the page and whenever you scroll up; compact while you
- * scroll down. The pointer on the dock or keyboard focus inside it keeps it expanded. The size change
- * animates the dock's width from the old size to the new one (contents never reflow mid-animation).
+ * Bottom dock (DOCK-PLAN v2). Persisted across ClientRouter navigations.
+ * One dock, one size: it never changes while you scroll or hover. Wide screens (≥ 1024 px) show the
+ * 8 chapters and the 6 system buttons; narrower ones show 5 chapters + MORE, which opens one sheet
+ * with everything. Which buttons show is decided by CSS only (styles/dock.css). The only motion of
+ * its own: the current-chapter pill slides to the new chapter on a page change.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { navigate } from 'astro:transitions/client';
@@ -11,17 +12,9 @@ import { motion, lang, bgmOn, shortcuts, toggleMotion, toggleLang } from '../../
 import { track } from '../../lib/analytics';
 import { timeDate } from '../../lib/aquatime';
 import { useLang } from '../../lib/useLang';
+import DockButton from './DockButton';
 
-type DockState = 'expanded' | 'compact';
-const TOP = 80; // px: within this of the top the dock is always expanded
-const SWITCH = 24; // px of travel in one direction before the state flips (no jitter on small wobbles)
-const MOBILE_SET = ['home', 'clips', 'discography', 'streaming', 'messages'];
-
-const Icon = ({ name, cls = 'icon' }: { name: string; cls?: string }) => (
-  <svg class={cls} aria-hidden="true" focusable="false">
-    <use href={`#i-${name}`} />
-  </svg>
-);
+const BAR_SET = ['home', 'clips', 'discography', 'streaming', 'messages'];
 
 function currentPath() {
   return typeof location === 'undefined' ? '/' : location.pathname.replace(/\/+$/, '') || '/';
@@ -35,30 +28,16 @@ function isTyping(el: EventTarget | null) {
     !!t.closest?.('[role="dialog"],dialog')
   );
 }
-function openLog() {
-  window.dispatchEvent(new CustomEvent('aia:log', { detail: { toggle: true } }));
-}
-function openTime() {
-  window.dispatchEvent(new CustomEvent('aia:time-open', { detail: { toggle: true } }));
-}
-function openHelp() {
-  window.dispatchEvent(new CustomEvent('aia:help', { detail: { toggle: true } }));
-}
-function toggleBgm() {
-  window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { toggle: true } }));
-}
+const fire = (name: string) => window.dispatchEvent(new CustomEvent(name, { detail: { toggle: true } }));
 
 export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
   // server render uses the page's own path so the hydrated markup (aria-current) is right without a re-render
   const [path, setPath] = useState(
     typeof location === 'undefined' ? initialPath.replace(/\/+$/, '') || '/' : currentPath(),
   );
-  const [state, setState] = useState<DockState>('expanded');
-  const [plate, setPlate] = useState('');
-  const [typing, setTyping] = useState(false);
   const [sheet, setSheet] = useState(false);
-  const [sysPop, setSysPop] = useState(false);
-  const hostRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
   const active = chapterForPath(path);
 
   // --- route changes (ClientRouter keeps this island mounted) ---
@@ -66,161 +45,53 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     const onLoad = () => {
       setPath(currentPath());
       setSheet(false);
-      setSysPop(false);
     };
     document.addEventListener('astro:page-load', onLoad);
     return () => document.removeEventListener('astro:page-load', onLoad);
   }, []);
 
-  // --- name plate types in like dialogue ---
-  useEffect(() => {
-    const full = active ? `${active.no} · ${active.en}` : 'AQUA IRO ARCHIVE';
-    if (motion.value !== 'on') {
-      setPlate(full);
-      setTyping(false);
+  // --- the current-chapter pill: sits behind the current button and slides to the next one ---
+  const placePill = () => {
+    const nav = navRef.current;
+    const pill = pillRef.current;
+    if (!nav || !pill) return;
+    const btn = nav.querySelector<HTMLElement>('.dock__chapters .dbtn[aria-current="page"]');
+    if (!btn || !btn.offsetWidth) {
+      nav.classList.remove('has-pill');
       return;
     }
-    let i = 0;
-    setTyping(true);
-    setPlate('');
-    const id = setInterval(() => {
-      i++;
-      setPlate(full.slice(0, i));
-      if (i >= full.length) {
-        clearInterval(id);
-        setTyping(false);
-      }
-    }, 80);
-    return () => clearInterval(id);
-  }, [path]);
-
-  // --- chapter change: the new chapter's dot sends up a short trail of bubbles ---
+    pill.style.width = `${btn.offsetWidth}px`;
+    pill.style.height = `${btn.offsetHeight}px`;
+    pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop}px)`;
+    nav.classList.add('has-pill');
+  };
+  useLayoutEffect(placePill, [path]);
   useEffect(() => {
-    if (motion.value !== 'on') return;
-    const dot = hostRef.current?.querySelector<HTMLElement>('.chap[aria-current="page"] .chap__dot');
-    if (!dot) return;
-    const r = dot.getBoundingClientRect();
-    const made: HTMLElement[] = [];
-    for (let i = 0; i < 3; i++) {
-      const b = document.createElement('i');
-      b.className = 'dock-bubble';
-      b.style.left = `${r.left + r.width / 2}px`;
-      b.style.top = `${r.top}px`;
-      document.body.append(b);
-      made.push(b);
-      b.animate(
-        [
-          { transform: 'translate(-50%, 0) scale(0.4)', opacity: 0.9 },
-          { transform: `translate(calc(-50% + ${(i - 1) * 10}px), -${46 + i * 16}px) scale(1)`, opacity: 0 },
-        ],
-        {
-          duration: 900 + i * 160,
-          delay: i * 120,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-          fill: 'backwards',
-        },
-      ).onfinish = () => b.remove();
-    }
-    return () => made.forEach((b) => b.remove());
-  }, [path]);
-
-  // --- scroll-driven state ---
-  useEffect(() => {
-    let lastY = window.scrollY;
-    let travel = 0; // signed distance scrolled in the current direction
-    let focused = false; // keyboard focus only — a mouse click leaves focus on the button it pressed
-    let hovered = false;
-    let held = false; // the onboarding tour keeps the dock open while it points at its buttons
-    let raf = 0;
-    const host = hostRef.current;
-    const pinned = () => focused || hovered || held;
-    const update = () => {
-      raf = 0;
-      const y = window.scrollY;
-      const dy = y - lastY;
-      lastY = y;
-      travel = Math.sign(dy) === Math.sign(travel) ? travel + dy : dy;
-      if (y < TOP || pinned() || travel < -SWITCH) setState('expanded');
-      else if (travel > SWITCH) setState('compact');
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    // a new page (or Back/Forward) starts expanded, measured from where it lands
-    const onArrive = () => {
-      lastY = window.scrollY;
-      travel = 0;
-      setState('expanded');
-    };
-    const onHold = (e: Event) => {
-      held = !!(e as CustomEvent<boolean>).detail;
-      if (held) setState('expanded');
-    };
-    const onEnter = () => {
-      hovered = true;
-      setState('expanded');
-    };
-    const onLeave = () => (hovered = false);
-    const onFocusIn = (e: FocusEvent) => {
-      if (!(e.target as HTMLElement).matches?.(':focus-visible')) return;
-      focused = true;
-      setState('expanded');
-    };
-    const onFocusOut = (e: FocusEvent) => {
-      if (!host?.contains(e.relatedTarget as Node)) focused = false;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('aia:dock-hold', onHold);
-    document.addEventListener('astro:page-load', onArrive);
-    host?.addEventListener('pointerenter', onEnter);
-    host?.addEventListener('pointerleave', onLeave);
-    host?.addEventListener('focusin', onFocusIn);
-    host?.addEventListener('focusout', onFocusOut);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('aia:dock-hold', onHold);
-      document.removeEventListener('astro:page-load', onArrive);
-      host?.removeEventListener('pointerenter', onEnter);
-      host?.removeEventListener('pointerleave', onLeave);
-      host?.removeEventListener('focusin', onFocusIn);
-      host?.removeEventListener('focusout', onFocusOut);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  // --- size change: animate the dock's width from the old size to the new one ---
-  const lastWidth = useRef(0);
-  useLayoutEffect(() => {
-    const dock = hostRef.current?.querySelector<HTMLElement>('.dock');
-    if (!dock) return;
-    const to = dock.getBoundingClientRect().width;
-    const from = lastWidth.current;
-    lastWidth.current = to;
-    if (!from || Math.abs(from - to) < 2 || motion.value !== 'on') return;
-    // the outline animates its width in both directions; while it does, the contents are clipped
-    // sideways only (the plate above and the shadow stay visible), so nothing reflows or squashes
-    dock.classList.add('is-resizing');
-    const anim = dock.animate([{ width: `${from}px` }, { width: `${to}px` }], {
-      duration: 300,
-      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-    });
-    anim.onfinish = anim.oncancel = () => dock.classList.remove('is-resizing');
-  }, [state]);
-  useEffect(() => {
-    // keep the remembered width current when the content changes for other reasons (route, language)
-    const dock = hostRef.current?.querySelector<HTMLElement>('.dock');
-    if (!dock) return;
+    const nav = navRef.current;
+    if (!nav) return;
+    // the first placement doesn't slide in from nowhere; later ones do
+    const ready = requestAnimationFrame(() => nav.classList.add('pill-ready'));
     const ro = new ResizeObserver(() => {
-      if (!dock.getAnimations().length) lastWidth.current = dock.getBoundingClientRect().width;
+      nav.classList.remove('pill-ready');
+      placePill();
+      requestAnimationFrame(() => nav.classList.add('pill-ready'));
     });
-    ro.observe(dock);
-    return () => ro.disconnect();
+    ro.observe(nav);
+    return () => {
+      cancelAnimationFrame(ready);
+      ro.disconnect();
+    };
   }, []);
 
-  // --- keyboard shortcuts (§7.3, WCAG 2.1.4: can be turned off in the LOG drawer) ---
+  // --- keyboard shortcuts (WCAG 2.1.4: can be turned off in the LOG drawer) ---
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || isTyping(e.target)) return;
+      if (e.defaultPrevented) return;
+      if (e.key === 'Escape' && sheet) {
+        setSheet(false);
+        return;
+      }
+      if (isTyping(e.target)) return;
       if (e.altKey && !e.ctrlKey && !e.metaKey && (e.code === 'KeyM' || e.code === 'KeyL')) {
         if (!shortcuts.value) return;
         e.preventDefault();
@@ -230,12 +101,7 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       }
       if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
       if (e.key === 'Escape') {
-        if (document.body.classList.contains('has-modal') || sheet || sysPop) {
-          setSheet(false);
-          setSysPop(false);
-          return;
-        }
-        openLog();
+        if (!document.body.classList.contains('has-modal')) fire('aia:log');
         return;
       }
       if (!shortcuts.value) return;
@@ -244,18 +110,15 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
         const c = CHAPTERS[n - 1]!;
         if (c.href !== currentPath()) {
           e.preventDefault();
-          go(c, 'key');
+          track('dock_nav', { to: c.id, via: 'key' });
+          navigate(c.href);
         }
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [sheet, sysPop]);
+  }, [sheet]);
 
-  function go(c: Chapter, via: 'click' | 'key' | 'talk') {
-    track('dock_nav', { to: c.id, via });
-    navigate(c.href);
-  }
   function onChapterClick(e: MouseEvent, c: Chapter) {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     track('dock_nav', { to: c.id, via: 'click' });
@@ -270,9 +133,14 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
     track('sys_toggle', { what: 'lang', value: lang.value });
   }
   function sysBgm() {
-    toggleBgm();
+    fire('aia:bgm');
     track('sys_toggle', { what: 'bgm', value: !bgmOn.value });
   }
+  // system buttons in the sheet close it first, so the drawer / deck they open isn't stacked on it
+  const fromSheet = (fn: () => void, close: boolean) => () => {
+    if (close) setSheet(false);
+    fn();
+  };
 
   // roving focus for the system toolbar
   function onToolbarKey(e: KeyboardEvent) {
@@ -285,197 +153,130 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
   }
 
   const L = useLang();
-  const sysButtons = (
+  const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
+  const sysButtons = (inSheet: boolean) => (
     <>
-      <button
-        type="button"
-        class="sysbtn"
-        data-sys="bgm"
-        aria-pressed={bgmOn.value}
+      <DockButton
+        icon="music-notes"
+        label="BGM"
+        pressed={bgmOn.value}
         onClick={sysBgm}
-        aria-label={L === 'ja' ? 'BGM オン・オフ' : 'BGM on/off'}
-      >
-        <Icon name="music" />
-        BGM
-      </button>
-      <button
-        type="button"
-        class="sysbtn"
-        data-sys="motion"
-        aria-pressed={motion.value === 'on'}
+        ariaLabel={say('BGM オン・オフ', 'BGM on/off')}
+        attrs={{ 'data-sys': 'bgm' }}
+      />
+      <DockButton
+        icon="sparkle"
+        label="MOTION"
+        pressed={motion.value === 'on'}
         onClick={sysMotion}
-        aria-label={L === 'ja' ? 'モーション オン・オフ (Alt+M)' : 'Motion on/off (Alt+M)'}
-      >
-        <Icon name="anchor" />
-        AUTO
-      </button>
-      <button
-        type="button"
-        class="sysbtn"
-        data-sys="lang"
+        ariaLabel={say('モーション オン・オフ (Alt+M)', 'Motion on/off (Alt+M)')}
+        attrs={{ 'data-sys': 'motion' }}
+      />
+      <DockButton
+        icon="translate"
+        label="JP/EN"
         onClick={sysLang}
-        aria-label={L === 'ja' ? '言語を英語に切り替え (Alt+L)' : 'Switch language to Japanese (Alt+L)'}
-      >
-        <span class="glyph" aria-hidden="true">
-          文A
-        </span>
-        JP/EN
-      </button>
-      <button
-        type="button"
-        class="sysbtn"
-        data-sys="log"
-        onClick={() => openLog()}
-        aria-label={L === 'ja' ? 'ログを開く (Esc)' : 'Open the log (Esc)'}
-      >
-        <Icon name="menu" />
-        LOG
-      </button>
-      <button
-        type="button"
-        class={`sysbtn${timeDate.value ? ' is-time' : ''}`}
-        data-sys="time"
-        aria-pressed={!!timeDate.value}
-        onClick={() => openTime()}
-        aria-label={L === 'ja' ? 'あくあ時間（日付を旅する）' : 'Aqua Time — travel to a date'}
-      >
-        <Icon name="tape" />
-        TIME
-      </button>
-      <button
-        type="button"
-        class="sysbtn"
-        data-sys="help"
-        onClick={() => openHelp()}
-        aria-label={L === 'ja' ? 'ヘルプ・使い方' : 'Help and how-to'}
-      >
-        <Icon name="help" />
-        HELP
-      </button>
+        ariaLabel={say('言語を英語に切り替え (Alt+L)', 'Switch language to Japanese (Alt+L)')}
+        attrs={{ 'data-sys': 'lang' }}
+      />
+      <DockButton
+        icon="book-open"
+        label="LOG"
+        onClick={fromSheet(() => fire('aia:log'), inSheet)}
+        ariaLabel={say('ログを開く (Esc)', 'Open the log (Esc)')}
+        attrs={{ 'data-sys': 'log' }}
+      />
+      <DockButton
+        icon="cassette-tape"
+        label="TIME"
+        pressed={!!timeDate.value}
+        onClick={fromSheet(() => fire('aia:time-open'), inSheet)}
+        ariaLabel={say('あくあ時間（日付を旅する）', 'Aqua Time — travel to a date')}
+        attrs={{ 'data-sys': 'time' }}
+      />
+      <DockButton
+        icon="question"
+        label="HELP"
+        onClick={fromSheet(() => fire('aia:help'), inSheet)}
+        ariaLabel={say('ヘルプ・使い方', 'Help and how-to')}
+        attrs={{ 'data-sys': 'help' }}
+      />
     </>
   );
 
-  const mobileIds =
-    active && !MOBILE_SET.includes(active.id)
-      ? MOBILE_SET.map((id) => (id === 'clips' ? active.id : id))
-      : MOBILE_SET;
+  // the bar on narrow screens always includes the current chapter (it takes Clips' place)
+  const barIds =
+    active && !BAR_SET.includes(active.id) ? BAR_SET.map((id) => (id === 'clips' ? active.id : id)) : BAR_SET;
+
+  const chapterButton = (c: Chapter, i: number) => (
+    <DockButton
+      icon={c.icon}
+      tint={c.iconTint}
+      label={c.label}
+      href={c.href}
+      current={active?.id === c.id}
+      sr={`${c.no} ${c.title.en}`}
+      onClick={(e) => onChapterClick(e, c)}
+      attrs={{ 'aria-keyshortcuts': String(i + 1) }}
+    />
+  );
 
   return (
-    <div class="dock-host" data-state={state} ref={hostRef}>
-      <nav class="dock" aria-label={L === 'ja' ? 'チャプター' : 'Chapters'}>
-        <span class="dock__progress" aria-hidden="true" />
-        <span class={`dock__plate${typing ? ' is-typing' : ''}`} aria-hidden="true">
-          {plate}
-          <span class="caret" />
-        </span>
+    <div class={`dock-host${sheet ? ' has-sheet' : ''}`}>
+      <nav class="dock" aria-label={say('チャプター', 'Chapters')} ref={navRef}>
+        <span class="dock__pill" aria-hidden="true" ref={pillRef} />
         <ol class="dock__chapters" role="list">
           {CHAPTERS.map((c, i) => (
-            <li class={mobileIds.includes(c.id) ? '' : 'is-extra'}>
-              <a
-                class="chap"
-                href={c.href}
-                data-astro-prefetch="hover"
-                aria-current={active?.id === c.id ? 'page' : undefined}
-                aria-keyshortcuts={String(i + 1)}
-                onClick={(e) => onChapterClick(e as unknown as MouseEvent, c)}
-              >
-                <span class="chap__dot" style={`--dot:var(${c.tint})`} aria-hidden="true" />
-                <b lang="ja">{c.ja}</b>
-                <small lang="en" data-short={c.id === 'messages' ? 'BOARD' : undefined}>
-                  {c.en}
-                </small>
-                <span class="sr-only">
-                  {' '}
-                  {c.no} {c.title.en}
-                </span>
-                <span class="chap__tip" aria-hidden="true">
-                  {L === 'ja' ? c.ja : c.en}
-                </span>
-              </a>
-            </li>
+            <li class={barIds.includes(c.id) ? undefined : 'is-extra'}>{chapterButton(c, i)}</li>
           ))}
           <li class="dock__more">
-            <button
-              type="button"
-              class="chap"
-              aria-expanded={sheet}
-              aria-haspopup="dialog"
+            <DockButton
+              icon="dots-three-outline"
+              label={{ ja: 'もっと', en: 'MORE' }}
               onClick={() => setSheet(true)}
-            >
-              <span class="chap__dot" style="--dot:var(--lavender)" aria-hidden="true" />
-              <b lang="ja">もっと</b>
-              <small>MORE</small>
-            </button>
+              ariaLabel={say('すべてのチャプターとシステム', 'All chapters and system')}
+              attrs={{ 'aria-expanded': sheet, 'aria-haspopup': 'dialog' }}
+            />
           </li>
         </ol>
-        <span class="dock__sep" aria-hidden="true" />
-        <div
-          class="dock__sys"
-          role="toolbar"
-          aria-label={L === 'ja' ? 'システム' : 'System'}
-          onKeyDown={onToolbarKey}
-        >
-          {sysButtons}
-        </div>
-        <div style="position:relative;display:flex;align-items:center">
-          <button
-            type="button"
-            class="sysbtn dock__gear"
-            aria-expanded={sysPop}
-            aria-label={L === 'ja' ? 'システム設定' : 'System settings'}
-            onClick={() => setSysPop((v) => !v)}
-          >
-            <Icon name="gear" />
-          </button>
-          {sysPop && (
-            <div class="sys-pop" role="group" aria-label={L === 'ja' ? 'システム' : 'System'}>
-              {sysButtons}
-            </div>
-          )}
+        <div class="dock__sys" role="toolbar" aria-label={say('システム', 'System')} onKeyDown={onToolbarKey}>
+          {sysButtons(false)}
         </div>
       </nav>
 
       {sheet && (
         <>
-          <div class="scrim" style="pointer-events:auto" onClick={() => setSheet(false)} />
+          <div class="scrim dock-sheet__scrim" onClick={() => setSheet(false)} />
           <div
-            class="chapter-sheet"
+            class="dock-sheet"
             role="dialog"
             aria-modal="true"
-            aria-label={L === 'ja' ? 'チャプターセレクト' : 'Chapter select'}
-            style="pointer-events:auto"
+            aria-label={say('チャプターとシステム', 'Chapters and system')}
           >
-            <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="dock-sheet__head">
               <span class="ribbon">
                 CHAPTER SELECT <small>チャプター</small>
               </span>
               <button
                 type="button"
                 class="btn btn--ghost btn--icon"
-                aria-label={L === 'ja' ? '閉じる' : 'Close'}
+                aria-label={say('閉じる', 'Close')}
                 onClick={() => setSheet(false)}
                 autoFocus
               >
-                <Icon name="close" />
+                <svg class="icon" aria-hidden="true" focusable="false">
+                  <use href="#i-close" />
+                </svg>
               </button>
             </div>
-            <ol class="chapter-sheet__grid" role="list">
-              {CHAPTERS.map((c) => (
-                <li>
-                  <a
-                    class="swatch"
-                    href={c.href}
-                    style={`--dot:var(${c.tint})`}
-                    aria-current={active?.id === c.id ? 'page' : undefined}
-                    onClick={(e) => onChapterClick(e as unknown as MouseEvent, c)}
-                  >
-                    <small>{c.no}</small>
-                    <b lang="ja">{c.title.ja}</b>
-                    <small lang="en">{c.title.en.toUpperCase()}</small>
-                  </a>
-                </li>
+            <ol class="dock-sheet__grid" role="list">
+              {CHAPTERS.map((c, i) => (
+                <li>{chapterButton(c, i)}</li>
               ))}
             </ol>
+            <div class="dock-sheet__sys" role="group" aria-label={say('システム', 'System')}>
+              {sysButtons(true)}
+            </div>
           </div>
         </>
       )}
