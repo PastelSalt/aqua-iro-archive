@@ -1,0 +1,31 @@
+---
+/**
+ * Odometer (IMPROVEMENT-PLAN §1.5 "count up"): a number whose digits roll up from 0 like a slot
+ * counter the first time it comes into view (src/scripts/odometer.ts). Each digit is a strip of 0–9
+ * moved with transform only, so rolling never re-lays out the page (masonry lists included).
+ * Without JS or with Motion OFF it simply shows the final text. Screen readers get the plain text.
+ */
+interface Props {
+  text: string; // final text, e.g. "528万回" or "#12"
+  class?: string;
+}
+const { text, class: cls } = Astro.props;
+const chars = [...text];
+---
+
+<span class:list={['odo', cls]} data-odo>
+  <span class="sr-only">{text}</span>
+  <span class="odo__face" aria-hidden="true">
+    {chars.map((ch) =>
+      /\d/.test(ch) ? (
+        <span class="odo__d">
+          <span class="odo__strip" style={`--n:${ch}`}>
+            0<br />1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9
+          </span>
+        </span>
+      ) : (
+        <span>{ch}</span>
+      ),
+    )}
+  </span>
+</span>

@@ -3,6 +3,7 @@
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Postcard from '../components/ui/Postcard.astro';
+import Odometer from '../components/ui/Odometer.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
 import { CLIP_TAGS } from '../content.config';
@@ -140,9 +141,7 @@ const hasDates = clips.every((c) => c.data.published);
               style={`--tilt:${c.data.rank % 2 ? -4 : 3}deg`}
               aria-hidden="true"
             >
-              <span data-countup data-to={c.data.rank} data-prefix="#">
-                #{c.data.rank}
-              </span>
+              <Odometer text={`#${c.data.rank}`} />
             </span>
             <span class="clip__title">{c.data.title}</span>
           </a>
@@ -158,11 +157,11 @@ const hasDates = clips.every((c) => c.data.published);
               )}
             </span>
             <span class="num" title={`${c.data.views.toLocaleString('en-US')} views`}>
-              <span data-l="ja" lang="ja" data-countup data-to={c.data.views}>
-                {compactJa(c.data.views)}回
+              <span data-l="ja" lang="ja">
+                <Odometer text={`${compactJa(c.data.views)}回`} />
               </span>
-              <span data-l="en" lang="en" data-countup data-to={c.data.views}>
-                {compactEn(c.data.views)} views
+              <span data-l="en" lang="en">
+                <Odometer text={`${compactEn(c.data.views)} views`} />
               </span>
             </span>
           </span>

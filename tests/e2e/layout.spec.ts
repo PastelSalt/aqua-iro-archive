@@ -80,6 +80,7 @@ for (const size of [
     page,
     errors,
   }) => {
+    test.slow(); // seven full pages in a row
     await page.setViewportSize(size);
     for (const path of CHAPTERS) {
       await page.goto(path);

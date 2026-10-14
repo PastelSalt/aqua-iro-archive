@@ -381,7 +381,9 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
               >
                 <span class="chap__dot" style={`--dot:var(${c.tint})`} aria-hidden="true" />
                 <b lang="ja">{c.ja}</b>
-                <small lang="en">{c.en}</small>
+                <small lang="en" data-short={c.id === 'messages' ? 'BOARD' : undefined}>
+                  {c.en}
+                </small>
                 <span class="sr-only">
                   {' '}
                   {c.no} {c.title.en}

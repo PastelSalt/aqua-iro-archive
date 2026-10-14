@@ -6,7 +6,7 @@ import './sparkle';
 import './offscreen';
 import './chrome-scroll';
 import './shutter';
-import './countup';
+import './odometer';
 import './tilt';
 
 // Japanese webfonts load without blocking first paint (system fonts show until they swap in).

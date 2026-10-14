@@ -1065,6 +1065,14 @@ body.has-modal .dock-host {
     font-size: var(--label-s);
     letter-spacing: 0.02em;
   }
+  /* phones: the long English label gets its short form so five chips fit */
+  html[data-lang='en'] .chap small[data-short] {
+    font-size: 0;
+  }
+  html[data-lang='en'] .chap small[data-short]::after {
+    content: attr(data-short);
+    font-size: var(--label-s);
+  }
   .dock__sys {
     display: none !important;
   }
