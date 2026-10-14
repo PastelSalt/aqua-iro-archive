@@ -92,7 +92,7 @@ test('first-visit tour walks through the controls, and HELP replays it after a r
   await expect(card).toBeVisible({ timeout: 10_000 });
   await expect(card).toContainText(/1 \/ \d+/);
   const total = Number((await card.locator('.tour__count b').textContent())!.split('/')[1]);
-  expect(total).toBeGreaterThanOrEqual(10); // Home has every step, including BGM and the Talk buttons
+  expect(total).toBeGreaterThanOrEqual(11); // Home has every step, including BGM and the Talk buttons
   for (let n = 0; n < total; n++) await card.locator('[data-next]').click();
   await expect(page.locator('.tour')).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem('aia:tour.done'))).toBe('true');

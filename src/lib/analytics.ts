@@ -37,6 +37,8 @@ export type EventName =
   | 'tour'
   | 'tour_replay'
   | 'outfit_pick'
+  | 'time_open'
+  | 'time_travel'
   | 'cwv'
   | 'not_found';
 

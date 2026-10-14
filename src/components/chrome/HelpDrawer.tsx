@@ -69,6 +69,12 @@ const ITEMS: Item[] = [
     en: 'Switches Japanese ⇄ English (Alt+L).',
   },
   {
+    icon: 'tape',
+    name: 'TIME',
+    ja: 'あくあ時間：2018.08.08〜2024.08.28の好きな日へ。衣装・配信・歌・ひとことがその日に変わります。「現在へ」で戻れます。',
+    en: 'Aqua Time: travel to any day from 2018.08.08 to 2024.08.28 — outfit, streams, songs and greeting follow. "Now" brings you back.',
+  },
+  {
     icon: 'menu',
     name: 'LOG',
     ja: '会話のバックログ、思い出アルバム、クレジット、ショートカット（Esc）。',

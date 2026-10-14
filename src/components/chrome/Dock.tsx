@@ -9,6 +9,7 @@ import { navigate } from 'astro:transitions/client';
 import { CHAPTERS, chapterForPath, type Chapter } from '../../lib/chapters';
 import { motion, lang, bgmOn, shortcuts, toggleMotion, toggleLang } from '../../lib/prefs';
 import { track } from '../../lib/analytics';
+import { timeDate } from '../../lib/aquatime';
 import { useLang } from '../../lib/useLang';
 
 type DockState = 'expanded' | 'compact';
@@ -36,6 +37,9 @@ function isTyping(el: EventTarget | null) {
 }
 function openLog() {
   window.dispatchEvent(new CustomEvent('aia:log', { detail: { toggle: true } }));
+}
+function openTime() {
+  window.dispatchEvent(new CustomEvent('aia:time-open', { detail: { toggle: true } }));
 }
 function openHelp() {
   window.dispatchEvent(new CustomEvent('aia:help', { detail: { toggle: true } }));
@@ -326,6 +330,17 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
       >
         <Icon name="menu" />
         LOG
+      </button>
+      <button
+        type="button"
+        class={`sysbtn${timeDate.value ? ' is-time' : ''}`}
+        data-sys="time"
+        aria-pressed={!!timeDate.value}
+        onClick={() => openTime()}
+        aria-label={L === 'ja' ? 'あくあ時間（日付を旅する）' : 'Aqua Time — travel to a date'}
+      >
+        <Icon name="tape" />
+        TIME
       </button>
       <button
         type="button"

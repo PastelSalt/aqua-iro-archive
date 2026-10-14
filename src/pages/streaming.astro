@@ -285,6 +285,16 @@ const totalHours = summary.hours;
       </p>
     </div>
 
+    <button type="button" class="time-jump" data-time-jump hidden>
+      ◀◀{' '}
+      <span data-l="ja" lang="ja">
+        あくあ時間の日へ
+      </span>
+      <span data-l="en" lang="en">
+        Jump to your Aqua Time day
+      </span>{' '}
+      <span class="num"></span>
+    </button>
     {/* a giant ghost year behind the list and a running "hours so far" (IMPROVEMENT-PLAN §1.5) */}
     <div class="stream-ghostbox" aria-hidden="true">
       <span class="stream-ghost num" data-ghost-year>
@@ -293,10 +303,10 @@ const totalHours = summary.hours;
       <span class="stream-hours num">
         <b data-hours>0</b>
         <span data-l="ja" lang="ja">
-          時間 ここまで
+          時間（この日まで）
         </span>
         <span data-l="en" lang="en">
-          h so far
+          h up to here
         </span>
       </span>
     </div>
@@ -354,6 +364,49 @@ const totalHours = summary.hours;
 <script>
   import { onPage } from '../lib/lifecycle';
   import { track, debounced } from '../lib/analytics';
+  import { timeDate, daysBetween } from '../lib/aquatime';
+
+  // Aqua Time: the streams around the travelled-to day are highlighted, with a button to jump there
+  onPage(() => {
+    const list = document.querySelector<HTMLElement>('[data-stream-list]');
+    const jump = document.querySelector<HTMLButtonElement>('[data-time-jump]');
+    if (!list || !jump) return;
+    const mark = () => {
+      const d = timeDate.value;
+      let first: HTMLElement | null = null;
+      for (const r of list.querySelectorAll<HTMLElement>('.srow')) {
+        const near = !!d && Math.abs(daysBetween(r.dataset.d!, d)) <= 3;
+        r.classList.toggle('is-then', near);
+        r.classList.toggle('is-day', !!d && r.dataset.d === d);
+        if (near && !r.hidden && (!first || r.dataset.d! > first.dataset.d!)) first = r;
+      }
+      jump.hidden = !d;
+      if (d) jump.querySelector('.num')!.textContent = d.replace(/-/g, '.');
+      // centre on the chosen day itself when it had a stream, else the nearest one that week
+      return list.querySelector<HTMLElement>('.srow.is-day:not([hidden])') ?? first;
+    };
+    mark();
+    const go = () => {
+      const r = mark();
+      if (!r) return;
+      // rows render lazily (content-visibility), so their real heights appear only as they come into
+      // view and a single scroll lands in the wrong place: jump instantly, then re-centre each frame
+      // until the row stays put
+      let n = 0;
+      const settle = () => {
+        r.scrollIntoView({ block: 'center' });
+        const mid = r.getBoundingClientRect().top + r.offsetHeight / 2;
+        if (n++ < 12 && Math.abs(mid - innerHeight / 2) > 4) requestAnimationFrame(settle);
+      };
+      settle();
+    };
+    jump.addEventListener('click', go);
+    window.addEventListener('aia:time', mark);
+    return () => {
+      jump.removeEventListener('click', go);
+      window.removeEventListener('aia:time', mark);
+    };
+  });
 
   // the ghost year follows the row in the middle of the screen; the counter adds up the hours above it
   onPage(() => {
@@ -361,19 +414,21 @@ const totalHours = summary.hours;
     const year = document.querySelector<HTMLElement>('[data-ghost-year]');
     const hours = document.querySelector<HTMLElement>('[data-hours]');
     if (!list || !year || !hours) return;
+    const rows = Array.from(list.querySelectorAll<HTMLElement>('.srow'));
     const io = new IntersectionObserver(
       (entries) => {
         const hit = entries.find((e) => e.isIntersecting)?.target as HTMLElement | undefined;
         if (!hit) return;
         if (year.textContent !== hit.dataset.y) year.textContent = hit.dataset.y ?? '';
+        // everything she had streamed up to this row's date (whatever order the list is sorted in)
+        const upto = hit.dataset.d ?? '';
         let sec = 0;
-        for (let r: Element | null = hit; r; r = r.previousElementSibling)
-          if (!(r as HTMLElement).hidden) sec += Number((r as HTMLElement).dataset.s) || 0;
+        for (const r of rows) if (!r.hidden && (r.dataset.d ?? '') <= upto) sec += Number(r.dataset.s) || 0;
         hours.textContent = Math.round(sec / 3600).toLocaleString('en-US');
       },
       { rootMargin: '-48% 0px -51% 0px' },
     );
-    list.querySelectorAll('.srow').forEach((r) => io.observe(r));
+    rows.forEach((r) => io.observe(r));
     return () => io.disconnect();
   });
   import { searchForm } from '../lib/text/kana';

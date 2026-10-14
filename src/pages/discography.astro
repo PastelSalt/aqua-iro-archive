@@ -224,6 +224,7 @@ const bsides = (g: (typeof groups)[number]) => {
                 class="jacket"
                 data-song={`${g.id}:${s.id}`}
                 data-year={s.data.date.slice(0, 4)}
+                data-date={s.data.date}
                 style={`--j1:${pal[0]};--j2:${pal[1]}`}
               >
                 <a
@@ -375,6 +376,7 @@ const bsides = (g: (typeof groups)[number]) => {
   import { onPage } from '../lib/lifecycle';
   import { track, debounced } from '../lib/analytics';
   import { searchForm } from '../lib/text/kana';
+  import { timeDate } from '../lib/aquatime';
 
   onPage(() => {
     const root = document.querySelector<HTMLElement>('[data-disco]');
@@ -390,6 +392,22 @@ const bsides = (g: (typeof groups)[number]) => {
     let view = 'grid';
     let matches: Set<string> | null = null;
 
+    // Aqua Time: songs released after the travelled-to day show as 「まだ」 (not yet); the newest one by
+    // then is marked as the one playing
+    const markTime = () => {
+      const d = timeDate.value;
+      let newest: HTMLElement | null = null;
+      for (const j of root.querySelectorAll<HTMLElement>('.jacket')) {
+        const date = j.dataset.date ?? '';
+        const notYet = !!d && date > d;
+        j.classList.toggle('is-notyet', notYet);
+        j.classList.remove('is-thennow');
+        if (d && !notYet && date && (!newest || date > (newest.dataset.date ?? ''))) newest = j;
+      }
+      newest?.classList.add('is-thennow');
+    };
+    markTime();
+    window.addEventListener('aia:time', markTime);
     // B-side cards only fill the last row of each grid: any that would start a new row are hidden
     const fitBsides = () => {
       requestAnimationFrame(() => {
@@ -502,6 +520,9 @@ const bsides = (g: (typeof groups)[number]) => {
     input.addEventListener('input', run);
 
     render();
-    return () => window.removeEventListener('resize', fitBsides);
+    return () => {
+      window.removeEventListener('resize', fitBsides);
+      window.removeEventListener('aia:time', markTime);
+    };
   });
 </script>

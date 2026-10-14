@@ -121,6 +121,16 @@ const STEPS: Step[] = [
     dock: true,
   },
   {
+    id: 'time',
+    targets: ['.dock__sys [data-sys="time"]', '.dock__gear'],
+    title: ['あくあ時間', 'Aqua Time'],
+    body: [
+      'TIME でアーカイブ全体を好きな日付へ。その日の衣装、配信、歌、あくあのひとことに変わります。',
+      'TIME takes the whole archive to any day of her six years — the outfit, streams, songs and her greeting follow.',
+    ],
+    dock: true,
+  },
+  {
     id: 'log',
     targets: ['.dock__sys [data-sys="log"]', '.dock__gear'],
     title: ['LOG', 'LOG'],

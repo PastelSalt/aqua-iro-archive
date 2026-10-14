@@ -551,6 +551,7 @@ const ld = {
   import { track } from '../lib/analytics';
   import { startBubbles } from '../scripts/bubbles';
   import { KEYS, read, write } from '../lib/storage';
+  import { timeDate } from '../lib/aquatime';
 
   onPage(() => {
     const root = document.querySelector<HTMLElement>('[data-home]');
@@ -584,11 +585,30 @@ const ld = {
       2500,
     );
     cleanups.push(() => clearTimeout(armTimer));
+    // Aqua Time: with "Random" chosen, a travelled-to date shows the outfit she wore then
+    // (dates from arts.yaml: original maid 2018.08.08 · casual sailor 2020.09.26 · black jacket 2022.11.26 · final 2024.06.16)
+    const OUTFIT_SINCE: [string, number][] = [
+      ['2024-06-16', 0],
+      ['2022-11-26', 3],
+      ['2020-09-26', 2],
+      ['2018-08-08', 1],
+    ];
+    const datedOutfit = () => {
+      const d = timeDate.value;
+      if (!d || select.value !== 'random') return false;
+      const hit = OUTFIT_SINCE.find(([since]) => d >= since);
+      if (hit) show(hit[1]);
+      return !!hit;
+    };
+    const onTime = () => datedOutfit();
+    window.addEventListener('aia:time', onTime);
+    cleanups.push(() => window.removeEventListener('aia:time', onTime));
     const picked = read<string>(KEYS.heroOutfit, 'random');
     if (picked !== 'random' && poses[Number(picked)]) {
       select.value = picked;
       show(Number(picked));
     }
+    datedOutfit();
     select.addEventListener('change', () => {
       write(KEYS.heroOutfit, select.value);
       track('outfit_pick', { outfit: select.value });
@@ -603,7 +623,7 @@ const ld = {
     hero.addEventListener('focusout', leave);
     cleanups.push(onMotion((on) => (motionOn = on)));
     const timer = setInterval(() => {
-      if (select.value !== 'random' || hover || !motionOn || document.hidden) return;
+      if (select.value !== 'random' || hover || !motionOn || document.hidden || timeDate.value) return;
       if (expr.classList.contains('is-on')) return;
       // a random different outfit each time
       show(cur + 1 + Math.floor(Math.random() * (poses.length - 1)));

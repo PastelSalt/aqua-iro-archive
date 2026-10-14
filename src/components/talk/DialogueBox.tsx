@@ -14,6 +14,7 @@ import { pickChoices, pickConversation, cryptoRand } from '../../lib/talk/picker
 import { loadScript, logLine, markFound } from '../../lib/talk/store';
 import type { Choice, CompiledScript, Conversation, Line } from '../../lib/talk/types';
 import { useLang } from '../../lib/useLang';
+import { greeting, loadIndex, timeDate } from '../../lib/aquatime';
 
 type Phase = 'idle' | 'speaking' | 'choosing' | 'ended';
 type Props = { first: { ja: string; en: string } };
@@ -286,7 +287,23 @@ export default function DialogueBox({ first }: Props) {
 
   useEffect(() => () => (clearTimeout(typer.current), clearTimeout(autoT.current), resetPose()), []);
 
-  const initial = useMemo(() => first, [first]);
+  // Aqua Time: when the visitor has travelled to a date, the opening line is about that day
+  const [timeLine, setTimeLine] = useState<{ ja: string; en: string } | null>(null);
+  const travelled = timeDate.value;
+  useEffect(() => {
+    if (!travelled) return setTimeLine(null);
+    let alive = true;
+    loadIndex()
+      .then(
+        (ix) =>
+          alive && setTimeLine({ ja: greeting(ix, travelled, true), en: greeting(ix, travelled, false) }),
+      )
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [travelled]);
+  const initial = useMemo(() => timeLine ?? first, [first, timeLine]);
 
   if (hidden) {
     return (

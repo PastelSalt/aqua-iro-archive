@@ -18,6 +18,7 @@ import '../styles/components.css';
 import '../styles/sections.css';
 import '../styles/motion.css';
 import '../styles/fill.css';
+import '../styles/aquatime.css';
 import Sprite from '../components/chrome/Sprite.astro';
 import Motifs from '../components/chrome/Motifs.astro';
 import Shutter from '../components/chrome/Shutter.astro';
@@ -29,6 +30,7 @@ import LogDrawer from '../components/chrome/LogDrawer.tsx';
 import BgmCapsule from '../components/chrome/BgmCapsule.tsx';
 import HelpDrawer from '../components/chrome/HelpDrawer.tsx';
 import Tour from '../components/chrome/Tour.tsx';
+import AquaTime from '../components/chrome/AquaTime.tsx';
 import { getImage } from 'astro:assets';
 import moesoftLogo from '../assets/logo/moesoft.png';
 import { PORTFOLIO, SITE_NAME } from '../lib/site';
@@ -163,6 +165,7 @@ const ld = jsonLd ?? {
     <BgmCapsule client:idle transition:persist="bgm" />
     <HelpDrawer client:idle transition:persist="help" makerLogo={maker.src} makerUrl={PORTFOLIO.url} />
     <Tour client:idle={{ timeout: 1500 }} transition:persist="tour" />
+    <AquaTime client:idle transition:persist="time" />
     <Shutter />
     <script>
       import '../scripts/lightbox';
