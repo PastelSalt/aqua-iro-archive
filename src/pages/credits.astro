@@ -2,7 +2,7 @@
 /** Credits & Policy (EXECUTIONPLAN §9.8). Generated from arts.yaml and clips.yaml. */
 import { getCollection } from 'astro:content';
 import Extra from '../layouts/Extra.astro';
-import { CONTACT_EMAIL, COVER_GUIDELINES } from '../lib/site';
+import { CONTACT_URL, COVER_GUIDELINES } from '../lib/site';
 
 const arts = await getCollection('arts');
 const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
@@ -87,22 +87,24 @@ const clippers = [...new Set(clips.map((c) => c.data.clipper))];
     <h2 id="removal-h">Removal or correction requests · 削除・訂正のご依頼</h2>
     <p>
       <span data-l="ja" lang="ja">
-        権利者の方からの削除依頼、クレジットの訂正、寄せ書きの削除依頼（クルー番号と投稿日時をお知らせください）は、下記までご連絡ください。7日以内にお返事し、権利者からのご依頼はまず削除してから対応します。
+        権利者の方からの削除依頼、クレジットの訂正、寄せ書きの削除依頼（クルー番号と投稿日時をお知らせください）は、下記のお問い合わせフォームからご連絡ください。7日以内にお返事し、権利者からのご依頼はまず削除してから対応します。
       </span>
       <span data-l="en" lang="en">
         For takedown requests from rights holders, credit corrections, or removing a message-board note (send
-        its crew number and roughly when it was posted), please write to the address below. We reply within 7
+        its crew number and roughly when it was posted), please use the contact form below. We reply within 7
         days, and rights-holder requests are taken down first.
       </span>
     </p>
     <p class="contact">
-      {CONTACT_EMAIL ? (
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-      ) : (
-        <span class="sticker sticker--soft">
-          Contact address coming before launch · 連絡先は公開前に掲載します
+      <a href={CONTACT_URL} rel="noopener" target="_blank">
+        <span data-l="ja" lang="ja">
+          Moeko Works お問い合わせフォーム
         </span>
-      )}
+        <span data-l="en" lang="en">
+          Moeko Works contact form
+        </span>{' '}
+        ↗
+      </a>
     </p>
   </section>
 

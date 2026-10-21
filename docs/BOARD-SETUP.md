@@ -67,8 +67,8 @@ ADMIN_EMAIL=you@example.com npm run admin:create
 - **Discord alerts:** create a webhook in a private Discord channel (Channel settings → Integrations →
   Webhooks) and set it as `DISCORD_WEBHOOK_URL` in Vercel (Production). Held notes, report thresholds and
   raid detection post there. Redeploy afterwards.
-- **Removal-request contact:** set `PUBLIC_CONTACT_EMAIL` in Vercel (a dedicated address) so the Credits
-  page shows where people can ask for a note or image to be removed. Redeploy afterwards.
+- **Removal-request contact:** the Credits and Privacy pages link to the Moeko Works contact form
+  (https://moekoworks.vercel.app/contact); nothing to set.
 
 ## 5. Open the board
 
@@ -97,6 +97,6 @@ To close it again at any time (e.g. during a raid): `/keeper → Settings → Pa
 - [ ] Turnstile widget created for `aqua-iro-archive.vercel.app`
 - [ ] `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` replaced in Vercel (Production) and redeployed
 - [ ] Keeper account created, signed in, two-factor set up, backup codes saved
-- [ ] (optional) `DISCORD_WEBHOOK_URL` and `PUBLIC_CONTACT_EMAIL` set, redeployed
+- [ ] (optional) `DISCORD_WEBHOOK_URL` set, redeployed
 - [ ] **Pause posting** unticked in `/keeper → Settings`
 - [ ] Test note posted from a private window, then undone

@@ -1,7 +1,7 @@
 ---
 /** Privacy (EXECUTIONPLAN §9.9 / §18). */
 import Extra from '../layouts/Extra.astro';
-import { CONTACT_EMAIL } from '../lib/site';
+import { CONTACT_URL } from '../lib/site';
 ---
 
 <Extra
@@ -15,12 +15,20 @@ import { CONTACT_EMAIL } from '../lib/site';
     <h2 id="p-who">1. Who runs this site · 運営者</h2>
     <p>
       <span data-l="ja" lang="ja">
-        Moesoft（個人のファン）が運営しています。
+        Moeko Works（個人のファン）が運営しています。
       </span>
       <span data-l="en" lang="en">
-        Moesoft, an individual fan.
+        Moeko Works, an individual fan.
       </span>{' '}
-      {CONTACT_EMAIL && <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>}
+      <a href={CONTACT_URL} rel="noopener" target="_blank">
+        <span data-l="ja" lang="ja">
+          お問い合わせフォーム
+        </span>
+        <span data-l="en" lang="en">
+          Contact form
+        </span>{' '}
+        ↗
+      </a>
     </p>
   </section>
 

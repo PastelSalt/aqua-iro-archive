@@ -72,7 +72,9 @@ test('first visit shows the splash, which can be skipped', async ({ page, errors
     }),
   );
   await page.goto('/about');
-  expect(await page.evaluate(() => (window as unknown as { __splash?: string }).__splash)).toMatch(/moesoft/);
+  expect(await page.evaluate(() => (window as unknown as { __splash?: string }).__splash)).toMatch(
+    /moekoworks/,
+  );
   const skip = page.getByRole('button', { name: /スキップ|Skip/ }).first();
   // the splash also finishes on its own (≤ 3.2 s) and fades out, so a click may race the fade
   if (await skip.isVisible()) await skip.click({ timeout: 2000 }).catch(() => {});

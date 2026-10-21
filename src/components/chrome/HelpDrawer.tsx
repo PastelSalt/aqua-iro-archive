@@ -252,7 +252,7 @@ export default function HelpDrawer({ makerLogo, makerUrl }: { makerLogo: string;
 
         <a class="drawer__maker" href={makerUrl} rel="noopener" target="_blank">
           <small>{say('制作', 'Made by')}</small>
-          <img src={makerLogo} alt="Moesoft" width={120} height={36} loading="lazy" />
+          <img src={makerLogo} alt="Moeko Works" width={171} height={36} loading="lazy" />
           <span>{say('ほかの作品 ↗', 'More work ↗')}</span>
         </a>
       </aside>

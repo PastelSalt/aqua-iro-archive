@@ -1,6 +1,6 @@
 # Aqua Iro Archive · あくあ色アーカイブ
 
-An unofficial, non-profit fan archive of Minato Aqua (2018–2024). Project 44.5 by Moesoft.
+An unofficial, non-profit fan archive of Minato Aqua (2018–2024). Project 44.5 by Moeko Works.
 Design concept: `../PRELIMENARYPLAN.md` · build spec: `../EXECUTIONPLAN.md` · content snapshot: `../RAWDATA.md`.
 
 Astro 7 (static first) + Preact islands, plain CSS, Neon Postgres + Drizzle, Better Auth (TOTP), Cloudflare Turnstile,
@@ -41,8 +41,8 @@ self-hosted Umami, Vercel Hobby.
 3. **Neon** (Vercel Marketplace integration, `ap-southeast-1`): sets `DATABASE_URL` / `DATABASE_URL_UNPOOLED`;
    enable branch-per-preview. Locally: point `.env` at a `dev` branch, then `npm run db:migrate && npm run db:seed`.
 4. **Secrets** (see `.env.example`): `IP_HASH_SECRET` (64 hex), `CRON_SECRET`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
-   Turnstile site/secret keys (local + CI use Cloudflare's testing keys already in `.env.example`), `DISCORD_WEBHOOK_URL`,
-   `PUBLIC_CONTACT_EMAIL` (removal requests — still to decide).
+   Turnstile site/secret keys (local + CI use Cloudflare's testing keys already in `.env.example`), `DISCORD_WEBHOOK_URL`.
+   Removal requests go to the Moeko Works contact form (https://moekoworks.vercel.app/contact).
 5. **Keeper**: `ADMIN_EMAIL=… npm run admin:create`, sign in at `/keeper/login`, enroll TOTP (forced).
    **Opening the message board** (Turnstile keys, keeper account, unpausing): see [docs/BOARD-SETUP.md](docs/BOARD-SETUP.md).
 6. **Umami**: separate Vercel project + Neon DB; set `PUBLIC_UMAMI_WEBSITE_ID` and the `UMAMI_API_*` view-only user.
@@ -65,7 +65,7 @@ self-hosted Umami, Vercel Hobby.
 - **Event schema** gained `model`, `unit`, `lore`, `award` types; the graduation-announcement entry doesn't quote a reason.
 - **Board**: composer + board are one island (shared crew-number preview / optimistic insert / undo).
 - **Integration tests** run on PGlite (in-process Postgres) instead of a Neon branch, so they run everywhere.
-- **Splash** shows once per browser session (not once ever), for 1.6–3.2 s, with the logo tab and a Moesoft credit.
+- **Splash** shows once per browser session (not once ever), for 1.6–3.2 s, with the logo tab and a Moeko Works credit.
 - **Onboarding**: a first-visit spotlight tour (`Tour.tsx`) and a HELP drawer in the dock (`HelpDrawer.tsx`) that can
   replay it — the replay reloads the page and shows the splash again; settings and the memory album are kept.
 - **Filter bars** on Discography / Streaming / Arts dock beside the logo tab once scrolled past (`src/scripts/topbar.ts`).

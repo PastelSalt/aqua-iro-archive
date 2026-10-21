@@ -115,7 +115,7 @@ straight across. Users with reduced-motion set get Motion OFF by default (alread
 - **Dock:** the current chapter's dot leaves a trail of three bubbles when you change chapter, and
   the dock's top edge gets a thin progress line showing how far down the page you are.
 - **Footer:** a full-width "ending card": a wave band, the signature art, a slow marquee of
-  thank-you lines, and the Moesoft card. The page always ends on a visual.
+  thank-you lines, and the Moeko Works card. The page always ends on a visual.
 
 #### Home (No.00)
 

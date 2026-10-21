@@ -1,9 +1,9 @@
 /** Site-wide constants. */
 export const SITE_NAME = 'Aqua Iro Archive';
-/** Removal / correction contact (§9.8). Open decision §29.2 — set PUBLIC_CONTACT_EMAIL before launch. */
-export const CONTACT_EMAIL: string | null = import.meta.env.PUBLIC_CONTACT_EMAIL || null;
+/** Removal / correction contact (§9.8): the Moeko Works contact form (it has a message form). */
+export const CONTACT_URL = 'https://moekoworks.vercel.app/contact';
 /** The maker's portfolio — credited in the splash, footer and HELP panel. */
-export const PORTFOLIO = { name: 'Moesoft', url: 'https://moesoft.vercel.app' };
+export const PORTFOLIO = { name: 'Moeko Works', url: 'https://moekoworks.vercel.app' };
 export const SISTER_SITES = [
   { name: 'Kotoha', url: 'https://kotoha-fansite.vercel.app' },
   { name: 'Hanon', url: 'https://hanon-fansite.vercel.app' },
