@@ -62,6 +62,9 @@ test('Motion OFF stops CSS animations', async ({ page, errors }) => {
 test('first visit shows the splash, which can be skipped', async ({ page, errors }) => {
   await page.addInitScript(() => {
     localStorage.setItem('aia:prefs', '{}');
+    // a returning visitor's first visit this session: the short splash, which also ends on its own
+    // (the first-ever visit stops on the title screen; the title-screen test covers that)
+    localStorage.setItem('aia:title', '"1"');
     sessionStorage.removeItem('aia:splash');
   });
   // record what the page showed at DOMContentLoaded (the splash only lasts 1.6–3.2 s, so a slow
