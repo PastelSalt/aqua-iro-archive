@@ -22,15 +22,19 @@ for (const path of PAGES) {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('nav.dock')).toBeVisible();
     await expect(page.locator('footer')).toContainText(/COVER/);
-    // axe reads colours as painted: let the islands hydrate and every finite fade-in end first
+    // axe reads colours as painted: let the islands hydrate and the running fade-ins end first
+    // (paused ones, e.g. off-screen, never finish; 3 s caps the wait)
     await hydrated(page);
     await page.evaluate(() =>
-      Promise.all(
-        document
-          .getAnimations()
-          .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity)
-          .map((a) => a.finished.catch(() => undefined)),
-      ),
+      Promise.race([
+        Promise.all(
+          document
+            .getAnimations()
+            .filter((a) => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity)
+            .map((a) => a.finished.catch(() => undefined)),
+        ),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]),
     );
     const axe = await new AxeBuilder({ page }).disableRules(['color-contrast-enhanced']).analyze();
     const serious = axe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
