@@ -14,6 +14,12 @@ interface Props {
   noindex?: boolean;
 }
 const { title, label, description, noindex } = Astro.props;
+// in-page index (FULL-UPDATE-PLAN §A2): built from the page's own section headings
+const body = await Astro.slots.render('default');
+const index = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => ({
+  id: m[1]!,
+  text: m[2]!.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
+}));
 ---
 
 <Base
@@ -39,7 +45,21 @@ const { title, label, description, noindex } = Astro.props;
     </header>
     <Seam kind="wave" />
     <div class="wrap prose">
-      <slot />
+      {index.length > 2 && (
+        <nav class="toc card" aria-label="Contents · 目次">
+          <p class="label">
+            <b>CONTENTS</b> · 目次
+          </p>
+          <ol role="list">
+            {index.map((h) => (
+              <li>
+                <a href={`#${h.id}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <Fragment set:html={body} />
     </div>
   </main>
 </Base>
