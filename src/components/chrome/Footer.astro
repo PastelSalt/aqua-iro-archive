@@ -56,7 +56,7 @@ const THANKS = [
         <p>
           <T k="copyright" />
         </p>
-        <a class="maker-card" href={PORTFOLIO.url} rel="noopener" target="_blank">
+        <a class="banner-card maker-card" href={PORTFOLIO.url} rel="noopener" target="_blank">
           <small>
             <span data-l="ja" lang="ja">
               制作
@@ -119,7 +119,7 @@ const THANKS = [
         <ul class="sister-cards">
           {SISTER_SITES.map((s) => (
             <li>
-              <a class="sister-card" href={s.url} rel="noopener" style={`--tint:${s.tint}`}>
+              <a class="banner-card sister-card" href={s.url} rel="noopener" style={`--dot:${s.tint}`}>
                 <span class="sister-card__mark" aria-hidden="true">
                   {s.mark}
                 </span>
@@ -137,7 +137,7 @@ const THANKS = [
             </li>
           ))}
           <li>
-            <a class="sister-card" href={PORTFOLIO.url} rel="noopener">
+            <a class="banner-card sister-card" href={PORTFOLIO.url} rel="noopener">
               <Image class="sister-card__logo" src={moekoworks} alt="" height={28} densities={[1, 2]} />
               <b>{PORTFOLIO.name}</b>
               <small>

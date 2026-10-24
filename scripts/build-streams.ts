@@ -45,7 +45,8 @@ const milestoneById = new Map(milestones.map((m) => [m.id, m]));
 const recordById = new Map(records.filter((r) => r.youtube).map((r) => [r.youtube!, r]));
 
 const errors: string[] = [];
-const lines = readFileSync('data/raw/streams.full.tsv', 'utf8').split('\n').filter(Boolean);
+// \r?\n: a Windows checkout has CRLF line endings, which would otherwise leave '\r' on every title
+const lines = readFileSync('data/raw/streams.full.tsv', 'utf8').split(/\r?\n/).filter(Boolean);
 let dropped = 0;
 
 export type Stream = {

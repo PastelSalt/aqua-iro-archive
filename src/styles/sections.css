@@ -8,26 +8,10 @@
   margin-block: var(--s-6) 0;
 }
 .related__card {
-  position: relative;
   display: grid;
   gap: 2px;
   padding: 18px 22px;
-  border-radius: var(--r-lg);
-  background: var(--paper);
-  box-shadow: var(--sh-2);
-  text-decoration: none;
-  color: var(--navy);
   overflow: hidden;
-}
-.related__card::after {
-  content: '';
-  position: absolute;
-  right: -30px;
-  top: -30px;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--dot) 40%, transparent);
 }
 .related__card b {
   font: 700 var(--step-1) / 1.3 var(--font-jp-round);
@@ -46,14 +30,12 @@
 }
 .related__card--next {
   text-align: right;
+  border-left: 0;
+  border-right: 4px solid var(--dot);
 }
 .related__card--next .icon {
   right: auto;
   left: 22px;
-}
-.related__card:hover {
-  color: var(--navy);
-  transform: translateY(-2px);
 }
 @media (max-width: 600px) {
   .related {
@@ -522,7 +504,7 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   box-shadow: var(--sh-2);
   text-decoration: none;
   color: var(--navy);
-  transform: rotate(calc((var(--i) - 3) * 0.6deg));
+  transform: rotate(clamp(calc(-1 * var(--tilt-max)), calc((var(--i) - 3) * 0.6deg), var(--tilt-max)));
   transition:
     transform var(--dur-2) var(--ease-float),
     box-shadow var(--dur-2);
@@ -813,7 +795,7 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   grid-template-columns: minmax(220px, 300px) 1fr;
   gap: var(--s-6);
   padding: var(--s-6);
-  border-radius: 28px;
+  border-radius: var(--r-card);
   background:
     linear-gradient(90deg, transparent 0 calc(100% - 14px), #fde7f3 calc(100% - 14px)), var(--paper);
 }
@@ -1255,9 +1237,9 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   break-inside: avoid;
   margin-bottom: 26px;
   background: var(--paper);
-  border-radius: 20px;
+  border-radius: var(--r-card);
   padding: 8px 8px 14px;
-  box-shadow: var(--sh-2);
+  box-shadow: var(--sh-card);
   display: grid;
   gap: 8px;
 }
@@ -1760,9 +1742,9 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   gap: 4px;
   align-content: start;
   padding: 18px 18px 16px 18px;
-  border-radius: 18px;
+  border-radius: var(--r-card);
   background: var(--paper);
-  box-shadow: var(--sh-2);
+  box-shadow: var(--sh-card);
   transform: rotate(var(--tilt));
 }
 .trophy__badge {
@@ -2532,8 +2514,8 @@ html[data-motion='on'] .lighthouse__beam {
 }
 .credit-group {
   background: var(--paper);
-  border-radius: 16px;
-  box-shadow: var(--sh-1);
+  border-radius: var(--r-card);
+  box-shadow: var(--sh-card);
   overflow: hidden;
 }
 .credit-group summary {
@@ -2641,9 +2623,9 @@ html[data-motion='on'] .lighthouse__beam {
 .compose {
   position: relative;
   background: var(--paper);
-  border-radius: 22px;
+  border-radius: var(--r-card);
   padding: 30px 22px 18px;
-  box-shadow: 0 14px 34px rgb(59 69 131 / 0.14);
+  box-shadow: var(--sh-card);
 }
 .compose::before {
   content: '';

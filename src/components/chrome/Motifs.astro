@@ -31,7 +31,7 @@ const SPOTS: [number, number, number][] = [
     const icon = ICONS[i % ICONS.length]!;
     return (
       <span
-        class:list={['motif', COLORS[i % COLORS.length], { 'motif--mid': x > 15 && x < 85 }]}
+        class:list={['motif', COLORS[i % COLORS.length]]}
         style={`left:${x}%;top:${y}%;--s:${s}px;--dur:${14 + ((i * 7) % 11)}s;--delay:${-((i * 3.1) % 9)}s;--rot:${((i * 37) % 50) - 25}deg`}
       >
         {icon === 'bubble' ? (

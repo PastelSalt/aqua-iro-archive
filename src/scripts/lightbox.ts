@@ -145,7 +145,11 @@ function renderImage(t: Trigger) {
     img.addEventListener('load', () => (wait.remove(), pan.classList.remove('is-loading')), { once: true });
     img.addEventListener(
       'error',
-      () => (wait.querySelector('p')!.textContent = say('あれ、開けなかった……', "Huh, it wouldn't open...")),
+      () =>
+        (wait.querySelector('.aqua-wait__text')!.textContent = say(
+          'あれ、開けなかった……',
+          "Huh, it wouldn't open...",
+        )),
       { once: true },
     );
   }
@@ -166,10 +170,11 @@ function renderImage(t: Trigger) {
 /** Same markup as ui/AquaWait.astro: the small pose from --pose-wait and a speech bubble. */
 function aquaWait(text: string) {
   const box = el('div', { class: 'aqua-wait lightbox__wait', role: 'status' });
-  box.append(
-    el('span', { class: 'aqua-wait__pose', 'aria-hidden': 'true' }),
-    el('p', { class: 'aqua-wait__bubble' }, text),
-  );
+  const bubble = el('p', { class: 'aqua-wait__bubble' });
+  const name = el('span', { class: 'aqua-wait__name', 'aria-hidden': 'true' }, 'あくあ ');
+  name.append(el('span', {}, 'AQUA'));
+  bubble.append(name, el('span', { class: 'aqua-wait__text' }, text));
+  box.append(el('span', { class: 'aqua-wait__pose', 'aria-hidden': 'true' }), bubble);
   return box;
 }
 

@@ -115,7 +115,12 @@ function AquaWait({ text }: { text: string }) {
   return (
     <div class="aqua-wait">
       <span class="aqua-wait__pose" aria-hidden="true" />
-      <p class="aqua-wait__bubble">{text}</p>
+      <p class="aqua-wait__bubble">
+        <span class="aqua-wait__name" aria-hidden="true">
+          あくあ <span>AQUA</span>
+        </span>
+        {text}
+      </p>
     </div>
   );
 }

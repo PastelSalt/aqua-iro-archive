@@ -111,8 +111,16 @@
   --dock-h: 68px;
   --dock-gap: 24px;
   --dock-reserve: calc(var(--dock-h) + var(--dock-gap) + 24px + env(safe-area-inset-bottom));
+  /* the system (FULL-UPDATE-PLAN §A1): the deep, its crest, cards */
+  --deep: var(--navy); /* the sea: bands, page switch, splash */
+  --deep-low: #2c3468;
+  --crest: linear-gradient(90deg, var(--aqua-pink) 0%, #c9a6ec 50%, var(--aqua-cyan) 100%);
+  --r-card: var(--r-lg); /* content cards and banner cards */
+  --sh-card: var(--sh-2);
+  --tilt-max: 2deg; /* cards in a group; reading paper is straight, stickers up to 12deg */
   /* motion */
-  --ease-float: cubic-bezier(0.37, 0, 0.63, 1); /* ≈ sine.inOut */
+  --ease-tide: cubic-bezier(0.7, 0, 0.3, 1); /* the only transition easing: page switch, splash, drawers */
+  --ease-float: cubic-bezier(0.37, 0, 0.63, 1); /* ≈ sine.inOut — the only ambient easing */
   --dur-1: 160ms;
   --dur-2: 320ms;
   --dur-3: 600ms;

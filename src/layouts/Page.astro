@@ -112,7 +112,7 @@ const title =
     <nav class="wrap related" aria-label="Chapters">
       {[prev, next].map((x, i) => (
         <a
-          class:list={['related__card', { 'related__card--next': i === 1 }]}
+          class:list={['banner-card related__card', { 'related__card--next': i === 1 }]}
           href={x.href}
           style={`--dot:var(${x.tint})`}
         >

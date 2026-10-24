@@ -1698,17 +1698,12 @@ html[data-motion='off'] .sleepy__z--1 {
   position: relative;
   counter-increment: sec;
 }
+/* the section number as the same small "⚓ 01" label every section title uses (no ghost over paper) */
 .prose > section::before {
-  content: counter(sec, decimal-leading-zero);
-  position: absolute;
-  z-index: -1;
-  left: -0.08em;
-  top: -0.5em;
-  font: 700 clamp(5rem, 10vw, 8rem) / 0.8 var(--font-display);
-  color: transparent;
-  -webkit-text-stroke: 2px var(--lavender);
-  opacity: 0.4;
-  pointer-events: none;
+  content: '⚓ ' counter(sec, decimal-leading-zero);
+  font: 600 var(--label-m) / 1 var(--font-display);
+  letter-spacing: var(--tracking-label);
+  color: var(--pink-ink);
 }
 /* credits roll rails */
 @media (min-width: 1440px) {
@@ -1892,13 +1887,16 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
   animation-duration: 1.5s;
 }
 
-/* ================= Contrast band (VISUAL-REFINEMENT-PLAN §7c) =================
-   One headline section per page sits on a full-bleed navy ground with the site's seigaiha in a faint
-   light line, so a pastel page has one place that stands out. Cards inside keep their paper colour. */
+/* ================= The deep (FULL-UPDATE-PLAN §A1) =================
+   One headline section per chapter page sits in the sea: navy, wave edges top and bottom (the Seam wave
+   shape, as a mask), Aqua's pink-to-cyan crest catching the light along the top, and the seigaiha in a faint
+   light line. Paper cards inside keep their own colour. The same object rises over the screen in the
+   page switch and the splash. */
 .section.band,
 .section + .section.band {
   isolation: isolate;
-  padding-block: clamp(56px, 7vw, 96px);
+  margin-block: 24px;
+  padding-block: calc(clamp(56px, 7vw, 96px) + 24px);
 }
 .band + .section {
   padding-top: clamp(48px, 7vw, 96px);
@@ -1909,7 +1907,7 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
   z-index: -2;
   inset: 0 50%;
   margin-inline: -50vw;
-  background-color: var(--navy);
+  background-color: var(--deep);
   background-image:
     radial-gradient(
       circle at 50% 100%,
@@ -1933,15 +1931,29 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
       rgb(255 255 255 / 0.07) 27px,
       transparent 28px
     ),
-    linear-gradient(170deg, transparent 40%, rgb(242 167 207 / 0.16));
+    linear-gradient(180deg, transparent 14px, var(--deep) 40px, var(--deep) 70%, var(--deep-low)),
+    var(--crest);
   background-size:
     60px 30px,
     60px 30px,
+    100% 100%,
     100% 100%;
   background-position:
     0 0,
     30px 15px,
+    0 0,
     0 0;
+  /* wave edges: a wave tile along the top and bottom, solid in between */
+  --wave-top: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 0 60 16T120 16T180 16T240 16V32H0Z'/%3E%3C/svg%3E");
+  --wave-bottom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 32 60 16T120 16T180 16T240 16V0H0Z'/%3E%3C/svg%3E");
+  -webkit-mask:
+    var(--wave-top) top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 62px) no-repeat,
+    var(--wave-bottom) bottom left / 240px 32px repeat-x;
+  mask:
+    var(--wave-top) top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 62px) no-repeat,
+    var(--wave-bottom) bottom left / 240px 32px repeat-x;
 }
 .band .sec-title h2,
 .band .sec-title .label,
@@ -1955,19 +1967,14 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
   color: var(--aqua-pink);
 }
 .band .sec-ghost {
-  -webkit-text-stroke-color: rgb(255 255 255 / 0.5);
+  -webkit-text-stroke-color: rgb(255 255 255 / 0.35);
 }
 
-/* ================= Quiet reading pages (VISUAL-REFINEMENT-PLAN §7f) =================
-   Credits and Privacy: no drifting motifs over the reading column, and each section on its own paper
-   card instead of straight on the pattern. Decoration stays on the title card and in the margins. */
-body[data-quiet] .motif--mid {
-  display: none;
-}
+/* ================= Reading pages (FULL-UPDATE-PLAN §A1) =================
+   Credits and Privacy: each section is a content card, numbered with the small section label. */
 .extra .prose > section {
-  isolation: isolate;
   padding: clamp(20px, 3vw, 32px);
-  border-radius: 20px;
-  background: rgb(255 251 254 / 0.94);
-  box-shadow: var(--sh-1);
+  border-radius: var(--r-card);
+  background: var(--paper);
+  box-shadow: var(--sh-card);
 }

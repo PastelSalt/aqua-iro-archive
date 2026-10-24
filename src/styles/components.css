@@ -192,8 +192,8 @@
 .card {
   position: relative;
   background: var(--paper);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh-2);
+  border-radius: var(--r-card);
+  box-shadow: var(--sh-card);
   padding: var(--s-5);
 }
 .card--dashed::before {
@@ -586,7 +586,28 @@ html[data-motion='on'] .marquee__track {
   width: 150px;
   margin-bottom: var(--s-3);
 }
-/* maker credit: one quiet card, not a banner */
+/* ================= Banner card (FULL-UPDATE-PLAN §A1) =================
+   The one shape for every link-to-somewhere card: the maker credit, sister sites, Prev / Next chapters
+   (and, large and taped, the page-switch ticket). Paper, the card radius, a chapter-tint bar on the left
+   (--dot), a small lift on hover. Each user only adds its own layout. */
+.banner-card {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--r-card);
+  border-left: 4px solid var(--dot, var(--aqua-pink));
+  box-shadow: var(--sh-1);
+  color: var(--navy);
+  text-decoration: none;
+  transition:
+    transform var(--dur-1) var(--ease-float),
+    box-shadow var(--dur-1);
+}
+.banner-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-2);
+  color: var(--navy);
+}
+/* maker credit */
 .maker-card {
   display: inline-grid;
   grid-template-columns: auto auto;
@@ -594,13 +615,6 @@ html[data-motion='on'] .marquee__track {
   gap: 4px 14px;
   margin-top: var(--s-4);
   padding: 10px 16px 10px 14px;
-  border-radius: 18px;
-  background: var(--paper);
-  box-shadow: var(--sh-1);
-  text-decoration: none;
-  transition:
-    transform var(--dur-1) var(--ease-float),
-    box-shadow var(--dur-1);
 }
 .maker-card small {
   grid-column: 1 / -1;
@@ -617,10 +631,6 @@ html[data-motion='on'] .marquee__track {
   font: 600 var(--step--2) / 1.3 var(--font-display);
   letter-spacing: 0.06em;
   color: var(--navy);
-}
-.maker-card:hover {
-  transform: translateY(-2px) rotate(-1deg);
-  box-shadow: var(--sh-2);
 }
 .footer__by {
   text-decoration: none;
@@ -651,14 +661,6 @@ html[data-motion='on'] .marquee__track {
   column-gap: 10px;
   align-items: center;
   padding: 8px 12px 8px 8px;
-  border-radius: 14px;
-  background: var(--paper);
-  box-shadow: var(--sh-1);
-  border-left: 4px solid var(--tint, var(--aqua-pink));
-  text-decoration: none;
-  transition:
-    transform var(--dur-1) var(--ease-float),
-    box-shadow var(--dur-1);
 }
 .sister-card__mark,
 .sister-card__logo {
@@ -671,7 +673,7 @@ html[data-motion='on'] .marquee__track {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--tint) 30%, var(--paper));
+  background: color-mix(in srgb, var(--dot) 30%, var(--paper));
   font-size: 18px;
   line-height: 1;
 }
@@ -686,10 +688,6 @@ html[data-motion='on'] .marquee__track {
 .sister-card small {
   font-size: var(--step--2);
   color: var(--ink-soft);
-}
-.sister-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--sh-2);
 }
 .footer__fine {
   margin-top: var(--s-6);
@@ -1668,41 +1666,60 @@ html[data-motion='on'] .splash__anchor {
   padding: var(--s-3) var(--s-4) var(--s-4);
 }
 
-/* ================= Aqua says: loading / empty / error (VISUAL-REFINEMENT-PLAN §7b) =================
-   A small official pose (--pose-wait, set on body by Base.astro) with a speech bubble beside it. */
+/* ================= Aqua talks, compact (FULL-UPDATE-PLAN §A1) =================
+   Loading / empty / error lines: the Talk dialogue box (.dialog-box) at a smaller size, same paper, inner rule
+   and 「あくあ AQUA」 name plate, with her pose (--pose-wait, set on body by Base.astro) beside it. */
 .aqua-wait {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  max-width: min(100%, 420px);
+  gap: 14px;
+  max-width: min(100%, 460px);
   text-align: left;
 }
 .aqua-wait__pose {
   flex: none;
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   background: var(--pose-wait) center / contain no-repeat;
 }
 .aqua-wait__bubble {
   position: relative;
   margin: 0;
-  padding: 10px 14px;
-  border-radius: 16px;
-  background: var(--paper);
-  box-shadow: var(--sh-1);
+  padding: 20px 18px 12px;
+  border-radius: 18px;
+  background: rgb(255 251 254 / 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 14px 34px rgb(59 69 131 / 0.15);
   color: var(--navy);
-  font-size: var(--step--1);
-  line-height: 1.6;
+  font: 500 var(--step--1) / 1.7 var(--font-jp-round);
 }
 .aqua-wait__bubble::before {
   content: '';
   position: absolute;
-  left: -6px;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  background: inherit;
-  transform: translateY(-50%) rotate(45deg);
+  inset: 5px;
+  border-radius: 13px;
+  border: 1.5px solid var(--lav-line);
+  pointer-events: none;
+}
+.aqua-wait__name {
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #fff;
+  font: 700 11px/1 var(--font-jp-round);
+  letter-spacing: 0.2em;
+}
+.aqua-wait__name span {
+  color: var(--aqua-pink);
+  font: 600 9px/1 var(--font-display);
+  letter-spacing: 0.16em;
 }
 html[data-motion='on'] .aqua-wait__pose {
   animation: aqua-wait-bob 1.6s var(--ease-float) infinite alternate;
