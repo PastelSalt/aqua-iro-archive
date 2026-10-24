@@ -28,7 +28,8 @@ const PAIRS: [string, string, number, string][] = [
   ['navy', 'pink-wash', 4.5, 'pressed buttons'],
   ['note-ink', 'note-lav', 4.5, 'note text on lavender paper'],
   ['ink-soft', 'mint-row', 4.5, 'secondary text on mint rows'],
-  ['pink-wash', 'navy', 4.5, 'JP subtitles on the contrast band'],
+  ['pink-wash', 'navy', 4.5, 'JP subtitles on the deep band'],
+  ['on-deep', 'navy', 4.5, 'body text on the deep band'],
 ];
 let bad = 0;
 for (const [fg, bg, min, use] of PAIRS) {

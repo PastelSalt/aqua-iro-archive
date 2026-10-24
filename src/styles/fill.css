@@ -1969,6 +1969,30 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
 .band .sec-ghost {
   -webkit-text-stroke-color: rgb(255 255 255 / 0.35);
 }
+/* Home's farewell is the night sea: the same deep, its own spacing; her signature glows on it as-is */
+.farewell.band {
+  isolation: isolate;
+  background: none;
+  padding-block: calc(var(--s-9) + 24px) calc(var(--s-8) + 24px);
+}
+.farewell.band .farewell__waves {
+  display: none;
+}
+.farewell.band h2 {
+  color: #fff;
+}
+.farewell.band .farewell__en {
+  color: var(--pink-wash);
+}
+.farewell.band .farewell__body {
+  color: var(--on-deep);
+}
+/* Messages: the board sits in the sea; its composer and notes stay paper */
+.board-band {
+  position: relative;
+  isolation: isolate;
+  padding-block: 72px;
+}
 
 /* ================= Reading pages (FULL-UPDATE-PLAN §A1) =================
    Credits and Privacy: each section is a content card, numbered with the small section label. */

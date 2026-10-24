@@ -114,6 +114,7 @@
   /* the system (FULL-UPDATE-PLAN §A1): the deep, its crest, cards */
   --deep: var(--navy); /* the sea: bands, page switch, splash */
   --deep-low: #2c3468;
+  --on-deep: #dfe3f7; /* body text on the deep */
   --crest: linear-gradient(90deg, var(--aqua-pink) 0%, #c9a6ec 50%, var(--aqua-cyan) 100%);
   --r-card: var(--r-lg); /* content cards and banner cards */
   --sh-card: var(--sh-2);
