@@ -785,6 +785,57 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   width: auto;
   filter: drop-shadow(0 18px 30px rgb(59 69 131 / 0.2));
 }
+/* outfit icons beside the pose, as on her official talent page (FULL-UPDATE-PLAN §A2) */
+.outfit-icons {
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  gap: 10px;
+}
+.outfit-icon {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #f2ecfc, #d5ecf7);
+  box-shadow:
+    0 0 0 3px #fff,
+    var(--sh-1);
+  transition:
+    transform var(--dur-1) var(--ease-float),
+    box-shadow var(--dur-1);
+}
+.outfit-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* the icon shows her face: full-body poses have it in the top fifth */
+  object-position: 50% 6%;
+  scale: 2.4;
+  translate: 0 70%;
+}
+.outfit-icon:hover {
+  transform: translateY(-2px);
+}
+.outfit-icon[aria-checked='true'] {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px var(--tint),
+    var(--sh-1);
+}
+@media (max-width: 600px) {
+  .outfit-icons {
+    left: 0;
+    gap: 8px;
+  }
+  .outfit-icon {
+    width: 42px;
+    height: 42px;
+  }
+}
 .about-visual__stamp {
   position: absolute !important;
   right: 6%;

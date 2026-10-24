@@ -8,6 +8,9 @@ import SectionTitle from '../components/ui/SectionTitle.astro';
 import Stamp from '../components/ui/Stamp.astro';
 import portrait from '../assets/poses/portrait-01.webp';
 import sailor from '../assets/poses/full-06.webp';
+import full01 from '../assets/poses/full-01.webp';
+import full07 from '../assets/poses/full-07.webp';
+import full08 from '../assets/poses/full-08.webp';
 import portrait3 from '../assets/poses/portrait-03.webp';
 import portrait4 from '../assets/poses/portrait-04.webp';
 import portrait6 from '../assets/poses/portrait-06.webp';
@@ -18,6 +21,23 @@ const portraitCycle = await Promise.all(
   [portrait, portrait3, portrait4, portrait6].map(
     async (src) => (await getImage({ src, width: 340, format: 'webp' })).src,
   ),
+);
+// outfit icons beside the hero pose, like her official talent page (FULL-UPDATE-PLAN §A2): each official
+// pose at hero size (1× and 1.5×) plus a small round icon framed on her face
+const outfitList = await Promise.all(
+  [
+    { img: sailor, ja: 'セーラー私服', en: 'Casual sailor' },
+    { img: full01, ja: '初期衣装', en: 'Original maid' },
+    { img: full07, ja: '黒ジャケット', en: 'Black jacket' },
+    { img: full08, ja: '最後の新衣装', en: 'Final outfit' },
+  ].map(async (o) => {
+    const [x1, x15, icon] = await Promise.all([
+      getImage({ src: o.img, height: 560, format: 'webp' }),
+      getImage({ src: o.img, height: 840, format: 'webp' }),
+      getImage({ src: o.img, height: 240, format: 'webp' }),
+    ]);
+    return { ja: o.ja, en: o.en, srcset: `${x1.src} 1x, ${x15.src} 1.5x`, src: x1.src, icon: icon.src };
+  }),
 );
 const profile = (await getCollection('profile')).sort((a, b) => a.data.order - b.data.order);
 const lore = await getCollection('lore');
@@ -95,7 +115,7 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
   ]}
 >
   <Fragment slot="visual">
-    <div class="about-visual">
+    <div class="about-visual" data-outfits={JSON.stringify(outfitList)}>
       <Image
         src={sailor}
         alt="セーラー私服姿の湊あくあ / Aqua in her casual sailor outfit"
@@ -103,8 +123,24 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
         densities={[1, 1.5]}
         loading="eager"
         class="about-visual__pose"
+        data-outfit-pose
       />
       <Stamp text="MINATO AQUA ⚓ AQUA CREW ⚓ HOLOLIVE 2ND GEN ⚓ " size={120} class="about-visual__stamp" />
+      <div class="outfit-icons" role="radiogroup" aria-label="Outfit · 衣装">
+        {outfitList.map((o, i) => (
+          <button
+            type="button"
+            class="outfit-icon"
+            role="radio"
+            aria-checked={i === 0 ? 'true' : 'false'}
+            aria-label={`${o.ja} / ${o.en}`}
+            title={`${o.ja} · ${o.en}`}
+            data-outfit={i}
+          >
+            <img src={o.icon} alt="" width="56" height="56" loading="lazy" decoding="async" />
+          </button>
+        ))}
+      </div>
     </div>
   </Fragment>
 
@@ -322,6 +358,46 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
 
 <script>
   import { onPage } from '../lib/lifecycle';
+
+  // hero outfit icons: swap the pose (arrow keys move between icons, as in a radio group)
+  onPage(() => {
+    const box = document.querySelector<HTMLElement>('.about-visual[data-outfits]');
+    const pose = box?.querySelector<HTMLImageElement>('[data-outfit-pose]');
+    if (!box || !pose) return;
+    const list = JSON.parse(box.dataset.outfits!) as {
+      ja: string;
+      en: string;
+      src: string;
+      srcset: string;
+    }[];
+    const btns = Array.from(box.querySelectorAll<HTMLButtonElement>('[data-outfit]'));
+    const pick = (i: number, focus = false) => {
+      const o = list[i]!;
+      pose.srcset = o.srcset;
+      pose.src = o.src;
+      pose.alt = `${o.ja}の湊あくあ / Aqua: ${o.en}`;
+      btns.forEach((b, k) => {
+        b.setAttribute('aria-checked', String(k === i));
+        b.tabIndex = k === i ? 0 : -1;
+      });
+      if (focus) btns[i]!.focus();
+    };
+    btns.forEach((b, i) => {
+      b.tabIndex = i === 0 ? 0 : -1;
+      b.addEventListener('click', () => pick(i));
+      b.addEventListener('keydown', (e) => {
+        const d =
+          e.key === 'ArrowDown' || e.key === 'ArrowRight'
+            ? 1
+            : e.key === 'ArrowUp' || e.key === 'ArrowLeft'
+              ? -1
+              : 0;
+        if (!d) return;
+        e.preventDefault();
+        pick((i + d + btns.length) % btns.length, true);
+      });
+    });
+  });
 
   // ID card: hovering the photo cycles through her official portraits
   onPage(() => {
