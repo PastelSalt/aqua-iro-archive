@@ -119,7 +119,10 @@ test('every chapter shows its library icon, and the pill sits behind the current
 test('the pill slides to the new chapter on a page change (and not with Motion OFF)', async ({
   page,
   errors,
+  browserName,
 }) => {
+  // about the animation itself: WebKit runs with reduced motion (see playwright.config.ts)
+  test.skip(browserName === 'webkit', 'animation test; covered on Chromium');
   await page.setViewportSize({ width: 1366, height: 649 });
   await page.goto('/about');
   await hydrated(page);

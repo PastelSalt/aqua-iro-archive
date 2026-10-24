@@ -18,12 +18,13 @@ test('dock: number keys navigate, aria-current follows, prefs persist across pag
   await page.keyboard.press('2');
   await expect(page).toHaveURL(/\/about$/, { timeout: 15_000 });
   await expect(page.locator('html')).toHaveAttribute('data-lang', 'en');
-  // motion toggle
+  // motion toggle: flips whichever way it started (WebKit runs with reduced motion, so it starts off there)
+  const motion = (await page.locator('html').getAttribute('data-motion')) === 'on' ? 'off' : 'on';
   await page.keyboard.press('Alt+KeyM');
-  await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
+  await expect(page.locator('html')).toHaveAttribute('data-motion', motion);
   await page.reload();
   await hydrated(page);
-  await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
+  await expect(page.locator('html')).toHaveAttribute('data-motion', motion);
   void errors;
 });
 
