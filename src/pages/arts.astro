@@ -4,6 +4,7 @@ import { Image, Picture, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
 import { ART_SECTIONS } from '../content.config';
 import { dotDate } from '../lib/format';
 
@@ -56,6 +57,29 @@ const sections = await Promise.all(
   }),
 );
 let eager = 4;
+// the deep band (FULL-UPDATE-PLAN §A2): the featured pieces, oldest first, as a strip of prints
+const featured = all
+  .filter((a) => a.data.featured)
+  .sort((a, b) => (a.data.date ?? '').localeCompare(b.data.date ?? ''));
+const featuredLarge = await Promise.all(
+  featured.map(async (a) => ({
+    a,
+    href: (
+      await getImage({
+        src: a.data.image,
+        width: Math.round(
+          a.data.image.width * Math.min(1, 1600 / Math.max(a.data.image.width, a.data.image.height)),
+        ),
+        format: 'webp',
+        quality: 76,
+      })
+    ).src,
+  })),
+);
+// banners crop a wide strip out of each section's first piece: on tall (full-body) art aim near the
+// top, where the face is, instead of the torso (FULL-UPDATE-PLAN §A2)
+const bannerFocus = (img: { width: number; height: number }) =>
+  img.height > img.width * 1.2 ? '50% 10%' : '50% 30%';
 ---
 
 <Page
@@ -117,6 +141,49 @@ let eager = 4;
     </aside>
   </div>
 
+  <section class="section wrap band" aria-labelledby="featured-title">
+    <SectionTitle no="01" en="Featured" ja="えらびぬきの10枚" id="featured-title" />
+    <ol class="prints" role="list">
+      {featuredLarge.map(({ a, href }, i) => (
+        <li class="print" style={`--tilt:${[-1.5, 1, -0.5, 1.5, -1][i % 5]}deg`}>
+          <a
+            class="print__link"
+            href={href}
+            data-lb="image"
+            data-group="featured"
+            data-id={a.id}
+            data-alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
+            data-title={[a.data.title.ja, a.data.title.en].filter(Boolean).join(' / ')}
+            data-credit={`${a.data.artist} · ${a.data.credit}`}
+            data-source={a.data.source}
+            data-event="art_open"
+          >
+            <Image
+              src={a.data.image}
+              alt={`${a.data.alt.ja} / ${a.data.alt.en}`}
+              height={240}
+              densities={[1, 2]}
+              loading="lazy"
+            />
+          </a>
+          <span class="print__cap">
+            <b>
+              {a.data.title.ja && (
+                <span data-l="ja" lang="ja">
+                  {a.data.title.ja}
+                </span>
+              )}
+              <span data-l="en" lang="en">
+                {a.data.title.en ?? a.data.title.ja}
+              </span>
+            </b>
+            <span class="credit">{a.data.artist}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
   <div class="topbar-slot art-nav-slot">
     <nav class="art-nav" aria-label="Gallery sections" data-art-nav data-topbar>
       <ul role="list" data-topbar-primary>
@@ -146,6 +213,7 @@ let eager = 4;
               quality={55}
               loading="lazy"
               decoding="async"
+              style={`object-position:${bannerFocus(s.items[0].a.data.image)}`}
             />
           )}
           <h2 class="gallery__title" id={`h-${s.id}`}>

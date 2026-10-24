@@ -1333,6 +1333,66 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   padding: 0 6px;
 }
 
+/* Top 3 on the deep: #1 larger in the middle, #2 and #3 beside it (FULL-UPDATE-PLAN §A2) */
+.podium {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: clamp(16px, 2.4vw, 32px);
+  align-items: end;
+}
+.podium__item {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 8px 8px 14px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  box-shadow: var(--sh-card);
+}
+.podium__item--1 {
+  order: 2;
+}
+.podium__item--2 {
+  order: 1;
+  transform: rotate(-1.5deg);
+}
+.podium__item--3 {
+  order: 3;
+  transform: rotate(1.5deg);
+}
+.podium__link {
+  display: grid;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--navy);
+}
+.podium__link:hover .clip__th img {
+  transform: scale(1.04);
+}
+.podium__rank {
+  position: absolute;
+  top: -14px;
+  left: -10px;
+  z-index: 2;
+  font: 700 var(--step-1) / 1 var(--font-display);
+}
+.podium__item--1 .podium__rank {
+  font-size: var(--step-2);
+}
+.podium__title {
+  padding: 0 6px;
+  font: 700 var(--step-0) / 1.5 var(--font-jp-round);
+}
+@media (max-width: 760px) {
+  .podium {
+    grid-template-columns: 1fr;
+  }
+  .podium__item {
+    order: 0;
+  }
+}
+
 /* ================= No.03 Discography ================= */
 .record {
   position: relative;
@@ -1573,27 +1633,109 @@ html[data-motion='on'] .record__disc {
   height: 100%;
   object-fit: cover;
 }
+/* the originals rack on the deep: covers stand on a light shelf line and scroll sideways */
+.shelf {
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 132px;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 6px 4px 22px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.4) transparent;
+  background: linear-gradient(
+    transparent calc(100% - 64px),
+    rgb(255 255 255 / 0.18) calc(100% - 64px),
+    rgb(255 255 255 / 0.18) calc(100% - 61px),
+    transparent calc(100% - 61px)
+  );
+}
+.shelf__item {
+  scroll-snap-align: start;
+}
+.shelf__link {
+  display: grid;
+  gap: 6px;
+  text-decoration: none;
+  color: #fff;
+}
+.shelf__art {
+  aspect-ratio: 1;
+}
+.shelf__link:hover .shelf__art {
+  transform: translateY(-4px);
+}
+.shelf__art .jacket__gen .mincho {
+  font-size: var(--step--1);
+}
+.shelf__year {
+  font: 600 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.2em;
+  color: var(--pink-wash);
+}
+.shelf__title {
+  font: 700 var(--step--1) / 1.4 var(--font-jp-round);
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* a designed cover for songs without official art (FULL-UPDATE-PLAN §A2): the song's palette, a faint
+   seigaiha, a booklet frame, the artist line, the title in Mincho, the year and an anchor watermark */
 .jacket__gen {
   position: absolute;
   inset: 0;
   display: grid;
-  place-content: center;
+  grid-template-rows: auto 1fr auto;
   justify-items: center;
-  gap: 10px;
-  padding: 16px;
+  align-items: center;
+  padding: 14px 14px 12px;
   text-align: center;
   color: var(--navy);
+  background-image:
+    radial-gradient(circle at 50% 100%, transparent 9px, rgb(255 255 255 / 0.35) 10px 11px, transparent 12px),
+    radial-gradient(circle at 50% 100%, transparent 9px, rgb(255 255 255 / 0.35) 10px 11px, transparent 12px);
+  background-size: 28px 14px;
+  background-position:
+    0 0,
+    14px 7px;
+}
+.jacket__gen::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid rgb(255 255 255 / 0.75);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.jacket__gen-artist {
+  font: 600 var(--label-s) / 1 var(--font-display);
+  letter-spacing: 0.32em;
 }
 .jacket__gen .mincho {
+  position: relative;
+  z-index: 1;
   font-size: var(--step-1);
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
   writing-mode: horizontal-tb;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.jacket__gen-year {
+  font: 700 var(--step--1) / 1 var(--font-display);
+  letter-spacing: 0.2em;
 }
 .jacket__gen .icon {
-  width: 26px;
-  height: 30px;
-  opacity: 0.6;
+  position: absolute;
+  right: -6%;
+  bottom: -4%;
+  width: 46%;
+  height: 52%;
+  color: #fff;
+  opacity: 0.35;
 }
 .jacket__play {
   position: absolute;
@@ -2985,5 +3127,60 @@ html[data-motion='on'] .note.thunk {
     border-radius: 22px 22px 0 0;
     transform: none;
     padding-bottom: calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ================= Arts: featured prints on the deep (FULL-UPDATE-PLAN §A2) ================= */
+.prints {
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 26px;
+  overflow-x: auto;
+  padding: 14px 6px 22px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.4) transparent;
+}
+.print {
+  scroll-snap-align: start;
+  display: grid;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  box-shadow: var(--sh-card);
+  transform: rotate(var(--tilt));
+}
+.print__link {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--pink-wash);
+}
+.print__link img {
+  display: block;
+  height: 240px;
+  width: auto;
+  max-width: 360px;
+  object-fit: contain;
+  transition: transform var(--dur-3) var(--ease-float);
+}
+.print__link:hover img {
+  transform: scale(1.03);
+}
+.print__cap {
+  display: grid;
+  gap: 2px;
+  max-width: 260px;
+  font-size: var(--step--1);
+}
+.print__cap b {
+  font: 700 var(--step--1) / 1.4 var(--font-jp-round);
+}
+@media (max-width: 600px) {
+  .print__link img {
+    height: 180px;
   }
 }

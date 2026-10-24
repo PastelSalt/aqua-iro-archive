@@ -64,8 +64,70 @@ const hasDates = clips.every((c) => c.data.published);
     </div>
   </Fragment>
 
+  {/* the deep band (FULL-UPDATE-PLAN §A2): the three most-viewed clips, large */}
+  <section class="section wrap band" aria-labelledby="podium-title">
+    <SectionTitle no="01" en="Top 3" ja="いちばん見られた3本" id="podium-title" />
+    <ol class="podium" role="list">
+      {clips.slice(0, 3).map((c, i) => (
+        <li class={`podium__item podium__item--${i + 1}`}>
+          <a
+            class="podium__link"
+            href={`https://www.youtube.com/watch?v=${c.id}`}
+            data-lb="video"
+            data-yt={c.id}
+            data-title={c.data.title}
+            data-credit={`Clip by ${c.data.clipper}`}
+            data-event="clip_open"
+            data-id={c.id}
+            data-rank={c.data.rank}
+            aria-label={`Play: ${c.data.title} — clip by ${c.data.clipper}`}
+          >
+            <span class="clip__th">
+              <img
+                src={`https://i.ytimg.com/vi/${c.id}/hqdefault.jpg`}
+                alt=""
+                width="480"
+                height="360"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="strict-origin-when-cross-origin"
+              />
+              <span class="clip__play" aria-hidden="true">
+                <Icon name="play" />
+              </span>
+            </span>
+            <span class="podium__rank sticker" aria-hidden="true">
+              #{c.data.rank}
+            </span>
+            <span class="podium__title">{c.data.title}</span>
+          </a>
+          <span class="clip__meta">
+            <span class="clip__by">
+              <Icon name="heart" />{' '}
+              {c.data.clipperUrl ? (
+                <a href={c.data.clipperUrl} rel="noopener">
+                  {c.data.clipper}
+                </a>
+              ) : (
+                c.data.clipper
+              )}
+            </span>
+            <span class="num">
+              <span data-l="ja" lang="ja">
+                {compactJa(c.data.views)}回
+              </span>
+              <span data-l="en" lang="en">
+                {compactEn(c.data.views)} views
+              </span>
+            </span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
   <section class="section wrap" aria-labelledby="clips-title" data-clips>
-    <SectionTitle no="01" en="Most-viewed clips" ja="人気の切り抜き" id="clips-title" />
+    <SectionTitle no="02" en="Most-viewed clips" ja="人気の切り抜き" id="clips-title" />
     <div class="filterbar" role="group" aria-label="Filter clips">
       <div class="chips" role="radiogroup" aria-label="Tag">
         <button type="button" class="chip" role="radio" aria-checked="true" data-tag="all">

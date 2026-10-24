@@ -5,6 +5,7 @@ import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
 import AquaWait from '../components/ui/AquaWait.astro';
+import SectionTitle from '../components/ui/SectionTitle.astro';
 import { compactEn, compactJa, dotDate } from '../lib/format';
 import { searchForm } from '../lib/text/kana';
 
@@ -141,6 +142,51 @@ const bsides = (g: (typeof groups)[number]) => {
     </div>
   </Fragment>
 
+  {/* the deep band (FULL-UPDATE-PLAN §A2): her solo originals in release order, as a record rack */}
+  <section class="section wrap band" aria-labelledby="shelf-title">
+    <SectionTitle no="01" en="The originals" ja="あくあのオリジナル曲" id="shelf-title" />
+    <ol class="shelf" role="list">
+      {groups[0]!.songs.map((s) => {
+        const pal = PALETTES[hash(s.id) % PALETTES.length]!;
+        return (
+          <li class="shelf__item" style={`--j1:${pal[0]};--j2:${pal[1]}`}>
+            <a
+              class="shelf__link"
+              href={
+                s.data.youtube ? `https://www.youtube.com/watch?v=${s.data.youtube}` : (s.data.link ?? '#')
+              }
+              data-lb={s.data.youtube ? 'video' : undefined}
+              data-yt={s.data.youtube}
+              data-title={s.data.title}
+              data-credit={s.data.credits ? `${s.data.credits} · © COVER Corp.` : '© COVER Corp.'}
+              data-event="song_play"
+              data-id={s.id}
+            >
+              <span class="shelf__art jacket__art">
+                {s.data.jacket && jackets[s.data.jacket] ? (
+                  <Image src={jackets[s.data.jacket]!} alt="" width={150} densities={[1, 2]} loading="lazy" />
+                ) : (
+                  <span class="jacket__gen" aria-hidden="true">
+                    <span class="jacket__gen-artist">MINATO AQUA</span>
+                    <span class="mincho" lang="ja">
+                      {s.data.title}
+                    </span>
+                    <span class="jacket__gen-year num">{s.data.date.slice(0, 4)}</span>
+                    <Icon name="anchor" />
+                  </span>
+                )}
+              </span>
+              <span class="shelf__year num">{s.data.date.slice(0, 4)}</span>
+              <b class="shelf__title" lang="ja">
+                {s.data.title}
+              </b>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
   <section class="section wrap" aria-label="Songs" data-disco>
     <div class="topbar-slot">
       <div class="disco-bar" data-topbar>
@@ -253,10 +299,12 @@ const bsides = (g: (typeof groups)[number]) => {
                         />
                       ) : (
                         <span class="jacket__gen" aria-hidden="true">
+                          <span class="jacket__gen-artist">MINATO AQUA</span>
                           <span class="mincho" lang="ja">
                             {s.data.title}
                           </span>
-                          <Icon name="note" />
+                          <span class="jacket__gen-year num">{s.data.date.slice(0, 4)}</span>
+                          <Icon name="anchor" />
                         </span>
                       )}
                     </span>
