@@ -3,7 +3,7 @@ import { test, expect, hydrated } from './fixtures';
 test('Talk with Aqua: shows text without JS, then open → choose → reply', async ({ page, errors }) => {
   const talk = page.waitForResponse((r) => r.url().endsWith('/talk.json'));
   await page.goto('/');
-  await expect(page.locator('.dialog-box__text')).toContainText('おかえりなさいませ');
+  await expect(page.locator('.dialog-box__text')).toContainText('こんあくあ');
   await talk;
   await hydrated(page);
   await page.locator('[data-advance]').click();
