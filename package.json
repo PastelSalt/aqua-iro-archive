@@ -23,6 +23,7 @@
     "typecheck": "astro check",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:visual": "playwright test --project=visual-laptop --project=visual-phone",
     "contrast": "tsx scripts/contrast-check.ts",
     "budget": "tsx scripts/check-budget.ts"
   },

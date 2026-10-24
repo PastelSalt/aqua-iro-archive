@@ -4,8 +4,9 @@ import { createServer } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const base = new URL('../../', import.meta.url).pathname;
+const base = fileURLToPath(new URL('../../', import.meta.url)); // a path on Windows too (not '/C:/…')
 const root = existsSync(join(base, 'dist/client')) ? join(base, 'dist/client') : join(base, 'dist');
 const vercel = JSON.parse(readFileSync(join(base, 'vercel.json'), 'utf8'));
 const globalHeaders = Object.fromEntries(vercel.headers.find((h) => h.source === '/(.*)').headers.map((h) => [h.key, h.value]));

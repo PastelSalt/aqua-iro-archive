@@ -15,9 +15,30 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,
       },
+  // screenshots live beside the specs and aren't per-platform: the visual project only runs locally
+  snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{arg}{ext}',
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1600, height: 900 } } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'], viewport: { width: 1600, height: 900 } } },
-    { name: 'mobile', use: { ...devices['iPhone 13'] } },
+    {
+      name: 'chromium',
+      testIgnore: /visual\.spec/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1600, height: 900 } },
+    },
+    {
+      name: 'webkit',
+      testIgnore: /visual\.spec/,
+      use: { ...devices['Desktop Safari'], viewport: { width: 1600, height: 900 } },
+    },
+    { name: 'mobile', testIgnore: /visual\.spec/, use: { ...devices['iPhone 13'] } },
+    // npm run test:visual — the slow laptop's screen and a phone (FULL-UPDATE-PLAN §A3)
+    {
+      name: 'visual-laptop',
+      testMatch: /visual\.spec/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1366, height: 649 } },
+    },
+    {
+      name: 'visual-phone',
+      testMatch: /visual\.spec/,
+      use: { ...devices['Pixel 7'], viewport: { width: 375, height: 812 } },
+    },
   ],
 });
