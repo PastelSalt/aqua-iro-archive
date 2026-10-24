@@ -26,7 +26,14 @@ export default defineConfig({
     {
       name: 'webkit',
       testIgnore: /visual\.spec/,
-      use: { ...devices['Desktop Safari'], viewport: { width: 1600, height: 900 } },
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1600, height: 900 },
+        // Playwright's WebKit renders without a GPU: with every ambient animation running a page draws ~2
+        // frames a second, so nothing is ever "stable" enough to click. Reduced motion starts the site in
+        // Motion OFF (as for any visitor with that setting); Chromium covers the animated paths.
+        contextOptions: { reducedMotion: 'reduce' },
+      },
     },
     { name: 'mobile', testIgnore: /visual\.spec/, use: { ...devices['iPhone 13'] } },
     // npm run test:visual — the slow laptop's screen and a phone (FULL-UPDATE-PLAN §A3)
