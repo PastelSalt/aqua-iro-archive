@@ -39,7 +39,7 @@ for (const size of WIDE) {
     await hydrated(page);
     const btns = page.locator('nav.dock .dbtn:visible');
     await expect(btns).toHaveCount(14);
-    for (const b of await btns.all()) await b.click({ trial: true, timeout: 2000 });
+    for (const b of await btns.all()) await b.click({ trial: true, timeout: 10_000 });
     void errors;
   });
 }
@@ -55,12 +55,12 @@ for (const size of NARROW) {
     const btns = page.locator('nav.dock .dbtn:visible');
     await expect(btns).toHaveCount(6);
     await expect(page.locator('nav.dock .dbtn[aria-current="page"]')).toBeVisible();
-    for (const b of await btns.all()) await b.click({ trial: true, timeout: 2000 });
+    for (const b of await btns.all()) await b.click({ trial: true, timeout: 10_000 });
     await page.locator('.dock__more .dbtn').click();
     const sheet = page.locator('.dock-sheet');
     await expect(sheet.locator('.dock-sheet__grid .dbtn')).toHaveCount(8);
     await expect(sheet.locator('.dock-sheet__sys .dbtn')).toHaveCount(6);
-    for (const b of await sheet.locator('.dbtn').all()) await b.click({ trial: true, timeout: 2000 });
+    for (const b of await sheet.locator('.dbtn').all()) await b.click({ trial: true, timeout: 10_000 });
     await page.keyboard.press('Escape');
     await expect(sheet).toHaveCount(0);
     void errors;

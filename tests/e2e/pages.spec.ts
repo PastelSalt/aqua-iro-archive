@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect } from './fixtures';
+import { test, expect, hydrated } from './fixtures';
 
 const PAGES = [
   '/',
@@ -22,6 +22,16 @@ for (const path of PAGES) {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('nav.dock')).toBeVisible();
     await expect(page.locator('footer')).toContainText(/COVER/);
+    // axe reads colours as painted: let the islands hydrate and every finite fade-in end first
+    await hydrated(page);
+    await page.evaluate(() =>
+      Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity)
+          .map((a) => a.finished.catch(() => undefined)),
+      ),
+    );
     const axe = await new AxeBuilder({ page }).disableRules(['color-contrast-enhanced']).analyze();
     const serious = axe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
     expect(
