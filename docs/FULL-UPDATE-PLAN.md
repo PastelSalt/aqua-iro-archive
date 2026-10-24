@@ -147,6 +147,20 @@ All of it lands together, so no page is half old, half new.
 
 Estimated 6–8 days for Part A.
 
+**Progress (24 Oct 2026, branch `full-update`, not merged):**
+
+- Done: guard rails (`cover.spec`, the local screenshot record), the system (the deep, banner and content
+  cards, "Aqua talks", decoration and tilt rules, tokens), overlays (drawer tide edge, toast crest, deep
+  lightbox), a deep band on every chapter page (Home farewell, About lore, Clips Top 3, Discography originals
+  rack, Streaming records, Events collaborations, Arts featured prints, Messages board), designed covers,
+  Arts banners on faces, the Clips art swap, records on phones, Home hero clear of the dock, outfit icons
+  on About, Events thumbnails, the 404 line.
+- Not done yet: the Credits / Privacy in-page index; a styling pass over the dock, logo tab, BGM capsule,
+  tour and Aqua Time deck (they already use paper and navy, so they were reviewed but not changed).
+- Checks: build, type check, lint, contrast and JS budget pass; Chromium e2e passes (56 of 57, the keeper
+  check needs a deployment). The WebKit dock and Aqua Time e2e failures on `main` predate this branch
+  (first seen 21 Oct) and are tracked separately.
+
 ---
 
 ## Part B — Page switch and loading screen
