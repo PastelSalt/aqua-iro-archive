@@ -155,11 +155,11 @@ Estimated 6–8 days for Part A.
   rack, Streaming records, Events collaborations, Arts featured prints, Messages board), designed covers,
   Arts banners on faces, the Clips art swap, records on phones, Home hero clear of the dock, outfit icons
   on About, Events thumbnails, the 404 line.
-- Not done yet: the Credits / Privacy in-page index; a styling pass over the dock, logo tab, BGM capsule,
-  tour and Aqua Time deck (they already use paper and navy, so they were reviewed but not changed).
-- Checks: build, type check, lint, contrast and JS budget pass; Chromium e2e passes (56 of 57, the keeper
-  check needs a deployment). The WebKit dock and Aqua Time e2e failures on `main` predate this branch
-  (first seen 21 Oct) and are tracked separately.
+- Also done: the Credits / Privacy in-page index. The dock, logo tab, BGM capsule, tour and Aqua Time deck
+  already use paper and navy, so they were reviewed and left as they are.
+- Part B done (`e83d7c0`): the tide shutter, the three-beat loading screen with the VN title screen, and the
+  Moeko Works flower marks. Checked in Chromium (e2e, including a new title-screen test) and by eye at
+  1366×649 and 375 px; Motion ON animations were checked as forced frames.
 
 ---
 
