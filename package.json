@@ -68,6 +68,9 @@
     "yaml": "2.9.1"
   },
   "overrides": {
-    "path-to-regexp@<6.3.0": "6.3.0"
+    "path-to-regexp@<6.3.0": "6.3.0",
+    "@vercel/cli-config": {
+      "zod": "4.6.6"
+    }
   }
 }
