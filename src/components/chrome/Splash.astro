@@ -2,27 +2,27 @@
 /**
  * Loading screen, "出航準備" → title screen (FULL-UPDATE-PLAN §B2). Three beats:
  *  1. studio card — 「制作 Moeko Works」 with the flowers blooming in (~600 ms; first-ever visit only);
- *  2. the harbour — a softly blurred key visual, the deep rising from the bottom as the progress bar, the
- *     Moeko flower riding the waterline with the percentage, her pose hopping along the tide, NOW LOADING
- *     bobbing like buoys, and TIPS in the Talk box in her voice;
- *  3. a visual-novel title screen (first-ever visit only, or a tour replay): logo, her pose and a line,
- *     はじめから / つづきから / あくあ時間 / 設定, PRESS START, a version line and a copyright line.
- * Leaving, the deep surges over the screen and drains away like the page-switch shutter. Later sessions
- * get beat 2 only (1.6–3.2 s). Skip (▸▸, Esc) always works. html[data-splash=seen] hides it before paint.
- * Motion OFF: still frames, no studio beat. Lines are fan-written.
+ *  2. the harbour — her under-the-sea key visual, softly blurred; the logo, NOW LOADING bobbing like buoys,
+ *     a tide gauge with the Moeko flower riding the waterline and the percentage, and TIPS in the Talk box
+ *     in her voice, over a low band of the deep;
+ *  3. a visual-novel title screen (first-ever visit only, or a tour replay): the key visual comes into focus
+ *     with her on the right, the logo and はじめから / つづきから / あくあ時間 / 設定 on the left, and
+ *     PRESS START, a version line and a copyright line on the deep. Between 2 and 3 the tide comes in over
+ *     the screen and goes back out, like the page-switch shutter.
+ * Leaving, the deep surges over the screen and drains away. Later sessions get beat 2 only (1.6–3.2 s).
+ * Skip (▸▸, Esc) always works. html[data-splash=seen] hides it before paint. Motion OFF: still frames, no
+ * studio beat, no tide. Lines are fan-written.
  */
 import { Image, getImage } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import channel from '../../assets/logo/channel.png';
 import moekoworks from '../../assets/logo/moekoworks.png';
-import hopPose from '../../assets/poses/mmd-smile.webp';
-import titlePose from '../../assets/poses/full-08.webp';
 import MoekoFlower from '../ui/MoekoFlower.astro';
 import { PORTFOLIO } from '../../lib/site';
 
-const kvArt = (await getEntry('arts', 'kv-5th-fes'))?.data.image;
-const kv = kvArt ? await getImage({ src: kvArt, width: 960, format: 'webp', quality: 55 }) : null;
-const hop = await getImage({ src: hopPose, width: 120, format: 'webp' });
+// her alone, swimming with the fish: the harbour's sea, and the title screen's key visual
+const kvArt = (await getEntry('arts', 'music-indoor-kei'))?.data.image;
+const kv = kvArt ? await getImage({ src: kvArt, width: 1440, format: 'webp', quality: 60 }) : null;
 const TIPS = [
   { ja: 'あてぃしの初配信は2018年8月8日！', en: 'My very first stream was on 8 August 2018!' },
   { ja: '寄せ書きボードには、だれでも一枚貼れるよ', en: 'Anyone can pin a note on the message board!' },
@@ -55,7 +55,7 @@ const TIPS = [
   <!-- beat 2: the harbour -->
   <div class="splash__load">
     <div class="splash__brand">
-      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={240} densities={[1, 2]} loading="eager" />
+      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={320} densities={[1, 2]} loading="eager" />
       <small>AQUA IRO ARCHIVE</small>
     </div>
     <p class="splash__nowloading" aria-hidden="true">
@@ -63,6 +63,16 @@ const TIPS = [
         <span style={`--i:${i}`}>{c === ' ' ? ' ' : c}</span>
       ))}
     </p>
+    <!-- the tide gauge: the water is the progress, the flower rides its edge -->
+    <div class="splash__gauge" aria-hidden="true">
+      <i class="splash__gauge-water"></i>
+      <span class="splash__marker">
+        <MoekoFlower class="splash__marker-flower" />
+      </span>
+      <span class="splash__pct num" data-splash-pct>
+        0%
+      </span>
+    </div>
     <p class="sr-only">
       <span data-l="ja" lang="ja">
         出航準備中…
@@ -86,33 +96,17 @@ const TIPS = [
     </div>
   </div>
 
-  <!-- the deep: the sea level is the progress bar -->
+  <!-- the deep: a low band of sea; it comes in over the screen between beats and on leaving -->
   <div class="splash__sea" aria-hidden="true">
-    <img class="splash__hopper" src={hop.src} alt="" width="60" height="60" />
-    <span class="splash__marker">
-      <MoekoFlower class="splash__marker-flower" />
-      <span class="splash__pct num" data-splash-pct>
-        0%
-      </span>
-    </span>
     <MoekoFlower one class="splash__petal" />
   </div>
 
   <!-- beat 3: the title screen -->
   <div class="splash__title" role="dialog" aria-modal="true" aria-label="Aqua Iro Archive" hidden>
     <div class="splash__title-logo">
-      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={360} densities={[1, 2]} loading="lazy" />
+      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={400} densities={[1, 2]} loading="lazy" />
       <b>AQUA IRO ARCHIVE</b>
       <span lang="ja">あくあ色アーカイブ</span>
-    </div>
-    <div class="splash__title-aqua" aria-hidden="true">
-      <Image src={titlePose} alt="" height={300} densities={[1, 1.5]} loading="lazy" />
-      <p class="aqua-wait__bubble">
-        <span class="aqua-wait__name">
-          あくあ <span>AQUA</span>
-        </span>
-        こんあくあ〜！⚓
-      </p>
     </div>
     <nav class="splash__menu" aria-label="Title menu">
       <button type="button" data-menu="start">
@@ -291,8 +285,16 @@ const TIPS = [
       done = true;
       clearInterval(tick);
       set(100);
-      if (full) setTimeout(showTitle, motion() ? 280 : 0);
-      else setTimeout(() => leave(), motion() ? 280 : 0);
+      if (!full) return void setTimeout(() => leave(), motion() ? 280 : 0);
+      if (!motion()) return showTitle();
+      // the tide comes in over the harbour, and goes back out on the title screen
+      setTimeout(() => {
+        root.classList.add('is-tide');
+        setTimeout(() => {
+          showTitle();
+          root.classList.remove('is-tide');
+        }, 380);
+      }, 240);
     };
 
     // the sea follows elapsed time (towards 92% at MIN_MS), and jumps ahead as real work completes

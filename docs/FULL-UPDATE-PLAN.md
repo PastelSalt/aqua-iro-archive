@@ -160,6 +160,9 @@ Estimated 6–8 days for Part A.
 - Part B done (`e83d7c0`): the tide shutter, the three-beat loading screen with the VN title screen, and the
   Moeko Works flower marks. Checked in Chromium (e2e, including a new title-screen test) and by eye at
   1366×649 and 375 px; Motion ON animations were checked as forced frames.
+- Review after Part B: the loading screen got her solo key visual, a centred column with a tide gauge, a
+  tide between beats, and a title screen with her filling the right side; the shutter eyecatch dropped the
+  pose. Checked by eye at 1366×768 and 390×844.
 
 ---
 
@@ -172,10 +175,10 @@ specifically Aqua's.
 | Established pattern                                 | Where it comes from           | Aqua's version                                                                                        |
 | --------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
 | Studio card before the opening                      | Anime OPs, anime sites' intro | 「制作 Moeko Works」 card                                                                             |
-| Chibi "Now Loading"                                 | Uma Musume                    | Her `mmd-smile` pose hopping along the tide line                                                      |
+| A gauge with a rider                                | Uma Musume, gacha loaders     | A tide gauge, its water in her crest, with the Moeko flower riding the waterline                      |
 | Loading TIPS                                        | Gacha and console games       | TIPS in the Talk box, in her voice                                                                    |
 | Visual-novel title screen (はじめから / つづきから) | Galge and VN titles           | She loves galge and produced her own, _あくありうむ。_; this site already speaks in a VN dialogue box |
-| Mid-episode eyecatch                                | Anime                         | The chapter ticket with her pose peeking over it                                                      |
+| Mid-episode eyecatch                                | Anime                         | The chapter ticket, held a beat while bubbles rise                                                    |
 | Copyright line at the bottom of a title screen      | Every game title screen       | 「© COVER Corp. · fan site by Moeko Works ✿」                                                         |
 
 ### B1. Page switch ("tide shutter")
@@ -190,8 +193,8 @@ New:
   the same as today's panels.
 - **The ticket:** "No.06 / ARTS / アート" on a large banner card (A1), tilted, with washi tape in the
   chapter tint. That's the only place the chapter colour appears.
-- **Eyecatch (first visit per chapter, ≤ 700 ms, skippable):** the chapter's official pose peeks over the
-  ticket's edge and two or three bubbles rise.
+- **Eyecatch (first visit per chapter, ≤ 700 ms, skippable):** the ticket settles and two or three bubbles
+  rise. (A pose peeking over the ticket was tried and dropped on review: the type carries it alone.)
 - **Open (≤ 260 ms):** the waves drain up off the top, revealing the new page.
 - **In-page switches** (Discography tabs, LOG drawer tabs, Streaming's list / calendar toggle): a small
   tide, a 2 px wave line sweeping under the tab strip with a 120 ms cross-fade. No full-screen shutter.
@@ -207,13 +210,13 @@ production card before an anime opening.
 
 **Beat 2 — Loading (until the page is ready, 1.0–2.6 s).**
 
-- Behind everything, an official key visual fills the screen, softly blurred and slowly panning, the way
-  anime sites always lead with the key visual.
-- The deep rises from the bottom as progress: the sea level _is_ the progress bar. The percentage rides the
-  water as an odometer (the site's own `Odometer`), and the marker on the waterline is the Moeko flower,
-  slowly turning.
-- Her `mmd-smile` pose hops along the tide line (Uma Musume's chibi loader); 「NOW LOADING」 in display type
-  bobs letter by letter like buoys.
+- Behind everything, a key visual of her alone under the sea (the _Indoor-kei_ art, swimming with the fish)
+  fills the screen, softly blurred and slowly panning, the way anime sites always lead with the key visual.
+  (The 5th fes group visual was used first and dropped on review: she was one face among twenty.)
+- One centred column: the channel logo, 「NOW LOADING」 bobbing letter by letter like buoys, and a tide
+  gauge whose water rises in her crest with the Moeko flower riding the waterline and the percentage below.
+  The deep is a low band along the bottom.
+- (A hopping `mmd-smile` pose was tried and dropped on review: at that size it read as a figure lying down.)
 - A TIPS box in the Talk style, changing every ~1.2 s, with fan-written lines in her voice:
   「TIPS：あてぃしの初配信は2018年8月8日！」, 「TIPS：寄せ書きボードには、だれでも一枚貼れるよ」,
   「TIPS：下のTIMEボタンで、六年間のどの日にも行けるよ」. They teach the site while it loads.
@@ -221,12 +224,16 @@ production card before an anime opening.
 
 **Beat 3 — Title screen (first-ever visit only).** A visual-novel title screen, as in the galge she loves:
 
-- The key visual comes into focus. The channel logo with 「AQUA IRO ARCHIVE / あくあ色アーカイブ」 sits large,
-  with her pose beside it and a Talk bubble: 「こんあくあ〜！⚓」.
+- Between the beats the tide comes in over the screen and goes back out. The key visual comes into focus and
+  moves right, so she fills the right side; the channel logo with 「AQUA IRO ARCHIVE / あくあ色アーカイブ」 sits
+  large on the left, on the paper. (A separate small pose with a Talk bubble was tried and dropped: next to
+  the key visual it was a second, smaller Aqua.)
 - A menu in VN style: **はじめから** (start, enters Home), **つづきから** (only when she's been here before:
   goes back to the last chapter visited), **あくあ時間** (opens Aqua Time), **設定** (Motion, JP/EN, and
   「BGMをつけて出航」, which starts the official-YouTube BGM from that click, so it is never autoplay).
-- 「PRESS START / クリックで出航」 blinks under the menu; a click anywhere or Enter means はじめから.
+- The menu rows are game-style: the selected one gets a crest band and a ⚓ cursor, and はじめから is selected
+  when the screen opens.
+- 「PRESS START / クリックで出航」 blinks on the deep; a click anywhere or Enter means はじめから.
 - Bottom corners, like every game title screen: a version line, 「ver. 2018.08.08 – 2024.08.28」 (her
   active years), and the copyright line 「© COVER Corp. · fan site by Moeko Works ✿」.
 - Leaving: the deep surges over the screen and drains away exactly like the page-switch shutter, so the
@@ -236,8 +243,8 @@ production card before an anime opening.
 today), straight into the tide exit, no title screen. Skip (▸▸, Esc) always works. Replaying the tour from
 HELP replays the full version.
 
-**Motion OFF.** One still frame: the key visual, the logo, her pose, the title menu, the TIPS line and a
-static sea level. No studio-card beat, no hopping, no blur pan.
+**Motion OFF.** Still frames: the key visual, the logo, the gauge, the TIPS line and the sea band, then the
+title menu. No studio-card beat, no tide, no blur pan.
 
 **Accessibility.** The title screen is a modal dialog with focus on はじめから and a focus trap; the loading
 beat keeps `role=status`; the menu works by keyboard.

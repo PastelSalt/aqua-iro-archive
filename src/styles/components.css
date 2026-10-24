@@ -1506,8 +1506,9 @@ html[data-motion='on'] .bgm.is-playing .bgm__disc {
 }
 
 /* ================= Loading screen (Splash.astro, FULL-UPDATE-PLAN §B2) =================
-   Beats by [data-beat]: studio → load → title. The deep (.splash__sea) is the progress bar: its level is
-   --p (0–1). Leaving, it surges over the screen and drains up, like the page-switch shutter. */
+   Beats by [data-beat]: studio → load → title. --p (0–1) is the progress, shown on the tide gauge. The deep
+   (.splash__sea) is a low band; it comes in over the screen between beats (.is-tide) and on leaving
+   (.is-surge → .is-drain), like the page-switch shutter. */
 .splash {
   position: fixed;
   inset: 0;
@@ -1531,13 +1532,14 @@ html[data-splash='seen'] .splash {
     transform: translateY(14px) scale(0.97);
   }
 }
-/* the key visual behind everything, softly blurred while loading, nearly in focus on the title screen */
+/* the key visual: her under the sea. Blurred and washed while loading; in focus on the title screen, where
+   she takes the right side and a paper wash keeps the left side readable for the logo and menu. */
 .splash__kv {
   position: absolute;
   inset: -4%;
-  background: center / cover no-repeat;
-  filter: blur(7px) saturate(1.1);
-  opacity: 0.5;
+  background: 62% 30% / cover no-repeat;
+  filter: blur(10px) saturate(1.15);
+  opacity: 0.55;
   transition:
     filter 600ms var(--ease-float),
     opacity 600ms var(--ease-float);
@@ -1546,21 +1548,33 @@ html[data-motion='on'] .splash__kv {
   animation: ken-burns 18s var(--ease-float) infinite alternate;
 }
 .splash[data-beat='title'] .splash__kv {
-  filter: blur(3px) saturate(1.15);
-  opacity: 0.7;
+  /* she moves to the right; the paper of the splash shows through on the left */
+  inset: -4% -4% -4% 26%;
+  filter: none;
+  opacity: 1;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 34%);
+  mask-image: linear-gradient(90deg, transparent, #000 34%);
 }
 .splash__kv::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(255 251 254 / 0.55), rgb(255 251 254 / 0.15) 55%, transparent);
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 42%,
+    rgb(255 251 254 / 0.7),
+    rgb(255 251 254 / 0.25) 70%
+  );
+  transition: opacity 600ms var(--ease-float);
+}
+.splash[data-beat='title'] .splash__kv::after {
+  opacity: 0;
 }
 
 /* beat 1: the studio card */
 .splash__studio {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   display: none;
   place-items: center;
   background: var(--paper);
@@ -1608,16 +1622,16 @@ html[data-motion='on'] .splash__bloom {
   animation: bloom 520ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-/* beat 2: the harbour */
+/* beat 2: the harbour — one centred column: logo, NOW LOADING, the tide gauge; TIPS just above the deep */
 .splash__load {
   position: absolute;
-  inset: 0;
+  inset: 0 0 var(--splash-band) 0;
   z-index: 2;
-  display: grid;
-  align-content: start;
-  justify-items: center;
-  gap: 16px;
-  padding: clamp(56px, 12vh, 120px) 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding: 72px 20px 22px;
   text-align: center;
 }
 .splash[data-beat='title'] .splash__load,
@@ -1625,26 +1639,25 @@ html[data-motion='on'] .splash__bloom {
   display: none;
 }
 .splash__brand {
+  margin-top: auto;
   display: grid;
   justify-items: center;
-  gap: 8px;
-  padding: 18px 26px 14px;
-  border-radius: var(--r-card);
-  background: rgb(255 251 254 / 0.92);
-  box-shadow: var(--sh-2);
+  gap: 10px;
+  filter: drop-shadow(0 6px 18px rgb(255 251 254 / 0.9));
 }
 .splash__brand img {
-  width: min(240px, 60vw);
+  width: min(320px, 72vw);
   height: auto;
 }
 .splash__brand small {
-  font: 600 11px/1 var(--font-display);
-  letter-spacing: 0.34em;
+  font: 700 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.42em;
   color: var(--pink-ink);
 }
 .splash__nowloading {
+  margin: 6px 0 0;
   font: 700 var(--step-1) / 1 var(--font-display);
-  letter-spacing: 0.24em;
+  letter-spacing: 0.3em;
   color: var(--navy);
 }
 .splash__nowloading span {
@@ -1660,21 +1673,74 @@ html[data-motion='on'] .splash__nowloading span {
   animation: buoy 1.4s var(--ease-float) infinite;
   animation-delay: calc(var(--i) * 90ms);
 }
+/* the gauge: a paper track, the water rising left → right in Aqua's crest with a wave on its edge */
+.splash__gauge {
+  position: relative;
+  margin-bottom: auto;
+  width: min(440px, 78vw);
+  height: 14px;
+  border-radius: 999px;
+  background: rgb(255 251 254 / 0.9);
+  box-shadow:
+    inset 0 0 0 2px rgb(255 255 255 / 0.9),
+    var(--sh-1);
+}
+.splash__gauge-water {
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  background: var(--crest);
+  clip-path: inset(0 calc(100% - var(--p) * 100%) 0 0 round 999px);
+  transition: clip-path 260ms var(--ease-tide);
+}
+.splash__marker {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--p) * 100%);
+  translate: -50% -50%;
+  transition: left 260ms var(--ease-tide);
+}
+.splash__marker-flower {
+  display: block;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 2px 3px rgb(59 69 131 / 0.3));
+}
+@keyframes splash-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+html[data-motion='on'] .splash__marker-flower {
+  animation: splash-spin 6s linear infinite;
+}
+.splash__pct {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  font: 700 var(--step-0) / 1 var(--font-display);
+  letter-spacing: 0.16em;
+  color: var(--navy);
+}
 .splash__tips {
-  max-width: min(460px, calc(100vw - 40px));
+  max-width: min(480px, calc(100vw - 40px));
   text-align: left;
 }
 
-/* the deep: rises from the bottom as loading completes (to 45% of the screen), sits low on the title */
+/* the deep: a low band (--splash-band). Between beats the tide comes in over everything and goes back out;
+   leaving, it surges over and drains up off the top. */
+.splash {
+  --splash-band: clamp(64px, 13vh, 120px);
+}
 .splash__sea {
   position: absolute;
   left: 0;
   right: 0;
   bottom: -40px;
-  z-index: 1;
+  z-index: 3;
   height: calc(100% + 80px);
-  transform: translateY(calc(100% - var(--p) * 45% - 40px));
-  transition: transform 260ms var(--ease-tide);
+  transform: translateY(calc(100% - var(--splash-band) - 40px));
+  transition: transform 340ms var(--ease-tide);
   background:
     radial-gradient(
         circle at 50% 100%,
@@ -1699,15 +1765,24 @@ html[data-motion='on'] .splash__nowloading span {
       top left / 240px 32px repeat-x,
     linear-gradient(#000, #000) bottom / 100% calc(100% - 31px) no-repeat;
 }
+@keyframes sea-sway {
+  50% {
+    background-position:
+      30px 0,
+      0 0,
+      0 0;
+  }
+}
+html[data-motion='on'] .splash__sea {
+  animation: sea-sway 5s var(--ease-float) infinite;
+}
 .splash[data-beat='studio'] .splash__sea {
   transform: translateY(100%);
 }
-.splash[data-beat='title'] .splash__sea {
-  transform: translateY(calc(100% - 22% - 40px));
-}
+.splash.is-tide .splash__sea,
 .splash.is-surge .splash__sea {
   transform: translateY(-40px);
-  transition-duration: 300ms;
+  transition-duration: 340ms;
 }
 .splash.is-drain .splash__sea {
   transform: translateY(-120%);
@@ -1723,60 +1798,10 @@ html[data-motion='on'] .splash__nowloading span {
 .splash.is-drain .splash__kv {
   opacity: 0;
 }
-/* her pose hops along the waterline (Uma Musume's chibi loader); the flower rides it with the percentage */
-.splash__hopper {
-  position: absolute;
-  top: -30px;
-  left: 6%;
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-}
-@keyframes hop-along {
-  to {
-    left: calc(88% - 60px);
-  }
-}
-@keyframes hop {
-  50% {
-    translate: 0 -14px;
-  }
-}
-html[data-motion='on'] .splash[data-beat='load'] .splash__hopper {
-  animation:
-    hop-along 3.2s linear infinite alternate,
-    hop 420ms var(--ease-float) infinite;
-}
-.splash[data-beat='title'] .splash__hopper {
-  display: none;
-}
-.splash__marker {
-  position: absolute;
-  top: 34px;
-  right: 6%;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #fff;
-}
-.splash__marker-flower {
-  width: 28px;
-  height: 28px;
-}
-html[data-motion='on'] .splash__marker-flower {
-  animation: spin 6s linear infinite;
-}
-.splash__pct {
-  font: 700 var(--step-0) / 1 var(--font-display);
-  letter-spacing: 0.16em;
-}
-.splash[data-beat='title'] .splash__marker {
-  display: none;
-}
 .splash__petal {
   position: absolute;
-  top: 70px;
-  left: 34%;
+  top: 46px;
+  left: 30%;
   width: 18px;
   height: 18px;
   opacity: 0.9;
@@ -1795,43 +1820,36 @@ html[data-motion='on'] .splash__petal {
   animation: petal-drift 7s var(--ease-float) infinite alternate;
 }
 
-/* beat 3: the visual-novel title screen */
+/* beat 3: the visual-novel title screen — her on the right (the key visual), the logo and the menu on the
+   left, PRESS START and the small print on the deep */
 .splash__title {
   position: absolute;
-  inset: 0;
-  z-index: 2;
+  inset: 0 0 var(--splash-band) 0;
+  z-index: 4;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-  grid-template-areas:
-    'logo aqua'
-    'menu aqua'
-    'press press';
   align-content: center;
-  align-items: center;
-  gap: 14px clamp(16px, 4vw, 64px);
-  padding: 40px clamp(20px, 8vw, 120px) 22vh;
+  justify-items: start;
+  gap: clamp(18px, 4vh, 36px);
+  padding: 40px clamp(20px, 7vw, 112px) 24px;
 }
 .splash__title[hidden] {
   display: none;
 }
-html[data-motion='on'] .splash__title {
-  animation: splash-rise 500ms var(--ease-float) backwards;
+html[data-motion='on'] .splash__title > * {
+  animation: splash-rise 520ms var(--ease-float) backwards;
+}
+html[data-motion='on'] .splash__title > :nth-child(2) {
+  animation-delay: 120ms;
 }
 .splash__title-logo {
-  grid-area: logo;
-  justify-self: start;
   display: grid;
   justify-items: start;
-  gap: 8px;
-  margin-bottom: 10px;
-  padding: 18px 26px 16px;
-  border-radius: var(--r-card);
-  background: rgb(255 251 254 / 0.88);
-  box-shadow: var(--sh-2);
+  gap: 10px;
 }
 .splash__title-logo img {
-  width: min(340px, 66vw);
+  width: min(400px, 62vw);
   height: auto;
+  filter: drop-shadow(0 6px 16px rgb(255 251 254 / 0.9));
 }
 .splash__title-logo b {
   font: 700 var(--step-2) / 1 var(--font-display);
@@ -1840,99 +1858,124 @@ html[data-motion='on'] .splash__title {
 }
 .splash__title-logo span {
   font: 700 var(--step-0) / 1 var(--font-jp-serif);
-  letter-spacing: 0.4em;
+  letter-spacing: 0.5em;
   color: var(--pink-ink);
 }
-.splash__title-aqua {
-  grid-area: aqua;
-  position: relative;
-  justify-self: center;
-}
-.splash__title-aqua img {
-  height: min(52vh, 300px);
-  width: auto;
-  filter: drop-shadow(0 14px 24px rgb(59 69 131 / 0.25));
-}
-.splash__title-aqua .aqua-wait__bubble {
-  position: absolute;
-  left: -40%;
-  top: 18%;
-  white-space: nowrap;
-}
+/* the menu: game-style rows; the selected one (focused, or under the pointer) gets a crest band and the ⚓
+   cursor. はじめから is selected when the screen opens, as on a game's title screen. */
 .splash__menu {
-  grid-area: menu;
   display: grid;
   justify-items: start;
-  gap: 8px;
+  gap: 4px;
+  min-width: min(300px, 100%);
 }
 .splash__menu button {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: baseline;
-  gap: 10px;
-  min-width: 220px;
-  padding: 9px 18px 9px 30px;
-  border-radius: 999px;
-  background: rgb(255 251 254 / 0.9);
-  box-shadow: var(--sh-1);
+  gap: 12px;
+  width: 100%;
+  padding: 10px 22px 10px 40px;
   color: var(--navy);
-  font: 700 var(--step-0) / 1.2 var(--font-jp-round);
+  font: 700 var(--step-1) / 1.15 var(--font-jp-round);
+  letter-spacing: 0.08em;
   text-align: left;
-  position: relative;
+  transition:
+    translate var(--dur-2) var(--ease-float),
+    color var(--dur-2);
 }
 .splash__menu button small {
-  font: 600 var(--label-s) / 1 var(--font-display);
-  letter-spacing: 0.2em;
+  font: 700 var(--label-s) / 1 var(--font-display);
+  letter-spacing: 0.24em;
   color: var(--pink-ink);
 }
-/* the VN cursor */
-.splash__menu button::before {
-  content: '▶';
+.splash__menu button::after {
+  content: '';
   position: absolute;
-  left: 12px;
-  font-size: 10px;
+  inset: 2px 0;
+  z-index: -1;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgb(255 251 254 / 0.95), rgb(255 251 254 / 0.6));
+  box-shadow: var(--sh-1);
+  transform: skewX(-12deg);
+  transition:
+    background var(--dur-2),
+    box-shadow var(--dur-2);
+}
+.splash__menu button::before {
+  content: '⚓';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  translate: -6px -50%;
+  font-size: 16px;
   color: var(--aqua-pink-deep);
   opacity: 0;
+  transition:
+    opacity var(--dur-1),
+    translate var(--dur-2) var(--ease-float);
 }
-.splash__menu button:is(:hover, :focus-visible)::before {
-  opacity: 1;
+.splash__menu button:is(:hover, :focus) {
+  translate: 8px 0;
+  color: #fff;
 }
-.splash__menu button:is(:hover, :focus-visible) {
-  background: var(--paper);
+.splash__menu button:is(:hover, :focus) small {
+  color: rgb(255 255 255 / 0.85);
+}
+.splash__menu button:is(:hover, :focus)::after {
+  background: var(--crest);
   box-shadow: var(--sh-2);
+}
+.splash__menu button:is(:hover, :focus)::before {
+  opacity: 1;
+  translate: 0 -50%;
+  color: #fff;
+}
+.splash__menu button:focus-visible {
+  outline: none;
+}
+.splash__menu button:focus-visible::after {
+  outline: 3px solid var(--navy);
+  outline-offset: 2px;
 }
 .splash__config {
   display: grid;
-  gap: 6px;
-  padding-left: 22px;
+  gap: 2px;
+  width: 100%;
+  padding-left: 28px;
 }
 .splash__config[hidden] {
   display: none;
 }
 .splash__config button {
-  min-width: 200px;
-  font-size: var(--step--1);
+  font-size: var(--step-0);
 }
+/* PRESS START and the small print sit on the deep */
 .splash__press {
-  grid-area: press;
-  justify-self: center;
-  margin-top: 6px;
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--splash-band) * -0.5 - 1px);
+  translate: -50% 50%;
+  margin: 0;
+  white-space: nowrap;
   font: 700 var(--step-0) / 1 var(--font-display);
-  letter-spacing: 0.3em;
-  color: var(--navy);
+  letter-spacing: 0.32em;
+  color: #fff;
+  text-shadow: 0 0 12px rgb(255 255 255 / 0.45);
 }
 @keyframes press-blink {
   50% {
-    opacity: 0.25;
+    opacity: 0.3;
   }
 }
 html[data-motion='on'] .splash__press {
   animation: press-blink 1.6s var(--ease-float) infinite;
 }
-/* the title screen's corners: a version line and a copyright line, on the sea */
 .splash__ver,
 .splash__copy {
   position: absolute;
-  bottom: 16px;
+  bottom: calc(var(--splash-band) * -1 + 14px);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1950,16 +1993,18 @@ html[data-motion='on'] .splash__press {
   width: 18px;
   height: 18px;
 }
+/* the corners: the studio credit and Skip, kept clear of the deep */
 .splash__by {
   position: absolute;
   left: 18px;
-  bottom: 16px;
-  z-index: 3;
+  top: 16px;
+  z-index: 5;
   display: grid;
   gap: 4px;
   padding: 8px 12px;
   border-radius: 14px;
   background: rgb(255 251 254 / 0.92);
+  box-shadow: var(--sh-1);
   text-decoration: none;
 }
 .splash[data-beat='title'] .splash__by,
@@ -1973,41 +2018,82 @@ html[data-motion='on'] .splash__press {
   color: var(--ink-soft);
 }
 .splash__by img {
-  height: 34px;
+  height: 30px;
   width: auto;
 }
 .splash__skip {
   position: absolute;
   right: 20px;
-  bottom: 20px;
-  z-index: 3;
+  top: 18px;
+  z-index: 5;
 }
+/* the title screen has its own way out (any menu row, a click, Esc) */
 .splash[data-beat='title'] .splash__skip {
-  bottom: auto;
-  top: 20px;
+  display: none;
 }
 @media (max-width: 760px) {
+  .splash__kv {
+    background-position: 58% center;
+  }
+  .splash[data-beat='title'] .splash__kv {
+    inset: -4%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .splash[data-beat='title'] .splash__kv::after {
+    opacity: 1;
+    background: linear-gradient(
+      180deg,
+      rgb(255 251 254 / 0.92) 0%,
+      rgb(255 251 254 / 0.55) 24%,
+      transparent 40%,
+      transparent 52%,
+      rgb(255 251 254 / 0.7) 70%,
+      rgb(255 251 254 / 0.9) 100%
+    );
+  }
   .splash__title {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'aqua' 'logo' 'menu' 'press';
+    align-content: space-between;
     justify-items: center;
-    padding: 64px 20px 20vh;
-    gap: 10px;
+    padding: 28px 20px 18px;
   }
-  .splash__title-logo,
+  .splash__title-logo {
+    justify-items: center;
+    text-align: center;
+  }
+  .splash__title-logo b {
+    font-size: var(--step-1);
+  }
   .splash__menu {
-    justify-items: center;
+    justify-items: stretch;
+    width: min(320px, 100%);
   }
-  .splash__title-aqua img {
-    height: 26vh;
+  .splash__menu button {
+    font-size: var(--step-0);
+    padding-block: 9px;
   }
-  .splash__title-aqua .aqua-wait__bubble {
-    left: 70%;
-    top: 8%;
+  .splash__press {
+    font-size: var(--step--1);
+    letter-spacing: 0.22em;
+    bottom: calc(var(--splash-band) * -0.5 + 8px);
   }
   .splash__ver {
     display: none;
   }
+  .splash__copy {
+    right: 50%;
+    translate: 50% 0;
+    bottom: calc(var(--splash-band) * -1 + 10px);
+    white-space: nowrap;
+    font-size: var(--label-s);
+  }
+  .splash__by img {
+    height: 24px;
+  }
+}
+/* nothing scrolls under the loading screen */
+html:not([data-splash='seen']):has(.splash) {
+  overflow: hidden;
 }
 
 /* ================= Doodles / decorative motifs ================= */
