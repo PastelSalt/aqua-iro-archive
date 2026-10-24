@@ -2326,8 +2326,24 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
 .ev__card {
   display: block;
   background: var(--paper);
-  border-radius: 18px;
+  border-radius: var(--r-card);
   box-shadow: var(--sh-1);
+}
+.ev__card.ev__card--thumb summary {
+  grid-template-columns: 56px auto 1fr auto;
+  grid-template-areas: 'thumb date type more' 'thumb title title title';
+}
+.ev__thumb {
+  grid-area: thumb;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: 50% 15%; /* official art: toward the face */
+  background: var(--pink-wash);
+}
+.ev__thumb--video {
+  object-position: 50% 50%;
 }
 .ev__card summary,
 .ev__card--plain {

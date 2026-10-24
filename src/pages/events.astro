@@ -108,8 +108,32 @@ const expandable = (e: (typeof events)[number]) =>
                 .map((e, i) => {
                   const t = TYPE[e.data.type]!;
                   const v = e.data.visual ? visuals[e.data.visual] : undefined;
+                  // a small thumbnail on entries that have an official visual or video (FULL-UPDATE-PLAN §A2)
+                  const thumb = v ? (
+                    <Image
+                      src={v.image}
+                      alt=""
+                      width={112}
+                      height={112}
+                      fit="cover"
+                      loading="lazy"
+                      class="ev__thumb"
+                    />
+                  ) : e.data.youtube ? (
+                    <img
+                      src={`https://i.ytimg.com/vi/${e.data.youtube}/mqdefault.jpg`}
+                      alt=""
+                      width="112"
+                      height="63"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      class="ev__thumb ev__thumb--video"
+                    />
+                  ) : null;
                   const body = (
                     <>
+                      {thumb}
                       <span class="ev__date num">
                         {e.data.dateLabel ? dotDate(e.data.dateLabel) : dotDate(e.data.date)}
                       </span>
@@ -138,7 +162,10 @@ const expandable = (e: (typeof events)[number]) =>
                     <li class={`ev ev--${i % 2 ? 'r' : 'l'} ev--${e.data.type}`} data-buoy>
                       <span class="ev__dot" aria-hidden="true" />
                       {expandable(e) ? (
-                        <details class="ev__card" data-event-id={e.id}>
+                        <details
+                          class:list={['ev__card', { 'ev__card--thumb': !!thumb }]}
+                          data-event-id={e.id}
+                        >
                           <summary>
                             {body}
                             <span class="ev__more" aria-hidden="true">
