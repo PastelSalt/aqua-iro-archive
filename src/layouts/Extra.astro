@@ -18,7 +18,10 @@ const { title, label, description, noindex } = Astro.props;
 const body = await Astro.slots.render('default');
 const index = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => ({
   id: m[1]!,
-  text: m[2]!.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
+  text: m[2]!
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim(),
 }));
 ---
 
