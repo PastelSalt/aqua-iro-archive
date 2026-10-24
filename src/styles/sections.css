@@ -627,10 +627,11 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
     height: max(100dvh, 560px);
     grid-template-rows: minmax(0, 1fr);
     padding-top: clamp(96px, 16vh, 140px);
-    padding-bottom: calc(var(--dock-reserve) - 4px);
+    /* the Talk box's "fan-written" note must clear the dock (FULL-UPDATE-PLAN §A2) */
+    padding-bottom: calc(var(--dock-reserve) + 10px);
   }
   .hero-circle {
-    width: min(36vw, 640px, calc(100dvh - 220px));
+    width: min(36vw, 640px, calc(100dvh - 236px));
     margin-top: -56px;
   }
   .home-hero__dialog {
@@ -1918,6 +1919,37 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   font-size: var(--step--1);
   color: var(--ink-soft);
 }
+/* phones: the records become a compact two-column grid instead of 12 tall cards (FULL-UPDATE-PLAN §A2) */
+@media (max-width: 600px) {
+  .trophies {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 12px;
+  }
+  .trophy {
+    padding: 14px 12px 12px;
+  }
+  .trophy__badge {
+    right: -6px;
+    top: -10px;
+    width: 32px;
+    height: 32px;
+  }
+  .trophy__title {
+    font-size: var(--step--2);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .trophy__fig {
+    font-size: var(--step--2);
+  }
+  .trophy__label {
+    padding-right: 18px; /* clear of the badge */
+    letter-spacing: 0.06em;
+    overflow-wrap: anywhere;
+  }
+}
 .stream-controls {
   display: grid;
   gap: 12px;
@@ -3183,4 +3215,9 @@ html[data-motion='on'] .note.thunk {
   .print__link img {
     height: 180px;
   }
+}
+
+/* 404: her line in the Talk style, under the title (FULL-UPDATE-PLAN §A2) */
+.lost__talk {
+  margin: var(--s-5) 0 var(--s-5);
 }

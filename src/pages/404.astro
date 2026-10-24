@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
 import Seam from '../components/ui/Seam.astro';
+import AquaWait from '../components/ui/AquaWait.astro';
 import pose from '../assets/poses/portrait-06.webp';
 import { SITE_NAME } from '../lib/site';
 ---
@@ -54,14 +55,13 @@ import { SITE_NAME } from '../lib/site';
       <p class="lost__en" lang="en">
         Lost at sea
       </p>
-      <p class="muted">
-        <span data-l="ja" lang="ja">
-          お探しのページは見つかりませんでした。港に戻りましょう。
-        </span>
-        <span data-l="en" lang="en">
-          We couldn't find that page. Let's head back to the harbor.
-        </span>
-      </p>
+      <div class="lost__talk">
+        <AquaWait
+          pose={false}
+          ja="あれ……このページ、見つからないや。スゥー……いっしょに港に戻ろ！"
+          en="Huh... this page isn't here. *sharp breath*... let's head back to the harbor together!"
+        />
+      </div>
       <a class="btn btn--primary buoy-btn" href="/" data-buoy-btn>
         <span class="buoy-btn__ring" aria-hidden="true"></span>
         <span data-l="ja" lang="ja">

@@ -1,17 +1,19 @@
 ---
 /**
- * "Aqua says" for loading, empty and error states (VISUAL-REFINEMENT-PLAN §7b): the small pose from
- * --pose-wait plus a fan-written line in her voice. Islands and scripts build the same markup by hand.
+ * "Aqua talks", compact (FULL-UPDATE-PLAN §A1): the Talk dialogue box at a smaller size with a fan-written
+ * line in her voice, for loading, empty and error states. The small pose comes from --pose-wait; pages that
+ * already show her large (the 404) pass pose={false}. Islands and scripts build the same markup by hand.
  */
 interface Props {
   ja: string;
   en: string;
+  pose?: boolean;
 }
-const { ja, en } = Astro.props;
+const { ja, en, pose = true } = Astro.props;
 ---
 
 <div class="aqua-wait">
-  <span class="aqua-wait__pose" aria-hidden="true"></span>
+  {pose && <span class="aqua-wait__pose" aria-hidden="true" />}
   <p class="aqua-wait__bubble">
     <span class="aqua-wait__name" aria-hidden="true">
       あくあ <span>AQUA</span>

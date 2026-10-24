@@ -31,11 +31,11 @@ export const CHAPTER_ART: Record<ChapterId, ChapterArt> = {
     focus: 'center 15%',
   },
   clips: {
-    kv: 'anniv-2020-birthday-gaou',
+    kv: 'anniv-600k',
     rail: 'anniversary',
     pose: 'mmd-smile',
     railTitle: 'みんなが残してくれた名場面',
-    focus: 'center top',
+    focus: 'center 14%',
   },
   discography: {
     kv: 'music-aqua-iro-palette',
