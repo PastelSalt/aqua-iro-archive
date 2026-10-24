@@ -65,6 +65,26 @@ function holdSkippable(sh: HTMLElement): Promise<void> {
   });
 }
 
+// Motion OFF: page changes cut straight across, so Astro's native view transition is pure cost — its snapshot
+// of the old page takes seconds on GPU-less WebKit. Run the swap without one; Motion ON is untouched.
+const nativeVT = document.startViewTransition?.bind(document);
+if (nativeVT)
+  document.startViewTransition = ((arg?: Parameters<typeof nativeVT>[0]) => {
+    if (motionOn()) return nativeVT(arg);
+    const update = typeof arg === 'function' ? arg : arg?.update;
+    const done = Promise.resolve()
+      .then(() => update?.())
+      .then(() => undefined);
+    const settled = done.catch(() => undefined);
+    return {
+      updateCallbackDone: done,
+      ready: settled,
+      finished: settled,
+      skipTransition() {},
+      types: new Set<string>(),
+    } as unknown as ViewTransition;
+  }) as typeof document.startViewTransition;
+
 document.addEventListener('astro:before-preparation', (ev) => {
   const e = ev as TransitionBeforePreparationEvent;
   const sh = el();
