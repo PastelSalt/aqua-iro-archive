@@ -302,7 +302,9 @@ html[data-motion='on'].time-snap .timedeck__screen {
   gap: 10px;
   padding: 16px 16px 12px;
   border-radius: 20px;
-  background: var(--paper);
+  background:
+    var(--crest) top / 100% 4px no-repeat,
+    var(--paper);
   box-shadow: var(--sh-3);
   color: var(--navy);
   font-size: var(--step--1);

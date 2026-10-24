@@ -742,13 +742,28 @@ html[data-motion='on'] .marquee__track {
   transform: translateX(105%);
   visibility: hidden;
   transition:
-    transform var(--dur-2) var(--ease-float),
+    transform var(--dur-2) var(--ease-tide),
     visibility 0s linear var(--dur-2);
 }
 .drawer.is-open {
   transform: none;
   visibility: visible;
-  transition: transform var(--dur-2) var(--ease-float);
+  transition: transform var(--dur-2) var(--ease-tide);
+}
+/* the tide edge (FULL-UPDATE-PLAN §A1): a wavy crest ribbon along the drawer's open side */
+.drawer::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 34px;
+  bottom: 34px;
+  width: 12px;
+  background: linear-gradient(180deg, var(--aqua-pink), #c9a6ec, var(--aqua-cyan));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 60'%3E%3Cpath d='M12 0H6Q0 15 6 30T6 60H12Z'/%3E%3C/svg%3E")
+    0 0 / 12px 60px repeat-y;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 60'%3E%3Cpath d='M12 0H6Q0 15 6 30T6 60H12Z'/%3E%3C/svg%3E")
+    0 0 / 12px 60px repeat-y;
+  pointer-events: none;
 }
 .drawer__head {
   display: flex;
@@ -1049,7 +1064,8 @@ html[data-motion='on'] .tour__card {
   overflow: hidden;
 }
 .lightbox::backdrop {
-  background: rgb(201 240 238 / 0.62);
+  /* art is viewed over the deep (FULL-UPDATE-PLAN §A1) */
+  background: rgb(44 52 104 / 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
