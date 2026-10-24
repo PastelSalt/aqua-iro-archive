@@ -606,7 +606,9 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   animation: sign-draw 1.4s cubic-bezier(0.6, 0, 0.3, 1) backwards;
 }
 
-/* ================= Chapter-change shutter (shutter.ts) ================= */
+/* ================= The tide shutter (shutter.ts, FULL-UPDATE-PLAN §B1) =================
+   The deep in motion: two wave layers rise from the bottom (front one later, carrying the crest), the ticket
+   lands on them, and on the new page both drain up off the top. Transform-only. */
 .shutter {
   position: fixed;
   inset: 0;
@@ -615,7 +617,11 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   view-transition-name: shutter;
   pointer-events: none;
   visibility: hidden;
+  overflow: hidden;
   --shutter-tint: var(--lavender);
+  --shutter-ms: 180ms; /* + the 40 ms stagger between the waves = 220 ms in */
+  --wave-top: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 0 60 16T120 16T180 16T240 16V32H0Z'/%3E%3C/svg%3E");
+  --wave-bottom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 32 60 16T120 16T180 16T240 16V0H0Z'/%3E%3C/svg%3E");
 }
 .shutter.is-closing,
 .shutter.is-holding,
@@ -626,33 +632,71 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   pointer-events: auto; /* a click skips the eyecatch */
   cursor: pointer;
 }
-.shutter__panel {
+.shutter.is-opening {
+  --shutter-ms: 220ms; /* + 40 ms stagger = 260 ms out */
+}
+.shutter__wave {
   position: absolute;
-  inset: -10%;
-  background: var(--shutter-tint);
-  transition: transform var(--shutter-ms, 180ms) cubic-bezier(0.7, 0, 0.3, 1);
+  left: 0;
+  right: 0;
+  top: -40px;
+  bottom: -40px;
+  transform: translateY(110%);
+  transition: transform var(--shutter-ms) var(--ease-tide);
+  -webkit-mask:
+    var(--wave-top) top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 62px) no-repeat,
+    var(--wave-bottom) bottom left / 240px 32px repeat-x;
+  mask:
+    var(--wave-top) top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 62px) no-repeat,
+    var(--wave-bottom) bottom left / 240px 32px repeat-x;
 }
-.shutter__panel--a {
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  transform: translate(-100%, -100%);
+.shutter__wave--back {
+  background: var(--deep-low);
+  -webkit-mask-position:
+    60px 0,
+    center,
+    60px 100%;
+  mask-position:
+    60px 0,
+    center,
+    60px 100%;
 }
-.shutter__panel--b {
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  transform: translate(100%, 100%);
-  background: color-mix(in srgb, var(--shutter-tint) 75%, var(--navy));
+.shutter__wave--front {
+  transition-delay: 40ms;
+  background:
+    radial-gradient(
+        circle at 50% 100%,
+        transparent 14px,
+        rgb(255 255 255 / 0.07) 15px,
+        rgb(255 255 255 / 0.07) 17px,
+        transparent 18px,
+        transparent 24px,
+        rgb(255 255 255 / 0.07) 25px,
+        rgb(255 255 255 / 0.07) 27px,
+        transparent 28px
+      )
+      0 0 / 60px 30px,
+    linear-gradient(180deg, transparent 14px, var(--deep) 40px) 0 0 / 100% 100%,
+    var(--crest);
 }
-.shutter.is-closing .shutter__panel,
-.shutter.is-holding .shutter__panel {
+.shutter.is-closing .shutter__wave,
+.shutter.is-holding .shutter__wave {
   transform: none;
 }
-.shutter.is-opening .shutter__panel {
-  --shutter-ms: 240ms;
+.shutter.is-opening .shutter__wave {
+  transform: translateY(-110%);
 }
-.shutter.is-opening .shutter__panel--a {
-  transform: translate(-100%, -100%);
+.shutter.is-opening .shutter__wave--front {
+  transition-delay: 0ms;
 }
-.shutter.is-opening .shutter__panel--b {
-  transform: translate(100%, 100%);
+.shutter.is-opening .shutter__wave--back {
+  transition-delay: 40ms;
+}
+/* back to the start while hidden, without animating */
+.shutter:not(.is-closing, .is-holding, .is-opening) .shutter__wave {
+  transition: none;
 }
 .shutter__card {
   position: absolute;
@@ -660,58 +704,183 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 6px;
-  color: #fff;
-  text-shadow: 0 2px 0 rgb(59 69 131 / 0.35);
+  gap: 14px;
   opacity: 0;
   transition: opacity 120ms;
 }
 .shutter.is-closing .shutter__card,
 .shutter.is-holding .shutter__card {
   opacity: 1;
-  transition-delay: 90ms;
+  transition-delay: 110ms;
+}
+/* the ticket: a large banner card (A1), tilted, taped in the chapter tint */
+.shutter__ticket {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 26px clamp(28px, 5vw, 56px) 22px;
+  border-radius: var(--r-card);
+  border-left: 6px solid var(--shutter-tint);
+  background: var(--paper);
+  box-shadow: var(--sh-3);
+  color: var(--navy);
+  transform: rotate(-3deg);
+}
+.shutter__tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 96px;
+  height: 22px;
+  translate: -50% 0;
+  rotate: 4deg;
+  opacity: 0.9;
+  background: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--shutter-tint) 85%, #fff) 0 6px,
+    color-mix(in srgb, var(--shutter-tint) 55%, #fff) 6px 12px
+  );
 }
 .shutter__no {
   font: 700 var(--step-0) / 1 var(--font-display);
   letter-spacing: 0.3em;
+  color: var(--pink-ink);
 }
 .shutter__en {
-  font: 700 clamp(3rem, 2rem + 6vw, 7rem) / 0.9 var(--font-display);
+  font: 700 clamp(2.4rem, 1.6rem + 4vw, 5rem) / 0.95 var(--font-display);
   letter-spacing: 0.02em;
 }
 .shutter__ja {
   font: 700 var(--step-1) / 1.2 var(--font-jp-round);
   letter-spacing: 0.3em;
+  color: var(--ink-soft);
 }
+/* the Moeko Works flower as a studio stamp on the ticket's corner (FULL-UPDATE-PLAN §B3) */
+.shutter__seal {
+  position: absolute;
+  right: -16px;
+  top: -18px;
+  width: 44px;
+  height: 44px;
+  rotate: 12deg;
+  filter: drop-shadow(0 3px 4px rgb(59 69 131 / 0.25));
+}
+/* eyecatch: her pose peeks over the ticket's top edge, from behind it */
 .shutter__pose {
   display: none;
-  height: min(40vh, 300px);
+  position: absolute;
+  z-index: -1;
+  bottom: calc(100% - 26px);
+  left: 50%;
+  height: min(34vh, 260px);
   width: auto;
-  filter: drop-shadow(0 12px 24px rgb(59 69 131 / 0.3));
+  translate: -50% 0;
+  filter: drop-shadow(0 10px 18px rgb(20 24 60 / 0.35));
 }
 .shutter.is-eyecatch .shutter__pose {
   display: block;
 }
-.shutter__skip {
-  display: none;
-  margin-top: 10px;
-  font: 600 var(--label-s) / 1 var(--font-display);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.shutter.is-holding .shutter__skip {
-  display: block;
-}
-@keyframes eyecatch-pop {
+@keyframes eyecatch-peek {
   from {
-    scale: 0.7;
-    rotate: -6deg;
+    translate: -50% 40%;
     opacity: 0;
   }
 }
 .shutter.is-holding .shutter__pose {
-  animation: eyecatch-pop 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: eyecatch-peek 340ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.shutter__bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.shutter__bubbles i {
+  position: absolute;
+  bottom: 18%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgb(255 255 255 / 0.7);
+  background: radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.6), transparent 60%);
+  opacity: 0;
+}
+.shutter__bubbles i:nth-child(1) {
+  left: 28%;
+}
+.shutter__bubbles i:nth-child(2) {
+  left: 70%;
+  width: 12px;
+  height: 12px;
+}
+.shutter__bubbles i:nth-child(3) {
+  left: 60%;
+  width: 22px;
+  height: 22px;
+}
+/* once per session one bubble is the Moeko Works flower (FULL-UPDATE-PLAN §B3) */
+.shutter__bubble--flower {
+  display: none;
+  border: 0 !important;
+  background: none !important;
+}
+.shutter__bubble--flower svg {
+  width: 100%;
+  height: 100%;
+}
+.shutter.has-flower .shutter__bubble--flower {
+  display: block;
+}
+@keyframes eyecatch-bubble {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-46vh) scale(1);
+  }
+}
+.shutter.is-holding .shutter__bubbles i {
+  animation: eyecatch-bubble 900ms var(--ease-float) forwards;
+}
+.shutter.is-holding .shutter__bubbles i:nth-child(2) {
+  animation-delay: 120ms;
+}
+.shutter.is-holding .shutter__bubbles i:nth-child(3) {
+  animation-delay: 220ms;
+}
+.shutter__skip {
+  display: none;
+  margin-top: 6px;
+  font: 600 var(--label-s) / 1 var(--font-display);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--on-deep);
+}
+.shutter.is-holding .shutter__skip {
+  display: block;
+}
+/* the production credit, as on an anime eyecatch */
+.shutter__credit {
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  display: none;
+  font: 500 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.12em;
+  color: var(--on-deep);
+  opacity: 0.85;
+}
+.shutter__credit b {
+  font-weight: 700;
+  color: #fff;
+}
+.shutter.is-holding .shutter__credit {
+  display: block;
 }
 
 ::view-transition-group(shutter),

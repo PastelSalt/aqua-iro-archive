@@ -113,8 +113,45 @@ test('first-visit tour walks through the controls, and HELP replays it after a r
   // the replay shows the loading screen again even though it was seen this session
   // (without a replay the splash removes itself at once on a session that has already seen it)
   await expect(page.locator('[data-splash-root]')).toBeAttached();
+  // a replay is the full version, so it ends on the title screen: はじめから starts the tour
+  await page.getByRole('button', { name: /はじめから/ }).click({ timeout: 10_000 });
   await expect(page.locator('.tour__card')).toBeVisible({ timeout: 10_000 });
   await page.keyboard.press('Escape');
   await expect(page.locator('.tour')).toHaveCount(0);
+  void errors;
+});
+
+test('first-ever visit ends on the title screen: keyboard start, つづきから, Esc', async ({
+  page,
+  errors,
+}) => {
+  // a first-ever visit: no title flag, no splash this session (FULL-UPDATE-PLAN §B2)
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('aia:test.init')) return;
+    sessionStorage.setItem('aia:test.init', '1');
+    localStorage.setItem('aia:prefs', JSON.stringify({ lang: 'ja', motion: 'off' }));
+    localStorage.removeItem('aia:title');
+    localStorage.setItem('aia:last', JSON.stringify('/events'));
+    sessionStorage.removeItem('aia:splash');
+  });
+  await page.goto('/');
+  const title = page.getByRole('dialog', { name: 'Aqua Iro Archive' });
+  await expect(title).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByRole('button', { name: /はじめから/ })).toBeFocused();
+  // つづきから goes back to the last chapter visited
+  await page.getByRole('button', { name: /つづきから/ }).click();
+  await expect(page).toHaveURL(/\/events$/, { timeout: 15_000 });
+  // the swapped-in page carries the splash markup too, hidden by html[data-splash=seen]
+  await expect(page.locator('[data-splash-root]')).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem('aia:title'))).toBe('"1"');
+  // replaying shows it again; Esc starts
+  await page.evaluate(() => {
+    sessionStorage.removeItem('aia:splash');
+    sessionStorage.setItem('aia:replay', '1');
+  });
+  await page.reload();
+  await expect(title).toBeVisible({ timeout: 10_000 });
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-splash-root]')).toHaveCount(0, { timeout: 5000 });
   void errors;
 });

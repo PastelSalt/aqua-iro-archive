@@ -1505,16 +1505,18 @@ html[data-motion='on'] .bgm.is-playing .bgm__disc {
   pointer-events: none;
 }
 
-/* ================= Splash ================= */
+/* ================= Loading screen (Splash.astro, FULL-UPDATE-PLAN §B2) =================
+   Beats by [data-beat]: studio → load → title. The deep (.splash__sea) is the progress bar: its level is
+   --p (0–1). Leaving, it surges over the screen and drains up, like the page-switch shutter. */
 .splash {
   position: fixed;
   inset: 0;
   z-index: var(--z-splash);
-  display: grid;
-  place-items: center;
+  overflow: hidden;
   background: var(--paper);
   background-image: var(--wash);
   transition: opacity var(--dur-3) var(--ease-float);
+  --p: 0;
 }
 html[data-splash='seen'] .splash {
   display: none;
@@ -1523,22 +1525,113 @@ html[data-splash='seen'] .splash {
   opacity: 0;
   pointer-events: none;
 }
-.splash__inner {
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}
+/* the key visual behind everything, softly blurred while loading, nearly in focus on the title screen */
+.splash__kv {
+  position: absolute;
+  inset: -4%;
+  background: center / cover no-repeat;
+  filter: blur(7px) saturate(1.1);
+  opacity: 0.5;
+  transition:
+    filter 600ms var(--ease-float),
+    opacity 600ms var(--ease-float);
+}
+html[data-motion='on'] .splash__kv {
+  animation: ken-burns 18s var(--ease-float) infinite alternate;
+}
+.splash[data-beat='title'] .splash__kv {
+  filter: blur(3px) saturate(1.15);
+  opacity: 0.7;
+}
+.splash__kv::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(255 251 254 / 0.55), rgb(255 251 254 / 0.15) 55%, transparent);
+}
+
+/* beat 1: the studio card */
+.splash__studio {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: none;
+  place-items: center;
+  background: var(--paper);
+  background-image: var(--wash);
+}
+.splash[data-beat='studio'] .splash__studio {
+  display: grid;
+}
+.splash__studio-card {
+  position: relative;
   display: grid;
   justify-items: center;
-  gap: 14px;
+  gap: 10px;
+  padding: 28px 40px 22px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  box-shadow: var(--sh-2);
+  animation: splash-rise 420ms var(--ease-float) backwards;
+}
+.splash__studio-card img {
+  height: 56px;
+  width: auto;
+}
+.splash__studio-card small {
+  font: 600 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--pink-ink);
+}
+.splash__bloom {
+  position: absolute;
+  top: -30px;
+  left: -26px;
+  width: 64px;
+  height: 64px;
+}
+@keyframes bloom {
+  from {
+    scale: 0.2;
+    rotate: -120deg;
+    opacity: 0;
+  }
+}
+html[data-motion='on'] .splash__bloom {
+  animation: bloom 520ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* beat 2: the harbour */
+.splash__load {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 16px;
+  padding: clamp(56px, 12vh, 120px) 20px 0;
   text-align: center;
 }
-/* the logo tab from the top-left corner, as a card */
+.splash[data-beat='title'] .splash__load,
+.splash[data-beat='studio'] .splash__load {
+  display: none;
+}
 .splash__brand {
   display: grid;
   justify-items: center;
   gap: 8px;
   padding: 18px 26px 14px;
-  margin-bottom: 6px;
-  border-radius: 26px;
+  border-radius: var(--r-card);
   background: rgb(255 251 254 / 0.92);
-  box-shadow: 0 14px 34px rgb(59 69 131 / 0.14);
+  box-shadow: var(--sh-2);
 }
 .splash__brand img {
   width: min(240px, 60vw);
@@ -1549,74 +1642,372 @@ html[data-splash='seen'] .splash {
   letter-spacing: 0.34em;
   color: var(--pink-ink);
 }
-html[data-motion='on'] .splash__brand {
-  animation: splash-rise 700ms var(--ease-float) backwards;
+.splash__nowloading {
+  font: 700 var(--step-1) / 1 var(--font-display);
+  letter-spacing: 0.24em;
+  color: var(--navy);
 }
-@keyframes splash-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.97);
+.splash__nowloading span {
+  display: inline-block;
+  white-space: pre;
+}
+@keyframes buoy {
+  50% {
+    translate: 0 -6px;
   }
 }
-.splash__anchor {
-  width: 40px;
-  height: 46px;
+html[data-motion='on'] .splash__nowloading span {
+  animation: buoy 1.4s var(--ease-float) infinite;
+  animation-delay: calc(var(--i) * 90ms);
+}
+.splash__tips {
+  max-width: min(460px, calc(100vw - 40px));
+  text-align: left;
+}
+
+/* the deep: rises from the bottom as loading completes (to 45% of the screen), sits low on the title */
+.splash__sea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -40px;
+  z-index: 1;
+  height: calc(100% + 80px);
+  transform: translateY(calc(100% - var(--p) * 45% - 40px));
+  transition: transform 260ms var(--ease-tide);
+  background:
+    radial-gradient(
+        circle at 50% 100%,
+        transparent 14px,
+        rgb(255 255 255 / 0.07) 15px,
+        rgb(255 255 255 / 0.07) 17px,
+        transparent 18px,
+        transparent 24px,
+        rgb(255 255 255 / 0.07) 25px,
+        rgb(255 255 255 / 0.07) 27px,
+        transparent 28px
+      )
+      0 0 / 60px 30px,
+    linear-gradient(180deg, transparent 14px, var(--deep) 40px) 0 0 / 100% 100%,
+    var(--crest);
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 0 60 16T120 16T180 16T240 16V32H0Z'/%3E%3C/svg%3E")
+      top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) bottom / 100% calc(100% - 31px) no-repeat;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 0 60 16T120 16T180 16T240 16V32H0Z'/%3E%3C/svg%3E")
+      top left / 240px 32px repeat-x,
+    linear-gradient(#000, #000) bottom / 100% calc(100% - 31px) no-repeat;
+}
+.splash[data-beat='studio'] .splash__sea {
+  transform: translateY(100%);
+}
+.splash[data-beat='title'] .splash__sea {
+  transform: translateY(calc(100% - 22% - 40px));
+}
+.splash.is-surge .splash__sea {
+  transform: translateY(-40px);
+  transition-duration: 300ms;
+}
+.splash.is-drain .splash__sea {
+  transform: translateY(-120%);
+  transition-duration: 300ms;
+}
+.splash.is-surge :is(.splash__load, .splash__title, .splash__by, .splash__skip) {
+  opacity: 0;
+  transition: opacity 160ms;
+}
+.splash.is-drain {
+  background: transparent;
+}
+.splash.is-drain .splash__kv {
+  opacity: 0;
+}
+/* her pose hops along the waterline (Uma Musume's chibi loader); the flower rides it with the percentage */
+.splash__hopper {
+  position: absolute;
+  top: -30px;
+  left: 6%;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+@keyframes hop-along {
+  to {
+    left: calc(88% - 60px);
+  }
+}
+@keyframes hop {
+  50% {
+    translate: 0 -14px;
+  }
+}
+html[data-motion='on'] .splash[data-beat='load'] .splash__hopper {
+  animation:
+    hop-along 3.2s linear infinite alternate,
+    hop 420ms var(--ease-float) infinite;
+}
+.splash[data-beat='title'] .splash__hopper {
+  display: none;
+}
+.splash__marker {
+  position: absolute;
+  top: 34px;
+  right: 6%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+.splash__marker-flower {
+  width: 28px;
+  height: 28px;
+}
+html[data-motion='on'] .splash__marker-flower {
+  animation: spin 6s linear infinite;
+}
+.splash__pct {
+  font: 700 var(--step-0) / 1 var(--font-display);
+  letter-spacing: 0.16em;
+}
+.splash[data-beat='title'] .splash__marker {
+  display: none;
+}
+.splash__petal {
+  position: absolute;
+  top: 70px;
+  left: 34%;
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+}
+@keyframes petal-drift {
+  50% {
+    translate: 40px 10px;
+    rotate: 90deg;
+  }
+  100% {
+    translate: 90px 0;
+    rotate: 180deg;
+  }
+}
+html[data-motion='on'] .splash__petal {
+  animation: petal-drift 7s var(--ease-float) infinite alternate;
+}
+
+/* beat 3: the visual-novel title screen */
+.splash__title {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  grid-template-areas:
+    'logo aqua'
+    'menu aqua'
+    'press press';
+  align-content: center;
+  align-items: center;
+  gap: 14px clamp(16px, 4vw, 64px);
+  padding: 40px clamp(20px, 8vw, 120px) 22vh;
+}
+.splash__title[hidden] {
+  display: none;
+}
+html[data-motion='on'] .splash__title {
+  animation: splash-rise 500ms var(--ease-float) backwards;
+}
+.splash__title-logo {
+  grid-area: logo;
+  justify-self: start;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 18px 26px 16px;
+  border-radius: var(--r-card);
+  background: rgb(255 251 254 / 0.88);
+  box-shadow: var(--sh-2);
+}
+.splash__title-logo img {
+  width: min(340px, 66vw);
+  height: auto;
+}
+.splash__title-logo b {
+  font: 700 var(--step-2) / 1 var(--font-display);
+  letter-spacing: 0.3em;
   color: var(--navy);
+}
+.splash__title-logo span {
+  font: 700 var(--step-0) / 1 var(--font-jp-serif);
+  letter-spacing: 0.4em;
+  color: var(--pink-ink);
+}
+.splash__title-aqua {
+  grid-area: aqua;
+  position: relative;
+  justify-self: center;
+}
+.splash__title-aqua img {
+  height: min(52vh, 300px);
+  width: auto;
+  filter: drop-shadow(0 14px 24px rgb(59 69 131 / 0.25));
+}
+.splash__title-aqua .aqua-wait__bubble {
+  position: absolute;
+  left: -40%;
+  top: 18%;
+  white-space: nowrap;
+}
+.splash__menu {
+  grid-area: menu;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+.splash__menu button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 220px;
+  padding: 9px 18px 9px 30px;
+  border-radius: 999px;
+  background: rgb(255 251 254 / 0.9);
+  box-shadow: var(--sh-1);
+  color: var(--navy);
+  font: 700 var(--step-0) / 1.2 var(--font-jp-round);
+  text-align: left;
+  position: relative;
+}
+.splash__menu button small {
+  font: 600 var(--label-s) / 1 var(--font-display);
+  letter-spacing: 0.2em;
+  color: var(--pink-ink);
+}
+/* the VN cursor */
+.splash__menu button::before {
+  content: '▶';
+  position: absolute;
+  left: 12px;
+  font-size: 10px;
+  color: var(--aqua-pink-deep);
+  opacity: 0;
+}
+.splash__menu button:is(:hover, :focus-visible)::before {
+  opacity: 1;
+}
+.splash__menu button:is(:hover, :focus-visible) {
+  background: var(--paper);
+  box-shadow: var(--sh-2);
+}
+.splash__config {
+  display: grid;
+  gap: 6px;
+  padding-left: 22px;
+}
+.splash__config[hidden] {
+  display: none;
+}
+.splash__config button {
+  min-width: 200px;
+  font-size: var(--step--1);
+}
+.splash__press {
+  grid-area: press;
+  justify-self: center;
+  margin-top: 6px;
+  font: 700 var(--step-0) / 1 var(--font-display);
+  letter-spacing: 0.3em;
+  color: var(--navy);
+}
+@keyframes press-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+html[data-motion='on'] .splash__press {
+  animation: press-blink 1.6s var(--ease-float) infinite;
+}
+/* the title screen's corners: a version line and a copyright line, on the sea */
+.splash__ver,
+.splash__copy {
+  position: absolute;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 var(--label-m) / 1 var(--font-display);
+  letter-spacing: 0.14em;
+  color: var(--on-deep);
+}
+.splash__ver {
+  left: 20px;
+}
+.splash__copy {
+  right: 20px;
+}
+.splash__copy-flower {
+  width: 18px;
+  height: 18px;
 }
 .splash__by {
   position: absolute;
-  left: 22px;
-  bottom: 18px;
+  left: 18px;
+  bottom: 16px;
+  z-index: 3;
   display: grid;
   gap: 4px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: rgb(255 251 254 / 0.92);
   text-decoration: none;
-  opacity: 0.9;
+}
+.splash[data-beat='title'] .splash__by,
+.splash[data-beat='studio'] .splash__by {
+  display: none;
 }
 .splash__by small {
-  font: 600 var(--label-s)/1 var(--font-display);
+  font: 600 var(--label-s) / 1 var(--font-display);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
 .splash__by img {
-  height: 38px;
+  height: 34px;
   width: auto;
-}
-.splash__by:hover {
-  opacity: 1;
-}
-html[data-motion='on'] .splash__anchor {
-  animation: drop 1.4s var(--ease-float) backwards;
-}
-.splash__water {
-  position: relative;
-  width: 180px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--lav-line);
-  overflow: hidden;
-}
-.splash__water i {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--p, 0%);
-  background: linear-gradient(90deg, var(--aqua-cyan), var(--aqua-pink));
-  border-radius: inherit;
-  transition: width 200ms linear;
-}
-.splash__pct {
-  font: 600 var(--step--1) / 1 var(--font-display);
-  letter-spacing: 0.2em;
 }
 .splash__skip {
   position: absolute;
   right: 20px;
   bottom: 20px;
+  z-index: 3;
 }
-.splash__fine {
-  font: 500 var(--step--2) / 1.4 var(--font-display);
-  color: var(--ink-soft);
-  letter-spacing: 0.06em;
+.splash[data-beat='title'] .splash__skip {
+  bottom: auto;
+  top: 20px;
+}
+@media (max-width: 760px) {
+  .splash__title {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'aqua' 'logo' 'menu' 'press';
+    justify-items: center;
+    padding: 64px 20px 20vh;
+    gap: 10px;
+  }
+  .splash__title-logo,
+  .splash__menu {
+    justify-items: center;
+  }
+  .splash__title-aqua img {
+    height: 26vh;
+  }
+  .splash__title-aqua .aqua-wait__bubble {
+    left: 70%;
+    top: 8%;
+  }
+  .splash__ver {
+    display: none;
+  }
 }
 
 /* ================= Doodles / decorative motifs ================= */

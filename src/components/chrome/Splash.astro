@@ -1,24 +1,69 @@
 ---
 /**
- * "Setting sail…" splash (EXECUTIONPLAN §7.5). Once per browser session, and again when the tour is
- * replayed from HELP (html[data-splash=seen] hides it before paint). A separate fixed layer (opacity only)
- * so the page and the LCP hero render underneath. Shows for 1.6–3.2 s; Skip is focusable.
+ * Loading screen, "出航準備" → title screen (FULL-UPDATE-PLAN §B2). Three beats:
+ *  1. studio card — 「制作 Moeko Works」 with the flowers blooming in (~600 ms; first-ever visit only);
+ *  2. the harbour — a softly blurred key visual, the deep rising from the bottom as the progress bar, the
+ *     Moeko flower riding the waterline with the percentage, her pose hopping along the tide, NOW LOADING
+ *     bobbing like buoys, and TIPS in the Talk box in her voice;
+ *  3. a visual-novel title screen (first-ever visit only, or a tour replay): logo, her pose and a line,
+ *     はじめから / つづきから / あくあ時間 / 設定, PRESS START, a version line and a copyright line.
+ * Leaving, the deep surges over the screen and drains away like the page-switch shutter. Later sessions
+ * get beat 2 only (1.6–3.2 s). Skip (▸▸, Esc) always works. html[data-splash=seen] hides it before paint.
+ * Motion OFF: still frames, no studio beat. Lines are fan-written.
  */
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
+import { getEntry } from 'astro:content';
 import channel from '../../assets/logo/channel.png';
 import moekoworks from '../../assets/logo/moekoworks.png';
-import Icon from '../ui/Icon.astro';
+import hopPose from '../../assets/poses/mmd-smile.webp';
+import titlePose from '../../assets/poses/full-08.webp';
+import MoekoFlower from '../ui/MoekoFlower.astro';
 import { PORTFOLIO } from '../../lib/site';
+
+const kvArt = (await getEntry('arts', 'kv-5th-fes'))?.data.image;
+const kv = kvArt ? await getImage({ src: kvArt, width: 960, format: 'webp', quality: 55 }) : null;
+const hop = await getImage({ src: hopPose, width: 120, format: 'webp' });
+const TIPS = [
+  { ja: 'あてぃしの初配信は2018年8月8日！', en: 'My very first stream was on 8 August 2018!' },
+  { ja: '寄せ書きボードには、だれでも一枚貼れるよ', en: 'Anyone can pin a note on the message board!' },
+  {
+    ja: '下のTIMEボタンで、六年間のどの日にも行けるよ',
+    en: 'The TIME button below takes you to any day of the six years!',
+  },
+  {
+    ja: 'ホームのテキストボックスを押すと、あてぃしとお話しできるよ',
+    en: 'Press the text box on Home to talk with me!',
+  },
+  { ja: 'MOTIONを押すと、動きを止められるよ', en: 'Press MOTION to stop the animations.' },
+];
 ---
 
-<div class="splash" data-splash-root role="status" aria-live="polite">
-  <div class="splash__inner">
+<div class="splash" data-splash-root role="status" aria-live="polite" data-beat="load">
+  <div class="splash__kv" aria-hidden="true" style={kv ? `background-image:url(${kv.src})` : undefined}></div>
+
+  <!-- beat 1: the studio card -->
+  <div class="splash__studio" aria-hidden="true">
+    <div class="splash__studio-card">
+      <MoekoFlower class="splash__bloom" />
+      <small>
+        <span lang="ja">制作</span> · presented by
+      </small>
+      <Image src={moekoworks} alt="" height={56} densities={[1, 2]} loading="eager" />
+    </div>
+  </div>
+
+  <!-- beat 2: the harbour -->
+  <div class="splash__load">
     <div class="splash__brand">
-      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={260} densities={[1, 2]} loading="eager" />
+      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={240} densities={[1, 2]} loading="eager" />
       <small>AQUA IRO ARCHIVE</small>
     </div>
-    <Icon name="anchor" class="splash__anchor" />
-    <p class="maru" style="font-weight:700;letter-spacing:.2em">
+    <p class="splash__nowloading" aria-hidden="true">
+      {[...'NOW LOADING'].map((c, i) => (
+        <span style={`--i:${i}`}>{c === ' ' ? ' ' : c}</span>
+      ))}
+    </p>
+    <p class="sr-only">
       <span data-l="ja" lang="ja">
         出航準備中…
       </span>
@@ -26,14 +71,88 @@ import { PORTFOLIO } from '../../lib/site';
         Setting sail…
       </span>
     </p>
-    <div class="splash__water" aria-hidden="true">
-      <i data-splash-bar></i>
+    <div class="splash__tips aqua-wait__bubble" aria-hidden="true">
+      <span class="aqua-wait__name">TIPS</span>
+      {TIPS.map((t, i) => (
+        <span class="splash__tip" data-tip={i} hidden={i > 0}>
+          <span data-l="ja" lang="ja">
+            {t.ja}
+          </span>
+          <span data-l="en" lang="en">
+            {t.en}
+          </span>
+        </span>
+      ))}
     </div>
-    <span class="splash__pct" data-splash-pct>
-      0%
-    </span>
-    <p class="splash__fine">Aqua Iro Archive · Unofficial, non-profit fan site</p>
   </div>
+
+  <!-- the deep: the sea level is the progress bar -->
+  <div class="splash__sea" aria-hidden="true">
+    <img class="splash__hopper" src={hop.src} alt="" width="60" height="60" />
+    <span class="splash__marker">
+      <MoekoFlower class="splash__marker-flower" />
+      <span class="splash__pct num" data-splash-pct>
+        0%
+      </span>
+    </span>
+    <MoekoFlower one class="splash__petal" />
+  </div>
+
+  <!-- beat 3: the title screen -->
+  <div class="splash__title" role="dialog" aria-modal="true" aria-label="Aqua Iro Archive" hidden>
+    <div class="splash__title-logo">
+      <Image src={channel} alt="湊あくあ Minato Aqua Ch." width={360} densities={[1, 2]} loading="lazy" />
+      <b>AQUA IRO ARCHIVE</b>
+      <span lang="ja">あくあ色アーカイブ</span>
+    </div>
+    <div class="splash__title-aqua" aria-hidden="true">
+      <Image src={titlePose} alt="" height={300} densities={[1, 1.5]} loading="lazy" />
+      <p class="aqua-wait__bubble">
+        <span class="aqua-wait__name">
+          あくあ <span>AQUA</span>
+        </span>
+        こんあくあ〜！⚓
+      </p>
+    </div>
+    <nav class="splash__menu" aria-label="Title menu">
+      <button type="button" data-menu="start">
+        <span lang="ja">はじめから</span>
+        <small lang="en">START</small>
+      </button>
+      <button type="button" data-menu="continue" hidden>
+        <span lang="ja">つづきから</span>
+        <small lang="en">CONTINUE</small>
+      </button>
+      <button type="button" data-menu="time">
+        <span lang="ja">あくあ時間</span>
+        <small lang="en">AQUA TIME</small>
+      </button>
+      <button type="button" data-menu="config" aria-expanded="false">
+        <span lang="ja">設定</span>
+        <small lang="en">CONFIG</small>
+      </button>
+      <div class="splash__config" hidden>
+        <button type="button" data-menu="motion">
+          MOTION <b data-menu-motion></b>
+        </button>
+        <button type="button" data-menu="lang">
+          JP / EN <b data-menu-lang></b>
+        </button>
+        <button type="button" data-menu="bgm">
+          <span lang="ja">BGMをつけて出航</span>
+          <small lang="en">Set sail with music ♪</small>
+        </button>
+      </div>
+    </nav>
+    <p class="splash__press" aria-hidden="true">
+      PRESS START · クリックで出航
+    </p>
+    <small class="splash__ver num">ver. 2018.08.08 – 2024.08.28</small>
+    <small class="splash__copy">
+      © COVER Corp. · fan site by Moeko Works <MoekoFlower class="splash__copy-flower" />
+    </small>
+  </div>
+
   <a class="splash__by" href={PORTFOLIO.url} rel="noopener" target="_blank">
     <small>
       <span data-l="ja" lang="ja">
@@ -57,39 +176,146 @@ import { PORTFOLIO } from '../../lib/site';
 </div>
 
 <script>
-  import { markSplashSeen } from '../../lib/prefs';
+  import { navigate } from 'astro:transitions/client';
+  import { markSplashSeen, toggleLang, toggleMotion } from '../../lib/prefs';
+  import { KEYS, read, write } from '../../lib/storage';
+
   const MIN_MS = 1600; // long enough to read the logos, short enough not to be in the way
   const MAX_MS = 3200;
+  const STUDIO_MS = 600;
+  const TIP_MS = 1200;
   const root = document.querySelector<HTMLElement>('[data-splash-root]');
-  if (root && document.documentElement.dataset.splash !== 'seen') {
-    const bar = root.querySelector<HTMLElement>('[data-splash-bar]')!;
+  const html = document.documentElement;
+  if (root && html.dataset.splash !== 'seen') {
+    const motion = () => html.dataset.motion === 'on';
+    // the full version (studio card + title screen) on the first-ever visit, or when HELP replays the tour
+    let replay = false;
+    try {
+      replay = sessionStorage.getItem(KEYS.replay) === '1';
+    } catch {
+      /* storage blocked */
+    }
+    const full = replay || !read<string | null>(KEYS.titleSeen, null);
     const pct = root.querySelector<HTMLElement>('[data-splash-pct]')!;
+    const title = root.querySelector<HTMLElement>('.splash__title')!;
     const t0 = performance.now();
     let p = 0;
     let done = false;
+    let leaving = false;
     const set = (v: number) => {
       p = Math.max(p, Math.min(100, v));
-      bar.style.setProperty('--p', `${p}%`);
+      root.style.setProperty('--p', String(p / 100));
       pct.textContent = `${Math.round(p)}%`;
     };
+    // TIPS change every ~1.2 s while loading
+    const tips = Array.from(root.querySelectorAll<HTMLElement>('[data-tip]'));
+    let tipN = 0;
+    const tipTick = setInterval(() => {
+      tips[tipN]!.hidden = true;
+      tipN = (tipN + 1) % tips.length;
+      tips[tipN]!.hidden = false;
+    }, TIP_MS);
+
+    const leave = (then?: () => void) => {
+      if (leaving) return;
+      leaving = true;
+      clearInterval(tick);
+      clearInterval(tipTick);
+      write(KEYS.titleSeen, '1');
+      markSplashSeen();
+      const end = () => {
+        root.remove();
+        then?.();
+      };
+      if (!motion()) {
+        root.classList.add('is-done');
+        setTimeout(end, 300);
+        return;
+      }
+      // the deep surges over the screen, then drains up off it (the shutter's motion)
+      root.classList.add('is-surge');
+      setTimeout(() => root.classList.add('is-drain'), 300);
+      setTimeout(end, 620);
+    };
+
+    const showTitle = () => {
+      root.dataset.beat = 'title';
+      title.hidden = false;
+      const last = read<string | null>(KEYS.lastChapter, null);
+      const cont = root.querySelector<HTMLButtonElement>('[data-menu="continue"]')!;
+      cont.hidden = !last || last === location.pathname;
+      const motionLabel = root.querySelector<HTMLElement>('[data-menu-motion]')!;
+      const langLabel = root.querySelector<HTMLElement>('[data-menu-lang]')!;
+      const sync = () => {
+        motionLabel.textContent = html.dataset.motion === 'on' ? 'ON' : 'OFF';
+        langLabel.textContent = html.dataset.lang === 'en' ? 'EN' : 'JP';
+      };
+      sync();
+      const menu = Array.from(title.querySelectorAll<HTMLButtonElement>('button'));
+      menu[0]!.focus();
+      title.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-menu]');
+        if (!b) return leave(); // a click anywhere else is PRESS START
+        const m = b.dataset.menu;
+        if (m === 'start') leave();
+        else if (m === 'continue') leave(() => void navigate(read<string>(KEYS.lastChapter, '/')));
+        else if (m === 'time') leave(() => window.dispatchEvent(new CustomEvent('aia:time-open')));
+        else if (m === 'config') {
+          const panel = title.querySelector<HTMLElement>('.splash__config')!;
+          panel.hidden = !panel.hidden;
+          b.setAttribute('aria-expanded', String(!panel.hidden));
+        } else if (m === 'motion') {
+          toggleMotion();
+          sync();
+        } else if (m === 'lang') {
+          toggleLang();
+          sync();
+        }
+        if (m === 'bgm')
+          // this click is the gesture that starts the official-YouTube BGM: never autoplay
+          leave(() => window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { toggle: true } })));
+      });
+      title.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') return leave();
+        if (e.key !== 'Tab') return;
+        const items = menu.filter((x) => x.offsetParent);
+        const i = items.indexOf(document.activeElement as HTMLButtonElement);
+        const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i + 1) % items.length;
+        e.preventDefault();
+        items[next]!.focus();
+      });
+    };
+
     const finish = () => {
       if (done) return;
       done = true;
       clearInterval(tick);
       set(100);
-      markSplashSeen();
-      root.classList.add('is-done');
-      setTimeout(() => root.remove(), 700);
+      if (full) setTimeout(showTitle, motion() ? 280 : 0);
+      else setTimeout(() => leave(), motion() ? 280 : 0);
     };
-    // the bar follows elapsed time (towards 92% at MIN_MS), and jumps ahead as real work completes
+
+    // the sea follows elapsed time (towards 92% at MIN_MS), and jumps ahead as real work completes
     const tick = setInterval(() => set(((performance.now() - t0) / MIN_MS) * 92), 80);
-    const hero = document.querySelector<HTMLImageElement>('[data-hero-img]');
-    Promise.all([
-      document.fonts?.ready,
-      hero ? hero.decode().catch(() => undefined) : Promise.resolve(),
-    ]).then(() => setTimeout(finish, Math.max(250, MIN_MS - (performance.now() - t0))));
-    setTimeout(finish, MAX_MS);
-    root.querySelector('[data-splash-skip]')?.addEventListener('click', finish);
+    const startLoad = () => {
+      root.dataset.beat = 'load';
+      const hero = document.querySelector<HTMLImageElement>('[data-hero-img]');
+      Promise.all([
+        document.fonts?.ready,
+        hero ? hero.decode().catch(() => undefined) : Promise.resolve(),
+      ]).then(() => setTimeout(finish, Math.max(250, MIN_MS - (performance.now() - t0))));
+      setTimeout(finish, MAX_MS);
+    };
+    if (full && motion()) {
+      root.dataset.beat = 'studio';
+      setTimeout(startLoad, STUDIO_MS);
+    } else startLoad();
+
+    root.querySelector('[data-splash-skip]')?.addEventListener('click', () => leave());
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key !== 'Escape' || !root.isConnected) return document.removeEventListener('keydown', esc);
+      if (root.dataset.beat !== 'title') leave();
+    });
   } else {
     root?.remove();
   }

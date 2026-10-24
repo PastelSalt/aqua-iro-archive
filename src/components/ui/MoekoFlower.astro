@@ -1,0 +1,44 @@
+---
+/**
+ * The Moeko Works flower mark (FULL-UPDATE-PLAN §B3): a small vector redraw of the logo's two flowers —
+ * pink and purple, yellow centres, dark outline — so it stays crisp at stamp and bubble sizes. The wordmark
+ * itself is always the original PNG (src/assets/logo/moekoworks.png). `one` draws a single pink flower.
+ */
+interface Props {
+  one?: boolean;
+  class?: string;
+}
+const { one = false, class: cls } = Astro.props;
+const petals = (cx: number, cy: number, d: number, r: number) =>
+  Array.from({ length: 5 }, (_, k) => {
+    const a = ((-90 + 72 * k) * Math.PI) / 180;
+    return { x: +(cx + d * Math.cos(a)).toFixed(2), y: +(cy + d * Math.sin(a)).toFixed(2), r };
+  });
+const flowers = one
+  ? [{ cx: 32, cy: 32, d: 12, r: 11, fill: '#f49ab4' }]
+  : [
+      { cx: 22, cy: 22, d: 8, r: 7.4, fill: '#f49ab4' },
+      { cx: 43, cy: 43, d: 8, r: 7.4, fill: '#b58cf2' },
+    ];
+---
+
+<svg class:list={['moeko-flower', cls]} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+  {
+    // outline layer, then a fill layer over it, so only the flower's outer edge keeps a line (as in the logo)
+    flowers.map((f) => (
+      <g>
+        <g stroke="#2b2433" stroke-width="4.8">
+          {petals(f.cx, f.cy, f.d, f.r).map((p) => (
+            <circle cx={p.x} cy={p.y} r={p.r} fill={f.fill} />
+          ))}
+        </g>
+        <g fill={f.fill}>
+          {petals(f.cx, f.cy, f.d, f.r).map((p) => (
+            <circle cx={p.x} cy={p.y} r={p.r} />
+          ))}
+        </g>
+        <circle cx={f.cx} cy={f.cy} r={f.r * 0.62} fill="#f8d35e" stroke="#2b2433" stroke-width="2.4" />
+      </g>
+    ))
+  }
+</svg>

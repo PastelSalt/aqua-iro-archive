@@ -1,18 +1,19 @@
 /**
- * Chapter-change shutter (see components/chrome/Shutter.astro). Hooks ClientRouter:
- * - astro:before-preparation → close the panels over the destination's number + name (180 ms) while the
- *   next page loads; on the first visit to that chapter this session, hold 600 ms on its pose
+ * The tide shutter (see components/chrome/Shutter.astro). Hooks ClientRouter:
+ * - astro:before-preparation → the deep rises over the screen with the destination's ticket (220 ms) while
+ *   the next page loads; on the first visit to that chapter this session, hold ~700 ms as an eyecatch
  *   (a click or any key skips the hold);
- * - astro:after-swap → open the panels on the new page (240 ms).
+ * - astro:after-swap → the deep drains up off the new page (260 ms).
  * Same-page hash moves and Motion OFF skip it entirely (page changes then cut straight across).
  */
 import type { TransitionBeforePreparationEvent } from 'astro:transitions/client';
 
 type Info = { no: string; en: string; ja: string; tint: string; id: string; pose: string };
 const SEEN = 'aia:eyecatch';
-const CLOSE_MS = 180;
-const OPEN_MS = 240;
-const HOLD_MS = 600;
+const FLOWER = 'aia:flower'; // the once-per-session flower bubble (FULL-UPDATE-PLAN §B3)
+const CLOSE_MS = 220;
+const OPEN_MS = 260;
+const HOLD_MS = 700;
 
 let closed = false;
 
@@ -42,6 +43,16 @@ function fill(sh: HTMLElement, info: Info, eyecatch: boolean) {
   const pose = sh.querySelector<HTMLImageElement>('.shutter__pose')!;
   if (eyecatch && info.pose) pose.src = info.pose;
   sh.classList.toggle('is-eyecatch', eyecatch && !!info.pose);
+  let flower = false;
+  if (eyecatch) {
+    try {
+      flower = !sessionStorage.getItem(FLOWER);
+      if (flower) sessionStorage.setItem(FLOWER, '1');
+    } catch {
+      /* storage blocked: no flower */
+    }
+  }
+  sh.classList.toggle('has-flower', flower);
 }
 
 async function close(sh: HTMLElement) {
@@ -104,5 +115,5 @@ document.addEventListener('astro:after-swap', () => {
   closed = false;
   sh.classList.remove('is-closing', 'is-holding');
   sh.classList.add('is-opening');
-  setTimeout(() => sh.classList.remove('is-opening', 'is-eyecatch'), OPEN_MS + 40);
+  setTimeout(() => sh.classList.remove('is-opening', 'is-eyecatch', 'has-flower'), OPEN_MS + 40);
 });
