@@ -48,7 +48,15 @@ const title =
     <header class="page-head" data-page-head>
       {kv && (
         <div class="page-head__kv" aria-hidden="true">
-          <Image src={kv} alt="" width={960} quality={50} loading="eager" fetchpriority="low" />
+          <Image
+            src={kv}
+            alt=""
+            width={960}
+            quality={50}
+            loading="eager"
+            fetchpriority="low"
+            style={art.focus && `object-position:${art.focus}`}
+          />
         </div>
       )}
       <span class="page-head__ghost" aria-hidden="true">

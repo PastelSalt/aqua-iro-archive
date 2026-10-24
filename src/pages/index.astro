@@ -37,6 +37,15 @@ const cardArt: Record<string, string> = {
   arts: 'gaou-aquart-1',
   messages: 'music-kimiiro-princess-art',
 };
+// the 4:3 card crop is far tighter than the gallery's, so a centred crop lands on the torso or legs;
+// these keep each card framed on her face (object-position, overriding the entry's gallery focal)
+const cardFocus: Record<string, string> = {
+  about: 'center 4%',
+  clips: 'right center',
+  discography: 'center top',
+  arts: 'center 10%',
+  messages: 'center top',
+};
 // a ring of tiny official key visuals around the hero circle (IMPROVEMENT-PLAN §1.5 Home)
 const halo = (await getCollection('arts', (a) => a.data.section === 'key-visuals')).slice(0, 12);
 const cards = await Promise.all(
@@ -453,6 +462,7 @@ const ld = {
                   widths={[360, 540]}
                   sizes="(max-width: 600px) 90vw, 360px"
                   class={`focal-${art.data.focal}`}
+                  style={cardFocus[c.id] && `object-position:${cardFocus[c.id]}`}
                   loading="lazy"
                 />
               </span>
