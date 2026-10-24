@@ -137,6 +137,18 @@ function renderImage(t: Trigger) {
   // the image sits in its own pan box, so the prev/next arrows (stage children) stay put while it scrolls
   const pan = el('div', { class: 'lightbox__pan' });
   pan.append(img);
+  // "Aqua says" while a large piece is still on its way (VISUAL-REFINEMENT-PLAN §7b)
+  if (!img.complete) {
+    const wait = aquaWait(say('いま持ってくるね……！', 'Bringing it over...!'));
+    pan.append(wait);
+    pan.classList.add('is-loading');
+    img.addEventListener('load', () => (wait.remove(), pan.classList.remove('is-loading')), { once: true });
+    img.addEventListener(
+      'error',
+      () => (wait.querySelector('p')!.textContent = say('あれ、開けなかった……', "Huh, it wouldn't open...")),
+      { once: true },
+    );
+  }
   stage.append(pan);
   setupZoom(stage, pan, img);
   if (group.length > 1) {
@@ -149,6 +161,16 @@ function renderImage(t: Trigger) {
     stage.append(filmstrip());
   }
   if (t.dataset.id) history.replaceState(history.state, '', `#art=${t.dataset.id}`);
+}
+
+/** Same markup as ui/AquaWait.astro: the small pose from --pose-wait and a speech bubble. */
+function aquaWait(text: string) {
+  const box = el('div', { class: 'aqua-wait lightbox__wait', role: 'status' });
+  box.append(
+    el('span', { class: 'aqua-wait__pose', 'aria-hidden': 'true' }),
+    el('p', { class: 'aqua-wait__bubble' }, text),
+  );
+  return box;
 }
 
 /** A strip of the neighbouring pieces in the group along the bottom; click one to jump to it. */

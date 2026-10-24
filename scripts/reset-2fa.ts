@@ -1,10 +1,11 @@
 /** Runbook §25.5: disable 2FA for the admin when backup codes are lost. Writes an audit row; re-enroll afterwards. */
 import { eq, sql } from 'drizzle-orm';
-import { scriptDb } from './lib/standalone-auth.ts';
+import { scriptDb, loadProdEnv } from './lib/standalone-auth.ts';
 import { user, twoFactor } from '../src/server/db/schema.ts';
 
-const email = process.env.ADMIN_EMAIL;
-if (!email) throw new Error('Set ADMIN_EMAIL');
+loadProdEnv();
+const email = process.argv[2] ?? process.env.ADMIN_EMAIL;
+if (!email) throw new Error('Pass the email: npx tsx scripts/reset-2fa.ts you@example.com');
 const { db, pool } = scriptDb();
 const [u] = await db.select().from(user).where(eq(user.email, email));
 if (!u) throw new Error(`No user ${email}`);

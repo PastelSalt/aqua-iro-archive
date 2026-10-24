@@ -640,6 +640,57 @@ html[data-motion='on'] .marquee__track {
 .footer a {
   color: var(--navy);
 }
+/* sister sites as small banner cards, like the maker card (VISUAL-REFINEMENT-PLAN §7g) */
+.footer .sister-cards {
+  gap: 8px;
+}
+.sister-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  padding: 8px 12px 8px 8px;
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: var(--sh-1);
+  border-left: 4px solid var(--tint, var(--aqua-pink));
+  text-decoration: none;
+  transition:
+    transform var(--dur-1) var(--ease-float),
+    box-shadow var(--dur-1);
+}
+.sister-card__mark,
+.sister-card__logo {
+  grid-row: 1 / span 2;
+  justify-self: center;
+}
+.sister-card__mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tint) 30%, var(--paper));
+  font-size: 18px;
+  line-height: 1;
+}
+.sister-card__logo {
+  width: 34px;
+  height: auto;
+  object-fit: contain;
+}
+.sister-card b {
+  font: 700 var(--step--1) / 1.2 var(--font-display);
+}
+.sister-card small {
+  font-size: var(--step--2);
+  color: var(--ink-soft);
+}
+.sister-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-2);
+}
 .footer__fine {
   margin-top: var(--s-6);
   padding-top: var(--s-4);
@@ -1056,6 +1107,17 @@ html[data-motion='on'] .tour__card {
 }
 .lightbox__pan img {
   min-height: 0;
+}
+/* while the piece loads, Aqua stands in its place (the image keeps its grid cell, invisible) */
+.lightbox__pan.is-loading img {
+  opacity: 0;
+}
+.lightbox__wait {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
 }
 /* zoomed: the pan box scrolls; auto margins centre the image while it's smaller than the box and let
    it scroll edge to edge once it's bigger (centring an overflowing grid item would cut off its left side) */
@@ -1600,6 +1662,55 @@ html[data-motion='on'] .splash__anchor {
   width: 88px;
   height: 54px;
   color: var(--aqua-pink-deep);
+}
+
+.empty--inline {
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+
+/* ================= Aqua says: loading / empty / error (VISUAL-REFINEMENT-PLAN §7b) =================
+   A small official pose (--pose-wait, set on body by Base.astro) with a speech bubble beside it. */
+.aqua-wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(100%, 420px);
+  text-align: left;
+}
+.aqua-wait__pose {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  background: var(--pose-wait) center / contain no-repeat;
+}
+.aqua-wait__bubble {
+  position: relative;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--sh-1);
+  color: var(--navy);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+.aqua-wait__bubble::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  transform: translateY(-50%) rotate(45deg);
+}
+html[data-motion='on'] .aqua-wait__pose {
+  animation: aqua-wait-bob 1.6s var(--ease-float) infinite alternate;
+}
+@keyframes aqua-wait-bob {
+  to {
+    translate: 0 -5px;
+  }
 }
 
 /* ================= Washi tape + pin (scrapbook, board) ================= */

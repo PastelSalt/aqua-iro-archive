@@ -1169,7 +1169,8 @@ html[data-motion='on'] .heatmaps:not([hidden]) svg rect:not(.heatmap__bg) {
   letter-spacing: -0.04em;
   color: transparent;
   -webkit-text-stroke: 2px var(--lavender);
-  opacity: 0.28;
+  /* kept faint: it floats over the rows, which must stay easy to read (VISUAL-REFINEMENT-PLAN §7f) */
+  opacity: 0.14;
 }
 .stream-hours {
   position: absolute;
@@ -1889,4 +1890,84 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(2) .odo__strip {
 }
 html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
   animation-duration: 1.5s;
+}
+
+/* ================= Contrast band (VISUAL-REFINEMENT-PLAN §7c) =================
+   One headline section per page sits on a full-bleed navy ground with the site's seigaiha in a faint
+   light line, so a pastel page has one place that stands out. Cards inside keep their paper colour. */
+.section.band,
+.section + .section.band {
+  isolation: isolate;
+  padding-block: clamp(56px, 7vw, 96px);
+}
+.band + .section {
+  padding-top: clamp(48px, 7vw, 96px);
+}
+.band::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: 0 50%;
+  margin-inline: -50vw;
+  background-color: var(--navy);
+  background-image:
+    radial-gradient(
+      circle at 50% 100%,
+      transparent 14px,
+      rgb(255 255 255 / 0.07) 15px,
+      rgb(255 255 255 / 0.07) 17px,
+      transparent 18px,
+      transparent 24px,
+      rgb(255 255 255 / 0.07) 25px,
+      rgb(255 255 255 / 0.07) 27px,
+      transparent 28px
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      transparent 14px,
+      rgb(255 255 255 / 0.07) 15px,
+      rgb(255 255 255 / 0.07) 17px,
+      transparent 18px,
+      transparent 24px,
+      rgb(255 255 255 / 0.07) 25px,
+      rgb(255 255 255 / 0.07) 27px,
+      transparent 28px
+    ),
+    linear-gradient(170deg, transparent 40%, rgb(242 167 207 / 0.16));
+  background-size:
+    60px 30px,
+    60px 30px,
+    100% 100%;
+  background-position:
+    0 0,
+    30px 15px,
+    0 0;
+}
+.band .sec-title h2,
+.band .sec-title .label,
+.band .sec-title .label b {
+  color: #fff;
+}
+.band .sec-title .jp {
+  color: var(--pink-wash);
+}
+.band .sec-title .icon {
+  color: var(--aqua-pink);
+}
+.band .sec-ghost {
+  -webkit-text-stroke-color: rgb(255 255 255 / 0.5);
+}
+
+/* ================= Quiet reading pages (VISUAL-REFINEMENT-PLAN §7f) =================
+   Credits and Privacy: no drifting motifs over the reading column, and each section on its own paper
+   card instead of straight on the pattern. Decoration stays on the title card and in the margins. */
+body[data-quiet] .motif--mid {
+  display: none;
+}
+.extra .prose > section {
+  isolation: isolate;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: 20px;
+  background: rgb(255 251 254 / 0.94);
+  box-shadow: var(--sh-1);
 }

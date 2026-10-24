@@ -1,0 +1,23 @@
+---
+/**
+ * "Aqua says" for loading, empty and error states (VISUAL-REFINEMENT-PLAN §7b): the small pose from
+ * --pose-wait plus a fan-written line in her voice. Islands and scripts build the same markup by hand.
+ */
+interface Props {
+  ja: string;
+  en: string;
+}
+const { ja, en } = Astro.props;
+---
+
+<div class="aqua-wait">
+  <span class="aqua-wait__pose" aria-hidden="true"></span>
+  <p class="aqua-wait__bubble">
+    <span data-l="ja" lang="ja">
+      {ja}
+    </span>
+    <span data-l="en" lang="en">
+      {en}
+    </span>
+  </p>
+</div>

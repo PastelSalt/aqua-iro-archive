@@ -4,10 +4,22 @@ export const SITE_NAME = 'Aqua Iro Archive';
 export const CONTACT_URL = 'https://moekoworks.vercel.app/contact';
 /** The maker's portfolio — credited in the splash, footer and HELP panel. */
 export const PORTFOLIO = { name: 'Moeko Works', url: 'https://moekoworks.vercel.app' };
+/** Footer banner cards (VISUAL-REFINEMENT-PLAN §7g); mark and tint come from each site's own title and theme-color. */
 export const SISTER_SITES = [
-  { name: 'Kotoha', url: 'https://kotoha-fansite.vercel.app' },
-  { name: 'Hanon', url: 'https://hanon-fansite.vercel.app' },
-  PORTFOLIO,
+  {
+    name: 'Kotoha',
+    url: 'https://kotoha-fansite.vercel.app',
+    mark: '🍀',
+    tint: '#fe9fb9',
+    note: { ja: 'ことは ファンサイト', en: 'Kotoha fan site' },
+  },
+  {
+    name: 'Hanon',
+    url: 'https://hanon-fansite.vercel.app',
+    mark: '🐧',
+    tint: '#b7d7ef',
+    note: { ja: 'はのん ファンサイト', en: 'Hanon fan site' },
+  },
 ];
 export const OFFICIAL = {
   youtube: 'https://www.youtube.com/channel/UC1opHUrw8rvnsadT-iGp7Cg',

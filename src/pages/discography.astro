@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
+import AquaWait from '../components/ui/AquaWait.astro';
 import { compactEn, compactJa, dotDate } from '../lib/format';
 import { searchForm } from '../lib/text/kana';
 
@@ -349,15 +350,10 @@ const bsides = (g: (typeof groups)[number]) => {
       </div>
     ))}
     <div class="empty" hidden data-disco-empty>
-      <Icon name="catsleep" />
-      <p>
-        <span data-l="ja" lang="ja">
-          見つかりませんでした。ほかの言葉でさがしてみてね ⚓
-        </span>
-        <span data-l="en" lang="en">
-          No songs match — try another word ⚓
-        </span>
-      </p>
+      <AquaWait
+        ja="えっと……その曲、見つからなかった。ほかの言葉でさがしてみて！⚓"
+        en="Um... no song like that. Try another word! ⚓"
+      />
     </div>
     <p class="credit asof">
       <span data-l="ja" lang="ja">

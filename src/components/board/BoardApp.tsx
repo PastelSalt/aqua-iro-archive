@@ -110,6 +110,16 @@ function SleepyScene() {
   );
 }
 
+/** "Aqua says" (VISUAL-REFINEMENT-PLAN §7b): same markup as ui/AquaWait.astro. */
+function AquaWait({ text }: { text: string }) {
+  return (
+    <div class="aqua-wait">
+      <span class="aqua-wait__pose" aria-hidden="true" />
+      <p class="aqua-wait__bubble">{text}</p>
+    </div>
+  );
+}
+
 export default function BoardApp({ siteKey }: { siteKey: string }) {
   const L = useLang();
   const say = (ja: string, en: string) => (L === 'ja' ? ja : en);
@@ -472,6 +482,14 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
           </p>
         )}
 
+        {loading && notes.length === 0 && !failed && (
+          <div class="empty empty--inline" role="status">
+            <AquaWait
+              text={say('ちょっと待ってね、いま寄せ書き取ってくる！', 'Hang on, grabbing the notes!')}
+            />
+          </div>
+        )}
+
         <div class="notes" aria-busy={loading ? 'true' : 'false'} aria-live="off">
           {shown.map((n) => {
             const st = style(n.crewNo);
@@ -585,7 +603,12 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
         )}
         {failed && (
           <div class="empty" role="alert">
-            <p>{say('寄せ書きを読み込めませんでした。', "Couldn't load the notes.")}</p>
+            <AquaWait
+              text={say(
+                'あれ……寄せ書き、読み込めなかった。スゥー……もう一回だけ押してみて！',
+                "Huh... the notes didn't load. *sharp breath*... press it one more time!",
+              )}
+            />
             <button type="button" class="btn btn--secondary" onClick={() => load(notes.length === 0)}>
               {say('もう一度', 'Try again')}
             </button>

@@ -34,6 +34,7 @@ import Tour from '../components/chrome/Tour.tsx';
 import AquaTime from '../components/chrome/AquaTime.tsx';
 import { getImage } from 'astro:assets';
 import makerLogo from '../assets/logo/moekoworks.png';
+import waitPoseSrc from '../assets/poses/mmd-smile.webp';
 import { PORTFOLIO, SITE_NAME } from '../lib/site';
 import type { ChapterId } from '../lib/chapters';
 
@@ -46,6 +47,8 @@ export interface Props {
   noindex?: boolean;
   jsonLd?: Record<string, unknown>;
   footer?: boolean;
+  /** text-heavy page: no drifting motifs over the reading column (VISUAL-REFINEMENT-PLAN §7f) */
+  quiet?: boolean;
 }
 const {
   title,
@@ -55,8 +58,11 @@ const {
   noindex = false,
   jsonLd,
   footer = true,
+  quiet = false,
 } = Astro.props;
 const maker = await getImage({ src: makerLogo, height: 72, format: 'webp' });
+// the small pose behind every loading / empty / error line (.aqua-wait), shared by Astro, islands and scripts
+const waitPose = await getImage({ src: waitPoseSrc, width: 192, format: 'webp' });
 const canonical = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site);
 const ogUrl = new URL(og, Astro.site);
 const ld = jsonLd ?? {
@@ -143,7 +149,12 @@ const ld = jsonLd ?? {
     )}
     <slot name="head" />
   </head>
-  <body data-chapter={chapter} id="top">
+  <body
+    data-chapter={chapter}
+    data-quiet={quiet ? '' : undefined}
+    id="top"
+    style={`--pose-wait:url(${waitPose.src})`}
+  >
     <a class="skip-link" href="#main">
       <span data-l="ja" lang="ja">
         本文へスキップ

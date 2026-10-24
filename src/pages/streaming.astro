@@ -3,6 +3,7 @@
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
+import AquaWait from '../components/ui/AquaWait.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
 import data from '../content/streams/streams.json';
 import { STREAM_TAGS } from '../lib/streams/tags';
@@ -114,7 +115,7 @@ const totalHours = summary.hours;
     </figure>
   </Fragment>
 
-  <section class="section wrap" aria-labelledby="records-title">
+  <section class="section wrap band" aria-labelledby="records-title">
     <SectionTitle no="01" en="Records" ja="配信の記録" id="records-title" />
     <ul class="trophies" role="list">
       {records.map((r, i) => (
@@ -348,15 +349,10 @@ const totalHours = summary.hours;
       ))}
     </ol>
     <div class="empty" hidden data-stream-empty>
-      <Icon name="catsleep" />
-      <p>
-        <span data-l="ja" lang="ja">
-          見つかりませんでした。ほかの言葉でさがしてみてね ⚓
-        </span>
-        <span data-l="en" lang="en">
-          No streams match — try another word ⚓
-        </span>
-      </p>
+      <AquaWait
+        ja="えっと……その配信、見つからなかった。ほかの言葉でさがしてみて！⚓"
+        en="Um... no stream like that. Try another word! ⚓"
+      />
     </div>
   </section>
 </Page>

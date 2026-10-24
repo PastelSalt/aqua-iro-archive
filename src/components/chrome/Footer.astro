@@ -116,14 +116,41 @@ const THANKS = [
         <h2 style="margin-top:var(--s-5)">
           <T k="footer.sisters" />
         </h2>
-        <ul>
+        <ul class="sister-cards">
           {SISTER_SITES.map((s) => (
             <li>
-              <a href={s.url} rel="noopener">
-                {s.name}
+              <a class="sister-card" href={s.url} rel="noopener" style={`--tint:${s.tint}`}>
+                <span class="sister-card__mark" aria-hidden="true">
+                  {s.mark}
+                </span>
+                <b>{s.name}</b>
+                <small>
+                  <span data-l="ja" lang="ja">
+                    {s.note.ja}
+                  </span>
+                  <span data-l="en" lang="en">
+                    {s.note.en}
+                  </span>{' '}
+                  ↗
+                </small>
               </a>
             </li>
           ))}
+          <li>
+            <a class="sister-card" href={PORTFOLIO.url} rel="noopener">
+              <Image class="sister-card__logo" src={moekoworks} alt="" height={28} densities={[1, 2]} />
+              <b>{PORTFOLIO.name}</b>
+              <small>
+                <span data-l="ja" lang="ja">
+                  制作者のサイト
+                </span>
+                <span data-l="en" lang="en">
+                  The maker
+                </span>{' '}
+                ↗
+              </small>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
