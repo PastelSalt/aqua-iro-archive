@@ -4,29 +4,29 @@
   category: special
   when: [birthday]
   lines:
-    - { exp: excited, ja: "今日はなんの日か、知ってる……？", en: "Do you know what day it is today...?" }
+    - { exp: excited, ja: "ねぇねぇ！今日なんの日か知ってる！？", en: "Hey, hey! Do you know what day it is today!?" }
   choices:
     - id: hbd
       ja: "お誕生日おめでとう！"
       en: "Happy birthday!"
       reply:
-        - { exp: shy, ja: "覚えててくれたの！？……ありがとう！", en: "You remembered!? ...Thank you!" }
-        - { exp: cheerful, ja: "ケーキは、いちごがのってるやつがいいな。", en: "I'd like a cake with strawberries on top, please." }
+        - { exp: shy, ja: "覚えててくれたの！？あっ、ありがと……！！", en: "You remembered!? Oh, th-thank you...!!" }
+        - { exp: smug, ja: "これでまた5歳！永遠の5歳だから！", en: "Five again! I'm eternally five!" }
     - id: cake
       ja: "ケーキ買ってきたよ"
       en: "I brought cake"
       reply:
-        - { exp: excited, ja: "やったー！ろうそく、いっしょにふーってしよ！", en: "Yay! Let's blow out the candles together!" }
+        - { exp: excited, ja: "やったー！！いちごのってる！？ろうそく、ふーってしよ！", en: "Yaaay!! Does it have strawberries!? Let's blow out the candles!" }
     - id: song
       ja: "ハッピーバースデーを歌うね"
       en: "I'll sing happy birthday"
       reply:
-        - { exp: shy, ja: "えへへ……てれるけど、うれしい。", en: "Hehe... it's embarrassing, but I'm happy." }
+        - { exp: shy, ja: "スゥー……てれる……けど、うれしい……", en: "*sharp breath*... so embarrassing... but I'm happy..." }
     - id: board
       ja: "お祝いの言葉を残したい"
       en: "I want to leave a birthday message"
       reply:
-        - { exp: smile, ja: "寄せ書きボードに貼ってくれたら、うれしいな。", en: "I'd love it if you pinned it on the message board." }
+        - { exp: smile, ja: "寄せ書きボードに貼ってくれたら、うれしいな！", en: "I'd love it if you pinned it on the message board!" }
       goto: messages
 
 - id: special-anniversary
@@ -34,28 +34,28 @@
   category: special
   when: [anniversary]
   lines:
-    - { exp: cheerful, ja: "8月8日はね、あてぃしが初めて配信した日なの。", en: "August 8th is the day of my very first stream." }
+    - { exp: cheerful, ja: "8月8日はね、あてぃしが初めて配信した日！", en: "August 8th is the day of my very first stream!" }
   choices:
     - id: congrats
       ja: "デビュー記念日おめでとう！"
       en: "Happy debut anniversary!"
       reply:
-        - { exp: smile, ja: "ありがとう！あの日の緊張、今でも覚えてる。", en: "Thank you! I still remember how nervous I was." }
+        - { exp: shy, ja: "ありがと！あの日、緊張でしぬかと思った……", en: "Thanks! I thought I'd die of nerves that day..." }
     - id: first-words
       ja: "最初の配信、どうだった？"
       en: "How did your first stream go?"
       reply:
-        - { exp: flustered, ja: "声がふるえて、なに話したか覚えてない！", en: "My voice was shaking. I can't remember a word I said!" }
+        - { exp: flustered, ja: "声ふるえすぎて、なに話したか覚えてない！！", en: "My voice was shaking so hard, I can't remember a word!!" }
     - id: intro
       ja: "自己紹介動画、見たよ"
       en: "I watched your self-introduction"
       reply:
-        - { exp: shy, ja: "わーっ！はずかしいから、そっとしておいて！", en: "Waah! That's embarrassing, leave it be!" }
+        - { exp: flustered, ja: "わーっ！！見ないで！そっとしといて！！", en: "Waaah!! Don't watch it! Leave it be!!" }
     - id: events
       ja: "これまでの航海をふり返りたい"
       en: "I want to look back on the voyage"
       reply:
-        - { exp: calm, ja: "イベントのページから、いっしょにふり返ろう。", en: "Let's look back together on the Events page." }
+        - { exp: cheerful, ja: "イベントのページから、いっしょにふり返ろ！", en: "Let's look back together on the Events page!" }
       goto: events
 
 - id: special-aqua-iro-day
@@ -63,26 +63,26 @@
   category: special
   when: [graduation]
   lines:
-    - { exp: calm, ja: "今日は、ちょっとだけ特別な日だね。", en: "Today is a little bit of a special day, isn't it?" }
+    - { exp: calm, ja: "今日はね……ちょっとだけ、特別な日だね", en: "Today is... a little bit of a special day, huh." }
   choices:
     - id: thanks
       ja: "ありがとう、あくたん"
       en: "Thank you, Akutan"
       reply:
-        - { exp: smile, ja: "こちらこそ。いっぱいの色を、ありがとう。", en: "Thank you, too. For all of the colors." }
+        - { exp: shy, ja: "こちらこそ……みんな、ほんとにありがとう！", en: "No, thank you... everyone, really, thank you!" }
     - id: live
       ja: "あの日のライブ、忘れないよ"
       en: "I'll never forget that live"
       reply:
-        - { exp: calm, ja: "あの日の景色は、あてぃしの宝物だよ。", en: "The view from that day is one of my treasures." }
+        - { exp: smile, ja: "忘れないでいてくれたら、あてぃしはずっとそこにいるよ", en: "As long as you remember it, I'll always be there." }
     - id: palette
       ja: "あくあ色に染まったよ"
       en: "I'm dyed in Aqua's colors"
       reply:
-        - { exp: cheerful, ja: "ふふ。ずっとその色でいてね。", en: "Hehe. Stay that color, always." }
+        - { exp: cheerful, ja: "いひひ！ずっとその色でいてよね！", en: "Ihihi! Stay that color forever, okay!" }
     - id: board
       ja: "言葉を一枚、残していくね"
       en: "I'll leave a note behind"
       reply:
-        - { exp: smile, ja: "寄せ書きボードで、待ってるね。", en: "I'll be waiting on the message board." }
+        - { exp: smile, ja: "寄せ書きボードで待ってる！またいつか！", en: "I'll be waiting on the message board! Until next time!" }
       goto: messages

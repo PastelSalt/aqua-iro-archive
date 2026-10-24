@@ -3,56 +3,58 @@
   title: { ja: "がんばったね", en: "A hard week" }
   category: cheer
   lines:
-    - { exp: calm, ja: "なんだか、つかれた顔してない？", en: "You look a little tired. Are you okay?" }
+    - { exp: calm, ja: "あれ……なんかつかれた顔してない？だいじょぶ？", en: "Huh... you look kind of tired. You okay?" }
   choices:
     - id: songs-helped
       ja: "あくたんの歌でがんばれたよ"
       en: "Your songs got me through a hard week"
       reply:
-        - { exp: shy, ja: "ほんと？……えへへ、すっごくうれしい。", en: "Really? ...Hehe, that makes me so happy." }
-        - { exp: smile, ja: "がんばったあなたに、はなまるあげる！", en: "Here's a gold star for working so hard!" }
+        - { exp: shy, ja: "えっ……ほ、ほんと？スゥー……うれしすぎる……", en: "Huh... r-really? *sharp breath*... that makes me way too happy..." }
+        - { exp: excited, ja: "がんばったあなたに、はなまる！！", en: "A gold star for you for working so hard!!" }
     - id: tired
       ja: "ちょっとつかれちゃった"
       en: "I'm just a bit tired"
       reply:
-        - { exp: calm, ja: "じゃあ今日は、ゆっくりしていってね。", en: "Then take it easy here today." }
+        - { exp: smile, ja: "じゃあ今日はここでだらだらしよ。あてぃしもする", en: "Then let's laze around here today. I'll laze too." }
     - id: exams
       ja: "テストがあるんだ"
       en: "I've got exams coming up"
       reply:
-        - { exp: cheerful, ja: "ファイト！終わったら、いっぱい遊ぼうね。", en: "You've got this! We'll play lots once they're done." }
+        - { exp: flustered, ja: "テスト……あてぃしは勘で選んでた。まねしちゃだめ！", en: "Exams... I just guessed on mine. Don't copy me!" }
+        - { exp: cheerful, ja: "ファイト！終わったらいっぱいゲームしよ！", en: "You've got this! Then we play lots of games!" }
     - id: nothing
       ja: "ただ会いにきたよ"
       en: "I just came to see you"
       reply:
-        - { exp: shy, ja: "……そういうの、ずるい。", en: "...That's not fair, saying stuff like that." }
+        - { exp: smug, ja: "え〜？あてぃしのこと好きすぎじゃん！", en: "Ehh~? You like me way too much!" }
+        - { exp: shy, ja: "……でも、うれしい。ありがと", en: "...But I'm happy. Thanks." }
 
 - id: six-years
   title: { ja: "六年間", en: "Six years" }
   category: cheer
   lines:
-    - { exp: calm, ja: "このアーカイブには、六年ぶんの色がつまってるんだって。", en: "They say this archive holds six years of colors." }
+    - { exp: cheerful, ja: "このアーカイブ、六年ぶんの色がつまってるんだって！", en: "Apparently this archive holds six whole years of colors!" }
   choices:
     - id: thanks
       ja: "楽しい時間をありがとう"
       en: "Thank you for all the fun"
       reply:
-        - { exp: smile, ja: "こちらこそ。いっしょに笑ってくれてありがとう。", en: "Thank you, too, for laughing along with me." }
+        - { exp: shy, ja: "こ、こちらこそ！いっしょに笑ってくれて、ありがと！", en: "N-no, thank YOU! For laughing along with me!" }
     - id: favorite-memory
       ja: "いちばんの思い出は？"
       en: "What's your favorite memory?"
       reply:
-        - { exp: cheerful, ja: "ひとつに選べないよ。ぜんぶ宝物！", en: "I can't pick just one. Every one is a treasure!" }
+        - { exp: flustered, ja: "えっ、ひとつ！？むり！ぜんぶ宝物だもん！", en: "Just one!? Impossible! They're all treasures!" }
     - id: palette
       ja: "パレットはまだ明るい？"
       en: "Is the palette still bright?"
       reply:
-        - { exp: smile, ja: "うん。みんなが色を足してくれたからね。", en: "Yes. Everyone kept adding their colors to it." }
+        - { exp: smile, ja: "うん！みんなが色を足してくれたからね", en: "Yeah! Because everyone kept adding their colors." }
     - id: timeline
       ja: "歩んできた道を見たい"
       en: "I want to look back on the journey"
       reply:
-        - { exp: calm, ja: "イベントのページに、航海の記録があるよ。", en: "The voyage log is on the Events page." }
+        - { exp: cheerful, ja: "イベントのページに航海の記録あるよ！いこいこ！", en: "The voyage log is on the Events page! Let's go!" }
       goto: events
 
 - id: you-did-well
@@ -60,26 +62,26 @@
   category: cheer
   when: [evening, night]
   lines:
-    - { exp: smile, ja: "今日もおつかれさま、ご主人様。", en: "Good work today, Master." }
+    - { exp: smile, ja: "今日もおつかれ〜！えらいじゃん！", en: "Good work today~! Look at you!" }
   choices:
     - id: praise-me
       ja: "ほめて！"
       en: "Praise me!"
       reply:
-        - { exp: cheerful, ja: "えらい！すごい！天才！……これでいい？", en: "Amazing! Brilliant! A genius! ...Like that?" }
+        - { exp: excited, ja: "えらい！天才！最強！神！……こ、これでいい？", en: "Amazing! Genius! Strongest! A god! ...I-is that enough?" }
     - id: went-out
       ja: "今日は外に出たよ"
       en: "I went outside today"
       reply:
-        - { exp: excited, ja: "すごい！あてぃしより外出してる！", en: "Wow! You've been out more than me!" }
+        - { exp: excited, ja: "外！？すご！あてぃしより陽キャじゃん！", en: "Outside!? Whoa! You're way more outgoing than me!" }
     - id: sleep-soon
       ja: "そろそろ寝るね"
       en: "I'm heading to bed soon"
       reply:
-        - { exp: sleepy, ja: "うん、あったかくして寝てね。おやすみ。", en: "Okay, stay warm and sleep well. Good night." }
+        - { exp: sleepy, ja: "うん、あったかくして寝てね。また明日！", en: "Okay, stay warm and sleep well. See you tomorrow!" }
     - id: message
       ja: "あくたんに伝えたいことがある"
       en: "I have something to tell Akutan"
       reply:
-        - { exp: smile, ja: "寄せ書きボードに一枚、貼ってみる？", en: "Want to pin a note on the message board?" }
+        - { exp: shy, ja: "えっ……じゃあ、寄せ書きボードに一枚、貼ってみる？", en: "Oh... then want to pin a note on the message board?" }
       goto: messages

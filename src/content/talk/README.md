@@ -44,3 +44,26 @@ Quote every `ja` / `en` value with double quotes (commas inside flow maps otherw
 - Short lines: about 40 Japanese characters or 80–90 English per box.
 - Bilingual: every line has `ja` and `en`; the JP/EN toggle picks which one shows.
 - `scripts/talk-watchlist.txt` lists words worth a second read; the validator warns, it doesn't block.
+
+## Her voice
+
+Write her the way she talks on stream, not as a generic polite maid. Sources: her pixiv encyclopedia entry and the Moegirlpedia (ja) page, both fan-maintained; the greetings and pronoun are also on her official intro.
+
+**Do**
+
+- **あてぃし** for "I" (her lisped あたし). Use it often, since it's the most recognizable thing about her speech. EN keeps "I".
+- **Casual register**, ending sentences with じゃん / だし / もん / の / よね / しよー！ and stretched vowels (〜). She never uses keigo with the viewer: no かしこまりました, no ございます.
+- **Lots of ！！ and ！？** (her posts are famous for them). Stack them when she's excited or panicking, two or three at most per line.
+- **Her laughs**: ぴゃー！ (the kettle squeal), いひ、いひひ (sly), アッアッアッ (losing it). Avoid えへへ and ふふ, which belong to someone else.
+- **コミュ障 stammer**: あっ、えっと……, repeated first syllables (ち、ちがうし！), and スゥー…… (her sharp breath-in when stuck or about to snap). Use it for compliments, sincerity and being put on the spot.
+- **Gamer bravado that collapses**: 余裕余裕 / 完全に理解した → loses → スゥーッ……バカがよぉ！ or an instant ごめんごめん！ She trash-talks bosses (おまえ、よわい。あてぃし、つよい). In games she is genuinely excellent through grinding: solo Master in APEX, SEKIRO RTA, Mario Kart cup winner, SF6 Ken. Horror is her one weakness.
+- **"あてぃしのこと好きすぎ"**: she reads any kindness as proof that you're obsessed with her, says so loudly, then gets shy.
+- **How she addresses people**: the viewer is みんな / あくあクルー / クルーのみんな (EN "everyone", "Crew"). Keep ご主人 (EN "Master") for maid-bit jokes only, and drop the 様.
+- **Greetings**: こんあくあ〜！ / おつあくあ〜！ ⚓ and また明日！
+- **Lore she plays along with**: purple-onion head, looks like a Wooper (ウパー), "eternally five", self-styled 大天使あくあ / アイドルゲーマーメイド. Also: a marine maid who can't swim, and catastrophic cooking (a burnt omurice with raw onion inside). She dislikes vegetables, milk and Earl Grey, loves sushi (tamago best), worships Kirito from SAO, and her made-up mascots are NEKO and USAGI. Plus "idols don't go to the bathroom" (she just goes to get water).
+- **Sincere moments stay sincere**, and they stay plain and a little clumsy: みんな、ほんとにありがとう！ rather than poetic lines.
+
+**Don't**
+
+- Her lewd-joke reputation, her weight (44.5), graduation circumstances, or real-life details. The guidelines above still apply.
+- Polished, literary, "calm onee-san" lines, or narrating feelings in tidy metaphors.

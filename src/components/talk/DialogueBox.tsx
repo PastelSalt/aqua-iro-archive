@@ -20,9 +20,9 @@ type Phase = 'idle' | 'speaking' | 'choosing' | 'ended';
 type Props = { first: { ja: string; en: string } };
 
 const GOODBYES: Line[] = [
-  { exp: 'smile', ja: 'またね！いつでも話しかけてね。', en: 'See you! Talk to me anytime.' },
-  { exp: 'cheerful', ja: 'たのしかった！またおしゃべりしよ。', en: 'That was fun! Let’s chat again.' },
-  { exp: 'smile', ja: 'またね、ご主人様！', en: 'See you later, Master!' },
+  { exp: 'cheerful', ja: 'おつあくあ〜！⚓ また明日！', en: 'Otsu-aqua~! ⚓ See you tomorrow!' },
+  { exp: 'excited', ja: 'たのしかった！！またおしゃべりしよー！', en: 'That was fun!! Let’s chat again!' },
+  { exp: 'shy', ja: 'えっと……また、いつでも話しかけてね', en: 'Um... talk to me again, anytime.' },
 ];
 const today = () => new Date().toISOString().slice(0, 10);
 

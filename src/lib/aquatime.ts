@@ -88,7 +88,7 @@ export function greeting(ix: Index, d: string, ja: boolean) {
       : `It's my debut anniversary — ${Number(d.slice(0, 4)) - 2018} years! ⚓`;
   if (md === '12-01')
     return ja
-      ? '今日はあくあの誕生日！お祝いありがとう〜！'
+      ? '今日はあてぃしの誕生日！お祝いありがと〜！！'
       : "It's my birthday today! Thank you for celebrating~!";
   if (exact)
     return ja
@@ -98,8 +98,8 @@ export function greeting(ix: Index, d: string, ja: boolean) {
   if (st)
     return ja ? `今日の配信は「${st.t}」！見に来てくれる？` : `Today's stream: "${st.t}". Coming to watch?`;
   return ja
-    ? 'この日は配信お休みかな…？のんびりしてるのかも。'
-    : 'No stream this day… maybe I was taking it easy.';
+    ? 'この日は配信お休み……たぶんずっとゲームしてた！'
+    : 'No stream this day… I was probably gaming all day anyway!';
 }
 
 /** What happened on this month/day in past years (2018–2024), newest first. */

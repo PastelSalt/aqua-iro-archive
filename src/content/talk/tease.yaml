@@ -3,68 +3,68 @@
   title: { ja: "ほんとにメイド？", en: "A real maid?" }
   category: tease
   lines:
-    - { exp: smile, ja: "なにかご用ですか、ご主人様？", en: "Is there something you need, Master?" }
+    - { exp: smug, ja: "なにかご用？ご主人。メイドのあてぃしにおまかせ！", en: "Need something, Master? Leave it to your maid!" }
   choices:
     - id: really
       ja: "ほんとにメイドなの？"
       en: "Are you really a maid?"
       reply:
-        - { exp: pout, ja: "ほんとだし！メイド服、着てるでしょ！", en: "I am! Look, I'm wearing the uniform!" }
+        - { exp: pout, ja: "メイドったらメイドなの！！服、見てよ！", en: "A maid is a maid!! Look at the uniform!" }
       next: proof
     - id: clumsy
       ja: "ドジっ子メイドだよね"
       en: "You're a clumsy maid, right?"
       reply:
-        - { exp: flustered, ja: "ド、ドジじゃないもん！たまたま転んだだけ！", en: "I-I'm not clumsy! I just happened to trip!" }
+        - { exp: flustered, ja: "ド、ドジじゃないし！床がすべっただけだし！", en: "I-I'm not clumsy! The floor slipped, okay!" }
     - id: mop
       ja: "モップはどこ？"
       en: "Where's your mop?"
       reply:
-        - { exp: smug, ja: "モップは心の中にあるの。見えないだけ。", en: "The mop lives in my heart. You just can't see it." }
+        - { exp: smug, ja: "モップは心の中にあるの。見えないだけ。いひひ", en: "The mop lives in my heart. You just can't see it. Ihihi." }
     - id: serve
       ja: "じゃあ、お茶をお願い"
       en: "Then a cup of tea, please"
       reply:
-        - { exp: cheerful, ja: "はーい！……こぼさないように……そーっと……", en: "Coming! ...Don't spill it... slowly..." }
+        - { exp: flustered, ja: "はーい！……そーっと……そーっと……あっ", en: "Coming! ...Slowly... slowly... oops." }
   nodes:
     proof:
       lines:
-        - { exp: smug, ja: "ほら、ヘッドドレスもちゃんと錨マーク！完璧！", en: "See? Even the headdress has an anchor. Perfect!" }
+        - { exp: smug, ja: "ほら、ヘッドドレスにも錨マーク！完璧じゃん！", en: "See? Even the headdress has an anchor. Perfect!" }
       choices: []
 
 - id: weak-strong
   title: { ja: "よわよわ？つよつよ？", en: "Weak or strong?" }
   category: tease
   lines:
-    - { exp: cool, ja: "今日のあてぃしは、ちょっと強いよ？", en: "I'm feeling a little strong today, you know?" }
+    - { exp: cool, ja: "今日のあてぃし、つよいよ？完全に理解したから", en: "I'm strong today, you know? I've completely figured it out." }
   choices:
     - id: weak
       ja: "でもすぐ泣いちゃうじゃん"
       en: "But you cry so easily"
       reply:
-        - { exp: pout, ja: "泣いてないし！目にゴミが入っただけ！", en: "I'm not crying! Something got in my eye!" }
+        - { exp: pout, ja: "泣いてないし！目にゴミが入っただけだし！", en: "I'm not crying! Something got in my eye!" }
     - id: strong
       ja: "ゲームのときは最強だよね"
       en: "You're the strongest in games, though"
       reply:
-        - { exp: smug, ja: "でしょ？もっと褒めてもいいんだよ？", en: "Right? You can praise me more, you know?" }
+        - { exp: smug, ja: "でしょ！？もっとほめていいよ！ほら！ほら！", en: "Right!? Praise me more! Go on! Go on!" }
     - id: horror
       ja: "ホラゲの悲鳴、聞こえてたよ"
       en: "We heard your horror-game screams"
       reply:
-        - { exp: flustered, ja: "あ、あれは演出！リアクション芸！", en: "Th-that was a performance! Reaction comedy!" }
+        - { exp: flustered, ja: "あ、あれはリアクション芸！プロだから！！", en: "Th-that was a bit! I'm a professional!!" }
     - id: duel
       ja: "じゃあ勝負しよう"
       en: "Then let's have a match"
       reply:
-        - { exp: cool, ja: "いいよ。手加減はしないからね？", en: "Sure. I won't go easy on you, okay?" }
-        - { exp: smug, ja: "……はい、あてぃしの勝ち！", en: "...And that's my win!" }
+        - { exp: cool, ja: "おまえ、よわい。あてぃし、つよい。", en: "You, weak. Me, strong." }
+        - { exp: smug, ja: "……はい、あてぃしの勝ち！ぴゃーっ！！", en: "...And that's my win! Pyaaah!!" }
 
 - id: black-screen
   title: { ja: "まっくらエンディング", en: "The black-screen ending" }
   category: tease
   lines:
-    - { exp: calm, ja: "そろそろ配信おわろうかな～。", en: "Maybe it's about time to end the stream~" }
+    - { exp: calm, ja: "そろそろ配信おわろっかな〜", en: "Maybe I'll wrap up the stream soon~" }
   choices:
     - id: screen
       ja: "また画面まっくらで終わるの？"
@@ -75,7 +75,7 @@
       ja: "また「引退」ドッキリ？"
       en: "Another fake 'retirement' prank?"
       reply:
-        - { exp: flustered, ja: "あ、あれはもうやらないってば！反省してます！", en: "I said I won't do that again! I've learned my lesson!" }
+        - { exp: flustered, ja: "あ、あれはもうやらないってば！反省してます！！", en: "I said I won't do that again! I've learned my lesson!!" }
     - id: one-more
       ja: "あと5分だけ！"
       en: "Just five more minutes!"
@@ -85,7 +85,7 @@
       ja: "おつあくあ～"
       en: "Otsu-aqua~"
       reply:
-        - { exp: smile, ja: "おつあくあ！また遊びにきてね。", en: "Otsu-aqua! Come play again soon." }
+        - { exp: cheerful, ja: "おつあくあ〜！⚓ また明日！", en: "Otsu-aqua~! ⚓ See you tomorrow!" }
 
 - id: onion-time
   title: { ja: "玉ねぎの時間", en: "Onion time" }
@@ -93,25 +93,25 @@
   rare: true
   weight: 6
   lines:
-    - { exp: flustered, ja: "……なんか、今日の空気、玉ねぎくさくない？", en: "...Doesn't today feel a bit... oniony?" }
+    - { exp: flustered, ja: "……なんか今日、玉ねぎくさくない？", en: "...Doesn't it smell kind of oniony today?" }
   choices:
     - id: yes
       ja: "クルーが持ってきました"
       en: "The crew brought some"
       reply:
-        - { exp: pout, ja: "やっぱり！どこから持ってくるの、それ！", en: "I knew it! Where do you even get those!?" }
+        - { exp: pout, ja: "やっぱり！どこから持ってくるの、それ！！", en: "I knew it! Where do you even get those!?" }
     - id: chop
       ja: "いっしょに刻もう"
       en: "Let's chop them together"
       reply:
-        - { exp: flustered, ja: "目が！目がしみる！これは涙じゃないから！", en: "My eyes! They sting! These aren't tears!" }
+        - { exp: flustered, ja: "目が！目がぁ！これ涙じゃないから！！", en: "My eyes! My eyes! These are NOT tears!!" }
     - id: soup
       ja: "オニオンスープにしよう"
       en: "Let's make onion soup"
       reply:
-        - { exp: cheerful, ja: "……それは、ちょっとおいしそうかも。", en: "...Okay, that actually sounds kind of tasty." }
+        - { exp: cheerful, ja: "……それはちょっとおいしそうかも。ずるい", en: "...Okay, that does sound tasty. Not fair." }
     - id: hide
       ja: "かくしておくね"
       en: "I'll hide them for you"
       reply:
-        - { exp: smile, ja: "ありがと！あなたはいいクルーだね。", en: "Thanks! You're a good crew member." }
+        - { exp: shy, ja: "ありがと……あなた、いいクルーじゃん", en: "Thanks... you're a good crew member, you know." }
