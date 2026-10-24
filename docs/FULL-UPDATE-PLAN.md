@@ -163,6 +163,9 @@ Estimated 6–8 days for Part A.
 - Review after Part B: the loading screen got her solo key visual, a centred column with a tide gauge, a
   tide between beats, and a title screen with her filling the right side; the shutter eyecatch dropped the
   pose. Checked by eye at 1366×768 and 390×844.
+- Second review: the title screen's menu (はじめから / つづきから / あくあ時間 / 設定) was removed. A website
+  has nothing to "continue" or "configure" at its door, and everything it offered is in the dock. The title
+  screen is now the key visual, the logo and PRESS START.
 
 ---
 
@@ -172,14 +175,14 @@ Both are **the deep in motion**: the navy sea with Aqua's pink-and-cyan crest ri
 drains away. The patterns are taken from established anime and game sites, each tied to something that is
 specifically Aqua's.
 
-| Established pattern                                 | Where it comes from           | Aqua's version                                                                                        |
-| --------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Studio card before the opening                      | Anime OPs, anime sites' intro | 「制作 Moeko Works」 card                                                                             |
-| A gauge with a rider                                | Uma Musume, gacha loaders     | A tide gauge, its water in her crest, with the Moeko flower riding the waterline                      |
-| Loading TIPS                                        | Gacha and console games       | TIPS in the Talk box, in her voice                                                                    |
-| Visual-novel title screen (はじめから / つづきから) | Galge and VN titles           | She loves galge and produced her own, _あくありうむ。_; this site already speaks in a VN dialogue box |
-| Mid-episode eyecatch                                | Anime                         | The chapter ticket, held a beat while bubbles rise                                                    |
-| Copyright line at the bottom of a title screen      | Every game title screen       | 「© COVER Corp. · fan site by Moeko Works ✿」                                                         |
+| Established pattern                            | Where it comes from           | Aqua's version                                                                                        |
+| ---------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Studio card before the opening                 | Anime OPs, anime sites' intro | 「制作 Moeko Works」 card                                                                             |
+| A gauge with a rider                           | Uma Musume, gacha loaders     | A tide gauge, its water in her crest, with the Moeko flower riding the waterline                      |
+| Loading TIPS                                   | Gacha and console games       | TIPS in the Talk box, in her voice                                                                    |
+| Game title screen with PRESS START             | Galge, VN and console titles  | She loves galge and produced her own, _あくありうむ。_; this site already speaks in a VN dialogue box |
+| Mid-episode eyecatch                           | Anime                         | The chapter ticket, held a beat while bubbles rise                                                    |
+| Copyright line at the bottom of a title screen | Every game title screen       | 「© COVER Corp. · fan site by Moeko Works ✿」                                                         |
 
 ### B1. Page switch ("tide shutter")
 
@@ -222,18 +225,16 @@ production card before an anime opening.
   「TIPS：下のTIMEボタンで、六年間のどの日にも行けるよ」. They teach the site while it loads.
 - A petal from the flowers drifts in the water among the bubbles.
 
-**Beat 3 — Title screen (first-ever visit only).** A visual-novel title screen, as in the galge she loves:
+**Beat 3 — Title screen (first-ever visit only).** A game title screen, as in the galge she loves:
 
 - Between the beats the tide comes in over the screen and goes back out. The key visual comes into focus and
   moves right, so she fills the right side; the channel logo with 「AQUA IRO ARCHIVE / あくあ色アーカイブ」 sits
   large on the left, on the paper. (A separate small pose with a Talk bubble was tried and dropped: next to
   the key visual it was a second, smaller Aqua.)
-- A menu in VN style: **はじめから** (start, enters Home), **つづきから** (only when she's been here before:
-  goes back to the last chapter visited), **あくあ時間** (opens Aqua Time), **設定** (Motion, JP/EN, and
-  「BGMをつけて出航」, which starts the official-YouTube BGM from that click, so it is never autoplay).
-- The menu rows are game-style: the selected one gets a crest band and a ⚓ cursor, and はじめから is selected
-  when the screen opens.
-- 「PRESS START / クリックで出航」 blinks on the deep; a click anywhere or Enter means はじめから.
+- No menu. (はじめから / つづきから / あくあ時間 / 設定 was built and dropped on review: a website has nothing
+  to continue or configure at its door, and Aqua Time, Motion, JP/EN and BGM are all in the dock.)
+- 「PRESS START / クリックで出航」 blinks on the deep. It is the one control and has focus; a click anywhere,
+  Enter or Esc sets sail.
 - Bottom corners, like every game title screen: a version line, 「ver. 2018.08.08 – 2024.08.28」 (her
   active years), and the copyright line 「© COVER Corp. · fan site by Moeko Works ✿」.
 - Leaving: the deep surges over the screen and drains away exactly like the page-switch shutter, so the
@@ -244,10 +245,10 @@ today), straight into the tide exit, no title screen. Skip (▸▸, Esc) always 
 HELP replays the full version.
 
 **Motion OFF.** Still frames: the key visual, the logo, the gauge, the TIPS line and the sea band, then the
-title menu. No studio-card beat, no tide, no blur pan.
+title screen. No studio-card beat, no tide, no blur pan.
 
-**Accessibility.** The title screen is a modal dialog with focus on はじめから and a focus trap; the loading
-beat keeps `role=status`; the menu works by keyboard.
+**Accessibility.** The title screen is a modal dialog with focus on PRESS START, which keeps focus (Tab has
+nowhere else to go); the loading beat keeps `role=status`.
 
 ### B3. Where the Moeko Works mark goes
 
@@ -273,8 +274,8 @@ At most one per screen, never on official art, never larger than the chapter tit
 - The splash adds one inline SVG (the flowers, under 2 KB), a small blurred key visual (WebP, about 640 px
   wide, about 40 KB) and reuses the existing logos and pose through `getImage`. No new fonts. The title
   screen's script is loaded only on the first-ever visit; `npm run budget` must still pass.
-- The existing e2e shutter and splash tests stay green and gain cases for the title screen (keyboard
-  start, つづきから, Esc), plus one screenshot frame of each beat (forced state, Motion ON).
+- The existing e2e shutter and splash tests stay green and gain cases for the title screen (PRESS START
+  focused, Enter and Esc start), plus one screenshot frame of each beat (forced state, Motion ON).
 
 Estimated 3–4 days for Part B, after Part A (it reuses A1's deep, banner card and "Aqua talks").
 

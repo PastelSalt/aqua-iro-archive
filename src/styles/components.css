@@ -1820,8 +1820,8 @@ html[data-motion='on'] .splash__petal {
   animation: petal-drift 7s var(--ease-float) infinite alternate;
 }
 
-/* beat 3: the visual-novel title screen — her on the right (the key visual), the logo and the menu on the
-   left, PRESS START and the small print on the deep */
+/* beat 3: the title screen — her on the right (the key visual), the logo on the left, PRESS START and the
+   small print on the deep */
 .splash__title {
   position: absolute;
   inset: 0 0 var(--splash-band) 0;
@@ -1831,6 +1831,7 @@ html[data-motion='on'] .splash__petal {
   justify-items: start;
   gap: clamp(18px, 4vh, 36px);
   padding: 40px clamp(20px, 7vw, 112px) 24px;
+  cursor: pointer; /* a click anywhere is PRESS START */
 }
 .splash__title[hidden] {
   display: none;
@@ -1861,100 +1862,15 @@ html[data-motion='on'] .splash__title > :nth-child(2) {
   letter-spacing: 0.5em;
   color: var(--pink-ink);
 }
-/* the menu: game-style rows; the selected one (focused, or under the pointer) gets a crest band and the ⚓
-   cursor. はじめから is selected when the screen opens, as on a game's title screen. */
-.splash__menu {
-  display: grid;
-  justify-items: start;
-  gap: 4px;
-  min-width: min(300px, 100%);
-}
-.splash__menu button {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
-  width: 100%;
-  padding: 10px 22px 10px 40px;
-  color: var(--navy);
-  font: 700 var(--step-1) / 1.15 var(--font-jp-round);
-  letter-spacing: 0.08em;
-  text-align: left;
-  transition:
-    translate var(--dur-2) var(--ease-float),
-    color var(--dur-2);
-}
-.splash__menu button small {
-  font: 700 var(--label-s) / 1 var(--font-display);
-  letter-spacing: 0.24em;
-  color: var(--pink-ink);
-}
-.splash__menu button::after {
-  content: '';
-  position: absolute;
-  inset: 2px 0;
-  z-index: -1;
-  border-radius: 6px;
-  background: linear-gradient(90deg, rgb(255 251 254 / 0.95), rgb(255 251 254 / 0.6));
-  box-shadow: var(--sh-1);
-  transform: skewX(-12deg);
-  transition:
-    background var(--dur-2),
-    box-shadow var(--dur-2);
-}
-.splash__menu button::before {
-  content: '⚓';
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  translate: -6px -50%;
-  font-size: 16px;
-  color: var(--aqua-pink-deep);
-  opacity: 0;
-  transition:
-    opacity var(--dur-1),
-    translate var(--dur-2) var(--ease-float);
-}
-.splash__menu button:is(:hover, :focus) {
-  translate: 8px 0;
-  color: #fff;
-}
-.splash__menu button:is(:hover, :focus) small {
-  color: rgb(255 255 255 / 0.85);
-}
-.splash__menu button:is(:hover, :focus)::after {
-  background: var(--crest);
-  box-shadow: var(--sh-2);
-}
-.splash__menu button:is(:hover, :focus)::before {
-  opacity: 1;
-  translate: 0 -50%;
-  color: #fff;
-}
-.splash__menu button:focus-visible {
-  outline: none;
-}
-.splash__menu button:focus-visible::after {
-  outline: 3px solid var(--navy);
-  outline-offset: 2px;
-}
-.splash__config {
-  display: grid;
-  gap: 2px;
-  width: 100%;
-  padding-left: 28px;
-}
-.splash__config[hidden] {
-  display: none;
-}
-.splash__config button {
-  font-size: var(--step-0);
-}
 /* PRESS START and the small print sit on the deep */
 .splash__press {
   position: absolute;
   left: 50%;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
   bottom: calc(var(--splash-band) * -0.5 - 1px);
   translate: -50% 50%;
   margin: 0;
@@ -1971,6 +1887,10 @@ html[data-motion='on'] .splash__title > :nth-child(2) {
 }
 html[data-motion='on'] .splash__press {
   animation: press-blink 1.6s var(--ease-float) infinite;
+}
+.splash__press:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 .splash__ver,
 .splash__copy {
@@ -2046,10 +1966,7 @@ html[data-motion='on'] .splash__press {
       180deg,
       rgb(255 251 254 / 0.92) 0%,
       rgb(255 251 254 / 0.55) 24%,
-      transparent 40%,
-      transparent 52%,
-      rgb(255 251 254 / 0.7) 70%,
-      rgb(255 251 254 / 0.9) 100%
+      transparent 40%
     );
   }
   .splash__title {
@@ -2063,14 +1980,6 @@ html[data-motion='on'] .splash__press {
   }
   .splash__title-logo b {
     font-size: var(--step-1);
-  }
-  .splash__menu {
-    justify-items: stretch;
-    width: min(320px, 100%);
-  }
-  .splash__menu button {
-    font-size: var(--step-0);
-    padding-block: 9px;
   }
   .splash__press {
     font-size: var(--step--1);

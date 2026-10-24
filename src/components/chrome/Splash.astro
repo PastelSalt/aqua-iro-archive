@@ -5,10 +5,10 @@
  *  2. the harbour — her under-the-sea key visual, softly blurred; the logo, NOW LOADING bobbing like buoys,
  *     a tide gauge with the Moeko flower riding the waterline and the percentage, and TIPS in the Talk box
  *     in her voice, over a low band of the deep;
- *  3. a visual-novel title screen (first-ever visit only, or a tour replay): the key visual comes into focus
- *     with her on the right, the logo and はじめから / つづきから / あくあ時間 / 設定 on the left, and
- *     PRESS START, a version line and a copyright line on the deep. Between 2 and 3 the tide comes in over
- *     the screen and goes back out, like the page-switch shutter.
+ *  3. a title screen (first-ever visit only, or a tour replay): the key visual comes into focus with her on
+ *     the right and the logo on the left, and PRESS START, a version line and a copyright line on the deep.
+ *     No menu: a website needs no "continue" or "config"; everything is in the dock. Between 2 and 3 the
+ *     tide comes in over the screen and goes back out, like the page-switch shutter.
  * Leaving, the deep surges over the screen and drains away. Later sessions get beat 2 only (1.6–3.2 s).
  * Skip (▸▸, Esc) always works. html[data-splash=seen] hides it before paint. Motion OFF: still frames, no
  * studio beat, no tide. Lines are fan-written.
@@ -108,39 +108,9 @@ const TIPS = [
       <b>AQUA IRO ARCHIVE</b>
       <span lang="ja">あくあ色アーカイブ</span>
     </div>
-    <nav class="splash__menu" aria-label="Title menu">
-      <button type="button" data-menu="start">
-        <span lang="ja">はじめから</span>
-        <small lang="en">START</small>
-      </button>
-      <button type="button" data-menu="continue" hidden>
-        <span lang="ja">つづきから</span>
-        <small lang="en">CONTINUE</small>
-      </button>
-      <button type="button" data-menu="time">
-        <span lang="ja">あくあ時間</span>
-        <small lang="en">AQUA TIME</small>
-      </button>
-      <button type="button" data-menu="config" aria-expanded="false">
-        <span lang="ja">設定</span>
-        <small lang="en">CONFIG</small>
-      </button>
-      <div class="splash__config" hidden>
-        <button type="button" data-menu="motion">
-          MOTION <b data-menu-motion></b>
-        </button>
-        <button type="button" data-menu="lang">
-          JP / EN <b data-menu-lang></b>
-        </button>
-        <button type="button" data-menu="bgm">
-          <span lang="ja">BGMをつけて出航</span>
-          <small lang="en">Set sail with music ♪</small>
-        </button>
-      </div>
-    </nav>
-    <p class="splash__press" aria-hidden="true">
+    <button type="button" class="splash__press" data-splash-start>
       PRESS START · クリックで出航
-    </p>
+    </button>
     <small class="splash__ver num">ver. 2018.08.08 – 2024.08.28</small>
     <small class="splash__copy">
       © COVER Corp. · fan site by Moeko Works <MoekoFlower class="splash__copy-flower" />
@@ -170,8 +140,7 @@ const TIPS = [
 </div>
 
 <script>
-  import { navigate } from 'astro:transitions/client';
-  import { markSplashSeen, toggleLang, toggleMotion } from '../../lib/prefs';
+  import { markSplashSeen } from '../../lib/prefs';
   import { KEYS, read, write } from '../../lib/storage';
 
   const MIN_MS = 1600; // long enough to read the logos, short enough not to be in the way
@@ -235,48 +204,12 @@ const TIPS = [
     const showTitle = () => {
       root.dataset.beat = 'title';
       title.hidden = false;
-      const last = read<string | null>(KEYS.lastChapter, null);
-      const cont = root.querySelector<HTMLButtonElement>('[data-menu="continue"]')!;
-      cont.hidden = !last || last === location.pathname;
-      const motionLabel = root.querySelector<HTMLElement>('[data-menu-motion]')!;
-      const langLabel = root.querySelector<HTMLElement>('[data-menu-lang]')!;
-      const sync = () => {
-        motionLabel.textContent = html.dataset.motion === 'on' ? 'ON' : 'OFF';
-        langLabel.textContent = html.dataset.lang === 'en' ? 'EN' : 'JP';
-      };
-      sync();
-      const menu = Array.from(title.querySelectorAll<HTMLButtonElement>('button'));
-      menu[0]!.focus();
-      title.addEventListener('click', (e) => {
-        const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-menu]');
-        if (!b) return leave(); // a click anywhere else is PRESS START
-        const m = b.dataset.menu;
-        if (m === 'start') leave();
-        else if (m === 'continue') leave(() => void navigate(read<string>(KEYS.lastChapter, '/')));
-        else if (m === 'time') leave(() => window.dispatchEvent(new CustomEvent('aia:time-open')));
-        else if (m === 'config') {
-          const panel = title.querySelector<HTMLElement>('.splash__config')!;
-          panel.hidden = !panel.hidden;
-          b.setAttribute('aria-expanded', String(!panel.hidden));
-        } else if (m === 'motion') {
-          toggleMotion();
-          sync();
-        } else if (m === 'lang') {
-          toggleLang();
-          sync();
-        }
-        if (m === 'bgm')
-          // this click is the gesture that starts the official-YouTube BGM: never autoplay
-          leave(() => window.dispatchEvent(new CustomEvent('aia:bgm', { detail: { toggle: true } })));
-      });
+      // PRESS START is the one control: a click anywhere, Enter or Esc sets sail
+      title.querySelector<HTMLButtonElement>('[data-splash-start]')!.focus();
+      title.addEventListener('click', () => leave());
       title.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') return leave();
-        if (e.key !== 'Tab') return;
-        const items = menu.filter((x) => x.offsetParent);
-        const i = items.indexOf(document.activeElement as HTMLButtonElement);
-        const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i + 1) % items.length;
-        e.preventDefault();
-        items[next]!.focus();
+        if (e.key === 'Escape') leave();
+        else if (e.key === 'Tab') e.preventDefault(); // nothing else to move to: focus stays put
       });
     };
 

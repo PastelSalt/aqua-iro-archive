@@ -62,6 +62,4 @@ export const KEYS = {
   replay: 'aia:replay',
   /** the loading screen's title screen has been seen (first-ever visit only; FULL-UPDATE-PLAN §B2) */
   titleSeen: 'aia:title',
-  /** the last chapter page visited, for the title screen's つづきから */
-  lastChapter: 'aia:last',
 } as const;
