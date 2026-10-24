@@ -8,7 +8,7 @@
  */
 import type { TransitionBeforePreparationEvent } from 'astro:transitions/client';
 
-type Info = { no: string; en: string; ja: string; tint: string; id: string; pose: string };
+type Info = { no: string; en: string; ja: string; tint: string; id: string };
 const SEEN = 'aia:eyecatch';
 const FLOWER = 'aia:flower'; // the once-per-session flower bubble (FULL-UPDATE-PLAN §B3)
 const CLOSE_MS = 220;
@@ -40,9 +40,6 @@ function fill(sh: HTMLElement, info: Info, eyecatch: boolean) {
   sh.querySelector('.shutter__no')!.textContent = info.no.replace('NO.', 'No.');
   sh.querySelector('.shutter__en')!.textContent = info.en.toUpperCase();
   sh.querySelector('.shutter__ja')!.textContent = info.ja;
-  const pose = sh.querySelector<HTMLImageElement>('.shutter__pose')!;
-  if (eyecatch && info.pose) pose.src = info.pose;
-  sh.classList.toggle('is-eyecatch', eyecatch && !!info.pose);
   let flower = false;
   if (eyecatch) {
     try {
@@ -113,7 +110,6 @@ document.addEventListener('astro:before-preparation', (ev) => {
     ja: 'あくあ色アーカイブ',
     tint: '--lavender',
     id: path,
-    pose: '',
   };
   const eyecatch = !!map[path] && !seen().includes(info.id);
   fill(sh, info, eyecatch);
@@ -135,5 +131,5 @@ document.addEventListener('astro:after-swap', () => {
   closed = false;
   sh.classList.remove('is-closing', 'is-holding');
   sh.classList.add('is-opening');
-  setTimeout(() => sh.classList.remove('is-opening', 'is-eyecatch', 'has-flower'), OPEN_MS + 40);
+  setTimeout(() => sh.classList.remove('is-opening', 'has-flower'), OPEN_MS + 40);
 });

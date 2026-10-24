@@ -766,30 +766,6 @@ html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   rotate: 12deg;
   filter: drop-shadow(0 3px 4px rgb(59 69 131 / 0.25));
 }
-/* eyecatch: her pose peeks over the ticket's top edge, from behind it */
-.shutter__pose {
-  display: none;
-  position: absolute;
-  z-index: -1;
-  bottom: calc(100% - 26px);
-  left: 50%;
-  height: min(34vh, 260px);
-  width: auto;
-  translate: -50% 0;
-  filter: drop-shadow(0 10px 18px rgb(20 24 60 / 0.35));
-}
-.shutter.is-eyecatch .shutter__pose {
-  display: block;
-}
-@keyframes eyecatch-peek {
-  from {
-    translate: -50% 40%;
-    opacity: 0;
-  }
-}
-.shutter.is-holding .shutter__pose {
-  animation: eyecatch-peek 340ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-}
 .shutter__bubbles {
   position: absolute;
   inset: 0;

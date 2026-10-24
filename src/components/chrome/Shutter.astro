@@ -3,28 +3,15 @@
  * Chapter-change "tide shutter" (FULL-UPDATE-PLAN §B1): the deep — two navy wave layers with Aqua's crest —
  * rises over the screen carrying a paper ticket with the destination's number and name (its tape in the
  * chapter tint), then drains up off the top on the new page. The first visit to each chapter in a session
- * holds ~700 ms as an anime eyecatch: the chapter's official pose peeks over the ticket, bubbles rise, and a
- * tiny production credit shows (skippable). The ticket's corner seal is the Moeko Works flower.
- * Persisted across ClientRouter swaps; driven by src/scripts/shutter.ts. Motion OFF: no shutter.
+ * holds ~700 ms as an anime eyecatch: the ticket settles, bubbles rise, and a tiny production credit shows
+ * (skippable). No character art: the type and the tint carry it. The ticket's corner seal is the Moeko
+ * Works flower. Persisted across ClientRouter swaps; driven by src/scripts/shutter.ts. Motion OFF: no shutter.
  */
-import { getImage } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import { CHAPTERS } from '../../lib/chapters';
-import { CHAPTER_ART } from '../../lib/chapter-art';
 import MoekoFlower from '../ui/MoekoFlower.astro';
 
-const poses = import.meta.glob<{ default: ImageMetadata }>('../../assets/poses/*.webp', { eager: true });
 const data = Object.fromEntries(
-  await Promise.all(
-    CHAPTERS.map(async (c) => {
-      const mod = poses[`../../assets/poses/${CHAPTER_ART[c.id].pose}.webp`];
-      const img = mod ? await getImage({ src: mod.default, height: 360, format: 'webp', quality: 70 }) : null;
-      return [
-        c.href,
-        { no: c.no, en: c.title.en, ja: c.title.ja, tint: c.tint, id: c.id, pose: img?.src ?? '' },
-      ];
-    }),
-  ),
+  CHAPTERS.map((c) => [c.href, { no: c.no, en: c.title.en, ja: c.title.ja, tint: c.tint, id: c.id }]),
 );
 ---
 
@@ -39,7 +26,6 @@ const data = Object.fromEntries(
   <i class="shutter__wave shutter__wave--front"></i>
   <div class="shutter__card">
     <div class="shutter__ticket">
-      <img class="shutter__pose" alt="" decoding="async" />
       <span class="shutter__tape"></span>
       <span class="shutter__no num"></span>
       <b class="shutter__en"></b>
