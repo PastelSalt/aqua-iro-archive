@@ -1,7 +1,8 @@
 /**
- * Umami API client for /keeper (EXECUTIONPLAN §15.4). Umami Cloud authenticates with an API key
- * (UMAMI_API_KEY, x-umami-api-key header, UMAMI_API_URL=https://api.umami.is/v1); a self-hosted Umami with a
- * user and password (token cached 12 h). Responses cached 5 min per range.
+ * Umami API client for /keeper (EXECUTIONPLAN §15.4). With UMAMI_API_KEY: a self-hosted Umami v3 key
+ * (umami_…) goes as a Bearer token; an Umami Cloud key (UMAMI_API_URL=https://api.umami.is/v1) as the
+ * x-umami-api-key header. Without one: a self-hosted user and password (token cached 12 h).
+ * Responses cached 5 min per range.
  * Endpoint shapes are isolated here so a version change touches one file — verify paths against the installed
  * Umami version when it is deployed (Umami v3: metrics type `path` instead of v2's `url`).
  */
@@ -20,7 +21,10 @@ export function umamiConfigured(): boolean {
 }
 
 async function authHeaders(): Promise<Record<string, string>> {
-  if (UMAMI_API_KEY) return { 'x-umami-api-key': UMAMI_API_KEY };
+  if (UMAMI_API_KEY)
+    return UMAMI_API_KEY.startsWith('umami_')
+      ? { Authorization: `Bearer ${UMAMI_API_KEY}` }
+      : { 'x-umami-api-key': UMAMI_API_KEY };
   return { Authorization: `Bearer ${await login()}` };
 }
 
