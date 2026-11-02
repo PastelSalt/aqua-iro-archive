@@ -1,16 +1,27 @@
 /**
- * Umami API client for /keeper (EXECUTIONPLAN §15.4). Token cached 12 h; responses cached 5 min per range.
+ * Umami API client for /keeper (EXECUTIONPLAN §15.4). Umami Cloud authenticates with an API key
+ * (UMAMI_API_KEY, x-umami-api-key header, UMAMI_API_URL=https://api.umami.is/v1); a self-hosted Umami with a
+ * user and password (token cached 12 h). Responses cached 5 min per range.
  * Endpoint shapes are isolated here so a version change touches one file — verify paths against the installed
  * Umami version when it is deployed (Umami v3: metrics type `path` instead of v2's `url`).
  */
-import { UMAMI_API_URL, UMAMI_API_USER, UMAMI_API_PASSWORD } from 'astro:env/server';
+import { UMAMI_API_URL, UMAMI_API_KEY, UMAMI_API_USER, UMAMI_API_PASSWORD } from 'astro:env/server';
 import { PUBLIC_UMAMI_WEBSITE_ID } from 'astro:env/client';
 
 let token: { value: string; at: number } | null = null;
 const cache = new Map<string, { at: number; data: unknown }>();
 
 export function umamiConfigured(): boolean {
-  return !!(UMAMI_API_URL && UMAMI_API_USER && UMAMI_API_PASSWORD && PUBLIC_UMAMI_WEBSITE_ID);
+  return !!(
+    UMAMI_API_URL &&
+    PUBLIC_UMAMI_WEBSITE_ID &&
+    (UMAMI_API_KEY || (UMAMI_API_USER && UMAMI_API_PASSWORD))
+  );
+}
+
+async function authHeaders(): Promise<Record<string, string>> {
+  if (UMAMI_API_KEY) return { 'x-umami-api-key': UMAMI_API_KEY };
+  return { Authorization: `Bearer ${await login()}` };
 }
 
 async function login(): Promise<string> {
@@ -31,10 +42,10 @@ async function get<T>(path: string, params: Record<string, string | number>, ret
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < 5 * 60_000) return hit.data as T;
   const r = await fetch(`${UMAMI_API_URL}/websites/${PUBLIC_UMAMI_WEBSITE_ID}${key}`, {
-    headers: { Authorization: `Bearer ${await login()}` },
+    headers: { Accept: 'application/json', ...(await authHeaders()) },
     signal: AbortSignal.timeout(8000),
   });
-  if (r.status === 401 && retry) {
+  if (r.status === 401 && retry && !UMAMI_API_KEY) {
     token = null;
     return get(path, params, false);
   }

@@ -68,7 +68,10 @@ const [b, s] = await Promise.all([boardStats(db, 7), getSettings(db, true)]);
       Visitors <span class="k-pill" data-updated></span>
     </h2>
     {!umamiConfigured() && (
-      <p class="k-item__meta">Visitor stats unavailable — set UMAMI_API_* and PUBLIC_UMAMI_WEBSITE_ID.</p>
+      <p class="k-item__meta">
+        Visitor stats unavailable — set UMAMI_API_URL, UMAMI_API_USER, UMAMI_API_PASSWORD and
+        PUBLIC_UMAMI_WEBSITE_ID in Vercel, then redeploy.
+      </p>
     )}
     <dl class="k-kv" data-vstats></dl>
     <div data-chart-visitors style="margin-top:12px;min-height:180px"></div>

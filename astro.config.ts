@@ -60,6 +60,7 @@ export default defineConfig({
       UMAMI_API_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
       UMAMI_API_USER: envField.string({ context: 'server', access: 'secret', optional: true }),
       UMAMI_API_PASSWORD: envField.string({ context: 'server', access: 'secret', optional: true }),
+      UMAMI_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
       PUBLIC_UMAMI_WEBSITE_ID: envField.string({ context: 'client', access: 'public', optional: true }),
       PUBLIC_UMAMI_SRC: envField.string({ context: 'client', access: 'public', default: '/s/ui.js' }),
       PUBLIC_UMAMI_HOST: envField.string({ context: 'client', access: 'public', default: '/s' }),
