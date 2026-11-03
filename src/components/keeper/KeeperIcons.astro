@@ -1,0 +1,102 @@
+---
+/**
+ * The Keeper's icon sprite (docs/KEEPER-UPDATE-PLAN.md §7): Phosphor duotone icons (MIT, @phosphor-icons/core)
+ * copied in at build time as #k-<name>, the same way the public dock's are. Only the files listed here are
+ * bundled. Use <KIcon name="…" />, or <svg class="k-ico"><use href="#k-…"/></svg> from scripts.
+ */
+const files = import.meta.glob<string>(
+  [
+    '/node_modules/@phosphor-icons/core/assets/duotone/gauge-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/tray-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/note-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/funnel-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/chart-bar-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/sparkle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/scroll-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/bug-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/gear-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/user-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/sign-out-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/arrow-square-out-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/shield-check-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/warning-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/warning-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/check-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/x-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/info-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/copy-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/download-simple-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/key-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/lock-key-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/anchor-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/calendar-dots-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/pause-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/eye-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/clock-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/globe-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/device-mobile-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/link-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/cursor-click-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/sliders-horizontal-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/magnifying-glass-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/trash-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/arrow-counter-clockwise-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/arrow-right-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/monitor-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/translate-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/map-pin-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/broadcast-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/palette-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/sailboat-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/vinyl-record-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/scissors-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/chat-circle-dots-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/music-notes-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/play-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/lightning-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/pulse-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/list-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/x-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/check-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/plus-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/users-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/house-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/clock-countdown-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/chart-line-up-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/flag-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/hand-pointing-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/shield-warning-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/chats-circle-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/archive-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/timer-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/hourglass-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/sun-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/calendar-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/paper-plane-tilt-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/eye-slash-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/keyboard-duotone.svg',
+    '/node_modules/@phosphor-icons/core/assets/duotone/question-duotone.svg',
+  ],
+  { query: '?raw', import: 'default', eager: true },
+);
+const symbols = Object.entries(files)
+  .map(([path, svg]) => {
+    const name = path.split('/').pop()!.replace('-duotone.svg', '');
+    const inner = svg
+      .replace(/^[\s\S]*?<svg[^>]*>/, '')
+      .replace(/<\/svg>\s*$/, '')
+      .replace(' opacity="0.2"', ' style="opacity:var(--ph-op,0.22)"');
+    return `<symbol id="k-${name}" viewBox="0 0 256 256"><g fill="currentColor">${inner}</g></symbol>`;
+  })
+  .join('');
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="0"
+  height="0"
+  style="position:absolute"
+  aria-hidden="true"
+  focusable="false"
+  set:html={`<defs>${symbols}</defs>`}
+/>

@@ -9,6 +9,14 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
   const needsAdmin =
     (isKeeperPage && !open) || p.startsWith('/api/admin') || p.startsWith('/_actions/keeper.');
   const needsSession = p.startsWith('/keeper/two-factor/setup');
+  // `astro dev` with KEEPER_PREVIEW=1 only (compiled out of builds): a stand-in admin, no sign-in
+  if (import.meta.env.DEV && (needsAdmin || needsSession)) {
+    const { keeperPreview, PREVIEW_ADMIN } = await import('./server/dev/preview');
+    if (keeperPreview()) {
+      ctx.locals.admin = PREVIEW_ADMIN;
+      return next();
+    }
+  }
   if (needsAdmin || needsSession) {
     const { auth } = await import('./server/auth');
     const s = await auth().api.getSession({ headers: ctx.request.headers });

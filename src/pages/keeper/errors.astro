@@ -1,31 +1,90 @@
 ---
+/**
+ * Errors (docs/KEEPER-UPDATE-PLAN.md §6.7): server errors grouped by route and message, with how often, first and
+ * last seen, and the latest stack. ?since=24h|7d|all.
+ */
+import { and, desc, gte } from 'drizzle-orm';
 import Keeper from '../../layouts/Keeper.astro';
-import { desc } from 'drizzle-orm';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
 import { appErrors } from '../../server/db/schema';
+import { ago, dateTime, num } from '../../lib/keeper-format';
 export const prerender = false;
-const list = await dbTx().select().from(appErrors).orderBy(desc(appErrors.at)).limit(200);
+const since = (['24h', '7d', 'all'] as const).find((s) => s === Astro.url.searchParams.get('since')) ?? '7d';
+const from = since === 'all' ? null : new Date(Date.now() - (since === '24h' ? 1 : 7) * 86400_000);
+const list = await dbTx()
+  .select()
+  .from(appErrors)
+  .where(from ? and(gte(appErrors.at, from)) : undefined)
+  .orderBy(desc(appErrors.at))
+  .limit(500);
+type E = (typeof list)[number];
+const groups = [
+  ...list
+    .reduce((m, e) => {
+      const k = `${e.route}\u0000${e.message}`;
+      const g = m.get(k);
+      if (g) {
+        g.count++;
+        g.first = e.at;
+      } else
+        m.set(k, { route: e.route, message: e.message, count: 1, first: e.at, last: e.at, latest: e as E });
+      return m;
+    }, new Map<string, { route: string; message: string; count: number; first: Date; last: Date; latest: E }>())
+    .values(),
+];
 ---
 
 <Keeper title="Errors" active="/keeper/errors">
-  <h1>
-    Errors <span class="k-pill">latest 200</span>
-  </h1>
-  {list.length === 0 && <p class="k-card">No errors. ⚓</p>}
-  <ol style="list-style:none;display:grid;gap:10px">
-    {list.map((e) => (
-      <li class="k-card">
-        <div class="k-item__meta">
-          <b>{e.route}</b>
-          <time>{e.at.toISOString()}</time>
+  <PageHead
+    title="Errors"
+    icon="bug"
+    hint="Server errors the site logged, grouped when the same thing failed the same way. Visitors never see these details."
+  >
+    <nav class="k-seg" aria-label="Period">
+      {(['24h', '7d', 'all'] as const).map((s) => (
+        <a href={`/keeper/errors?since=${s}`} aria-current={since === s ? 'page' : undefined}>
+          {s === 'all' ? 'All' : s === '24h' ? '24 hours' : '7 days'}
+        </a>
+      ))}
+    </nav>
+  </PageHead>
+  <p class="k-hint">
+    {num(list.length)} {list.length === 1 ? 'error' : 'errors'} in {num(groups.length)}{' '}
+    {groups.length === 1 ? 'group' : 'groups'}
+    {list.length >= 500 ? ' (the newest 500)' : ''}
+  </p>
+  {groups.length === 0 && (
+    <div class="k-state k-state--calm">
+      <KIcon name="check-circle" />
+      <p>
+        No errors {since === 'all' ? 'recorded' : `in the last ${since === '24h' ? '24 hours' : '7 days'}`}.
+        ⚓
+      </p>
+    </div>
+  )}
+  <ol class="k-rows">
+    {groups.map((g) => (
+      <li class="k-row k-row--plain">
+        <span class="k-row__icon k-row__icon--danger">
+          <KIcon name="bug" />
+        </span>
+        <div class="k-row__main">
+          <p class="k-row__title">{g.message}</p>
+          <p class="k-row__meta">
+            <code class="k-pill">{g.route}</code>
+            <span class="k-pill k-pill--danger">×{num(g.count)}</span>
+            <span title={dateTime(g.last)}>last {ago(g.last)}</span>
+            {g.count > 1 && <span title={dateTime(g.first)}>first {ago(g.first)}</span>}
+          </p>
+          {g.latest.stack && (
+            <details>
+              <summary>Latest stack trace</summary>
+              <pre>{g.latest.stack}</pre>
+            </details>
+          )}
         </div>
-        <p>{e.message}</p>
-        {e.stack && (
-          <details>
-            <summary>stack</summary>
-            <pre style="white-space:pre-wrap;font-size:12px">{e.stack}</pre>
-          </details>
-        )}
       </li>
     ))}
   </ol>

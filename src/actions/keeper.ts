@@ -8,6 +8,12 @@ import { sql } from 'drizzle-orm';
 import { DISCORD_WEBHOOK_URL } from 'astro:env/server';
 
 async function requireAdmin(ctx: ActionAPIContext) {
+  // `astro dev` with KEEPER_PREVIEW=1 only (compiled out of builds): the stand-in admin on the local database
+  if (import.meta.env.DEV) {
+    const { keeperPreview, PREVIEW_ADMIN } = await import('../server/dev/preview');
+    if (keeperPreview())
+      return { actor: PREVIEW_ADMIN.id, db: (await import('../server/db/pool')).dbTx() as never };
+  }
   const { auth } = await import('../server/auth');
   const s = await auth().api.getSession({ headers: ctx.request.headers });
   const u = s?.user as { id: string; twoFactorEnabled?: boolean | null } | undefined;

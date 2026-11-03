@@ -1,194 +1,259 @@
 ---
-/** Keeper overview (EXECUTIONPLAN §15.3): visitors (Umami), archive insights, Talk, board, web vitals, health. */
+/**
+ * Keeper dashboard (docs/KEEPER-UPDATE-PLAN.md §6.1), after the Kotoha admin's: welcome card, what needs you,
+ * the board, the archive, then visitors (fixed periods, chart, range details, grouped breakdowns) and a privacy
+ * note. Board and archive render on the server; visitors load in the browser from /api/admin/stats.
+ */
+import { sql } from 'drizzle-orm';
 import Keeper from '../../layouts/Keeper.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
-import { boardStats } from '../../server/board/moderation';
+import { attention } from '../../server/board/moderation';
 import { getSettings } from '../../server/settings';
-import { umamiConfigured } from '../../server/umami';
+import { labels } from '../../server/labels';
+import { rows } from '../../server/db/types';
+import { CHAPTERS } from '../../lib/chapters';
+import { num, ago, dateTime, date, today } from '../../lib/keeper-format';
 export const prerender = false;
-const db = dbTx() as never;
-const [b, s] = await Promise.all([boardStats(db, 7), getSettings(db, true)]);
+
+const db = dbTx();
+const [need, s, L, byStatus] = await Promise.all([
+  attention(db as never),
+  getSettings(db as never, true),
+  labels(),
+  db.execute(sql`SELECT status::text AS status, count(*)::int AS n,
+      count(*) FILTER (WHERE status = 'removed' AND removed_at > now() - interval '30 days')::int AS recent
+    FROM messages GROUP BY status`),
+]);
+const st = Object.fromEntries(
+  rows<{ status: string; n: number; recent: number }>(byStatus).map((r) => [r.status, r]),
+);
+const n = (k: string) => st[k]?.n ?? 0;
+const allNotes = n('visible') + n('held') + n('under_review') + n('removed');
+const ARCHIVE = [
+  { key: 'streams', label: 'Streams', icon: 'broadcast', href: '/streaming', newest: L.newest.streams },
+  { key: 'clips', label: 'Clips', icon: 'scissors', href: '/clips', newest: L.newest.clips },
+  { key: 'songs', label: 'Songs', icon: 'vinyl-record', href: '/discography', newest: L.newest.songs },
+  { key: 'arts', label: 'Art', icon: 'palette', href: '/arts' },
+  { key: 'events', label: 'Events', icon: 'sailboat', href: '/events', newest: L.newest.events },
+  { key: 'talk', label: 'Talk scenes', icon: 'chats-circle', href: '/' },
+] as const;
+const pageTitles = Object.fromEntries(
+  CHAPTERS.map((c) => [c.href.replace(/\/$/, '') || '/', `${c.title.en} (${c.href})`]),
+);
+const calm = need.reported + need.held + need.errors24 === 0;
 ---
 
-<Keeper title="Overview" active="/keeper">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-    <h1>Overview</h1>
-    <div class="k-tabs" role="group" aria-label="Range" data-range>
-      {['24h', '7d', '30d', '90d', 'all'].map((r) => (
-        <a href={`#${r}`} data-r={r} aria-current={r === '7d' ? 'page' : undefined}>
-          {r}
+<Keeper title="Dashboard" active="/keeper">
+  <section class="k-card k-card--welcome">
+    <div>
+      <h1 class="k-ticket">
+        <KIcon name="anchor" />
+        Welcome back, keeper
+      </h1>
+      <p style="margin-top:10px">
+        Everything on the archive at a glance: the board first, then the site and its visitors.
+      </p>
+    </div>
+    <p class="k-date">
+      <KIcon name="calendar-dots" />
+      {today()}
+    </p>
+  </section>
+
+  <section aria-labelledby="h-need">
+    <h2 class="k-sr" id="h-need">
+      Needs you
+    </h2>
+    <div class="k-attn">
+      {need.reported > 0 && (
+        <a class="k-alert k-alert--warn" href="/keeper/queue">
+          <KIcon name="flag" />
+          <span>
+            <b>{need.reported}</b>
+            <br />
+            reported {need.reported === 1 ? 'note' : 'notes'}
+          </span>
+          <KIcon name="arrow-right" class="k-alert__go" />
+        </a>
+      )}
+      {need.held > 0 && (
+        <a class="k-alert k-alert--warn" href="/keeper/queue?tab=held">
+          <KIcon name="pause-circle" />
+          <span>
+            <b>{need.held}</b>
+            <br />
+            held {need.held === 1 ? 'note' : 'notes'} to check
+          </span>
+          <KIcon name="arrow-right" class="k-alert__go" />
+        </a>
+      )}
+      {need.errors24 > 0 && (
+        <a class="k-alert k-alert--danger" href="/keeper/errors">
+          <KIcon name="bug" />
+          <span>
+            <b>{need.errors24}</b>
+            <br />
+            {need.errors24 === 1 ? 'error' : 'errors'} in the last 24 h
+          </span>
+          <KIcon name="arrow-right" class="k-alert__go" />
+        </a>
+      )}
+      {calm && (
+        <p class="k-alert k-alert--calm">
+          <KIcon name="check-circle" />
+          <span>All calm: nothing reported, held or broken. ⚓</span>
+        </p>
+      )}
+    </div>
+  </section>
+
+  <section aria-labelledby="h-board" style="display:grid;gap:14px">
+    <div class="k-block-head">
+      <h2 class="k-ticket k-ticket--sm" id="h-board">
+        <KIcon name="note" />
+        The board
+      </h2>
+      <p class="k-block-head__note">
+        Posting <b>{s.posting_paused ? 'paused' : 'open'}</b> · newcomer hold{' '}
+        <b>{s.newcomer_hold ? 'on' : 'off'}</b> · last clean-up{' '}
+        {s.last_cron_at ? `${ago(s.last_cron_at)} (${dateTime(s.last_cron_at)})` : 'never'}
+      </p>
+    </div>
+    <div class="k-tiles">
+      <a class="k-tile" href="/keeper/notes?status=visible">
+        <span class="k-tile__top">
+          <span class="k-tile__icon">
+            <KIcon name="eye" />
+          </span>
+          <KIcon name="arrow-right" class="k-tile__go" />
+        </span>
+        <span class="k-tile__label">Visible notes</span>
+        <span class="k-tile__value">
+          {num(n('visible'))}
+          <small>of {num(allNotes)}</small>
+        </span>
+        <span class="k-split" aria-hidden="true">
+          <i style={`width:${allNotes ? (n('visible') / allNotes) * 100 : 0}%`}></i>
+        </span>
+      </a>
+      <a class:list={['k-tile', n('under_review') && 'k-tile--warn']} href="/keeper/queue">
+        <span class="k-tile__top">
+          <span class="k-tile__icon">
+            <KIcon name="flag" />
+          </span>
+          <KIcon name="arrow-right" class="k-tile__go" />
+        </span>
+        <span class="k-tile__label">Under review</span>
+        <span class="k-tile__value">{num(n('under_review'))}</span>
+        <span class="k-tile__sub">hidden after reports</span>
+      </a>
+      <a class:list={['k-tile', n('held') && 'k-tile--warn']} href="/keeper/queue?tab=held">
+        <span class="k-tile__top">
+          <span class="k-tile__icon">
+            <KIcon name="pause-circle" />
+          </span>
+          <KIcon name="arrow-right" class="k-tile__go" />
+        </span>
+        <span class="k-tile__label">Held</span>
+        <span class="k-tile__value">{num(n('held'))}</span>
+        <span class="k-tile__sub">waiting for approval</span>
+      </a>
+      <a class="k-tile k-tile--danger" href="/keeper/notes?status=removed">
+        <span class="k-tile__top">
+          <span class="k-tile__icon">
+            <KIcon name="x-circle" />
+          </span>
+          <KIcon name="arrow-right" class="k-tile__go" />
+        </span>
+        <span class="k-tile__label">Removed (30 days)</span>
+        <span class="k-tile__value">{num(st.removed?.recent ?? 0)}</span>
+        <span class="k-tile__sub">{num(n('removed'))} removed in all</span>
+      </a>
+    </div>
+    <section class="k-card">
+      <div class="k-card__head">
+        <div>
+          <h2>
+            <KIcon name="chart-bar" />
+            Notes and reports
+          </h2>
+          <p class="k-card__sub" data-board-total>
+            Last 30 days
+          </p>
+        </div>
+      </div>
+      <div
+        class="k-chart-box"
+        tabindex="0"
+        data-board-chart
+        aria-label="Notes and reports chart: use the left and right arrow keys to read each day"
+      >
+        <div class="k-skel" style="height:220px"></div>
+      </div>
+      <p class="k-legend k-legend--navy">
+        <span>
+          <i></i>Notes posted
+        </span>
+        <span>
+          <i class="is-inner"></i>Reports
+        </span>
+      </p>
+    </section>
+  </section>
+
+  <section aria-labelledby="h-archive" style="display:grid;gap:14px">
+    <div class="k-block-head">
+      <h2 class="k-ticket k-ticket--sm k-ticket--teal" id="h-archive">
+        <KIcon name="archive" />
+        The archive
+      </h2>
+      <p class="k-block-head__note">Built from the site's data files · each tile opens its page</p>
+    </div>
+    <div class="k-tiles">
+      {ARCHIVE.map((a) => (
+        <a class="k-tile k-tile--teal" href={a.href} target="_blank" rel="noopener">
+          <span class="k-tile__top">
+            <span class="k-tile__icon">
+              <KIcon name={a.icon} />
+            </span>
+            <KIcon name="arrow-square-out" class="k-tile__go" />
+          </span>
+          <span class="k-tile__label">{a.label}</span>
+          <span class="k-tile__value">{num(L.counts[a.key])}</span>
+          <span class="k-tile__sub">{'newest' in a && a.newest ? `latest ${date(a.newest)}` : ' '}</span>
         </a>
       ))}
     </div>
-  </div>
-  <section class="k-card" aria-labelledby="h-board">
-    <h2 id="h-board">Board</h2>
-    <dl class="k-kv">
-      <div>
-        <dt>Held</dt>
-        <dd>
-          <a href="/keeper/queue?tab=held">{b.held}</a>
-        </dd>
-      </div>
-      <div>
-        <dt>Under review</dt>
-        <dd>
-          <a href="/keeper/queue">{b.review}</a>
-        </dd>
-      </div>
-      <div>
-        <dt>Removed (30 d)</dt>
-        <dd>{b.removed30}</dd>
-      </div>
-      <div>
-        <dt>Errors (24 h)</dt>
-        <dd>
-          <a href="/keeper/errors">{b.errors24}</a>
-        </dd>
-      </div>
-      <div>
-        <dt>Last cron</dt>
-        <dd style="font-size:13px">
-          {s.last_cron_at
-            ? new Date(s.last_cron_at).toLocaleString('en-GB', { timeZone: 'Asia/Manila' })
-            : 'never'}
-        </dd>
-      </div>
-      <div>
-        <dt>Posting</dt>
-        <dd style="font-size:13px">
-          {s.posting_paused ? 'PAUSED' : s.newcomer_hold ? 'newcomer hold' : 'open'}
-        </dd>
-      </div>
-    </dl>
-    <div data-chart-board style="margin-top:12px;min-height:180px"></div>
   </section>
-  <section class="k-card" aria-labelledby="h-visitors">
-    <h2 id="h-visitors">
-      Visitors <span class="k-pill" data-updated></span>
-    </h2>
-    {!umamiConfigured() && (
-      <p class="k-item__meta">
-        Visitor stats unavailable — set UMAMI_API_URL, UMAMI_API_KEY and PUBLIC_UMAMI_WEBSITE_ID in Vercel,
-        then redeploy.
-      </p>
-    )}
-    <dl class="k-kv" data-vstats></dl>
-    <div data-chart-visitors style="margin-top:12px;min-height:180px"></div>
-    <div class="k-grid" data-vtables style="margin-top:12px"></div>
-  </section>
-  <section class="k-card" aria-labelledby="h-insights">
-    <h2 id="h-insights">Archive insights · Talk with Aqua · Web vitals</h2>
-    <div class="k-grid" data-insights></div>
-  </section>
+
+  <section style="display:grid;gap:14px" data-visitors data-titles={JSON.stringify(pageTitles)}></section>
+
+  <p class="k-note">
+    <KIcon name="shield-check" />
+    <span>
+      Visitor numbers come from Umami: no cookies, no IP addresses kept. The board stores a salted hash of the
+      poster's IP for 30 days (rate limits and reports), then deletes it. The Keeper itself is never counted.
+    </span>
+  </p>
 </Keeper>
 
 <script>
-  import uPlot from 'uplot';
-  import 'uplot/dist/uPlot.min.css';
-  const el = (sel: string) => document.querySelector<HTMLElement>(sel)!;
-  const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-  const table = (title: string, rows: { x?: string; value?: string; y?: number; total?: number }[]) =>
-    `<div><h3 style="font-size:13px">${esc(title)}</h3><table class="k-table"><tbody>${
-      (rows ?? [])
-        .slice(0, 10)
-        .map(
-          (r) =>
-            `<tr><td>${esc(r.x ?? r.value)}</td><td style="text-align:right">${esc(r.y ?? r.total)}</td></tr>`,
-        )
-        .join('') || '<tr><td>—</td></tr>'
-    }</tbody></table></div>`;
-  let plots: uPlot[] = [];
-  function chart(
-    host: HTMLElement,
-    days: string[],
-    series: { label: string; values: number[]; stroke: string }[],
-  ) {
-    const xs = days.map((d) => new Date(d).getTime() / 1000);
-    const p = new uPlot(
-      {
-        width: host.clientWidth || 600,
-        height: 180,
-        series: [{}, ...series.map((s) => ({ label: s.label, stroke: s.stroke, width: 2 }))],
-        axes: [{}, {}],
-      },
-      [xs, ...series.map((s) => s.values)],
-      host,
-    );
-    plots.push(p);
-  }
-  async function load(range: string) {
-    plots.forEach((p) => p.destroy());
-    plots = [];
-    el('[data-chart-board]').innerHTML = '';
-    el('[data-chart-visitors]').innerHTML = '';
-    const r = await fetch(`/api/admin/stats?range=${range}`);
-    if (!r.ok) return;
-    const d = await r.json();
-    chart(
-      el('[data-chart-board]'),
-      d.board.series.map((x: { day: string }) => x.day),
-      [
-        { label: 'Notes', values: d.board.series.map((x: { notes: number }) => x.notes), stroke: '#C47FB6' },
-        {
-          label: 'Reports',
-          values: d.board.series.map((x: { reports: number }) => x.reports),
-          stroke: '#3B4583',
-        },
-      ],
-    );
-    const v = d.visitors;
-    if (v && !v.error) {
-      const st = v.stats ?? {};
-      const val = (k: string) => (typeof st[k] === 'number' ? st[k] : (st[k]?.value ?? '—'));
-      el('[data-vstats]').innerHTML = ['visitors', 'visits', 'pageviews', 'bounces', 'totaltime']
-        .map((k) => `<div><dt>${k}</dt><dd>${esc(val(k))}</dd></div>`)
-        .join('');
-      const pv = v.pageviews?.pageviews ?? [];
-      const ss = v.pageviews?.sessions ?? [];
-      if (pv.length)
-        chart(
-          el('[data-chart-visitors]'),
-          pv.map((p: { x: string }) => p.x),
-          [
-            { label: 'Pageviews', values: pv.map((p: { y: number }) => p.y), stroke: '#8EC9EE' },
-            { label: 'Visitors', values: ss.map((p: { y: number }) => p.y), stroke: '#C47FB6' },
-          ],
-        );
-      el('[data-vtables]').innerHTML = [
-        ['Top pages', v.paths],
-        ['Referrers', v.referrers],
-        ['Countries', v.countries],
-        ['Devices', v.devices],
-        ['Browsers', v.browsers],
-      ]
-        .map(([t, rows]) => table(t as string, rows as never))
-        .join('');
-      el('[data-updated]').textContent = `updated ${Math.round((Date.now() - v.fetchedAt) / 60000)} min ago`;
-    } else if (v?.error)
-      el('[data-vstats]').innerHTML =
-        `<p class="k-item__meta">Visitor stats unavailable (${esc(v.error)})</p>`;
-    const i = d.insights ?? {};
-    el('[data-insights]').innerHTML = [
-      ['Most-played embeds', i.embeds],
-      ['Most-opened streams', i.streams],
-      ['Top stream searches', i.searches],
-      ['Art opened', i.arts],
-      ['Dock chapter clicks', i.dock],
-      ['Talk: top choices', i.talkChoices],
-      ['Talk: goto', i.talkGoto],
-      ['Web vitals (rating)', i.cwvLcp],
-    ]
-      .map(([t, rows]) => table(t as string, (rows ?? []) as never))
-      .join('');
-  }
-  document.querySelectorAll<HTMLAnchorElement>('[data-range] a').forEach((a) =>
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.querySelectorAll('[data-range] a').forEach((x) => x.removeAttribute('aria-current'));
-      a.setAttribute('aria-current', 'page');
-      void load(a.dataset.r!);
-    }),
-  );
-  void load('7d');
+  import { renderVisitors, boardChart } from '../../scripts/keeper/visitors';
+  import { num } from '../../lib/keeper-format';
+  const host = document.querySelector<HTMLElement>('[data-visitors]')!;
+  const box = document.querySelector<HTMLElement>('[data-board-chart]')!;
+  let drawn = false;
+  renderVisitors(host, {
+    full: false,
+    pageTitles: JSON.parse(host.dataset.titles ?? '{}'),
+    onBoard: (r) => {
+      if (drawn) return;
+      drawn = true;
+      boardChart(box, r.board.series);
+      const t = r.board.series.reduce((a, d) => ({ n: a.n + d.notes, r: a.r + d.reports }), { n: 0, r: 0 });
+      document.querySelector('[data-board-total]')!.textContent =
+        `Last 30 days · ${num(t.n)} notes · ${num(t.r)} reports`;
+    },
+  });
 </script>

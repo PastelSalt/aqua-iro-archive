@@ -1,23 +1,32 @@
 ---
-/** Moderation queue (EXECUTIONPLAN §15.3): keyboard-first (J/K move · A approve · R remove), bulk, 5 s undo. */
+/**
+ * Moderation queue (docs/KEEPER-UPDATE-PLAN.md §6.4): keyboard-first (J/K move · A approve · R remove ·
+ * X select), bulk, 5 s undo — unchanged; laid out as Kotoha-style rows with a crew badge, status and reason
+ * pills, reporters' notes as quotes, keycaps in the page head and a sticky bulk bar.
+ */
 import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
 import { queue } from '../../server/board/moderation';
+import { dateTime, ago, STATUS_LABEL, REASON_LABEL, heldReason } from '../../lib/keeper-format';
 export const prerender = false;
 const tab = Astro.url.searchParams.get('tab') === 'held' ? 'held' : 'reported';
 const items = await queue(dbTx() as never, tab);
 const REASON = ['Spam', 'Hate', 'Sexual', 'Personal info', 'Impersonation', 'Off-topic', 'Other'];
-const fmt = (d: string) => new Date(d).toLocaleString('en-GB', { timeZone: 'Asia/Tokyo' }) + ' JST';
-const rel = (d: string) => {
-  const m = Math.round((Date.now() - new Date(d).getTime()) / 60000);
-  return m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
-};
 ---
 
 <Keeper title="Queue" active="/keeper/queue">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-    <h1>Queue</h1>
-    <nav class="k-tabs" aria-label="Queue tabs">
+  <PageHead
+    title="Queue"
+    icon="tray"
+    hint={
+      tab === 'held'
+        ? 'Notes held before they appeared: by the word list, a busy-period hold or the newcomer hold. Approve to publish.'
+        : 'Notes visitors reported. Approving dismisses the reports; removing upholds them. Actions commit after 5 s.'
+    }
+  >
+    <nav class="k-seg" aria-label="Queue tabs">
       <a href="/keeper/queue" aria-current={tab === 'reported' ? 'page' : undefined}>
         Reported
       </a>
@@ -25,73 +34,109 @@ const rel = (d: string) => {
         Held
       </a>
     </nav>
-  </div>
-  <p class="k-item__meta">
-    Keys: <b>J/K</b> move · <b>A</b> approve · <b>R</b> remove · <b>X</b> select. Actions commit after 5 s
-    (Undo in the toast).
-  </p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end" data-bulk>
-    <button type="button" class="k-btn" data-select-all>
-      Select all
-    </button>
-    <button type="button" class="k-btn k-btn--ok" data-bulk-approve>
-      Approve selected
-    </button>
-    <label class="k-field">
-      <span>Remove reason</span>
-      <select data-bulk-reason>
-        {REASON.map((r) => (
-          <option>{r}</option>
-        ))}
-      </select>
-    </label>
-    <button type="button" class="k-btn k-btn--danger" data-bulk-remove>
-      Remove selected
-    </button>
-  </div>
-  {items.length === 0 && <p class="k-card">Nothing waiting. ⚓</p>}
-  <ol style="list-style:none;display:grid;gap:10px" data-queue>
+  </PageHead>
+
+  {items.length > 0 && (
+    <div class="k-toolbar k-toolbar--sticky" data-bulk>
+      <p class="k-keys" aria-label="Keyboard shortcuts">
+        <span>
+          <kbd>J</kbd>
+          <kbd>K</kbd>move
+        </span>
+        <span>
+          <kbd>A</kbd>approve
+        </span>
+        <span>
+          <kbd>R</kbd>remove
+        </span>
+        <span>
+          <kbd>X</kbd>select
+        </span>
+      </p>
+      <span style="flex:1"></span>
+      <button type="button" class="k-btn k-btn--sm" data-select-all>
+        <KIcon name="check" />
+        Select all
+      </button>
+      <button type="button" class="k-btn k-btn--sm k-btn--ok" data-bulk-approve>
+        <KIcon name="check-circle" />
+        Approve selected
+      </button>
+      <label class="k-field">
+        <span class="k-sr">Reason for removing the selected notes</span>
+        <select data-bulk-reason>
+          {REASON.map((r) => (
+            <option>{r}</option>
+          ))}
+        </select>
+      </label>
+      <button type="button" class="k-btn k-btn--sm k-btn--danger" data-bulk-remove>
+        <KIcon name="x-circle" />
+        Remove selected
+      </button>
+    </div>
+  )}
+
+  {items.length === 0 && (
+    <div class="k-state k-state--calm">
+      <KIcon name="check-circle" />
+      <p>
+        {tab === 'held'
+          ? 'Nothing held. Every note is out on the board.'
+          : 'Nothing reported. All calm on the board. ⚓'}
+      </p>
+    </div>
+  )}
+
+  <ol class="k-rows" data-queue>
     {items.map((m) => (
-      <li class="k-item" data-id={m.id} data-crew={m.crew_no} tabindex="-1" aria-selected="false">
-        <input type="checkbox" aria-label={`Select note #${m.crew_no}`} data-check />
-        <div style="display:grid;gap:6px">
-          <div class="k-item__meta">
-            <b>#{m.crew_no}</b>
-            <span class={`k-pill${m.status !== 'visible' ? ' k-pill--warn' : ''}`}>{m.status}</span>
-            {m.held_reason && <span class="k-pill">held: {m.held_reason}</span>}
-            {m.approved_at && <span class="k-pill">approved before</span>}
-            <time datetime={m.created_at} title={fmt(m.created_at)}>
-              {fmt(m.created_at)} · {rel(m.created_at)}
+      <li class="k-row" data-id={m.id} data-crew={m.crew_no} tabindex="-1" aria-selected="false">
+        <div style="display:grid;gap:8px;justify-items:center">
+          <span class="k-row__crew">#{m.crew_no}</span>
+          <input type="checkbox" class="k-row__check" aria-label={`Select note #${m.crew_no}`} data-check />
+        </div>
+        <div class="k-row__main">
+          <p class="k-row__meta">
+            <span class:list={['k-pill', m.status === 'visible' ? 'k-pill--navy' : 'k-pill--warn']}>
+              {STATUS_LABEL[m.status] ?? m.status}
+            </span>
+            {m.held_reason && <span class="k-pill">held: {heldReason(m.held_reason)}</span>}
+            {m.approved_at && <span class="k-pill k-pill--ok">approved before</span>}
+            <time datetime={m.created_at} title={dateTime(m.created_at)}>
+              {ago(m.created_at)} · {dateTime(m.created_at)}
             </time>
-          </div>
-          <p class="k-item__body">{m.body}</p>
+          </p>
+          <p class="k-row__body">{m.body}</p>
           {m.reasons && (
-            <div class="k-item__meta">
+            <p class="k-row__meta">
+              <KIcon name="flag" />
               {m.reasons.map((r) => (
                 <span class="k-pill k-pill--warn">
-                  {r.reason} ×{r.n}
+                  {REASON_LABEL[r.reason] ?? r.reason} ×{r.n}
                 </span>
               ))}
-            </div>
+            </p>
           )}
           {m.notes && (
-            <ul class="k-item__meta" style="display:grid">
+            <ul class="k-row__quotes" aria-label="What reporters wrote">
               {m.notes.map((n) => (
                 <li>“{n}”</li>
               ))}
             </ul>
           )}
         </div>
-        <div class="k-acts">
-          <button type="button" class="k-btn k-btn--ok" data-approve>
+        <div class="k-row__actions">
+          <button type="button" class="k-btn k-btn--sm k-btn--ok" data-approve>
+            <KIcon name="check-circle" />
             Approve
           </button>
-          <select aria-label={`Remove reason for #${m.crew_no}`} data-reason class="k-btn">
+          <select aria-label={`Reason for removing #${m.crew_no}`} data-reason class="k-btn k-btn--sm">
             {REASON.map((r) => (
               <option>{r}</option>
             ))}
           </select>
-          <button type="button" class="k-btn k-btn--danger" data-remove>
+          <button type="button" class="k-btn k-btn--sm k-btn--danger" data-remove>
+            <KIcon name="x-circle" />
             Remove
           </button>
         </div>
@@ -102,10 +147,9 @@ const rel = (d: string) => {
 
 <script>
   import { actions } from 'astro:actions';
-  import { toast } from '../../scripts/keeper-client';
+  import { toast } from '../../scripts/keeper/ui';
   const list = document.querySelector<HTMLElement>('[data-queue]');
-  const items = () =>
-    Array.from(document.querySelectorAll<HTMLElement>('[data-queue] .k-item:not(.is-done)'));
+  const items = () => Array.from(document.querySelectorAll<HTMLElement>('[data-queue] .k-row:not(.is-done)'));
   let cur = 0;
   const focus = (i: number) => {
     const all = items();
@@ -122,9 +166,10 @@ const rel = (d: string) => {
       try {
         await commit(els.map((e) => e.dataset.id!));
         els.forEach((e) => e.remove());
+        if (!items().length) location.reload(); // show the empty state and the new badge counts
       } catch {
         els.forEach((e) => e.classList.remove('is-done'));
-        toast('Failed — nothing changed.');
+        toast('That failed, so nothing changed.', { kind: 'error' });
       }
     }, 5000);
     toast(label, () => {
@@ -134,22 +179,23 @@ const rel = (d: string) => {
     });
     focus(cur);
   }
+  const crews = (els: HTMLElement[]) => els.map((e) => '#' + e.dataset.crew).join(', ');
   const approve = (els: HTMLElement[]) =>
-    schedule(els, `Approved ${els.map((e) => '#' + e.dataset.crew).join(', ')}`, async (ids) => {
+    schedule(els, `Approved ${crews(els)}`, async (ids) => {
       const { error } = await actions.keeper.approve({ ids });
       if (error) throw error;
     });
   const remove = (els: HTMLElement[], reason: string) =>
-    schedule(els, `Removed ${els.map((e) => '#' + e.dataset.crew).join(', ')} (${reason})`, async (ids) => {
+    schedule(els, `Removed ${crews(els)} (${reason})`, async (ids) => {
       const { error } = await actions.keeper.remove({ ids, reason });
       if (error) throw error;
     });
   list?.addEventListener('click', (e) => {
-    const li = (e.target as HTMLElement).closest<HTMLElement>('.k-item');
-    if (!li) return;
-    if ((e.target as HTMLElement).matches('[data-approve]')) approve([li]);
-    if ((e.target as HTMLElement).matches('[data-remove]'))
-      remove([li], li.querySelector<HTMLSelectElement>('[data-reason]')!.value);
+    const t = (e.target as HTMLElement).closest<HTMLElement>('button');
+    const li = (e.target as HTMLElement).closest<HTMLElement>('.k-row');
+    if (!li || !t) return;
+    if (t.matches('[data-approve]')) approve([li]);
+    if (t.matches('[data-remove]')) remove([li], li.querySelector<HTMLSelectElement>('[data-reason]')!.value);
   });
   const selected = () => items().filter((li) => li.querySelector<HTMLInputElement>('[data-check]')!.checked);
   document

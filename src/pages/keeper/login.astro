@@ -1,43 +1,111 @@
 ---
+/**
+ * Keeper sign in, step 1 of 2 (docs/KEEPER-UPDATE-PLAN.md §6.10), after the Kotoha admin's /login: email +
+ * passphrase with "Show passphrase", a button that says what it's doing, plain messages for each outcome, a
+ * "waking up" hint on slow calls, and the passphrase cleared after a failure. Already signed in: go on.
+ * method="post" so a native submit (script not loaded yet) can never put the passphrase in the URL.
+ */
 import Keeper from '../../layouts/Keeper.astro';
+import AuthCard from '../../components/keeper/AuthCard.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 export const prerender = false;
+
+if (!(import.meta.env.DEV && (await import('../../server/dev/preview')).keeperPreview())) {
+  const { auth } = await import('../../server/auth');
+  const s = await auth()
+    .api.getSession({ headers: Astro.request.headers })
+    .catch(() => null);
+  const u = s?.user as { twoFactorEnabled?: boolean | null } | undefined;
+  if (u) return Astro.redirect(u.twoFactorEnabled ? '/keeper' : '/keeper/two-factor/setup');
+}
 ---
 
 <Keeper title="Sign in" bare>
-  <form class="k-auth k-card" data-login>
-    <h1>⚓ Keeper sign in</h1>
-    <div class="k-field">
-      <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="username" required />
-    </div>
-    <div class="k-field">
-      <label for="pw">Passphrase</label>
-      <input id="pw" type="password" autocomplete="current-password" minlength="14" required />
-    </div>
-    <p class="k-err" role="alert" hidden data-err></p>
-    <button class="k-btn k-btn--navy" type="submit">
-      Sign in
-    </button>
-  </form>
+  <AuthCard title="Keeper sign in" step="Step 1 of 2 · passphrase">
+    <form data-login method="post" action="/keeper/login" novalidate>
+      <div class="k-field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          required
+        />
+      </div>
+      <div class="k-field">
+        <label for="pw">Passphrase</label>
+        <input id="pw" type="password" autocomplete="current-password" required />
+        <label class="k-check">
+          <input type="checkbox" data-show /> Show passphrase
+        </label>
+      </div>
+      <p class="k-err" role="alert" hidden data-err>
+        <KIcon name="warning-circle" />
+        <span></span>
+      </p>
+      <p class="k-hint" hidden data-slow>
+        Waking up the database…
+      </p>
+      <button class="k-btn k-btn--navy k-btn--block" type="submit" data-submit>
+        Sign in
+      </button>
+    </form>
+  </AuthCard>
 </Keeper>
 
 <script>
   import { authClient } from '../../scripts/keeper-client';
   const form = document.querySelector<HTMLFormElement>('[data-login]')!;
   const err = form.querySelector<HTMLElement>('[data-err]')!;
+  const slow = form.querySelector<HTMLElement>('[data-slow]')!;
+  const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+  const email = form.querySelector<HTMLInputElement>('#email')!;
+  const pw = form.querySelector<HTMLInputElement>('#pw')!;
+  const fail = (msg: string) => {
+    err.querySelector('span')!.textContent = msg;
+    err.hidden = false;
+  };
+  form.querySelector<HTMLInputElement>('[data-show]')!.addEventListener('change', (e) => {
+    pw.type = (e.target as HTMLInputElement).checked ? 'text' : 'password';
+  });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
-    const email = (form.querySelector('#email') as HTMLInputElement).value;
-    const password = (form.querySelector('#pw') as HTMLInputElement).value;
-    const { data, error } = await authClient.signIn.email({ email, password });
-    if (error) {
-      err.textContent = error.status === 429 ? 'Too many attempts. Wait 10 minutes.' : 'Sign-in failed.';
-      err.hidden = false;
-      return;
+    if (!email.value.trim() || !pw.value) return fail('Enter your email and passphrase.');
+    submit.disabled = true;
+    submit.textContent = 'Signing in…';
+    const t = setTimeout(() => (slow.hidden = false), 2500);
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: email.value.trim(),
+        password: pw.value,
+      });
+      if (error) {
+        const s = error.status ?? 0;
+        fail(
+          s === 429
+            ? 'Too many attempts. Wait 10 minutes, then try again.'
+            : s >= 500
+              ? 'The server could not check your passphrase right now (a server problem, not a wrong passphrase).'
+              : "That email and passphrase don't match.",
+        );
+        pw.value = '';
+        pw.focus();
+        return;
+      }
+      location.href = (data as { twoFactorRedirect?: boolean })?.twoFactorRedirect
+        ? '/keeper/two-factor'
+        : '/keeper';
+    } catch {
+      fail('No connection. Check your internet and try again.');
+    } finally {
+      clearTimeout(t);
+      slow.hidden = true;
+      submit.disabled = false;
+      submit.textContent = 'Sign in';
     }
-    location.href = (data as { twoFactorRedirect?: boolean })?.twoFactorRedirect
-      ? '/keeper/two-factor'
-      : '/keeper';
   });
+  email.focus();
 </script>

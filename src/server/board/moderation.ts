@@ -172,3 +172,15 @@ export async function boardStats(db: DB, days: number) {
   );
   return { ...now!, series };
 }
+
+/** Keeper sidebar badges and the dashboard's "Needs you" cards (docs/KEEPER-UPDATE-PLAN.md §4.2, §6.1). */
+export async function attention(db: DB) {
+  const [r] = rows<{ reported: number; held: number; errors24: number }>(
+    await db.execute(sql`SELECT
+      (SELECT count(*)::int FROM messages m WHERE m.status = 'under_review'
+         OR (m.status = 'visible' AND EXISTS (SELECT 1 FROM reports r WHERE r.message_id = m.id AND r.resolved_at IS NULL))) AS reported,
+      (SELECT count(*)::int FROM messages WHERE status = 'held') AS held,
+      (SELECT count(*)::int FROM app_errors WHERE at > now() - interval '24 hours') AS errors24`),
+  );
+  return r ?? { reported: 0, held: 0, errors24: 0 };
+}

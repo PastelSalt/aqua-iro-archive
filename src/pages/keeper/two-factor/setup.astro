@@ -1,66 +1,201 @@
 ---
-/** Mandatory TOTP enrollment (EXECUTIONPLAN §15.1). The QR code is rendered locally (uqr), never by a third party. */
+/**
+ * Two-factor setup (docs/KEEPER-UPDATE-PLAN.md §6.10): four numbered steps on one card — confirm the passphrase,
+ * scan the QR code (or copy the secret), save the backup codes (Copy all / Download, and a tick before going
+ * on), enter a code. The QR code is drawn locally (uqr), never by a third party.
+ */
 import Keeper from '../../../layouts/Keeper.astro';
+import AuthCard from '../../../components/keeper/AuthCard.astro';
+import KIcon from '../../../components/keeper/KIcon.astro';
 export const prerender = false;
 ---
 
 <Keeper title="Set up two-factor" bare>
-  <div class="k-auth k-card">
-    <h1>Set up two-factor sign-in</h1>
-    <p>
-      Two-factor is required for the keeper. Confirm your passphrase to get a QR code for your authenticator
-      app.
-    </p>
-    <form data-enable class="k-field">
-      <label for="pw">Passphrase</label>
-      <input id="pw" type="password" autocomplete="current-password" required />
-      <button class="k-btn k-btn--navy" type="submit" style="margin-top:8px">
-        Show QR code
-      </button>
-    </form>
-    <div data-step2 hidden>
-      <div data-qr style="width:220px;margin:8px auto"></div>
-      <p class="k-item__meta">
-        Can't scan? Secret: <code data-secret></code>
-      </p>
-      <h2>Backup codes (shown once — store them offline)</h2>
-      <pre data-codes style="background:#f6f2fb;padding:10px;border-radius:10px"></pre>
-      <form data-confirm class="k-field">
-        <label for="code">Enter the 6-digit code to finish</label>
-        <input id="code" inputmode="numeric" maxlength="6" required />
-        <button class="k-btn k-btn--navy" type="submit" style="margin-top:8px">
-          Turn on two-factor
+  <AuthCard title="Set up two-factor" step="Required for the Keeper · about 2 minutes" wide>
+    <ol class="k-steps">
+      <li class="k-step" data-step="1" data-state="current">
+        <h2>Confirm your passphrase</h2>
+        <form data-enable style="display:grid;gap:10px">
+          <label class="k-field">
+            <span>Passphrase</span>
+            <input type="password" name="pw" autocomplete="current-password" required />
+          </label>
+          <button class="k-btn k-btn--navy" style="justify-self:start">
+            <KIcon name="arrow-right" />
+            Show the QR code
+          </button>
+        </form>
+      </li>
+      <li class="k-step" data-step="2" data-state="next">
+        <h2>Scan the QR code</h2>
+        <p class="k-hint">
+          In an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Aegis…), add an
+          account and scan this.
+        </p>
+        <div class="k-qr" data-qr></div>
+        <details>
+          <summary>Can't scan? Type the secret instead</summary>
+          <p class="k-secret" style="margin-top:8px">
+            <code data-secret></code>
+            <button type="button" class="k-btn k-btn--sm" data-copy-secret>
+              <KIcon name="copy" />
+              Copy
+            </button>
+          </p>
+        </details>
+        <button type="button" class="k-btn k-btn--navy" style="justify-self:start" data-next="3">
+          <KIcon name="arrow-right" />
+          I've scanned it
         </button>
-      </form>
+      </li>
+      <li class="k-step" data-step="3" data-state="next">
+        <h2>Save your backup codes</h2>
+        <p class="k-hint">Each works once, for when your phone isn't at hand. They're shown only now.</p>
+        <ol class="k-codes" data-codes></ol>
+        <div class="k-toolbar">
+          <button type="button" class="k-btn k-btn--sm" data-copy>
+            <KIcon name="copy" />
+            Copy all
+          </button>
+          <button type="button" class="k-btn k-btn--sm" data-download>
+            <KIcon name="download-simple" />
+            Download .txt
+          </button>
+        </div>
+        <label class="k-check">
+          <input type="checkbox" data-saved /> I've saved them somewhere safe
+        </label>
+        <button type="button" class="k-btn k-btn--navy" style="justify-self:start" data-next="4" disabled>
+          <KIcon name="arrow-right" />
+          Continue
+        </button>
+      </li>
+      <li class="k-step" data-step="4" data-state="next">
+        <h2>Enter a code to finish</h2>
+        <form data-confirm style="display:grid;gap:10px">
+          <label class="k-field">
+            <span>6-digit code from the app</span>
+            <input
+              class="k-code"
+              name="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="7"
+              placeholder="••••••"
+            />
+          </label>
+          <button class="k-btn k-btn--navy k-btn--block">
+            <KIcon name="shield-check" />
+            Turn on two-factor
+          </button>
+        </form>
+      </li>
+    </ol>
+    <p class="k-err" role="alert" hidden data-err>
+      <KIcon name="warning-circle" />
+      <span></span>
+    </p>
+    <div class="k-state k-state--calm" hidden data-done>
+      <KIcon name="shield-check" />
+      <p>Two-factor is on. Next time you sign in, you'll need your passphrase and a code.</p>
+      <a class="k-btn k-btn--navy" href="/keeper">
+        Go to the Keeper
+      </a>
     </div>
-    <p class="k-err" role="alert" hidden data-err></p>
-  </div>
+  </AuthCard>
 </Keeper>
 
 <script>
   import { renderSVG } from 'uqr';
   import { authClient } from '../../../scripts/keeper-client';
+  import { h, toast } from '../../../scripts/keeper/ui';
   const err = document.querySelector<HTMLElement>('[data-err]')!;
-  const fail = (m: string) => ((err.textContent = m), (err.hidden = false));
+  const fail = (m: string) => {
+    err.querySelector('span')!.textContent = m;
+    err.hidden = false;
+  };
+  const go = (n: number) => {
+    err.hidden = true;
+    document.querySelectorAll<HTMLElement>('.k-step').forEach((s) => {
+      const i = Number(s.dataset.step);
+      s.dataset.state = i < n ? 'done' : i === n ? 'current' : 'next';
+    });
+    document
+      .querySelector<HTMLElement>(`.k-step[data-step="${n}"]`)
+      ?.querySelector<HTMLElement>('input, button')
+      ?.focus();
+  };
+  let codes: string[] = [];
   document.querySelector<HTMLFormElement>('[data-enable]')!.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const password = (document.querySelector('#pw') as HTMLInputElement).value;
+    const password = String(new FormData(e.target as HTMLFormElement).get('pw'));
     const { data, error } = await authClient.twoFactor.enable({ password });
-    if (error || !data) return fail('Could not start two-factor setup.');
+    if (error || !data)
+      return fail(
+        error?.status === 400 || error?.status === 401
+          ? 'That passphrase is not right.'
+          : 'Could not start two-factor setup.',
+      );
     const uri = (data as { totpURI: string }).totpURI;
-    const qr = document.querySelector<HTMLElement>('[data-qr]')!;
-    qr.innerHTML = renderSVG(uri); // generated locally from our own URI, not user input
-    document.querySelector('[data-secret]')!.textContent = new URL(uri).searchParams.get('secret') ?? '';
-    document.querySelector('[data-codes]')!.textContent = (
-      (data as { backupCodes: string[] }).backupCodes ?? []
-    ).join('\n');
-    document.querySelector<HTMLElement>('[data-step2]')!.hidden = false;
+    document.querySelector<HTMLElement>('[data-qr]')!.innerHTML = renderSVG(uri); // drawn locally from our own URI, not user input
+    const secret = new URL(uri).searchParams.get('secret') ?? '';
+    document.querySelector('[data-secret]')!.textContent = secret.replace(/(.{4})/g, '$1 ').trim();
+    codes = (data as { backupCodes?: string[] }).backupCodes ?? [];
+    document.querySelector('[data-codes]')!.replaceChildren(...codes.map((c) => h('li', { text: c })));
+    document.querySelector('[data-copy-secret]')!.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(secret).catch(() => {});
+      toast('Secret copied');
+    });
+    go(2);
   });
-  document.querySelector<HTMLFormElement>('[data-confirm]')!.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const code = (document.querySelector('#code') as HTMLInputElement).value.trim();
+  document
+    .querySelectorAll<HTMLButtonElement>('[data-next]')
+    .forEach((b) => b.addEventListener('click', () => go(Number(b.dataset.next))));
+  const saved = document.querySelector<HTMLInputElement>('[data-saved]')!;
+  saved.addEventListener('change', () => {
+    document.querySelector<HTMLButtonElement>('[data-next="4"]')!.disabled = !saved.checked;
+  });
+  document.querySelector('[data-copy]')!.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(codes.join('\n')).catch(() => {});
+    toast('Copied');
+  });
+  document.querySelector('[data-download]')!.addEventListener('click', () => {
+    const a = h('a', {
+      href: URL.createObjectURL(
+        new Blob(
+          [
+            `Aqua Iro Keeper backup codes (${new Date().toISOString().slice(0, 10)})\n\n${codes.join('\n')}\n`,
+          ],
+          { type: 'text/plain' },
+        ),
+      ),
+      download: 'aqua-keeper-backup-codes.txt',
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  const confirmForm = document.querySelector<HTMLFormElement>('[data-confirm]')!;
+  const confirmInput = confirmForm.querySelector<HTMLInputElement>('input')!;
+  async function confirm() {
+    const code = confirmInput.value.replace(/\s/g, '');
+    if (!/^\d{6}$/.test(code)) return fail('Enter the 6 digits from the app.');
     const { error } = await authClient.twoFactor.verifyTotp({ code });
-    if (error) return fail('That code did not work — check your phone clock and try again.');
-    location.href = '/keeper';
+    if (error)
+      return fail(
+        (error.status ?? 0) >= 500
+          ? 'The server could not check the code. Try again later.'
+          : 'That code did not work. Check the time on your phone and try the newest code.',
+      );
+    document.querySelector<HTMLElement>('.k-steps')!.hidden = true;
+    err.hidden = true;
+    document.querySelector<HTMLElement>('[data-done]')!.hidden = false;
+  }
+  confirmForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    void confirm();
   });
+  confirmInput.addEventListener(
+    'input',
+    () => /^\d{6}$/.test(confirmInput.value.replace(/\s/g, '')) && void confirm(),
+  );
 </script>

@@ -1,0 +1,40 @@
+---
+/**
+ * The sign-in / two-factor / setup card (docs/KEEPER-UPDATE-PLAN.md §6.10), after the Kotoha admin's /login: a
+ * paper card on the wash with the channel logo, a ticket title, a step line, the Moeko flower and an anchor
+ * tucked on two corners, and a footer under a dashed rule. Slot "foot" fills the right side of the footer.
+ */
+import { Image } from 'astro:assets';
+import channel from '../../assets/logo/channel.png';
+import MoekoFlower from '../ui/MoekoFlower.astro';
+import KIcon from './KIcon.astro';
+interface Props {
+  title: string;
+  step?: string;
+  wide?: boolean;
+}
+const { title, step, wide = false } = Astro.props;
+---
+
+<section class:list={['k-auth', wide && 'k-auth--wide']} aria-labelledby="k-auth-title">
+  <MoekoFlower class="k-auth__deco k-auth__deco--a" />
+  <KIcon name="anchor" class="k-auth__deco k-auth__deco--b" />
+  <Image
+    class="k-auth__logo"
+    src={channel}
+    alt="湊あくあ Minato Aqua Ch."
+    width={200}
+    densities={[1, 2]}
+    loading="eager"
+  />
+  <h1 class="k-ticket k-auth__title" id="k-auth-title">
+    <KIcon name="anchor" />
+    {title}
+  </h1>
+  {step && <p class="k-auth__step">{step}</p>}
+  <slot />
+  <div class="k-auth__foot">
+    <a href="/">View site</a>
+    <slot name="foot" />
+  </div>
+</section>

@@ -1,0 +1,291 @@
+---
+/**
+ * My account (docs/KEEPER-UPDATE-PLAN.md §6.9): who's signed in and 2FA status, new backup codes, change the
+ * passphrase, signed-in devices with "sign out everywhere else", and the lock-out recovery steps.
+ */
+import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
+export const prerender = false;
+const admin = Astro.locals.admin!;
+---
+
+<Keeper title="My account" active="/keeper/account">
+  <PageHead
+    title="My account"
+    icon="user-circle"
+    hint="Your sign-in, two-factor and devices. Every change here asks for your passphrase first."
+  />
+
+  <section class="k-card k-card--welcome">
+    <div style="display:flex;gap:14px;align-items:center">
+      <span class="k-user__avatar" style="width:46px;height:46px;font-size:20px" aria-hidden="true">
+        {admin.email.slice(0, 1).toUpperCase()}
+      </span>
+      <div>
+        <p class="k-row__title">{admin.email}</p>
+        <p class="k-row__meta">
+          <span class="k-pill k-pill--navy">Keeper</span>
+          {admin.twoFactorEnabled ? (
+            <span class="k-pill k-pill--ok">Two-factor on</span>
+          ) : (
+            <span class="k-pill k-pill--danger">Two-factor off</span>
+          )}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="k-grid k-grid--2" style="align-items:start">
+    <section class="k-card">
+      <h2>
+        <KIcon name="key" />
+        Backup codes
+      </h2>
+      <p class="k-card__sub" style="margin:-4px 0 12px">
+        Ten one-time codes for when your phone isn't at hand. Making new ones cancels every old code.
+      </p>
+      <button type="button" class="k-btn k-btn--navy" data-regen>
+        <KIcon name="key" />
+        Make new backup codes
+      </button>
+      <div data-codes hidden style="margin-top:14px;display:grid;gap:10px">
+        <ol class="k-codes" data-code-list></ol>
+        <div class="k-toolbar">
+          <button type="button" class="k-btn k-btn--sm" data-copy>
+            <KIcon name="copy" />
+            Copy all
+          </button>
+          <button type="button" class="k-btn k-btn--sm" data-download>
+            <KIcon name="download-simple" />
+            Download .txt
+          </button>
+        </div>
+        <p class="k-hint">Shown once. Keep them somewhere offline, like a password manager or on paper.</p>
+      </div>
+    </section>
+
+    <section class="k-card">
+      <h2>
+        <KIcon name="lock-key" />
+        Change passphrase
+      </h2>
+      <form data-password style="display:grid;gap:12px">
+        <label class="k-field">
+          <span>Current passphrase</span>
+          <input type="password" name="current" autocomplete="current-password" required />
+        </label>
+        <label class="k-field">
+          <span>New passphrase (14+ characters)</span>
+          <input type="password" name="next" autocomplete="new-password" minlength="14" required />
+        </label>
+        <label class="k-field">
+          <span>New passphrase again</span>
+          <input type="password" name="again" autocomplete="new-password" minlength="14" required />
+        </label>
+        <p class="k-err" role="alert" hidden data-pw-err></p>
+        <button class="k-btn k-btn--navy" style="justify-self:start">
+          <KIcon name="check" />
+          Change passphrase
+        </button>
+        <p class="k-hint">This also signs out every other device.</p>
+      </form>
+    </section>
+  </div>
+
+  <section class="k-card">
+    <div class="k-card__head">
+      <div>
+        <h2>
+          <KIcon name="monitor" />
+          Signed-in devices
+        </h2>
+        <p class="k-card__sub">Sessions last 7 days and renew while you use them.</p>
+      </div>
+      <button type="button" class="k-btn k-btn--danger" data-revoke>
+        <KIcon name="sign-out" />
+        Sign out everywhere else
+      </button>
+    </div>
+    <ol class="k-rows" data-sessions>
+      <li>
+        <div class="k-skel" style="height:60px"></div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="k-card">
+    <h2>
+      <KIcon name="shield-warning" />
+      If you're ever locked out
+    </h2>
+    <ol style="display:grid;gap:8px;padding-left:20px;font-size:14px;line-height:1.6">
+      <li>
+        Use a <b>backup code</b> on the two-factor page (“Use a backup code instead”).
+      </li>
+      <li>
+        If codes are refused too, run <code>npm run admin:check-2fa</code> on your computer. If it says
+        “decrypts”, Vercel's <code>BETTER_AUTH_SECRET</code> has changed: put the value from
+        <code>.env.production.local</code> back and redeploy.
+      </li>
+      <li>
+        Otherwise run <code>npx tsx scripts/reset-2fa.ts your@email</code>, sign in with your passphrase and
+        set up two-factor again. Full steps: <code>docs/RUNBOOK.md</code>.
+      </li>
+    </ol>
+  </section>
+</Keeper>
+
+<script>
+  import { authClient } from '../../scripts/keeper-client';
+  import { h, icon, toast, openDialog, stateBox } from '../../scripts/keeper/ui';
+  import { ago, dateTime } from '../../lib/keeper-format';
+
+  // ---------------------------------------------------------------- backup codes
+  let codes: string[] = [];
+  const box = document.querySelector<HTMLElement>('[data-codes]')!;
+  document.querySelector('[data-regen]')?.addEventListener('click', async () => {
+    const pw = h('input', { class: 'k-input', type: 'password', autocomplete: 'current-password' });
+    const v = await openDialog({
+      title: 'Make new backup codes?',
+      icon: 'key',
+      body: [
+        h('p', { text: 'Your old codes stop working. Enter your passphrase to continue.' }),
+        h('label', { class: 'k-field' }, [h('span', { text: 'Passphrase' }), pw]),
+      ],
+      actions: [
+        { label: 'Cancel', value: 'cancel' },
+        { label: 'Make new codes', value: 'ok', kind: 'navy' },
+      ],
+    });
+    if (v !== 'ok' || !pw.value) return;
+    const { data, error } = await authClient.twoFactor.generateBackupCodes({ password: pw.value });
+    if (error || !data)
+      return toast(
+        error?.status === 400 || error?.status === 401
+          ? 'That passphrase is not right.'
+          : 'Could not make new codes.',
+        { kind: 'error' },
+      );
+    codes = data.backupCodes ?? [];
+    document.querySelector('[data-code-list]')!.replaceChildren(...codes.map((c) => h('li', { text: c })));
+    box.hidden = false;
+    toast('New backup codes made. Save them now.');
+  });
+  document.querySelector('[data-copy]')?.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(codes.join('\n')).catch(() => {});
+    toast('Copied');
+  });
+  document.querySelector('[data-download]')?.addEventListener('click', () => {
+    const a = h('a', {
+      href: URL.createObjectURL(
+        new Blob(
+          [
+            `Aqua Iro Keeper backup codes (${new Date().toISOString().slice(0, 10)})\n\n${codes.join('\n')}\n`,
+          ],
+          { type: 'text/plain' },
+        ),
+      ),
+      download: 'aqua-keeper-backup-codes.txt',
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // ---------------------------------------------------------------- passphrase
+  const form = document.querySelector<HTMLFormElement>('[data-password]')!;
+  const pwErr = document.querySelector<HTMLElement>('[data-pw-err]')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    pwErr.hidden = true;
+    const f = new FormData(form);
+    const next = String(f.get('next'));
+    if (next !== String(f.get('again')))
+      return void Object.assign(pwErr, {
+        hidden: false,
+        textContent: 'The two new passphrases are different.',
+      });
+    const btn = form.querySelector('button')!;
+    btn.disabled = true;
+    const { error } = await authClient.changePassword({
+      currentPassword: String(f.get('current')),
+      newPassword: next,
+      revokeOtherSessions: true,
+    });
+    btn.disabled = false;
+    if (error) {
+      pwErr.textContent =
+        error.status === 400 || error.status === 401
+          ? 'The current passphrase is not right.'
+          : (error.message ?? 'Could not change it.');
+      pwErr.hidden = false;
+      return;
+    }
+    form.reset();
+    toast('Passphrase changed. Other devices were signed out.');
+    void loadSessions();
+  });
+
+  // ---------------------------------------------------------------- sessions
+  const list = document.querySelector<HTMLElement>('[data-sessions]')!;
+  const device = (ua: string | null | undefined) => {
+    if (!ua) return 'Unknown device';
+    const os = /iPhone|iPad/.test(ua)
+      ? 'iPhone / iPad'
+      : /Android/.test(ua)
+        ? 'Android'
+        : /Windows/.test(ua)
+          ? 'Windows'
+          : /Mac OS/.test(ua)
+            ? 'Mac'
+            : /Linux/.test(ua)
+              ? 'Linux'
+              : 'Device';
+    const br = /Edg\//.test(ua)
+      ? 'Edge'
+      : /Firefox\//.test(ua)
+        ? 'Firefox'
+        : /Chrome\//.test(ua)
+          ? 'Chrome'
+          : /Safari\//.test(ua)
+            ? 'Safari'
+            : 'Browser';
+    return `${br} on ${os}`;
+  };
+  async function loadSessions() {
+    const [{ data: sessions }, { data: me }] = await Promise.all([
+      authClient.listSessions(),
+      authClient.getSession(),
+    ]);
+    if (!sessions)
+      return list.replaceChildren(
+        h('li', {}, [
+          stateBox('Could not load devices.', { kind: 'error', small: true, retry: loadSessions }),
+        ]),
+      );
+    const current = me?.session.token;
+    list.replaceChildren(
+      ...sessions.map((s) =>
+        h('li', { class: 'k-row k-row--plain' }, [
+          h('span', { class: 'k-row__icon' }, [icon('monitor')]),
+          h('div', { class: 'k-row__main' }, [
+            h('p', { class: 'k-row__title', text: device(s.userAgent) }),
+            h('p', { class: 'k-row__meta' }, [
+              s.token === current ? h('span', { class: 'k-pill k-pill--ok', text: 'This device' }) : null,
+              h('span', { text: `signed in ${ago(s.createdAt)}`, title: dateTime(s.createdAt) }),
+              h('span', { text: `expires ${dateTime(s.expiresAt)}` }),
+            ]),
+          ]),
+        ]),
+      ),
+    );
+  }
+  document.querySelector('[data-revoke]')?.addEventListener('click', async () => {
+    const { error } = await authClient.revokeOtherSessions();
+    toast(error ? 'Could not sign out other devices.' : 'Signed out everywhere else.', {
+      kind: error ? 'error' : 'ok',
+    });
+    void loadSessions();
+  });
+  void loadSessions();
+</script>

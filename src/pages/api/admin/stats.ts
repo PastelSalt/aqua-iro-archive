@@ -1,43 +1,49 @@
-/** GET /api/admin/stats?range= (EXECUTIONPLAN §12.2): chart data for /keeper, admin only (middleware), private cache. */
+/**
+ * GET /api/admin/stats?range=7d&unit=day[&full=1] (docs/KEEPER-UPDATE-PLAN.md §5): the dashboard's and the
+ * Visitors page's data in one request — board series, Umami visitors (fixed periods, the chart series, the
+ * breakdowns; `full` adds OS, language, screens, 25 rows and the 7 × 24 grid) and the dashboard's top-5
+ * engagement lists. Admin only (middleware), private 5-minute cache.
+ */
 import type { APIRoute } from 'astro';
 import { dbTx } from '../../../server/db/pool';
 import { boardStats } from '../../../server/board/moderation';
-import { overview, rangeFor, umamiConfigured, eventProperty } from '../../../server/umami';
+import { RANGE_DAYS, umamiConfigured, visitors as umamiVisitors } from '../../../server/umami';
+import { insights } from '../../../server/insights';
+import { keeperPreview } from '../../../server/dev/preview';
 
 export const prerender = false;
+const DEV = import.meta.env.DEV && keeperPreview() ? await import('../../../server/dev/fixtures') : null;
 
 export const GET: APIRoute = async ({ url, locals }) => {
   if (!locals.admin) return new Response('Unauthorized', { status: 401 });
-  const id = ['24h', '7d', '30d', '90d', 'all'].includes(url.searchParams.get('range') ?? '')
-    ? url.searchParams.get('range')!
-    : '7d';
-  const days = { '24h': 1, '7d': 7, '30d': 30, '90d': 90, all: 365 }[id]!;
-  const board = await boardStats(dbTx() as never, days);
+  const q = url.searchParams;
+  const range = (q.get('range') ?? '') in RANGE_DAYS ? q.get('range')! : '7d';
+  const unit = (['day', 'week', 'month'] as const).find((u) => u === q.get('unit')) ?? 'day';
+  const full = q.get('full') === '1';
+
+  const board = await boardStats(dbTx() as never, 30); // the board chart always shows the last 30 days
   let visitors: unknown = null;
-  let insights: Record<string, unknown> = {};
-  if (umamiConfigured()) {
-    const range = rangeFor(id);
+  let top: unknown = null;
+  if (DEV || umamiConfigured()) {
     try {
-      visitors = await overview(range);
-      const pairs = [
-        ['embeds', 'embed_play', 'id'],
-        ['streams', 'stream_open', 'id'],
-        ['searches', 'stream_search', 'q'],
-        ['arts', 'art_open', 'id'],
-        ['dock', 'dock_nav', 'to'],
-        ['talkChoices', 'talk_choice', 'choice'],
-        ['talkGoto', 'talk_goto', 'to'],
-        ['cwvLcp', 'cwv', 'rating'],
-      ] as const;
-      insights = Object.fromEntries(
-        await Promise.all(pairs.map(async ([k, e, p]) => [k, await eventProperty(range, e, p)] as const)),
-      );
+      visitors = DEV ? await DEV.previewVisitors(range, unit, full) : await umamiVisitors(range, unit, full);
+      if (!full) {
+        const { groups } = await insights(range, 5);
+        const card = (g: string, t: string) =>
+          groups.find((x) => x.title === g)?.cards.find((c) => c.title === t);
+        top = [
+          card('Listening', 'Embeds played'),
+          card('The archive', 'Streams opened'),
+          card('Talk with Aqua', 'Conversations started'),
+          card('Health', 'Web vitals'),
+        ].filter(Boolean);
+      }
     } catch (e) {
       visitors = { error: (e as Error).message };
     }
   }
   return Response.json(
-    { range: id, board, visitors, insights },
+    { range, unit, configured: !!(DEV || umamiConfigured()), board, visitors, top },
     { headers: { 'Cache-Control': 'private, max-age=300' } },
   );
 };

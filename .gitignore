@@ -13,3 +13,4 @@ test-results/
 *.dump
 *.age
 age-key.txt
+.keeper-preview/

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "keeper:preview": "node scripts/dev/keeper-preview.mjs",
     "build": "npm run data && astro check && astro build && tsx scripts/prune-assets.ts && tsx scripts/csp-hash.ts",
     "preview": "astro preview",
     "data": "tsx scripts/build-streams.ts && tsx scripts/validate-talk.ts",

@@ -1,35 +1,71 @@
 ---
-/** All notes (EXECUTIONPLAN §15.3): filters, search by crew # or text, restore, typed-confirmation purge. */
+/**
+ * All notes (docs/KEEPER-UPDATE-PLAN.md §6.5): a status bar, search by crew # or text, a date range; rows with
+ * restore / remove / purge. Remove asks for a reason and purge for the typed crew number in the shared dialog.
+ */
 import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
 import { notesList } from '../../server/board/moderation';
+import { dateTime, ago, num, STATUS_LABEL, heldReason } from '../../lib/keeper-format';
 export const prerender = false;
 const q = Astro.url.searchParams;
 const f = {
   status: q.get('status') ?? '',
   q: q.get('q') ?? '',
-  from: q.get('from') || undefined,
-  to: q.get('to') || undefined,
+  from: q.get('from') ?? '',
+  to: q.get('to') ?? '',
 };
-const list = await notesList(dbTx() as never, { ...f, status: f.status || undefined, q: f.q || undefined });
+const list = await notesList(dbTx() as never, {
+  status: f.status || undefined,
+  q: f.q || undefined,
+  from: f.from || undefined,
+  to: f.to || undefined,
+});
+const STATUSES: [string, string][] = [
+  ['', 'All'],
+  ['visible', 'Visible'],
+  ['held', 'Held'],
+  ['under_review', 'Under review'],
+  ['removed', 'Removed'],
+];
+const link = (status: string) => {
+  const p = new URLSearchParams({
+    ...(status && { status }),
+    ...(f.q && { q: f.q }),
+    ...(f.from && { from: f.from }),
+    ...(f.to && { to: f.to }),
+  });
+  return `/keeper/notes${p.size ? `?${p}` : ''}`;
+};
+const TONE: Record<string, string> = {
+  visible: 'k-pill--navy',
+  held: 'k-pill--warn',
+  under_review: 'k-pill--warn',
+  removed: 'k-pill--danger',
+};
 ---
 
 <Keeper title="Notes" active="/keeper/notes">
-  <h1>Notes</h1>
-  <form class="k-card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end" method="get">
-    <label class="k-field">
-      <span>Status</span>
-      <select name="status">
-        {['', 'visible', 'held', 'under_review', 'removed'].map((s) => (
-          <option value={s} selected={f.status === s}>
-            {s || 'any'}
-          </option>
-        ))}
-      </select>
-    </label>
-    <label class="k-field">
+  <PageHead
+    title="Notes"
+    icon="note"
+    hint="Every note on the board, newest first. Purge permanently deletes a note: use it only for a privacy request."
+  />
+
+  <form class="k-card k-toolbar" method="get">
+    <nav class="k-seg" aria-label="Status">
+      {STATUSES.map(([v, t]) => (
+        <a href={link(v)} aria-current={f.status === v ? 'page' : undefined}>
+          {t}
+        </a>
+      ))}
+    </nav>
+    {f.status && <input type="hidden" name="status" value={f.status} />}
+    <label class="k-field" style="flex:1;min-width:200px">
       <span>Crew # or text</span>
-      <input name="q" value={f.q} />
+      <input name="q" value={f.q} placeholder="#128 or a word" />
     </label>
     <label class="k-field">
       <span>From</span>
@@ -39,78 +75,118 @@ const list = await notesList(dbTx() as never, { ...f, status: f.status || undefi
       <span>To</span>
       <input type="date" name="to" value={f.to} />
     </label>
-    <button class="k-btn k-btn--navy">Filter</button>
+    <button class="k-btn k-btn--navy">
+      <KIcon name="magnifying-glass" />
+      Search
+    </button>
+    {(f.q || f.from || f.to) && (
+      <a class="k-btn" href={link(f.status)}>
+        Clear
+      </a>
+    )}
   </form>
-  <table class="k-table k-card">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Note</th>
-        <th>Status</th>
-        <th>Posted</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {list.map((m) => (
-        <tr data-id={m.id} data-crew={m.crew_no}>
-          <td>{m.crew_no}</td>
-          <td style="white-space:pre-line;max-width:520px">{m.body}</td>
-          <td>
-            <span class="k-pill">{m.status}</span>{' '}
-            {m.removed_reason && <span class="k-item__meta">{m.removed_reason}</span>}
-          </td>
-          <td>{new Date(m.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Tokyo' })}</td>
-          <td style="display:flex;gap:6px;flex-wrap:wrap">
-            {m.status === 'removed' && (
-              <button type="button" class="k-btn" data-restore>
-                Restore
-              </button>
+
+  <p class="k-hint">
+    {num(list.length)} {list.length === 1 ? 'note' : 'notes'}
+    {list.length >= 100 ? ' (the newest 100: narrow the search to see older ones)' : ''}
+  </p>
+
+  {list.length === 0 && (
+    <div class="k-state">
+      <KIcon name="anchor" />
+      <p>No notes match.</p>
+    </div>
+  )}
+  <ol class="k-rows" data-notes>
+    {list.map((m) => (
+      <li
+        class:list={[
+          'k-row',
+          m.status === 'removed' && 'k-row--removed',
+          (m.status === 'held' || m.status === 'under_review') && 'k-row--draft',
+        ]}
+        data-id={m.id}
+        data-crew={m.crew_no}
+      >
+        <span class="k-row__crew">#{m.crew_no}</span>
+        <div class="k-row__main">
+          <p class="k-row__meta">
+            <span class:list={['k-pill', TONE[m.status]]}>{STATUS_LABEL[m.status] ?? m.status}</span>
+            {m.held_reason && <span class="k-pill">held: {heldReason(m.held_reason)}</span>}
+            {m.removed_reason && <span class="k-pill k-pill--danger">reason: {m.removed_reason}</span>}
+            {m.report_count > 0 && (
+              <span class="k-pill k-pill--warn">
+                {m.report_count} {m.report_count === 1 ? 'report' : 'reports'}
+              </span>
             )}
-            {m.status !== 'removed' && (
-              <button type="button" class="k-btn k-btn--danger" data-remove>
-                Remove
-              </button>
-            )}
-            <button type="button" class="k-btn k-btn--danger" data-purge>
-              Purge…
+            <time datetime={m.created_at} title={dateTime(m.created_at)}>
+              {ago(m.created_at)} · {dateTime(m.created_at)}
+            </time>
+          </p>
+          <p class="k-row__body">{m.body}</p>
+        </div>
+        <div class="k-row__actions">
+          {m.status === 'removed' ? (
+            <button type="button" class="k-btn k-btn--sm" data-restore>
+              <KIcon name="arrow-counter-clockwise" />
+              Restore
             </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+          ) : (
+            <button type="button" class="k-btn k-btn--sm k-btn--danger" data-remove>
+              <KIcon name="x-circle" />
+              Remove
+            </button>
+          )}
+          <button type="button" class="k-btn k-btn--sm k-btn--danger" data-purge>
+            <KIcon name="trash" />
+            Purge…
+          </button>
+        </div>
+      </li>
+    ))}
+  </ol>
 </Keeper>
 
 <script>
   import { actions } from 'astro:actions';
-  import { toast } from '../../scripts/keeper-client';
-  document.querySelector('tbody')?.addEventListener('click', async (e) => {
-    const t = e.target as HTMLElement;
-    const tr = t.closest<HTMLElement>('tr');
-    if (!tr) return;
-    const id = tr.dataset.id!;
-    const crew = Number(tr.dataset.crew);
+  import { toast, confirmAction } from '../../scripts/keeper/ui';
+  document.querySelector('[data-notes]')?.addEventListener('click', async (e) => {
+    const t = (e.target as HTMLElement).closest<HTMLElement>('button');
+    const li = (e.target as HTMLElement).closest<HTMLElement>('.k-row');
+    if (!t || !li) return;
+    const id = li.dataset.id!;
+    const crew = li.dataset.crew!;
     if (t.matches('[data-restore]')) {
       const { error } = await actions.keeper.restore({ id });
-      toast(error ? 'Restore failed' : `Restored #${crew}`);
+      toast(error ? 'Restore failed' : `Restored #${crew}`, { kind: error ? 'error' : 'ok' });
       if (!error) location.reload();
     }
     if (t.matches('[data-remove]')) {
-      const reason = prompt(`Reason for removing #${crew}?`, 'Owner request');
-      if (!reason) return;
-      const { error } = await actions.keeper.remove({ ids: [id], reason });
-      toast(error ? 'Remove failed' : `Removed #${crew}`);
+      const c = await confirmAction({
+        title: `Remove note #${crew}?`,
+        message: 'It disappears from the board at once. You can restore it from this page.',
+        confirm: 'Remove',
+        danger: true,
+        reason: { label: 'Reason (kept in the audit log)', value: 'Owner request' },
+      });
+      if (!c.ok || !c.reason) return;
+      const { error } = await actions.keeper.remove({ ids: [id], reason: c.reason });
+      toast(error ? 'Remove failed' : `Removed #${crew}`, { kind: error ? 'error' : 'ok' });
       if (!error) location.reload();
     }
     if (t.matches('[data-purge]')) {
-      const typed = prompt(
-        `PERMANENT delete for a privacy request.\nType the crew number (${crew}) to confirm:`,
-      );
-      if (typed === null) return;
-      const { error } = await actions.keeper.purge({ id, crewNo: Number(typed) });
-      toast(error ? `Not purged: ${error.message}` : `Purged #${crew}`);
-      if (!error) tr.remove();
+      const c = await confirmAction({
+        title: `Permanently delete note #${crew}?`,
+        message:
+          'For a verified privacy request only. The note and its reports are deleted for good; only an audit line remains. This cannot be undone.',
+        confirm: 'Delete for good',
+        danger: true,
+        typed: { label: `Type the crew number (${crew}) to confirm`, expect: crew },
+      });
+      if (!c.ok) return;
+      const { error } = await actions.keeper.purge({ id, crewNo: Number(crew) });
+      toast(error ? `Not purged: ${error.message}` : `Purged #${crew}`, { kind: error ? 'error' : 'ok' });
+      if (!error) li.remove();
     }
   });
 </script>

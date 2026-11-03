@@ -1,0 +1,192 @@
+---
+/**
+ * Word list (docs/KEEPER-UPDATE-PLAN.md §6.8): the board's blocked terms on their own page — the list, adding a
+ * term, and the tester beside it. Behaviour unchanged from the old Settings section.
+ */
+import { asc } from 'drizzle-orm';
+import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
+import { dbTx } from '../../server/db/pool';
+import { blockedTerms } from '../../server/db/schema';
+import { date } from '../../lib/keeper-format';
+export const prerender = false;
+const terms = await dbTx().select().from(blockedTerms).orderBy(asc(blockedTerms.id));
+const KIND: Record<string, string> = {
+  substring: 'anywhere in the text',
+  word: 'whole word',
+  regex: 'pattern (regex)',
+};
+---
+
+<Keeper title="Word list" active="/keeper/words">
+  <PageHead
+    title="Word list"
+    icon="funnel"
+    hint="Notes matching a term are held for review (hold) or refused with a gentle message (reject). An English profanity filter also holds notes, on top of this list."
+  />
+  <div class="k-grid k-grid--2" style="align-items:start">
+    <section class="k-card">
+      <h2>
+        <KIcon name="list" />
+        Terms ({terms.length})
+      </h2>
+      {terms.length === 0 ? (
+        <div class="k-state k-state--small">
+          <KIcon name="anchor" />
+          <p>No terms yet.</p>
+        </div>
+      ) : (
+        <table class="k-table">
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Matches</th>
+              <th>Then</th>
+              <th>Note</th>
+              <th>
+                <span class="k-sr">Remove</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {terms.map((t) => (
+              <tr>
+                <td>
+                  <code>{t.term}</code>
+                </td>
+                <td>{KIND[t.kind] ?? t.kind}</td>
+                <td>
+                  <span class:list={['k-pill', t.action === 'reject' ? 'k-pill--danger' : 'k-pill--warn']}>
+                    {t.action}
+                  </span>
+                </td>
+                <td>
+                  <span class="k-hint">
+                    {t.note ?? ''}
+                    {t.note ? ' · ' : ''}
+                    {date(t.createdAt)}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="k-btn k-btn--sm k-btn--danger"
+                    data-term-remove={t.id}
+                    data-term={t.term}
+                    aria-label={`Remove ${t.term}`}
+                  >
+                    <KIcon name="trash" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <form
+        data-term-add
+        class="k-toolbar"
+        style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--k-line)"
+      >
+        <label class="k-field" style="flex:1;min-width:140px">
+          <span>New term</span>
+          <input name="term" required maxlength="200" />
+        </label>
+        <label class="k-field">
+          <span>Matches</span>
+          <select name="kind">
+            <option value="substring">anywhere</option>
+            <option value="word">whole word</option>
+            <option value="regex">regex</option>
+          </select>
+        </label>
+        <label class="k-field">
+          <span>Then</span>
+          <select name="action">
+            <option value="hold">hold</option>
+            <option value="reject">reject</option>
+          </select>
+        </label>
+        <label class="k-field" style="flex:1;min-width:140px">
+          <span>Note (optional)</span>
+          <input name="note" maxlength="200" />
+        </label>
+        <button class="k-btn k-btn--navy">
+          <KIcon name="plus" />
+          Add
+        </button>
+      </form>
+    </section>
+    <section class="k-card">
+      <h2>
+        <KIcon name="magnifying-glass" />
+        Try a sentence
+      </h2>
+      <p class="k-card__sub" style="margin:-4px 0 12px">
+        See what the board would do with a note before anyone posts it.
+      </p>
+      <form data-term-test class="k-toolbar">
+        <label class="k-field" style="flex:1">
+          <span>Sentence</span>
+          <input name="text" required />
+        </label>
+        <button class="k-btn k-btn--navy">Test</button>
+      </form>
+      <output data-test-out class="k-hint" style="display:block;margin-top:12px" aria-live="polite"></output>
+    </section>
+  </div>
+</Keeper>
+
+<script>
+  import { actions } from 'astro:actions';
+  import { toast, confirmAction, h } from '../../scripts/keeper/ui';
+  document.querySelector<HTMLFormElement>('[data-term-add]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target as HTMLFormElement);
+    const { error } = await actions.keeper.termAdd({
+      term: String(f.get('term')),
+      kind: f.get('kind') as 'substring',
+      action: f.get('action') as 'hold',
+      note: String(f.get('note') || '') || undefined,
+    });
+    if (error) return toast(`Not added: ${error.message}`, { kind: 'error' });
+    location.reload();
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-term-remove]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const c = await confirmAction({
+        title: `Remove “${b.dataset.term}”?`,
+        message: 'Notes with it will no longer be held or refused.',
+        confirm: 'Remove',
+        danger: true,
+      });
+      if (!c.ok) return;
+      const { error } = await actions.keeper.termRemove({ id: Number(b.dataset.termRemove) });
+      if (error) return toast('Not removed', { kind: 'error' });
+      b.closest('tr')?.remove();
+      toast(`Removed “${b.dataset.term}”`);
+    }),
+  );
+  document.querySelector<HTMLFormElement>('[data-term-test]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = String(new FormData(e.target as HTMLFormElement).get('text'));
+    const out = document.querySelector<HTMLElement>('[data-test-out]')!;
+    const { data } = await actions.keeper.termTest({ text });
+    if (!data)
+      return out.replaceChildren(h('span', { class: 'k-pill k-pill--danger', text: 'The test failed' }));
+    const hits = data.terms.map((t) => `${t.term} → ${t.action}`);
+    if (data.english) hits.push('English filter → hold');
+    out.replaceChildren(
+      hits.length
+        ? h('span', {}, [
+            h('span', {
+              class: 'k-pill k-pill--warn',
+              text: data.terms.some((t) => t.action === 'reject') ? 'Would be refused' : 'Would be held',
+            }),
+            ` Matches: ${hits.join(', ')}`,
+          ])
+        : h('span', { class: 'k-pill k-pill--ok', text: 'Would be published' }),
+    );
+  });
+</script>

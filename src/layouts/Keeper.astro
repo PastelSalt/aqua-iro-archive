@@ -1,21 +1,65 @@
 ---
-/** /keeper shell (EXECUTIONPLAN §15.3): on-demand, noindex, no analytics, calm keeper.css. */
+/**
+ * /keeper shell (docs/KEEPER-UPDATE-PLAN.md §4), adapted from the Kotoha admin: a paper top bar (wordmark, live
+ * visitors, who's signed in with 2FA, View site, Sign out), a floating grouped sidebar with count badges that
+ * becomes a drawer on phones, toasts and one shared dialog. On-demand, noindex, no analytics.
+ * `bare` is for the sign-in / 2FA pages: a centred card on the same background, no navigation.
+ */
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/keeper.css';
+import KeeperIcons from '../components/keeper/KeeperIcons.astro';
+import KIcon from '../components/keeper/KIcon.astro';
+import { dbTx } from '../server/db/pool';
+import { attention } from '../server/board/moderation';
+
 interface Props {
   title: string;
   active?: string;
   bare?: boolean;
 }
 const { title, active, bare = false } = Astro.props;
-const NAV = [
-  ['/keeper', 'Overview'],
-  ['/keeper/queue', 'Queue'],
-  ['/keeper/notes', 'Notes'],
-  ['/keeper/audit', 'Audit'],
-  ['/keeper/settings', 'Settings'],
-  ['/keeper/errors', 'Errors'],
+const admin = Astro.locals.admin;
+const counts = bare ? null : await attention(dbTx() as never).catch(() => null);
+const NAV: {
+  label?: string;
+  items: { href: string; text: string; icon: string; badge?: number; danger?: boolean }[];
+}[] = [
+  { items: [{ href: '/keeper', text: 'Dashboard', icon: 'gauge' }] },
+  {
+    label: 'Board',
+    items: [
+      {
+        href: '/keeper/queue',
+        text: 'Queue',
+        icon: 'tray',
+        badge: (counts?.reported ?? 0) + (counts?.held ?? 0),
+      },
+      { href: '/keeper/notes', text: 'Notes', icon: 'note' },
+      { href: '/keeper/words', text: 'Word list', icon: 'funnel' },
+    ],
+  },
+  {
+    label: 'Site',
+    items: [
+      { href: '/keeper/visitors', text: 'Visitors', icon: 'chart-bar' },
+      { href: '/keeper/insights', text: 'Archive insights', icon: 'sparkle' },
+    ],
+  },
+  {
+    label: 'Records',
+    items: [
+      { href: '/keeper/audit', text: 'Audit log', icon: 'scroll' },
+      { href: '/keeper/errors', text: 'Errors', icon: 'bug', badge: counts?.errors24 ?? 0, danger: true },
+    ],
+  },
+  {
+    label: 'Account',
+    items: [
+      { href: '/keeper/settings', text: 'Settings', icon: 'gear' },
+      { href: '/keeper/account', text: 'My account', icon: 'user-circle' },
+    ],
+  },
 ];
 ---
 
@@ -29,31 +73,137 @@ const NAV = [
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="keeper">
-    {!bare && (
-      <header class="k-top">
-        <b>⚓ KEEPER</b>
-        <nav aria-label="Keeper">
-          {NAV.map(([href, label]) => (
-            <a href={href} aria-current={active === href ? 'page' : undefined}>
-              {label}
+    <KeeperIcons />
+    {bare ? (
+      <main class="k-auth-page" id="main">
+        <slot />
+      </main>
+    ) : (
+      <>
+        <a class="k-skip" href="#main">
+          Skip to content
+        </a>
+        <header class="k-top">
+          <button
+            type="button"
+            class="k-btn k-btn--sm k-menu-btn"
+            aria-controls="k-side"
+            aria-expanded="false"
+            data-menu
+          >
+            <KIcon name="list" />
+            <span class="k-sr">Menu</span>
+          </button>
+          <a class="k-brand" href="/keeper">
+            <KIcon name="anchor" />
+            <b>KEEPER</b>
+            <small>Aqua Iro Archive</small>
+          </a>
+          <div class="k-top__right">
+            <span class="k-live" data-live hidden title="Visitors on the site in the last 5 minutes">
+              <i />
+              <b data-live-n>0</b>
+              <span>on the site now</span>
+            </span>
+            {admin && (
+              <span class="k-user" title={admin.email}>
+                <span class="k-user__avatar" aria-hidden="true">
+                  {admin.email.slice(0, 1).toUpperCase()}
+                </span>
+                <span>Keeper</span>
+                {admin.twoFactorEnabled && <span class="k-pill k-pill--ok">2FA on</span>}
+              </span>
+            )}
+            <a class="k-btn k-btn--sm" href="/" target="_blank" rel="noopener">
+              <KIcon name="arrow-square-out" />
+              <span>View site</span>
             </a>
-          ))}
-        </nav>
-        <button type="button" class="k-btn k-sign" data-signout>
-          Sign out
-        </button>
-      </header>
+            <button type="button" class="k-btn k-btn--sm" data-signout>
+              <KIcon name="sign-out" />
+              <span>Sign out</span>
+            </button>
+          </div>
+        </header>
+        <div class="k-frame">
+          <nav class="k-side" id="k-side" aria-label="Keeper">
+            {NAV.map((g) => (
+              <div class="k-side__group">
+                {g.label && <p class="k-side__label">{g.label}</p>}
+                <ul>
+                  {g.items.map((i) => (
+                    <li>
+                      <a href={i.href} aria-current={active === i.href ? 'page' : undefined}>
+                        <KIcon name={i.icon} />
+                        <span>{i.text}</span>
+                        {!!i.badge && (
+                          <span
+                            class:list={['k-badge', i.danger && 'k-badge--danger']}
+                            aria-label={`${i.badge} waiting`}
+                          >
+                            {i.badge}
+                          </span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+          <div class="k-scrim" data-scrim aria-hidden="true" />
+          <main class="k-main" id="main" tabindex="-1">
+            <slot />
+          </main>
+        </div>
+      </>
     )}
-    <main class="k-main" id="main">
-      <slot />
-    </main>
-    <div class="k-toast" role="status" hidden data-toast></div>
+    <div class="k-toasts" data-toasts aria-live="polite"></div>
+    <dialog class="k-dialog" data-dialog aria-label="Confirm">
+      <form method="dialog"></form>
+    </dialog>
     <script>
       import { signOut } from '../scripts/keeper-client';
+      const side = document.querySelector<HTMLElement>('#k-side');
+      const scrim = document.querySelector<HTMLElement>('[data-scrim]');
+      const menu = document.querySelector<HTMLButtonElement>('[data-menu]');
+      const isOpen = () => side?.classList.contains('is-open');
+      const open = () => {
+        side?.classList.add('is-open');
+        scrim?.classList.add('is-open');
+        menu?.setAttribute('aria-expanded', 'true');
+        (side?.querySelector<HTMLElement>('[aria-current="page"]') ?? side?.querySelector('a'))?.focus();
+      };
+      const close = (restore = false) => {
+        if (!isOpen()) return;
+        side?.classList.remove('is-open');
+        scrim?.classList.remove('is-open');
+        menu?.setAttribute('aria-expanded', 'false');
+        if (restore) menu?.focus();
+      };
+      menu?.addEventListener('click', () => (isOpen() ? close(true) : open()));
+      scrim?.addEventListener('click', () => close(true));
+      document.addEventListener('keydown', (e) => e.key === 'Escape' && isOpen() && close(true));
       document.querySelector('[data-signout]')?.addEventListener('click', async () => {
-        await signOut();
+        await signOut().catch(() => {});
         location.href = '/keeper/login';
       });
+      // visitors on the site right now (Umami "active"), refreshed every minute while the tab is visible
+      const live = document.querySelector<HTMLElement>('[data-live]');
+      const tick = async () => {
+        if (!live || document.hidden) return;
+        try {
+          const r = await fetch('/api/admin/live');
+          if (!r.ok) return;
+          const { active } = (await r.json()) as { active: number | null };
+          if (active === null) return;
+          live.querySelector('[data-live-n]')!.textContent = String(active);
+          live.hidden = false;
+        } catch {
+          /* offline: keep the last value */
+        }
+      };
+      void tick();
+      setInterval(tick, 60_000);
     </script>
   </body>
 </html>

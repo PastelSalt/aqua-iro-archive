@@ -1,54 +1,136 @@
 ---
+/**
+ * Two-factor, step 2 of 2 (docs/KEEPER-UPDATE-PLAN.md §6.10): one large code field that sends itself once six
+ * digits are in (phones offer the code from the authenticator), a swap to a backup code (one field at a time),
+ * plain messages for a wrong code, too many attempts and a server problem, and "Start over".
+ */
 import Keeper from '../../../layouts/Keeper.astro';
+import AuthCard from '../../../components/keeper/AuthCard.astro';
+import KIcon from '../../../components/keeper/KIcon.astro';
 export const prerender = false;
 ---
 
 <Keeper title="Two-factor" bare>
-  <!-- novalidate: the 6-digit field must not block a backup code; the script checks whichever is filled -->
-  <form class="k-auth k-card" data-verify novalidate>
-    <h1>Enter your 6-digit code</h1>
-    <div class="k-field">
-      <label for="code">Authenticator code</label>
-      <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" />
-    </div>
-    <details>
-      <summary>Use a backup code instead</summary>
-      <div class="k-field">
-        <label for="backup">Backup code</label>
-        <input id="backup" autocomplete="off" />
+  <AuthCard title="Two-factor check" step="Step 2 of 2 · authenticator">
+    <form data-verify method="post" action="/keeper/two-factor" novalidate>
+      <div class="k-field" data-mode="totp">
+        <label for="code">6-digit code from your authenticator app</label>
+        <input
+          id="code"
+          class="k-code"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="7"
+          placeholder="••••••"
+        />
       </div>
-    </details>
-    <p class="k-err" role="alert" hidden data-err></p>
-    <button class="k-btn k-btn--navy" type="submit">
-      Verify
+      <div class="k-field" data-mode="backup" hidden>
+        <label for="backup">Backup code</label>
+        <input
+          id="backup"
+          class="k-code"
+          style="letter-spacing:.12em;font-size:22px !important"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+        />
+        <small>Each backup code works once.</small>
+      </div>
+      <p class="k-err" role="alert" hidden data-err>
+        <KIcon name="warning-circle" />
+        <span></span>
+      </p>
+      <button class="k-btn k-btn--navy k-btn--block" type="submit" data-submit>
+        Verify
+      </button>
+      <button type="button" class="k-btn k-btn--sm" style="justify-self:center" data-swap>
+        Use a backup code instead
+      </button>
+      <p class="k-hint" style="text-align:center">
+        Lost your phone? Use a backup code. If those are gone too, the recovery steps are in
+        <code>docs/RUNBOOK.md</code>.
+      </p>
+    </form>
+    <button type="button" slot="foot" data-restart>
+      Start over
     </button>
-  </form>
+  </AuthCard>
 </Keeper>
 
 <script>
-  import { authClient } from '../../../scripts/keeper-client';
+  import { authClient, signOut } from '../../../scripts/keeper-client';
   const form = document.querySelector<HTMLFormElement>('[data-verify]')!;
   const err = form.querySelector<HTMLElement>('[data-err]')!;
+  const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+  const code = form.querySelector<HTMLInputElement>('#code')!;
+  const backup = form.querySelector<HTMLInputElement>('#backup')!;
+  const totpBox = form.querySelector<HTMLElement>('[data-mode="totp"]')!;
+  const backupBox = form.querySelector<HTMLElement>('[data-mode="backup"]')!;
+  const swap = form.querySelector<HTMLButtonElement>('[data-swap]')!;
+  let mode: 'totp' | 'backup' = 'totp';
+  let busy = false;
   const fail = (msg: string) => {
-    err.textContent = msg;
+    err.querySelector('span')!.textContent = msg;
     err.hidden = false;
   };
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  swap.addEventListener('click', () => {
+    mode = mode === 'totp' ? 'backup' : 'totp';
+    totpBox.hidden = mode !== 'totp';
+    backupBox.hidden = mode !== 'backup';
+    swap.textContent = mode === 'totp' ? 'Use a backup code instead' : 'Use the authenticator app instead';
     err.hidden = true;
-    const code = (form.querySelector('#code') as HTMLInputElement).value.replace(/\s/g, '');
-    const backup = (form.querySelector('#backup') as HTMLInputElement).value.trim();
-    if (!backup && !/^\d{6}$/.test(code)) return fail('Enter the 6-digit code, or a backup code.');
-    const { error } = backup
-      ? await authClient.twoFactor.verifyBackupCode({ code: backup })
-      : await authClient.twoFactor.verifyTotp({ code });
-    if (!error) return void (location.href = '/keeper');
-    if (error.status === 429) return fail('Too many attempts. Wait 10 minutes.');
-    // a 5xx is the server failing to check the code (e.g. it cannot read the stored secret), not a wrong code
-    if ((error.status ?? 0) >= 500)
-      return fail(
-        'The server could not check the code (a server problem, not a wrong code). Try again later.',
-      );
-    fail('That code did not work.');
+    (mode === 'totp' ? code : backup).focus();
   });
+  async function verify() {
+    if (busy) return;
+    err.hidden = true;
+    const totp = code.value.replace(/\s/g, '');
+    const spare = backup.value.trim();
+    if (mode === 'totp' && !/^\d{6}$/.test(totp))
+      return fail('Enter the 6 digits from your authenticator app.');
+    if (mode === 'backup' && !spare) return fail('Enter one of your backup codes.');
+    busy = true;
+    submit.disabled = true;
+    submit.textContent = 'Checking…';
+    try {
+      const { error } =
+        mode === 'backup'
+          ? await authClient.twoFactor.verifyBackupCode({ code: spare })
+          : await authClient.twoFactor.verifyTotp({ code: totp });
+      if (!error) return void (location.href = '/keeper');
+      const s = error.status ?? 0;
+      if (s === 429) fail('Too many attempts. Wait 10 minutes, then try again.');
+      // a 5xx is the server failing to check the code (e.g. it cannot read the stored secret), not a wrong code
+      else if (s >= 500)
+        fail('The server could not check the code (a server problem, not a wrong code). Try again later.');
+      else if (s === 401 && /session|cookie|expired/i.test(error.message ?? ''))
+        fail('This sign-in timed out. Choose “Start over” and enter your passphrase again.');
+      else
+        fail(
+          mode === 'backup'
+            ? 'That backup code did not work (each one works once).'
+            : 'That code did not work. Codes change every 30 seconds.',
+        );
+      (mode === 'totp' ? code : backup).select();
+    } catch {
+      fail('No connection. Check your internet and try again.');
+    } finally {
+      busy = false;
+      submit.disabled = false;
+      submit.textContent = 'Verify';
+    }
+  }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    void verify();
+  });
+  // six digits in (typed or pasted from the authenticator): send it
+  code.addEventListener('input', () => {
+    if (/^\d{6}$/.test(code.value.replace(/\s/g, ''))) void verify();
+  });
+  document.querySelector('[data-restart]')?.addEventListener('click', async () => {
+    await signOut().catch(() => {});
+    location.href = '/keeper/login';
+  });
+  code.focus();
 </script>

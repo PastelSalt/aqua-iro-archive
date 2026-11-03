@@ -60,30 +60,121 @@ async function get<T>(path: string, params: Record<string, string | number>, ret
 }
 
 export type Range = { startAt: number; endAt: number };
+const TZ = 'Asia/Manila'; // the keeper's time zone (src/lib/keeper-format.ts); UTC+8, no daylight saving
+const TZ_MS = 8 * 3600_000;
+export const RANGE_DAYS = { '24h': 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365 } as const;
+export type RangeId = keyof typeof RANGE_DAYS;
+
+/** The last N days up to now, rounded to 5 minutes so repeated loads share the 5-minute cache. */
 export function rangeFor(id: string): Range {
-  const endAt = Date.now();
-  const days = id === '24h' ? 1 : id === '7d' ? 7 : id === '30d' ? 30 : id === '90d' ? 90 : 3650;
+  const endAt = Math.ceil(Date.now() / 300_000) * 300_000;
+  const days = RANGE_DAYS[id as RangeId] ?? 7;
   return { startAt: endAt - days * 86400_000, endAt };
 }
+/** Today / this week (from Monday) / this month, in the keeper's time zone. */
+function periodStart(kind: 'today' | 'week' | 'month'): number {
+  const local = new Date(Date.now() + TZ_MS);
+  const y = local.getUTCFullYear();
+  const m = local.getUTCMonth();
+  const d = local.getUTCDate();
+  const day = kind === 'month' ? 1 : kind === 'week' ? d - ((local.getUTCDay() + 6) % 7) : d;
+  return Date.UTC(y, m, day) - TZ_MS;
+}
 
-export async function overview(range: Range) {
-  const base = { ...range, timezone: 'Asia/Manila' };
-  const metric = (type: string) =>
-    get<{ x: string; y: number }[]>('/metrics', { ...base, type, limit: 10 }).catch(() => []);
-  const [stats, pageviews, paths, referrers, countries, devices, browsers, events] = await Promise.all([
-    get<Record<string, { value: number } | number>>('/stats', base),
-    get<{ pageviews: { x: string; y: number }[]; sessions: { x: string; y: number }[] }>('/pageviews', {
-      ...base,
-      unit: 'day',
-    }),
-    metric('path').then((r) => (r.length ? r : metric('url'))),
-    metric('referrer'),
-    metric('country'),
-    metric('device'),
-    metric('browser'),
-    metric('event'),
-  ]);
-  return { stats, pageviews, paths, referrers, countries, devices, browsers, events, fetchedAt: Date.now() };
+/** Umami v2 returns { value, prev } per stat; v3 returns plain numbers plus a `comparison` object. */
+type StatsRaw = Record<string, unknown> & { comparison?: Record<string, unknown> };
+const pick = (v: unknown): number | null =>
+  typeof v === 'number'
+    ? v
+    : v && typeof (v as { value?: unknown }).value === 'number'
+      ? (v as { value: number }).value
+      : null;
+const prevOf = (raw: StatsRaw, k: string): number | null => {
+  const c = raw.comparison?.[k];
+  if (typeof c === 'number') return c;
+  const v = raw[k] as { prev?: unknown } | undefined;
+  return typeof v?.prev === 'number' ? v.prev : null;
+};
+export type Stats = Record<'visitors' | 'visits' | 'pageviews' | 'bounces' | 'totaltime', number> & {
+  prev: Record<'visitors' | 'visits' | 'pageviews' | 'bounces' | 'totaltime', number | null>;
+};
+const STAT_KEYS = ['visitors', 'visits', 'pageviews', 'bounces', 'totaltime'] as const;
+async function stats(range: Range): Promise<Stats> {
+  const raw = await get<StatsRaw>('/stats', { ...range, timezone: TZ });
+  const out = { prev: {} } as Stats;
+  for (const k of STAT_KEYS) {
+    out[k] = pick(raw[k]) ?? 0;
+    out.prev[k] = prevOf(raw, k);
+  }
+  return out;
+}
+export type Metric = { x: string; y: number };
+const metric = (range: Range, type: string, limit: number) =>
+  get<Metric[]>('/metrics', { ...range, timezone: TZ, type, limit }).catch(() => [] as Metric[]);
+
+/** Dashboard + Visitors page data. `full` adds OS, language, screen, 25 rows per list and the 7 × 24 grid. */
+export async function visitors(rangeId: string, unit: 'day' | 'week' | 'month', full: boolean) {
+  const range = rangeFor(rangeId);
+  // a chart needs enough points: weekly/monthly bars look back further than the range
+  const seriesRange =
+    unit === 'month'
+      ? { startAt: range.endAt - 365 * 86400_000, endAt: range.endAt }
+      : unit === 'week'
+        ? { startAt: range.endAt - 12 * 7 * 86400_000, endAt: range.endAt }
+        : rangeId === '24h'
+          ? { startAt: range.endAt - 7 * 86400_000, endAt: range.endAt }
+          : range;
+  const limit = full ? 25 : 8;
+  const now = Math.ceil(Date.now() / 300_000) * 300_000;
+  const [inRange, today, week, month, series, paths, referrers, countries, devices, browsers] =
+    await Promise.all([
+      stats(range),
+      stats({ startAt: periodStart('today'), endAt: now }),
+      stats({ startAt: periodStart('week'), endAt: now }),
+      stats({ startAt: periodStart('month'), endAt: now }),
+      get<{ pageviews: Metric[]; sessions: Metric[] }>('/pageviews', { ...seriesRange, timezone: TZ, unit }),
+      metric(range, 'path', limit).then((r) => (r.length ? r : metric(range, 'url', limit))),
+      metric(range, 'referrer', limit),
+      metric(range, 'country', limit),
+      metric(range, 'device', limit),
+      metric(range, 'browser', limit),
+    ]);
+  const extra = full
+    ? await Promise.all([
+        metric(range, 'os', limit),
+        metric(range, 'language', limit),
+        metric(range, 'screen', limit),
+        get<number[][]>('/sessions/weekly', { ...range, timezone: TZ }).catch(() => null),
+      ])
+    : null;
+  return {
+    stats: inRange,
+    periods: { today, week, month },
+    unit,
+    series,
+    paths,
+    referrers,
+    countries,
+    devices,
+    browsers,
+    os: extra?.[0] ?? [],
+    languages: extra?.[1] ?? [],
+    screens: extra?.[2] ?? [],
+    weekly: extra?.[3] ?? null,
+    fetchedAt: Date.now(),
+  };
+}
+
+/** Visitors on the site in the last 5 minutes (Umami "active"; v2 returns { x }, v3 { visitors }). */
+export async function activeNow(): Promise<number | null> {
+  if (!umamiConfigured()) return null;
+  const r = await fetch(`${UMAMI_API_URL}/websites/${PUBLIC_UMAMI_WEBSITE_ID}/active`, {
+    headers: { Accept: 'application/json', ...(await authHeaders()) },
+    signal: AbortSignal.timeout(5000),
+  }).catch(() => null);
+  if (!r?.ok) return null;
+  const j = (await r.json()) as { visitors?: number; x?: number };
+  return j.visitors ?? j.x ?? null;
 }
 
 export async function eventProperty(range: Range, event: string, property: string) {
@@ -94,12 +185,11 @@ export async function eventProperty(range: Range, event: string, property: strin
   }).catch(() => []);
 }
 
+/** Daily digest (cron): unique visitors in the last 24 h. */
 export async function umamiVisitors24h(): Promise<number | null> {
   if (!umamiConfigured()) return null;
-  const s = await get<Record<string, { value: number } | number>>('/stats', {
-    ...rangeFor('24h'),
-    timezone: 'Asia/Manila',
-  });
-  const v = s.visitors;
-  return typeof v === 'number' ? v : (v?.value ?? null);
+  return (await stats(rangeFor('24h'))).visitors;
 }
+
+/** How many times each custom event fired in the range (Umami metrics type "event"). */
+export const eventCounts = (rangeId: string) => metric(rangeFor(rangeId), 'event', 100);

@@ -1,194 +1,174 @@
 ---
-/** Settings (EXECUTIONPLAN §15.3): moderation numbers, pause / newcomer hold, word list + tester, alerts, account. */
+/**
+ * Settings (docs/KEEPER-UPDATE-PLAN.md §6.8): the board switches as toggles, the moderation numbers with plain
+ * labels (the setting key shown small), and alerts. The word list and the account have their own pages.
+ * Every change saves at once and is written to the audit log.
+ */
 import Keeper from '../../layouts/Keeper.astro';
-import { asc } from 'drizzle-orm';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
-import { blockedTerms } from '../../server/db/schema';
 import { DEFAULTS, getSettings } from '../../server/settings';
+import { ago, dateTime } from '../../lib/keeper-format';
 export const prerender = false;
-const db = dbTx();
-const [s, terms] = await Promise.all([
-  getSettings(db as never, true),
-  db.select().from(blockedTerms).orderBy(asc(blockedTerms.id)),
-]);
-const HELP: Record<string, string> = {
-  report_threshold: 'Distinct reporters before a note auto-hides',
-  rereport_threshold: 'Threshold after the keeper has approved a note once',
-  rate_post_10m: 'Notes per visitor (IP hash) per 10 min',
-  rate_post_day: 'Notes per visitor per 24 h',
-  rate_report_hour: 'Reports per visitor per hour',
-  raid_posts_5m: 'Site-wide notes in 5 min that switch on newcomer hold (launch period: 20)',
-  max_len: 'Max characters (graphemes) per note',
-  max_lines: 'Max lines per note',
-  board_cache_s: 'Edge cache for list reads (seconds; vercel.json header also applies)',
-};
-const nums = Object.keys(DEFAULTS).filter((k) => typeof DEFAULTS[k as keyof typeof DEFAULTS] === 'number');
+const s = await getSettings(dbTx() as never, true);
+const NUMBERS: { title: string; items: [keyof typeof DEFAULTS, string, string][] }[] = [
+  {
+    title: 'Reports',
+    items: [
+      [
+        'report_threshold',
+        'Reports before a note hides',
+        'Different visitors who must report a note before it hides for review',
+      ],
+      [
+        'rereport_threshold',
+        'Reports after an approval',
+        'The same, for a note you have already approved once',
+      ],
+      ['rate_report_hour', 'Reports per visitor per hour', 'Limits report spam'],
+    ],
+  },
+  {
+    title: 'Posting limits',
+    items: [
+      ['rate_post_10m', 'Notes per visitor per 10 minutes', 'Counted by a hash of the visitor’s IP'],
+      ['rate_post_day', 'Notes per visitor per day', 'The same, over 24 hours'],
+      [
+        'raid_posts_5m',
+        'Busy-period trigger',
+        'Notes across the whole site in 5 minutes that switch the newcomer hold on by itself',
+      ],
+      ['max_len', 'Longest note (characters)', 'Emoji and accented letters count as one'],
+      ['max_lines', 'Most lines in a note', ''],
+    ],
+  },
+  {
+    title: 'Performance',
+    items: [
+      [
+        'board_cache_s',
+        'Board cache (seconds)',
+        'How long the board list is cached at the edge; vercel.json also applies',
+      ],
+    ],
+  },
+];
 ---
 
 <Keeper title="Settings" active="/keeper/settings">
-  <h1>Settings</h1>
+  <PageHead
+    title="Settings"
+    icon="gear"
+    hint="Changes save as soon as you make them and are written to the audit log."
+  />
+
   <section class="k-card">
-    <h2>Board switches</h2>
-    <label class="switch">
-      <input type="checkbox" data-bool="posting_paused" checked={s.posting_paused} /> Pause posting (shows
-      “the board is resting today”)
+    <h2>
+      <KIcon name="note" />
+      Board switches
+    </h2>
+    <label class="k-switch">
+      <input type="checkbox" data-bool="posting_paused" checked={s.posting_paused} />
+      <span>
+        <b>Pause posting</b>
+        <small>
+          The board shows “the board is resting today” and accepts no new notes. Reading and reporting still
+          work.
+        </small>
+      </span>
     </label>
-    <br />
-    <label class="switch">
-      <input type="checkbox" data-bool="newcomer_hold" checked={s.newcomer_hold} /> Newcomer hold (every new
-      note is held until approved)
+    <label class="k-switch">
+      <input type="checkbox" data-bool="newcomer_hold" checked={s.newcomer_hold} />
+      <span>
+        <b>Newcomer hold</b>
+        <small>
+          Every new note waits in the Held queue until you approve it.
+          {s.newcomer_hold_auto_at
+            ? ` Switched on by the busy-period trigger ${ago(s.newcomer_hold_auto_at)}; the nightly clean-up switches it off after 24 quiet hours with nothing held.`
+            : ''}
+        </small>
+      </span>
     </label>
+    <p class="k-hint" style="margin-top:6px">
+      Last nightly clean-up:{' '}
+      {s.last_cron_at ? `${ago(s.last_cron_at)} (${dateTime(s.last_cron_at)})` : 'never'}
+    </p>
   </section>
+
   <section class="k-card">
-    <h2>Moderation numbers</h2>
-    <div class="k-grid">
-      {nums.map((k) => (
-        <label class="k-field">
-          <span>{k}</span>
-          <input type="number" data-num={k} value={String((s as Record<string, unknown>)[k])} />
-          <small class="k-item__meta">{HELP[k]}</small>
-        </label>
-      ))}
-    </div>
+    <h2>
+      <KIcon name="sliders-horizontal" />
+      Moderation numbers
+    </h2>
+    {NUMBERS.map((g) => (
+      <>
+        <h3 class="k-group-title" style="margin:10px 0">
+          <span>{g.title}</span>
+        </h3>
+        <div class="k-grid">
+          {g.items.map(([key, label, help]) => (
+            <label class="k-field">
+              <span>{label}</span>
+              <input
+                type="number"
+                min="0"
+                data-num={key}
+                value={String((s as Record<string, unknown>)[key])}
+              />
+              <small>
+                {help}
+                {help ? ' · ' : ''}
+                <code>{key}</code> · default {String(DEFAULTS[key])}
+              </small>
+            </label>
+          ))}
+        </div>
+      </>
+    ))}
   </section>
+
   <section class="k-card">
-    <h2>Word list</h2>
-    <table class="k-table">
-      <thead>
-        <tr>
-          <th>Term</th>
-          <th>Kind</th>
-          <th>Action</th>
-          <th>Note</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {terms.map((t) => (
-          <tr>
-            <td>
-              <code>{t.term}</code>
-            </td>
-            <td>{t.kind}</td>
-            <td>{t.action}</td>
-            <td>{t.note}</td>
-            <td>
-              <button type="button" class="k-btn k-btn--danger" data-term-remove={t.id}>
-                Remove
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    <form data-term-add style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px">
-      <label class="k-field">
-        <span>Term</span>
-        <input name="term" required maxlength="200" />
-      </label>
-      <label class="k-field">
-        <span>Kind</span>
-        <select name="kind">
-          <option>substring</option>
-          <option>word</option>
-          <option>regex</option>
-        </select>
-      </label>
-      <label class="k-field">
-        <span>Action</span>
-        <select name="action">
-          <option>hold</option>
-          <option>reject</option>
-        </select>
-      </label>
-      <label class="k-field">
-        <span>Note</span>
-        <input name="note" maxlength="200" />
-      </label>
-      <button class="k-btn k-btn--navy">Add term</button>
-    </form>
-    <form data-term-test style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px">
-      <label class="k-field" style="flex:1">
-        <span>Test a sentence</span>
-        <input name="text" />
-      </label>
-      <button class="k-btn">Test</button>
-      <output data-test-out class="k-item__meta"></output>
-    </form>
-  </section>
-  <section class="k-card">
-    <h2>Alerts & account</h2>
+    <h2>
+      <KIcon name="paper-plane-tilt" />
+      Alerts
+    </h2>
+    <p class="k-card__sub" style="margin:-4px 0 12px">
+      Discord gets a message for: every sign-in step that passes, 5 failed sign-ins within an hour, a
+      two-factor reset from the command line, the busy-period trigger, either board switch being flipped here,
+      the daily digest (and the newcomer hold switching itself off), and a failed nightly clean-up.
+    </p>
     <button type="button" class="k-btn" data-test-alert>
-      Send a test Discord alert
+      <KIcon name="paper-plane-tilt" />
+      Send a test alert
     </button>
-    <button type="button" class="k-btn" data-regen>
-      Regenerate backup codes
-    </button>
-    <button type="button" class="k-btn k-btn--danger" data-signout-all>
-      Sign out everywhere
-    </button>
-    <pre data-codes hidden style="background:#f6f2fb;padding:10px;border-radius:10px;margin-top:10px"></pre>
   </section>
 </Keeper>
 
 <script>
   import { actions } from 'astro:actions';
-  import { toast, authClient } from '../../scripts/keeper-client';
+  import { toast } from '../../scripts/keeper/ui';
   document.querySelectorAll<HTMLInputElement>('[data-bool]').forEach((i) =>
     i.addEventListener('change', async () => {
       const { error } = await actions.keeper.settings({ key: i.dataset.bool!, value: i.checked });
-      toast(error ? `Not saved: ${error.message}` : `${i.dataset.bool} → ${i.checked ? 'ON' : 'OFF'}`);
+      const name = i.closest('label')?.querySelector('b')?.textContent ?? i.dataset.bool;
+      toast(error ? `Not saved: ${error.message}` : `${name}: ${i.checked ? 'on' : 'off'}`, {
+        kind: error ? 'error' : 'ok',
+      });
       if (error) i.checked = !i.checked;
     }),
   );
   document.querySelectorAll<HTMLInputElement>('[data-num]').forEach((i) =>
     i.addEventListener('change', async () => {
       const { error } = await actions.keeper.settings({ key: i.dataset.num!, value: Number(i.value) });
-      toast(error ? `Not saved: ${error.message}` : `${i.dataset.num} = ${i.value}`);
+      const name = i.closest('label')?.querySelector('span')?.textContent ?? i.dataset.num;
+      toast(error ? `Not saved: ${error.message}` : `${name}: ${i.value}`, { kind: error ? 'error' : 'ok' });
     }),
   );
-  document.querySelector<HTMLFormElement>('[data-term-add]')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const f = new FormData(e.target as HTMLFormElement);
-    const { error } = await actions.keeper.termAdd({
-      term: String(f.get('term')),
-      kind: f.get('kind') as 'substring',
-      action: f.get('action') as 'hold',
-      note: String(f.get('note') || '') || undefined,
-    });
-    if (error) return toast(`Not added: ${error.message}`);
-    location.reload();
-  });
-  document.querySelectorAll<HTMLButtonElement>('[data-term-remove]').forEach((b) =>
-    b.addEventListener('click', async () => {
-      const { error } = await actions.keeper.termRemove({ id: Number(b.dataset.termRemove) });
-      if (!error) b.closest('tr')?.remove();
-    }),
-  );
-  document.querySelector<HTMLFormElement>('[data-term-test]')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = String(new FormData(e.target as HTMLFormElement).get('text'));
-    const { data } = await actions.keeper.termTest({ text });
-    document.querySelector('[data-test-out]')!.textContent = data
-      ? data.terms.length || data.english
-        ? `Matches: ${data.terms.map((t) => `${t.term} (${t.action})`).join(', ')}${data.english ? ' + English filter (hold)' : ''}`
-        : 'No matches'
-      : 'Error';
-  });
   document.querySelector('[data-test-alert]')?.addEventListener('click', async () => {
     const { data } = await actions.keeper.testAlert();
-    toast(data?.ok ? 'Test alert sent' : 'DISCORD_WEBHOOK_URL is not set');
-  });
-  document.querySelector('[data-regen]')?.addEventListener('click', async () => {
-    const password = prompt('Passphrase to regenerate backup codes:');
-    if (!password) return;
-    const { data, error } = await authClient.twoFactor.generateBackupCodes({ password });
-    const pre = document.querySelector<HTMLElement>('[data-codes]')!;
-    pre.textContent = error ? 'Failed' : (data?.backupCodes ?? []).join('\n');
-    pre.hidden = false;
-  });
-  document.querySelector('[data-signout-all]')?.addEventListener('click', async () => {
-    await authClient.revokeSessions();
-    location.href = '/keeper/login';
+    toast(data?.ok ? 'Test alert sent' : 'DISCORD_WEBHOOK_URL is not set', {
+      kind: data?.ok ? 'ok' : 'error',
+    });
   });
 </script>

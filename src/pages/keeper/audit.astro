@@ -1,24 +1,29 @@
 ---
-/** Audit log (EXECUTIONPLAN §15.3). ?format=csv exports. */
+/**
+ * Audit log (docs/KEEPER-UPDATE-PLAN.md §6.6), after the Kotoha admin's Activity log: one row per action with an
+ * icon, a human label, who did it (you / the system / a script), when, and the detail as a sentence.
+ * ?action= filters, ?limit= pages ("Show more"), ?format=csv exports (unchanged).
+ */
 import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import KIcon from '../../components/keeper/KIcon.astro';
 import { dbTx } from '../../server/db/pool';
 import { auditList } from '../../server/board/moderation';
+import { ACTION_LABEL, dateTime, ago, KEEPER_TZ_LABEL } from '../../lib/keeper-format';
 export const prerender = false;
 const action = Astro.url.searchParams.get('action') || undefined;
-const list = await auditList(
-  dbTx() as never,
-  action,
-  Astro.url.searchParams.get('format') === 'csv' ? 5000 : 300,
-);
-if (Astro.url.searchParams.get('format') === 'csv') {
+const csv = Astro.url.searchParams.get('format') === 'csv';
+const limit = Math.min(1000, Math.max(50, Number(Astro.url.searchParams.get('limit')) || 100));
+const list = await auditList(dbTx() as never, action, csv ? 5000 : limit + 1);
+if (csv) {
   const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const csv = [
+  const body = [
     'time,action,crew_no,actor,detail',
     ...list.map((a) =>
       [a.created_at, a.action, a.crew_no, a.actor_id, JSON.stringify(a.detail)].map(cell).join(','),
     ),
   ].join('\n');
-  return new Response(csv, {
+  return new Response(body, {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': 'attachment; filename="aqua-keeper-audit.csv"',
@@ -26,63 +31,134 @@ if (Astro.url.searchParams.get('format') === 'csv') {
     },
   });
 }
-const ACTIONS = [
-  'approve',
-  'remove',
-  'restore',
-  'bulk_remove',
-  'bulk_approve',
-  'settings_change',
-  'term_add',
-  'term_remove',
-  'pause',
-  'resume',
-  'login',
-  'login_failed',
-  'twofa_reset',
-  'purge',
-];
+const more = list.length > limit;
+const shown = list.slice(0, limit);
+const SETTING: Record<string, string> = {
+  report_threshold: 'reports before a note hides',
+  rereport_threshold: 'reports after an approval',
+  rate_post_10m: 'notes per visitor per 10 min',
+  rate_post_day: 'notes per visitor per day',
+  rate_report_hour: 'reports per visitor per hour',
+  raid_posts_5m: 'busy-period trigger',
+  max_len: 'max characters',
+  max_lines: 'max lines',
+  board_cache_s: 'board cache seconds',
+  posting_paused: 'posting paused',
+  newcomer_hold: 'newcomer hold',
+};
+function describe(a: (typeof list)[number]): string {
+  const d = (a.detail ?? {}) as Record<string, unknown>;
+  const crew = a.crew_no ?? d.crewNo;
+  switch (a.action) {
+    case 'approve':
+    case 'bulk_approve':
+    case 'restore':
+    case 'hold':
+      return crew ? `Note #${crew}` : '';
+    case 'remove':
+    case 'bulk_remove':
+      return `${crew ? `Note #${crew}` : 'A note'}${d.reason ? ` · reason: ${d.reason}` : ''}`;
+    case 'purge':
+      return `Note #${d.crewNo ?? '?'} deleted for a privacy request`;
+    case 'settings_change':
+    case 'pause':
+    case 'resume':
+      if (d.by === 'cron') return `By the nightly clean-up (${String(d.what ?? '').replace('_', ' ')})`;
+      return d.key
+        ? `${SETTING[String(d.key)] ?? d.key}: ${JSON.stringify(d.before ?? '—')} → ${JSON.stringify(d.after)}`
+        : '';
+    case 'term_add':
+      return `${d.kind ?? ''} · ${d.action ?? ''}`;
+    case 'term_remove':
+      return `Term #${d.id}`;
+    case 'login':
+    case 'login_failed':
+      return `From ${d.country ?? '??'} (${d.ipPrefix ? `${d.ipPrefix}.x.x` : 'unknown network'})`;
+    case 'twofa_reset':
+      return d.by === 'script' ? 'With scripts/reset-2fa.ts' : '';
+    default:
+      return a.detail ? JSON.stringify(a.detail) : '';
+  }
+}
+const who = (a: (typeof list)[number]) => {
+  const d = (a.detail ?? {}) as Record<string, unknown>;
+  if (d.by === 'cron') return 'the system';
+  if (d.by === 'script') return 'command line';
+  if (a.action === 'login' || a.action === 'login_failed') return 'sign-in';
+  return a.actor_id ? 'the keeper' : 'the system';
+};
+const qs = (o: Record<string, string | number | undefined>) =>
+  '?' + new URLSearchParams(Object.entries(o).filter(([, v]) => v !== undefined) as [string, string][]);
 ---
 
-<Keeper title="Audit" active="/keeper/audit">
-  <h1>Audit log</h1>
-  <form method="get" style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+<Keeper title="Audit log" active="/keeper/audit">
+  <PageHead
+    title="Audit log"
+    icon="scroll"
+    hint={`Everything done in the Keeper and by the system, newest first. Times in ${KEEPER_TZ_LABEL}.`}
+  >
+    <a class="k-btn" href={`/keeper/audit${qs({ format: 'csv', action })}`}>
+      <KIcon name="download-simple" />
+      Export CSV
+    </a>
+  </PageHead>
+  <form method="get" class="k-toolbar">
     <label class="k-field">
-      <span>Action</span>
-      <select name="action">
-        <option value="">any</option>
-        {ACTIONS.map((a) => (
-          <option selected={a === action}>{a}</option>
+      <span>Show</span>
+      <select name="action" data-autosubmit>
+        <option value="">Every action</option>
+        {Object.entries(ACTION_LABEL).map(([k, v]) => (
+          <option value={k} selected={k === action}>
+            {v.label}
+          </option>
         ))}
       </select>
     </label>
-    <button class="k-btn k-btn--navy">Filter</button>
-    <a class="k-btn" href={`/keeper/audit?format=csv${action ? `&action=${action}` : ''}`}>
-      Export CSV
-    </a>
+    <noscript>
+      <button class="k-btn k-btn--navy">Filter</button>
+    </noscript>
   </form>
-  <table class="k-table k-card">
-    <thead>
-      <tr>
-        <th>When</th>
-        <th>Action</th>
-        <th>Note</th>
-        <th>Detail</th>
-      </tr>
-    </thead>
-    <tbody>
-      {list.map((a) => (
-        <tr>
-          <td>{new Date(a.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Manila' })}</td>
-          <td>
-            <span class="k-pill">{a.action}</span>
-          </td>
-          <td>{a.crew_no ? `#${a.crew_no}` : '—'}</td>
-          <td>
-            <code style="font-size:12px">{a.detail ? JSON.stringify(a.detail) : ''}</code>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  {shown.length === 0 && (
+    <div class="k-state">
+      <KIcon name="anchor" />
+      <p>Nothing recorded yet.</p>
+    </div>
+  )}
+  <ol class="k-rows">
+    {shown.map((a) => {
+      const meta = ACTION_LABEL[a.action] ?? { label: a.action, icon: 'scroll' };
+      const text = describe(a);
+      return (
+        <li class="k-row k-row--plain">
+          <span class:list={['k-row__icon', meta.tone && `k-row__icon--${meta.tone}`]}>
+            <KIcon name={meta.icon} />
+          </span>
+          <div class="k-row__main">
+            <p class="k-row__title">{meta.label}</p>
+            <p class="k-row__meta">
+              <span class="k-pill">{who(a)}</span>
+              <time datetime={a.created_at} title={dateTime(a.created_at)}>
+                {ago(a.created_at)} · {dateTime(a.created_at)}
+              </time>
+            </p>
+            {text && <p class="k-hint">{text}</p>}
+          </div>
+        </li>
+      );
+    })}
+  </ol>
+  {more && (
+    <p class="k-more">
+      <a class="k-btn" href={`/keeper/audit${qs({ action, limit: limit + 100 })}`}>
+        Show more
+      </a>
+    </p>
+  )}
 </Keeper>
+
+<script>
+  // the CSP allows no inline handlers: submit the filter when the choice changes
+  document
+    .querySelector<HTMLSelectElement>('[data-autosubmit]')
+    ?.addEventListener('change', (e) => (e.target as HTMLSelectElement).form?.submit());
+</script>

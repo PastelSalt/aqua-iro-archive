@@ -1,0 +1,126 @@
+---
+/**
+ * Archive insights (docs/KEEPER-UPDATE-PLAN.md §6.3): every event the site sends, grouped like the Kotoha
+ * admin's Engagement cards, with IDs turned into titles. Loads from /api/admin/insights.
+ */
+import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+export const prerender = false;
+---
+
+<Keeper title="Archive insights" active="/keeper/insights">
+  <PageHead
+    title="Archive insights"
+    icon="sparkle"
+    hint="What people do on the site: what they play, open, search and choose, how Talk and the tour go, and how fast the pages are."
+  >
+    <div data-range></div>
+  </PageHead>
+  <div class="k-kpis k-kpis--navy" data-totals></div>
+  <div style="display:grid;gap:14px" data-groups></div>
+</Keeper>
+
+<script>
+  import {
+    h,
+    kpi,
+    barList,
+    statCard,
+    groupTitle,
+    segmented,
+    stateBox,
+    skeleton,
+    getJSON,
+    type BarRow,
+  } from '../../scripts/keeper/ui';
+  import { num, pct } from '../../lib/keeper-format';
+  type Card = { title: string; icon: string; hint?: string; rows: BarRow[]; tone?: 'pink' | 'navy' | 'teal' };
+  type Res = {
+    configured: boolean;
+    error?: string;
+    groups: { title: string; cards: Card[] }[];
+    totals: Record<string, number>;
+  };
+  const totals = document.querySelector<HTMLElement>('[data-totals]')!;
+  const groups = document.querySelector<HTMLElement>('[data-groups]')!;
+  let range = '30d';
+  document.querySelector('[data-range]')!.replaceWith(
+    segmented(
+      'ins-range',
+      [
+        ['7d', '7 days'],
+        ['30d', '30 days'],
+        ['90d', '90 days'],
+        ['1y', '1 year'],
+      ],
+      range,
+      (r) => {
+        range = r;
+        void load();
+      },
+      'Period',
+    ),
+  );
+  async function load() {
+    groups.setAttribute('aria-busy', 'true');
+    try {
+      const r = await getJSON<Res>(`/api/admin/insights?range=${range}`);
+      if (!r.configured) {
+        totals.replaceChildren();
+        groups.replaceChildren(
+          stateBox(
+            'Insights need Umami: set UMAMI_API_URL, UMAMI_API_KEY and PUBLIC_UMAMI_WEBSITE_ID in Vercel.',
+          ),
+        );
+        return;
+      }
+      if (r.error) throw new Error(`Umami didn't answer (${r.error}).`);
+      const t = r.totals;
+      totals.replaceChildren(
+        kpi({
+          icon: 'chats-circle',
+          label: 'Talk conversations',
+          value: num(t.talkStarted ?? 0),
+          sub: `${pct(t.talkFinished ?? 0, t.talkStarted ?? 0)} reached the end · hidden ${num(t.talkHidden ?? 0)}×`,
+        }),
+        kpi({
+          icon: 'play-circle',
+          label: 'Videos played',
+          value: num(t.embeds ?? 0),
+          sub: 'embeds + songs',
+        }),
+        kpi({
+          icon: 'magnifying-glass',
+          label: 'Stream searches',
+          value: num(t.searches ?? 0),
+          sub: 'typed into Streaming',
+        }),
+        kpi({
+          icon: 'question',
+          label: 'Help and LOG opened',
+          value: num((t.help ?? 0) + (t.log ?? 0)),
+          sub: `undo used ${num(t.undo ?? 0)}× on the board`,
+        }),
+      );
+      groups.replaceChildren(
+        ...r.groups.flatMap((g) => [
+          groupTitle(g.title),
+          h(
+            'div',
+            { class: 'k-grid' },
+            g.cards.map((c) =>
+              statCard(c.title, c.icon, barList(c.rows, { tone: c.tone, limit: 25 }), c.hint),
+            ),
+          ),
+        ]),
+      );
+    } catch (e) {
+      groups.replaceChildren(stateBox((e as Error).message, { kind: 'error', retry: load }));
+    } finally {
+      groups.removeAttribute('aria-busy');
+    }
+  }
+  totals.replaceChildren(skeleton(96), skeleton(96), skeleton(96), skeleton(96));
+  groups.replaceChildren(skeleton(260), skeleton(260));
+  void load();
+</script>

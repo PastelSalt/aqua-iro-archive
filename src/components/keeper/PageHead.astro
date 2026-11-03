@@ -1,0 +1,25 @@
+---
+/** Keeper page head (docs/KEEPER-UPDATE-PLAN.md §7): ticket title with an icon, one-line hint, actions slot. */
+import KIcon from './KIcon.astro';
+interface Props {
+  title: string;
+  icon: string;
+  hint?: string;
+}
+const { title, icon, hint } = Astro.props;
+---
+
+<div class="k-head">
+  <div class="k-head__text">
+    <h1 class="k-ticket">
+      <KIcon name={icon} />
+      {title}
+    </h1>
+    {hint && <p>{hint}</p>}
+  </div>
+  {Astro.slots.has('default') && (
+    <div class="k-head__actions">
+      <slot />
+    </div>
+  )}
+</div>

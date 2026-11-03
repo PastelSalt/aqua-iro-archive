@@ -1,0 +1,25 @@
+---
+/** Visitors (docs/KEEPER-UPDATE-PLAN.md §6.2): the dashboard's visitor blocks in full, plus the 7 × 24 grid. */
+import Keeper from '../../layouts/Keeper.astro';
+import PageHead from '../../components/keeper/PageHead.astro';
+import { CHAPTERS } from '../../lib/chapters';
+export const prerender = false;
+const pageTitles = Object.fromEntries(
+  CHAPTERS.map((c) => [c.href.replace(/\/$/, '') || '/', `${c.title.en} (${c.href})`]),
+);
+---
+
+<Keeper title="Visitors" active="/keeper/visitors">
+  <PageHead
+    title="Visitors"
+    icon="chart-bar"
+    hint="Who visits, from where, on what, and when. Every list goes to 25 rows; the dashboard shows the top few."
+  />
+  <section style="display:grid;gap:14px" data-visitors data-titles={JSON.stringify(pageTitles)}></section>
+</Keeper>
+
+<script>
+  import { renderVisitors } from '../../scripts/keeper/visitors';
+  const host = document.querySelector<HTMLElement>('[data-visitors]')!;
+  renderVisitors(host, { full: true, pageTitles: JSON.parse(host.dataset.titles ?? '{}') });
+</script>
