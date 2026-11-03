@@ -287,15 +287,23 @@ Each step shows done / current / next in a small step rail (1 · 2 · 3 · 4), s
 Legend: `[ ]` todo · `[x]` done and verified · ✋ owner review
 
 - [x] **K0** ✋ Approved 2026-11-03 with the §11 defaults (after §6.10 was expanded to the sign-in, 2FA and setup pages)
-- [ ] **K1** Tokens and shell: `keeper.css` rewrite, top bar, grouped sidebar, phone drawer, page head, state boxes, skeletons, toasts. Every existing page keeps working inside the new shell
-- [ ] **K2** Dashboard: needs-you cards, board tiles and chart, archive tiles, visitor strip, visits chart, range details with grouped bar lists, privacy note; `stats.ts` / `umami.ts` additions; uPlot removed
-- [ ] **K3** Visitors and Archive insights pages; `labels.ts`; `insights.ts`
-- [ ] **K4** Queue, Notes, Audit, Errors, Settings split and Word list in the new components
-- [ ] **K5** My account (backup codes, passphrase, sessions, recovery note); sign-in and 2FA pages restyled
-- [ ] **K6** QA: 1920 / 1366 × 768 / 1024 / 768 / 390 px; keyboard-only pass; reduced motion; contrast AA; no CSP errors; regression of sign-in + 2FA, every queue action, purge, restore, settings, word list, CSV; Chromium and WebKit e2e
+- [x] **K1** Tokens and shell: `keeper.css` rewrite, top bar, grouped sidebar, phone drawer, page head, state boxes, skeletons, toasts. Every existing page keeps working inside the new shell
+- [x] **K2** Dashboard: needs-you cards, board tiles and chart, archive tiles, visitor strip, visits chart, range details with grouped bar lists, privacy note; `stats.ts` / `umami.ts` additions; uPlot removed
+- [x] **K3** Visitors and Archive insights pages; `labels.ts`; `insights.ts`
+- [x] **K4** Queue, Notes, Audit, Errors, Settings split and Word list in the new components
+- [x] **K5** My account (backup codes, passphrase, sessions, recovery note); sign-in and 2FA pages restyled
+- [~] **K6** QA: 1920 / 1366 × 768 / 1024 / 768 / 390 px; keyboard-only pass; reduced motion; contrast AA; no CSP errors; regression of sign-in + 2FA, every queue action, purge, restore, settings, word list, CSV; Chromium and WebKit e2e
 - [ ] **K7** ✋ Owner checks the preview → merge to `main` → check production `/keeper`
 
 ---
+
+- Progress 2026-11-03: K1–K5 built on `keeper-update`. Checked in the local preview (`npm run keeper:preview`:
+  PGlite sample data, stand-in admin, sample Umami numbers; dev-only, verified absent from the production
+  bundle) at 1366×768 and 390×844: every page, the phone drawer (Esc, focus return), the purge dialog end to
+  end. Unit/integration 60/60, e2e 113 passed (Chromium + WebKit). Not checkable in the preview: real sign-in,
+  2FA, sessions and backup codes (they need the production auth), and live Umami numbers; check those on
+  production after merging. Not done from the plan: per-metric web-vitals split (Umami's values endpoint gives
+  ratings and metric names separately), the Errors "acknowledge" idea, JP/EN (English only by default).
 
 ## 11. Questions for the owner (defaults used if not answered)
 

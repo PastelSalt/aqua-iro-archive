@@ -1477,6 +1477,7 @@ kbd {
 }
 .k-auth__title {
   justify-self: center;
+  margin-top: 8px; /* room for the ticket's crest tape under the logo */
 }
 .k-auth__step {
   justify-self: center;
@@ -1581,7 +1582,7 @@ kbd {
 }
 .k-step[data-state='done'] > :not(h2),
 .k-step[data-state='next'] > :not(h2) {
-  display: none;
+  display: none !important; /* beats the steps' own inline grid layout */
 }
 .k-step[data-state='next'] {
   opacity: 0.6;
@@ -1622,15 +1623,16 @@ kbd {
   .k-top .k-menu-btn {
     display: inline-flex;
   }
+  /* the drawer opens under the top bar (the frame is its own stacking layer, below the sticky bar) */
   .k-side {
     position: fixed;
-    top: 0;
+    top: var(--k-top-h);
     bottom: 0;
     left: 0;
     z-index: 45;
     width: min(290px, 86vw);
     max-height: none;
-    border-radius: 0 22px 22px 0;
+    border-radius: 0 22px 0 0;
     translate: -105% 0;
     transition: translate var(--dur-2) var(--ease-tide);
     align-content: start;
@@ -1640,7 +1642,7 @@ kbd {
   }
   .k-scrim {
     position: fixed;
-    inset: 0;
+    inset: var(--k-top-h) 0 0;
     z-index: 40;
     background: rgb(44 52 104 / 0.4);
   }
