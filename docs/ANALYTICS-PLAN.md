@@ -61,3 +61,9 @@ Do these **after** the new version is live, so nothing breaks in between. The on
 
 1. Days in **Asia/Manila** (yours, as the rest of the Keeper) or JST (Aqua's)? _Default: Asia/Manila._
 2. Keep **raw events 90 days** like Kotoha? _Default: yes._
+
+## 7. Done (2026-11-03)
+
+Live on main (`3ce9f83`). Note: production migrations run automatically in CI's `migrate` job on every push to
+main, so the extra `db:add-analytics` script was unnecessary. Creating the tables by hand first made that job
+fail with "already exists"; `0001_own_analytics.sql` now uses `IF NOT EXISTS`, and the script was removed.

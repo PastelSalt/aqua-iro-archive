@@ -55,7 +55,8 @@ stores them in `analytics_events`; finished days are rolled into `analytics_dail
 load of the day and by the nightly clean-up. Check, in order:
 
 1. **`ANALYTICS_SALT`** is set in Vercel (Production). Without it production drops every event quietly.
-2. **The tables exist**: `npm run db:add-analytics` (adds `analytics_events` and `analytics_daily` if missing; safe to re-run).
+2. **The tables exist**: they are created by the `migrate` job in CI (`.github/workflows/ci.yml`), which applies
+   `db/migrations/` to production on every push to main. If that job is red, its log says why.
 3. **You're not counting yourself**: visits while signed in to the Keeper, with Do Not Track / Global Privacy
    Control on, from bots, and from preview deployments are not counted, by design.
 4. Today's numbers are computed live, so a visit shows in the Keeper right away (the stats cache for 5 minutes).

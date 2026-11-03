@@ -1,4 +1,4 @@
-CREATE TABLE "analytics_daily" (
+CREATE TABLE IF NOT EXISTS "analytics_daily" (
 	"day" date NOT NULL,
 	"metric" text NOT NULL,
 	"dimension" text DEFAULT '' NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE "analytics_daily" (
 	CONSTRAINT "analytics_daily_day_metric_dimension_pk" PRIMARY KEY("day","metric","dimension")
 );
 --> statement-breakpoint
-CREATE TABLE "analytics_events" (
+CREATE TABLE IF NOT EXISTS "analytics_events" (
 	"id" bigserial PRIMARY KEY NOT NULL,
 	"occurred_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"event" text NOT NULL,
@@ -24,5 +24,5 @@ CREATE TABLE "analytics_events" (
 	"environment" text NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX "analytics_events_time_idx" ON "analytics_events" USING btree ("occurred_at");--> statement-breakpoint
-CREATE INDEX "analytics_events_event_time_idx" ON "analytics_events" USING btree ("event","occurred_at");
+CREATE INDEX IF NOT EXISTS "analytics_events_time_idx" ON "analytics_events" USING btree ("occurred_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "analytics_events_event_time_idx" ON "analytics_events" USING btree ("event","occurred_at");
