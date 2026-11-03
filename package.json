@@ -16,6 +16,7 @@
     "import:rawdata": "tsx scripts/import-rawdata.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:add-analytics": "tsx scripts/add-analytics-tables.ts",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx scripts/seed.ts",
     "admin:create": "tsx scripts/create-admin.ts",

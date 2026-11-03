@@ -9,16 +9,6 @@
       "schedule": "15 18 * * *"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/s/ui.js",
-      "destination": "https://aqua-umami.vercel.app/script.js"
-    },
-    {
-      "source": "/s/api/send",
-      "destination": "https://aqua-umami.vercel.app/api/send"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",

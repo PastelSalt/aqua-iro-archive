@@ -1,10 +1,11 @@
 /**
  * Archive insights (docs/KEEPER-UPDATE-PLAN.md §6.3): the events the site already sends, grouped and labelled.
- * Each card is one (event, property) pair from Umami's event-data values, with IDs turned into titles.
+ * Each card is one (event, property) pair from the site's own analytics (src/server/analytics.ts), with IDs
+ * turned into titles.
  */
-import { eventCounts, eventProperty, rangeFor } from './umami';
+import { eventCounts, eventValues } from './analytics';
+import { dbTx } from './db/pool';
 import { labels, removed } from './labels';
-import { keeperPreview } from './dev/preview';
 
 export type Row = { label: string; value: number; hint?: string };
 export type Card = {
@@ -16,10 +17,9 @@ export type Card = {
 };
 export type Group = { title: string; cards: Card[] };
 
-const DEV = import.meta.env.DEV && keeperPreview() ? await import('./dev/fixtures') : null;
 const values = (rangeId: string, event: string, prop: string) =>
-  DEV ? DEV.previewValues(event, prop) : eventProperty(rangeFor(rangeId), event, prop);
-const counts = (rangeId: string) => (DEV ? DEV.previewEvents() : eventCounts(rangeId));
+  eventValues(dbTx() as never, rangeId, event, prop);
+const counts = (rangeId: string) => eventCounts(dbTx() as never, rangeId);
 
 const pretty = (s: string) => s.replace(/[-_]/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 const TOUR: Record<string, string> = { finish: 'Finished the tour' };

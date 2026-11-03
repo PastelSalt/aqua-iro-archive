@@ -1,18 +1,16 @@
 /**
  * GET /api/admin/stats?range=7d&unit=day[&full=1] (docs/KEEPER-UPDATE-PLAN.md §5): the dashboard's and the
- * Visitors page's data in one request — board series, Umami visitors (fixed periods, the chart series, the
- * breakdowns; `full` adds OS, language, screens, 25 rows and the 7 × 24 grid) and the dashboard's top-5
+ * Visitors page's data in one request — board series, visitors (the site's own analytics) (fixed periods, the chart series, the
+ * breakdowns; `full` adds OS, language, 25 rows and the 7 × 24 grid) and the dashboard's top-5
  * engagement lists. Admin only (middleware), private 5-minute cache.
  */
 import type { APIRoute } from 'astro';
 import { dbTx } from '../../../server/db/pool';
 import { boardStats } from '../../../server/board/moderation';
-import { RANGE_DAYS, umamiConfigured, visitors as umamiVisitors } from '../../../server/umami';
+import { RANGE_DAYS, visitors as siteVisitors } from '../../../server/analytics';
 import { insights } from '../../../server/insights';
-import { keeperPreview } from '../../../server/dev/preview';
 
 export const prerender = false;
-const DEV = import.meta.env.DEV && keeperPreview() ? await import('../../../server/dev/fixtures') : null;
 
 export const GET: APIRoute = async ({ url, locals }) => {
   if (!locals.admin) return new Response('Unauthorized', { status: 401 });
@@ -24,9 +22,9 @@ export const GET: APIRoute = async ({ url, locals }) => {
   const board = await boardStats(dbTx() as never, 30); // the board chart always shows the last 30 days
   let visitors: unknown = null;
   let top: unknown = null;
-  if (DEV || umamiConfigured()) {
+  {
     try {
-      visitors = DEV ? await DEV.previewVisitors(range, unit, full) : await umamiVisitors(range, unit, full);
+      visitors = await siteVisitors(dbTx() as never, range, unit, full);
       if (!full) {
         const { groups } = await insights(range, 5);
         const card = (g: string, t: string) =>
@@ -43,7 +41,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
     }
   }
   return Response.json(
-    { range, unit, configured: !!(DEV || umamiConfigured()), board, visitors, top },
+    { range, unit, configured: true, board, visitors, top },
     { headers: { 'Cache-Control': 'private, max-age=300' } },
   );
 };

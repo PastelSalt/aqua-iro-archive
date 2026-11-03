@@ -2,7 +2,7 @@
  * Visitor statistics for the Keeper (docs/KEEPER-UPDATE-PLAN.md §6.1–6.2), after the Kotoha admin's analytics.js:
  * fixed-period KPIs, the visits chart with Daily / Weekly / Monthly, then a "Details for" range bar directly
  * above everything it changes, and breakdowns grouped Audience / Traffic / Engagement. `full` is the Visitors
- * page (every list to 25 rows, OS / language / screens, the 7 × 24 grid); the dashboard shows the top rows.
+ * page (every list to 25 rows, OS and language, the 7 × 24 grid); the dashboard shows the top rows.
  */
 import { num, duration, pct, KEEPER_TZ_LABEL } from '../../lib/keeper-format';
 import {
@@ -39,7 +39,6 @@ type Visitors = {
   browsers: Metric[];
   os: Metric[];
   languages: Metric[];
-  screens: Metric[];
   weekly: number[][] | null;
   fetchedAt: number;
 };
@@ -157,27 +156,21 @@ export function renderVisitors(
           ]),
       h('p', {
         class: 'k-block-head__note',
-        text: note ?? `Counted by Umami · times in ${KEEPER_TZ_LABEL} · weeks start on Monday`,
+        text: note ?? `Counted by the site itself · times in ${KEEPER_TZ_LABEL} · weeks start on Monday`,
       }),
     ]);
 
   const draw = (r: StatsResponse) => {
     o.onBoard?.(r);
     if (!r.configured) {
-      host.replaceChildren(
-        head(),
-        stateBox(
-          'Visitor stats are off: set UMAMI_API_URL, UMAMI_API_KEY and PUBLIC_UMAMI_WEBSITE_ID in Vercel, then redeploy.',
-          { kind: 'empty' },
-        ),
-      );
+      host.replaceChildren(head(), stateBox('Visitor stats are off.', { kind: 'empty' }));
       return;
     }
     const v = r.visitors as Visitors | { error: string } | null;
     if (!v || 'error' in v) {
       host.replaceChildren(
         head(),
-        stateBox(`Umami didn't answer (${(v as { error?: string })?.error ?? 'no data'}).`, {
+        stateBox(`The visitor numbers could not load (${(v as { error?: string })?.error ?? 'no data'}).`, {
           kind: 'error',
           retry: load,
         }),
@@ -217,7 +210,7 @@ export function renderVisitors(
 
     host.replaceChildren(
       head(
-        `Counted by Umami · times in ${KEEPER_TZ_LABEL} · updated ${updated ? `${updated} min ago` : 'just now'}`,
+        `Counted by the site itself · times in ${KEEPER_TZ_LABEL} · updated ${updated ? `${updated} min ago` : 'just now'}`,
       ),
       h('div', { class: 'k-kpis' }, [
         kpi({
@@ -346,7 +339,6 @@ export function renderVisitors(
         ),
         o.full ? statCard('Languages', 'translate', barList(rows(v.languages, langName), { limit })) : null,
         o.full ? statCard('Operating systems', 'monitor', barList(rows(v.os), { limit })) : null,
-        o.full ? statCard('Screen sizes', 'monitor', barList(rows(v.screens), { limit })) : null,
       ]),
       groupTitle('Traffic'),
       h('div', { class: 'k-grid' }, [

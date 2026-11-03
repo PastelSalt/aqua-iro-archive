@@ -187,7 +187,7 @@ const NAV: {
         await signOut().catch(() => {});
         location.href = '/keeper/login';
       });
-      // visitors on the site right now (Umami "active"), refreshed every minute while the tab is visible
+      // visitors on the site right now (visits active in the last 5 minutes), refreshed every minute while the tab is visible
       const live = document.querySelector<HTMLElement>('[data-live]');
       const tick = async () => {
         if (!live || document.hidden) return;

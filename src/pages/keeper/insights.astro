@@ -67,14 +67,10 @@ export const prerender = false;
       const r = await getJSON<Res>(`/api/admin/insights?range=${range}`);
       if (!r.configured) {
         totals.replaceChildren();
-        groups.replaceChildren(
-          stateBox(
-            'Insights need Umami: set UMAMI_API_URL, UMAMI_API_KEY and PUBLIC_UMAMI_WEBSITE_ID in Vercel.',
-          ),
-        );
+        groups.replaceChildren(stateBox('Insights are off.'));
         return;
       }
-      if (r.error) throw new Error(`Umami didn't answer (${r.error}).`);
+      if (r.error) throw new Error(`The insights could not load (${r.error}).`);
       const t = r.totals;
       totals.replaceChildren(
         kpi({

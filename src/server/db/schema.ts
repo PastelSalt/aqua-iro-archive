@@ -14,6 +14,9 @@ import {
   index,
   uniqueIndex,
   check,
+  date,
+  bigint,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 
 export const messageStatus = pgEnum('message_status', ['visible', 'held', 'under_review', 'removed']);
@@ -140,3 +143,43 @@ export const appErrors = pgTable('app_errors', {
 
 // Better Auth tables (user, session, account, verification, twoFactor, rateLimit)
 export * from './auth-schema';
+
+/**
+ * First-party analytics (docs/ANALYTICS-PLAN.md), after the Kotoha fan site: raw events kept 90 days, rolled
+ * into per-day totals kept for good. No cookies; `visitor_hash` changes every day and IPs are never stored.
+ */
+export const analyticsEvents = pgTable(
+  'analytics_events',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull().defaultNow(),
+    event: text('event').notNull(), // 'page_view', 'page_time' or one of the site's track() names
+    path: text('path'),
+    visitId: text('visit_id').notNull(), // random per page load, never stored in the browser
+    visitorHash: text('visitor_hash').notNull(), // sha256(salt | day | ip | user agent), 32 hex
+    device: text('device'),
+    browser: text('browser'),
+    os: text('os'),
+    language: text('language'), // the site language the visitor was reading (ja / en)
+    country: text('country'),
+    referrerHost: text('referrer_host'),
+    durationMs: integer('duration_ms'),
+    props: jsonb('props').$type<Record<string, string | number | boolean>>(),
+    environment: text('environment').notNull(),
+  },
+  (t) => [
+    index('analytics_events_time_idx').on(t.occurredAt),
+    index('analytics_events_event_time_idx').on(t.event, t.occurredAt),
+  ],
+);
+
+export const analyticsDaily = pgTable(
+  'analytics_daily',
+  {
+    day: date('day').notNull(),
+    metric: text('metric').notNull(),
+    dimension: text('dimension').notNull().default(''),
+    value: bigint('value', { mode: 'number' }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.metric, t.dimension] })],
+);

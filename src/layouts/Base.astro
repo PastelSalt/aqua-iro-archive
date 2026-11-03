@@ -5,12 +5,6 @@
  */
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
-import {
-  PUBLIC_UMAMI_WEBSITE_ID,
-  PUBLIC_UMAMI_SRC,
-  PUBLIC_UMAMI_HOST,
-  PUBLIC_UMAMI_DOMAINS,
-} from 'astro:env/client';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/layout.css';
@@ -131,19 +125,6 @@ const ld = jsonLd ?? {
     </noscript>
     <ClientRouter fallback="swap" />
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
-    {PUBLIC_UMAMI_WEBSITE_ID && (
-      <script
-        is:inline
-        defer
-        src={PUBLIC_UMAMI_SRC}
-        data-website-id={PUBLIC_UMAMI_WEBSITE_ID}
-        data-host-url={PUBLIC_UMAMI_HOST}
-        data-domains={PUBLIC_UMAMI_DOMAINS}
-        data-do-not-track="true"
-        data-exclude-search="true"
-        transition:persist="umami"
-      />
-    )}
     <slot name="head" />
   </head>
   <body data-chapter={chapter} id="top" style={`--pose-wait:url(${waitPose.src})`}>

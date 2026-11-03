@@ -232,8 +232,9 @@ const calm = need.reported + need.held + need.errors24 === 0;
   <p class="k-note">
     <KIcon name="shield-check" />
     <span>
-      Visitor numbers come from Umami: no cookies, no IP addresses kept. The board stores a salted hash of the
-      poster's IP for 30 days (rate limits and reports), then deletes it. The Keeper itself is never counted.
+      Visitor numbers are counted by the site itself: no cookies, IP addresses never stored, and the visitor
+      hash changes every day. The board stores a salted hash of the poster's IP for 30 days (rate limits and
+      reports), then deletes it. The Keeper itself is never counted.
     </span>
   </p>
 </Keeper>

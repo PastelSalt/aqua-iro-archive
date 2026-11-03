@@ -48,11 +48,17 @@ off by design) and no reset script yet: `npm run admin:create` only creates a ne
 that already exists. A `reset-password` script (typed passphrase, like `admin:create`) would be the fix; ask for
 it before you need it.
 
-## Visitor stats say "unavailable"
+## Visitor numbers look wrong or empty
 
-The Keeper reads Umami (self-hosted at `aqua-umami.vercel.app`). Production needs `UMAMI_API_URL`
-(`https://aqua-umami.vercel.app/api`), `UMAMI_API_KEY` (an `umami_…` key from Umami → Settings → API keys) and
-`PUBLIC_UMAMI_WEBSITE_ID`, then a redeploy. The message in brackets says what Umami answered.
+The site counts its own visits (`docs/ANALYTICS-PLAN.md`): the browser sends events to `/api/track`, which
+stores them in `analytics_events`; finished days are rolled into `analytics_daily` by the first visit or Keeper
+load of the day and by the nightly clean-up. Check, in order:
+
+1. **`ANALYTICS_SALT`** is set in Vercel (Production). Without it production drops every event quietly.
+2. **The tables exist**: `npm run db:add-analytics` (adds `analytics_events` and `analytics_daily` if missing; safe to re-run).
+3. **You're not counting yourself**: visits while signed in to the Keeper, with Do Not Track / Global Privacy
+   Control on, from bots, and from preview deployments are not counted, by design.
+4. Today's numbers are computed live, so a visit shows in the Keeper right away (the stats cache for 5 minutes).
 
 ## Previewing the Keeper locally
 
@@ -61,5 +67,5 @@ npm run keeper:preview
 ```
 
 Starts `astro dev` on port 4322 with a local made-up database (`.keeper-preview/`, from
-`scripts/dev/keeper-preview-db.mts`), a stand-in admin and sample analytics. It never touches Neon or Umami, and
+`scripts/dev/keeper-preview-db.mts`), a stand-in admin and 60 days of sample visits. It never touches Neon, and
 none of it exists in production builds. Delete `.keeper-preview/` to rebuild the sample data.
