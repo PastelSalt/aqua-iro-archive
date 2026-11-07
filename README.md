@@ -211,7 +211,7 @@ asked.
 
 ## License
 
-The **source code** is released under the [MIT License](LICENSE).
+The **source code** is released under the [MIT License](LICENSE). See [NOTICE.md](NOTICE.md) for what it doesn't cover.
 
 The **content is not**: Minato Aqua's name, likeness and art, the fan art, and stream, clip and song titles,
 thumbnails, video and audio belong to their respective owners and are used here non-commercially as a fan tribute.
