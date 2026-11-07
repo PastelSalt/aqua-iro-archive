@@ -3,7 +3,7 @@
  * purpose: tracker blockers drop requests to paths like /track or /collect before they reach us.
  *
  * Always answers 204 so tracking can never break a page, with an `X-Track` header saying what happened:
- * `ok:<n>` (n events stored) or `dropped:<reason>`, so DevTools (or the ?debug-analytics console log) shows at
+ * `ok:<n>; env=<environment>` (n events stored) or `dropped:<reason>`, so DevTools (or the ?debug-analytics console log) shows at
  * once why a visit didn't count. Not counted: bots, browsers signed in to the Keeper, browsers that opted out
  * (Keeper → My account), other sites and floods. The IP is only used for the daily-changing hash.
  */
@@ -31,10 +31,16 @@ export type Outcome = 'bot' | 'keeper' | 'optout' | 'origin' | 'body' | 'empty' 
 const answer = (what: string) =>
   new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store', 'X-Track': what } });
 const dropped = (why: Outcome) => answer(`dropped:${why}`);
-const environment = () => {
-  const v = process.env.VERCEL_ENV;
-  return v === 'production' || v === 'preview' ? v : 'development';
-};
+const SITE_HOST = new URL(import.meta.env.SITE ?? 'https://aqua-iro-archive.vercel.app').host;
+/**
+ * Which traffic this is. Vercel's VERCEL_ENV when the function can see it; otherwise a request to the site's own
+ * domain is production (without this fallback, a project that doesn't expose system variables to functions
+ * stores every real visit as "development", which the Keeper hides).
+ */
+export function environmentOf(host: string, vercelEnv = process.env.VERCEL_ENV) {
+  if (vercelEnv === 'production' || vercelEnv === 'preview') return vercelEnv;
+  return host.split(':')[0] === SITE_HOST ? 'production' : 'development';
+}
 function sameSite(origin: string | null, host: string) {
   if (!origin) return true; // older browsers omit Origin on same-origin beacons
   try {
@@ -49,6 +55,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const ua = request.headers.get('user-agent') ?? '';
     const cookies = request.headers.get('cookie') ?? '';
     const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? '';
+    const env = environmentOf(host);
     if (!ua || BOT_UA.test(ua)) return dropped('bot');
     // signed in to the Keeper (better-auth session cookie, with or without the __Secure- prefix)
     if (/aia-keeper\.session_token=/.test(cookies)) return dropped('keeper');
@@ -69,13 +76,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       ua,
       visitorHash: vh,
       country: request.headers.get('x-vercel-ip-country'),
-      environment: environment(),
+      environment: env,
       ownHost: host.split(':')[0] ?? '',
     });
-    if (!list.length) return dropped('empty');
+    if (!list.length) return answer(`dropped:empty; env=${env}`);
     if (overLimit(vh, list.length)) return dropped('limit');
     await insertEvents(d, list);
-    return answer(`ok:${list.length}`);
+    return answer(`ok:${list.length}; env=${env}`);
   } catch (e) {
     console.error('[hi] error:', e);
     return dropped('error');

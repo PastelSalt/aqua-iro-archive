@@ -22,7 +22,7 @@ import { rows, type DB } from '../../src/server/db/types';
 
 let db: DB;
 vi.mock('../../src/server/db/http', () => ({ db: () => db }));
-const { POST } = await import('../../src/pages/api/hi');
+const { POST, environmentOf } = await import('../../src/pages/api/hi');
 
 const UA_PHONE =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1';
@@ -242,7 +242,7 @@ describe('POST /api/hi', () => {
   it('stores a good beacon and says so', async () => {
     const r = await beacon(good);
     expect(r.status).toBe(204);
-    expect(r.headers.get('X-Track')).toBe('ok:1');
+    expect(r.headers.get('X-Track')).toMatch(/^ok:1; env=/);
     expect(await stored()).toBe(1);
   });
 
@@ -257,12 +257,18 @@ describe('POST /api/hi', () => {
   ])('drops %s, always with 204', async (why, headers, body) => {
     const r = await beacon(body, headers as Record<string, string>);
     expect(r.status).toBe(204);
-    expect(r.headers.get('X-Track')).toBe(`dropped:${why}`);
+    expect(r.headers.get('X-Track')).toMatch(new RegExp(`^dropped:${why}`));
     expect(await stored()).toBe(0);
   });
 
   it('accepts a beacon without an Origin header (older browsers)', async () => {
     const r = await beacon(good, { origin: '' });
-    expect(r.headers.get('X-Track')).toBe('ok:1');
+    expect(r.headers.get('X-Track')).toMatch(/^ok:1/);
+  });
+
+  it("counts visits to the site's own domain as production even without VERCEL_ENV", () => {
+    expect(environmentOf(HOST, undefined)).toBe('production');
+    expect(environmentOf('localhost:4321', undefined)).toBe('development');
+    expect(environmentOf('aqua-iro-archive-abc123.vercel.app', 'preview')).toBe('preview');
   });
 });
