@@ -36,8 +36,7 @@
 ## About
 
 Minato Aqua (湊あくあ) was a hololive VTuber from **8 August 2018 to 28 August 2024**. This archive keeps those six
-years in one calm, bilingual place: her streams, songs, clips, events and the fan art people made along the way, plus a
-message board where anyone can leave her a note.
+years in one calm, bilingual place: her streams, songs, clips, events and official art, plus a message board where anyone can leave her a note.
 
 It's a fan project: made by fans, for fans, with no ads, no tracking cookies and no money involved. Everything is
 credited, and anything can be taken down on request.
@@ -67,7 +66,7 @@ credited, and anything can be taken down on request.
 | [**Discography**](https://aqua-iro-archive.vercel.app/discography) | Originals, solo and collab covers, unit songs and releases (103 tracks)                      |
 | [**Streaming**](https://aqua-iro-archive.vercel.app/streaming)     | 639 public stream archives: search, filter by year, sort by date, views or length            |
 | [**Events**](https://aqua-iro-archive.vercel.app/events)           | A scroll-driven timeline of 60 milestones, plus brand collaborations                         |
-| [**Arts**](https://aqua-iro-archive.vercel.app/arts)               | 190 curated official and fan artworks, each credited, with bilingual alt text                |
+| [**Arts**](https://aqua-iro-archive.vercel.app/arts)               | 190 curated pieces of official and collaboration art, each credited, with bilingual alt text |
 | [**Messages**](https://aqua-iro-archive.vercel.app/messages)       | The crew board: leave a note, become _Aqua Crew #N_                                          |
 
 ### Little things that make it feel like home
@@ -205,7 +204,7 @@ asked.
 
 - **Minato Aqua** (湊あくあ), with love and thanks for six years. 🫧⚓
 - Character design by **Gaou** (がおう). Official art © **COVER Corp.** / hololive production.
-- Fan art © each artist, credited on the [Credits page](https://aqua-iro-archive.vercel.app/credits).
+- Collaboration and guest art © each artist, credited on the [Credits page](https://aqua-iro-archive.vercel.app/credits).
 - Icons: [Phosphor](https://phosphoricons.com) (MIT). Fonts: Fredoka, Zen Maru Gothic, Shippori Mincho (OFL, self-hosted).
 - Made by [Moeko Works](https://moekoworks.vercel.app).
 
@@ -213,7 +212,7 @@ asked.
 
 The **source code** is released under the [MIT License](LICENSE). See [NOTICE.md](NOTICE.md) for what it doesn't cover.
 
-The **content is not**: Minato Aqua's name, likeness and art, the fan art, and stream, clip and song titles,
+The **content is not**: Minato Aqua's name, likeness and art, the collaboration and guest art, and stream, clip and song titles,
 thumbnails, video and audio belong to their respective owners and are used here non-commercially as a fan tribute.
 If you reuse the code, replace the content with your own.
 
