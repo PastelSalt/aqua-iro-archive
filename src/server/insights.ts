@@ -3,8 +3,8 @@
  * Each card is one (event, property) pair from the site's own analytics (src/server/analytics.ts), with IDs
  * turned into titles.
  */
-import { eventCounts, eventValues } from './analytics';
-import { dbTx } from './db/pool';
+import { eventCounts, eventProps, valuesOf, type RangeId } from './analytics';
+import { db } from './db/http';
 import { labels, removed } from './labels';
 
 export type Row = { label: string; value: number; hint?: string };
@@ -17,22 +17,19 @@ export type Card = {
 };
 export type Group = { title: string; cards: Card[] };
 
-const values = (rangeId: string, event: string, prop: string) =>
-  eventValues(dbTx() as never, rangeId, event, prop);
-const counts = (rangeId: string) => eventCounts(dbTx() as never, rangeId);
-
 const pretty = (s: string) => s.replace(/[-_]/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 const TOUR: Record<string, string> = { finish: 'Finished the tour' };
 const NOTE_POST: Record<string, string> = { visible: 'Published', held: 'Held for review' };
 
 export async function insights(
-  rangeId: string,
+  rangeId: RangeId,
   limit = 10,
 ): Promise<{ groups: Group[]; totals: Record<string, number> }> {
   const L = await labels();
-  const ev = Object.fromEntries((await counts(rangeId)).map((r) => [r.x, r.y])) as Record<string, number>;
+  const [counts, props] = await Promise.all([eventCounts(db(), rangeId), eventProps(db(), rangeId)]);
+  const ev = Object.fromEntries(counts.map((r) => [r.x, r.y])) as Record<string, number>;
   const rows = async (event: string, prop: string, label: (v: string) => { label: string; hint?: string }) =>
-    (await values(rangeId, event, prop))
+    valuesOf(props, event, prop)
       .map((r) => ({ ...label(String(r.value)), value: Number(r.total) || 0 }))
       .sort((a, b) => b.value - a.value)
       .slice(0, limit);

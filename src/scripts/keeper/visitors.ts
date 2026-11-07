@@ -23,15 +23,22 @@ import {
 } from './ui';
 
 type Metric = { x: string; y: number };
-type Stats = Record<'visitors' | 'visits' | 'pageviews' | 'bounces' | 'totaltime', number> & {
-  prev: Record<string, number | null>;
+type Totals = {
+  visits: number;
+  visitors: number;
+  pageviews: number;
+  bounces: number;
+  avgVisit: number | null;
 };
+type Stats = Totals & { prev: Totals | null };
 type Visitors = {
   error?: string;
+  range: string;
+  allEnv: boolean;
   stats: Stats;
-  periods: Record<'today' | 'week' | 'month', Stats>;
+  periods: Record<'today' | 'week' | 'month', Totals>;
   unit: 'day' | 'week' | 'month';
-  series: { pageviews: Metric[]; sessions: Metric[] };
+  series: { pageviews: Metric[]; visits: Metric[]; visitors: Metric[] };
   paths: Metric[];
   referrers: Metric[];
   countries: Metric[];
@@ -62,24 +69,6 @@ const DEVICE: Record<string, string> = {
   laptop: 'Laptop',
   tablet: 'Tablet',
 };
-const BROWSER: Record<string, string> = {
-  chrome: 'Chrome',
-  crios: 'Chrome (iPhone)',
-  ios: 'Safari (iPhone)',
-  'ios-webview': 'In-app (iPhone)',
-  safari: 'Safari',
-  'edge-chromium': 'Edge',
-  edge: 'Edge',
-  firefox: 'Firefox',
-  fxios: 'Firefox (iPhone)',
-  samsung: 'Samsung Internet',
-  opera: 'Opera',
-  android: 'Android browser',
-  'chromium-webview': 'In-app (Android)',
-  facebook: 'Facebook app',
-  instagram: 'Instagram app',
-  line: 'LINE app',
-};
 const regionName = (() => {
   try {
     const d = new Intl.DisplayNames(['en'], { type: 'region' });
@@ -98,11 +87,20 @@ const langName = (() => {
 })();
 const UNIT_LABEL = { day: 'Daily', week: 'Weekly', month: 'Monthly' } as const;
 const RANGES: [string, string][] = [
+  ['today', 'Today'],
   ['7d', '7 days'],
   ['30d', '30 days'],
   ['90d', '90 days'],
   ['1y', '1 year'],
 ];
+const HOW = {
+  visits: 'Visits: browser tabs that opened at least one page that day',
+  visitors:
+    'Visitors: different people per day (a daily-changing hash of IP + browser); several days are added up, so one person on 3 days counts 3 times',
+  pageviews: 'Page views: every page opened, including moves between pages',
+  avgVisit: 'Visible time on the site per visit, from visits that reported any',
+  bounce: 'Visits that opened only one page',
+};
 const rows = (m: Metric[], label: (x: string) => string = (x) => x): BarRow[] =>
   m.map((r) => ({ label: label(r.x), value: r.y }));
 
@@ -144,6 +142,7 @@ export function renderVisitors(
 ) {
   let range = o.full ? '30d' : '7d';
   let unit: Visitors['unit'] = 'day';
+  let allEnv = false;
 
   const head = (note?: string) =>
     h('div', { class: 'k-block-head' }, [
@@ -191,17 +190,15 @@ export function renderVisitors(
       key: p.x,
       ...periodLabel(v.unit, p.x),
       a: p.y,
-      b: v.series.sessions[i]?.y ?? 0,
+      b: v.series.visitors[i]?.y ?? 0,
     }));
     const total = h('p', {
       class: 'k-card__sub',
       text: `${num(pts.reduce((a, p) => a + p.a, 0))} page views · ${num(pts.reduce((a, p) => a + p.b, 0))} visitors in this chart`,
     });
 
-    const perVisit = (x: Stats) => (x.visits ? x.totaltime / x.visits : 0);
-    const bounce = (x: Stats) => (x.visits ? Math.round((x.bounces / x.visits) * 100) : 0);
-    const prevBounce =
-      s.prev.visits && s.prev.bounces !== null ? Math.round((s.prev.bounces! / s.prev.visits) * 100) : null;
+    const bounce = (x: Totals | null) => (x?.visits ? Math.round((x.bounces / x.visits) * 100) : null);
+    const pagesPer = (x: Totals | null) => (x?.visits ? x.pageviews / x.visits : null);
     const jp = v.countries.find((c) => c.x === 'JP')?.y ?? 0;
     const known = v.countries.reduce((a, c) => a + c.y, 0);
     const oneCountry = v.countries.length === 1 && known > 20;
@@ -210,26 +207,29 @@ export function renderVisitors(
 
     host.replaceChildren(
       head(
-        `Counted by the site itself · times in ${KEEPER_TZ_LABEL} · updated ${updated ? `${updated} min ago` : 'just now'}`,
+        `Counted by the site itself · days in ${KEEPER_TZ_LABEL} · ${v.allEnv ? 'including preview & dev · ' : ''}updated ${updated ? `${updated} min ago` : 'just now'}`,
       ),
       h('div', { class: 'k-kpis' }, [
         kpi({
           icon: 'sun',
-          label: 'Today',
+          label: 'Today · visits',
           value: num(P.today.visits),
           sub: `${num(P.today.visitors)} visitors · ${num(P.today.pageviews)} page views`,
+          hint: `${HOW.visits}\n${HOW.visitors}\n${HOW.pageviews}`,
         }),
         kpi({
           icon: 'calendar-dots',
-          label: 'This week',
+          label: 'This week (from Monday) · visits',
           value: num(P.week.visits),
           sub: `${num(P.week.visitors)} visitors · ${num(P.week.pageviews)} page views`,
+          hint: `${HOW.visits}\n${HOW.visitors}\n${HOW.pageviews}`,
         }),
         kpi({
           icon: 'calendar',
-          label: 'This month',
+          label: 'This month · visits',
           value: num(P.month.visits),
           sub: `${num(P.month.visitors)} visitors · ${num(P.month.pageviews)} page views`,
+          hint: `${HOW.visits}\n${HOW.visitors}\n${HOW.pageviews}`,
         }),
       ]),
       h('section', { class: 'k-card' }, [
@@ -267,28 +267,52 @@ export function renderVisitors(
         h('p', {
           text: `${num(s.visits)} visits · ${num(s.visitors)} visitors · ${num(s.pageviews)} page views in this period`,
         }),
+        o.full
+          ? h(
+              'label',
+              {
+                class: 'k-check',
+                title: 'Adds visits to preview deployments and local development (last 90 days only)',
+              },
+              [
+                h('input', {
+                  type: 'checkbox',
+                  checked: allEnv,
+                  onchange: (e: Event) => {
+                    allEnv = (e.target as HTMLInputElement).checked;
+                    void load();
+                  },
+                }),
+                h('span', { text: 'Include preview & dev' }),
+              ],
+            )
+          : null,
       ]),
       h('div', { class: 'k-kpis k-kpis--navy' }, [
         kpi({
           icon: 'timer',
           label: 'Average visit',
-          value: duration(perVisit(s)),
-          now: perVisit(s),
-          before: s.prev.visits ? (s.prev.totaltime ?? 0) / s.prev.visits : null,
-          sub: 'per visit',
+          value: s.avgVisit === null ? '—' : duration(s.avgVisit),
+          now: s.avgVisit ?? undefined,
+          before: s.prev?.avgVisit ?? null,
+          sub: 'visible time per visit',
+          hint: HOW.avgVisit,
         }),
         kpi({
           icon: 'arrow-counter-clockwise',
           label: 'Bounce rate',
-          value: `${bounce(s)}%`,
-          now: bounce(s),
-          before: prevBounce,
+          value: bounce(s) === null ? '—' : `${bounce(s)}%`,
+          now: bounce(s) ?? undefined,
+          before: bounce(s.prev),
           sub: 'left after one page',
+          hint: HOW.bounce,
         }),
         kpi({
           icon: 'note',
           label: 'Pages per visit',
-          value: s.visits ? (s.pageviews / s.visits).toFixed(1) : '—',
+          value: pagesPer(s)?.toFixed(1) ?? '—',
+          now: pagesPer(s) ?? undefined,
+          before: pagesPer(s.prev),
           sub: 'average',
         }),
         kpi({
@@ -296,8 +320,9 @@ export function renderVisitors(
           label: 'Visitors',
           value: num(s.visitors),
           now: s.visitors,
-          before: s.prev.visitors,
-          sub: 'unique, in this period',
+          before: s.prev?.visitors ?? null,
+          sub: 'per day, added up',
+          hint: HOW.visitors,
         }),
       ]),
       groupTitle('Audience'),
@@ -310,14 +335,7 @@ export function renderVisitors(
             { limit },
           ),
         ),
-        statCard(
-          'Browsers',
-          'globe',
-          barList(
-            rows(v.browsers, (x) => BROWSER[x] ?? x),
-            { limit },
-          ),
-        ),
+        statCard('Browsers', 'globe', barList(rows(v.browsers), { limit })),
         statCard(
           'Countries',
           'map-pin',
@@ -331,7 +349,7 @@ export function renderVisitors(
               ? h('p', {
                   class: 'k-err',
                   style: 'margin-bottom:10px',
-                  text: 'Every visit shows one country: the visitor location may not be passed through the /s proxy.',
+                  text: 'Every visit shows one country: check that Vercel passes x-vercel-ip-country to /api/hi.',
                 })
               : null,
             barList(rows(v.countries, regionName), { limit }),
@@ -382,7 +400,7 @@ export function renderVisitors(
     try {
       draw(
         await getJSON<StatsResponse>(
-          `/api/admin/stats?range=${range}&unit=${unit}${o.full ? '&full=1' : ''}`,
+          `/api/admin/stats?range=${range}&unit=${unit}${o.full ? '&full=1' : ''}${allEnv ? '&env=all' : ''}`,
         ),
       );
     } catch (e) {

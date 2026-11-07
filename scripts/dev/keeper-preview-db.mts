@@ -141,7 +141,7 @@ for (let d = 59; d >= 0; d--) {
       const at = new Date(t0.getTime() + i * 60_000);
       const path = i === 0 ? pick(PAGES) : pick(PAGES);
       add(at, { ...base, event: 'page_view', path, ref: i === 0 ? pick(REFS) : null });
-      add(new Date(at.getTime() + 50_000), { ...base, event: 'page_time', path, ms: 15_000 + rand(120_000) });
+      add(new Date(at.getTime() + 50_000), { ...base, event: 'page_dwell', path, ms: 15_000 + rand(120_000) });
       if (path === '/streaming' && rand(2)) add(at, { ...base, event: 'stream_open', path, props: { id: pick(streamIds.slice(0, 80)) } });
       if (path === '/streaming' && !rand(3)) add(at, { ...base, event: 'stream_search', path, props: { q: pick(['マイクラ', 'minecraft', 'apex', '3D', 'karaoke']) } });
       if (path === '/clips' && rand(2)) add(at, { ...base, event: 'clip_open', path, props: { id: pick(clipIds) } });

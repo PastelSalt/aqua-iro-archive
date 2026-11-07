@@ -58,7 +58,14 @@ export async function runCleanup(
   return { ok: true, counts, resumed };
 }
 
-export function digestText(c: Record<string, number>, visitors: number | null): string {
-  const v = visitors == null ? 'visitors n/a' : `${visitors.toLocaleString('en-US')} visitors`;
-  return `📒 Last 24 h: ${c.notes ?? 0} notes · ${c.held ?? 0} held · ${c.review ?? 0} under review · ${c.reports ?? 0} reports · ${v} · ${c.errors ?? 0} errors`;
+/** `site`: yesterday's visit totals (src/server/analytics.ts dayTotals), the same numbers the Keeper shows. */
+export function digestText(
+  c: Record<string, number>,
+  site: { visitors: number; visits: number; pageviews: number } | null,
+): string {
+  const n = (x: number) => x.toLocaleString('en-US');
+  const v = site
+    ? `yesterday ${n(site.visitors)} visitors · ${n(site.visits)} visits · ${n(site.pageviews)} page views`
+    : 'visitors n/a';
+  return `📒 Last 24 h: ${c.notes ?? 0} notes · ${c.held ?? 0} held · ${c.review ?? 0} under review · ${c.reports ?? 0} reports · ${c.errors ?? 0} errors\n📈 Site: ${v}`;
 }

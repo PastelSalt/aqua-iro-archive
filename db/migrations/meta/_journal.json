@@ -15,6 +15,13 @@
       "when": 1793694266572,
       "tag": "0001_own_analytics",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794017208508,
+      "tag": "0002_analytics_rebuild",
+      "breakpoints": true
     }
   ]
 }

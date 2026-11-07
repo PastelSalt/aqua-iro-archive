@@ -1,9 +1,16 @@
 /**
- * The site's own cookieless analytics (docs/ANALYTICS-PLAN.md), after the Kotoha fan site's track.js: events are
- * queued in memory and sent in batches to /api/track with sendBeacon (when the page is hidden or closed, every
- * 25 events, and right away for a page view). A random visit id lives only in memory for this tab; nothing is
- * stored in the browser. Do Not Track / Global Privacy Control turn it off. Never send personal data or note text.
+ * The site's own cookieless analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official's track.ts:
+ * events are queued in memory and sent in batches to /api/hi with sendBeacon (a page view right away; other events
+ * within 4 s, when the page is hidden or closed, or every 25). A random visit id lives only in memory for this tab.
+ * Never send personal data or note text.
+ *
+ * Not counted: browsers signed in to the Keeper (the server sees its cookie), and browsers that opted out on
+ * Keeper → My account (src/lib/analytics-optout.ts: nothing leaves the browser).
+ * Debugging: open any page with `?debug-analytics` (or `?debug-analytics=off` to stop) and every event, and the
+ * server's answer (`X-Track: ok:n` / `dropped:<reason>`), is logged to the console.
  */
+import { isOptedOut } from './analytics-optout';
+
 export type EventName =
   | 'dock_nav'
   | 'sys_toggle'
@@ -47,20 +54,43 @@ export type EventName =
 type Props = Record<string, string | number | boolean | undefined>;
 type Queued = { t: string; p?: string; ms?: number; x?: Record<string, string | number | boolean> };
 
-const ENDPOINT = '/api/track';
+const ENDPOINT = '/api/hi';
+const DEBUG_KEY = 'aia-debug-analytics';
 const browser = typeof window !== 'undefined';
-const off =
-  !browser ||
-  navigator.doNotTrack === '1' ||
-  (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true ||
-  location.pathname.startsWith('/keeper');
+const store = {
+  get: (k: string) => {
+    try {
+      return localStorage.getItem(k);
+    } catch {
+      return null;
+    }
+  },
+  set: (k: string, v: string | null) => {
+    try {
+      if (v === null) localStorage.removeItem(k);
+      else localStorage.setItem(k, v);
+    } catch {
+      /* private mode */
+    }
+  },
+};
+if (browser) {
+  const q = new URLSearchParams(location.search).get('debug-analytics');
+  if (q !== null) store.set(DEBUG_KEY, q === 'off' ? null : '1');
+}
+const debug = browser && store.get(DEBUG_KEY) === '1';
+const log = (...a: unknown[]) => {
+  if (debug) console.info('%c[analytics]', 'color:#2aa', ...a);
+};
+const optedOut = isOptedOut;
+export const countingOn = () => !optedOut();
+
 const visitId = browser
   ? (crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`)
   : '';
-/** false with Do Not Track / Global Privacy Control, on the Keeper, and on the server */
-export const trackingOn = !off;
 const queue: Queued[] = [];
 let referrerSent = false;
+let timer: ReturnType<typeof setTimeout> | undefined;
 
 const device = () =>
   !matchMedia('(pointer: coarse)').matches
@@ -79,7 +109,7 @@ function referrerHost() {
   }
 }
 
-// time on each page, counted only while the tab is visible
+// visible time on each page
 let pagePath = '';
 let visibleSince = 0;
 let pageMs = 0;
@@ -89,49 +119,72 @@ const pauseClock = () => {
 };
 function closePage() {
   pauseClock();
-  if (pagePath && pageMs >= 1000) queue.push({ t: 'page_time', p: pagePath, ms: Math.round(pageMs) });
+  if (pagePath && pageMs >= 1000) queue.push({ t: 'page_dwell', p: pagePath, ms: Math.round(pageMs) });
   pageMs = 0;
 }
 
 export function flush(): void {
-  if (off || !queue.length) return;
+  clearTimeout(timer);
+  timer = undefined;
+  if (!browser || !queue.length) return;
+  const events = queue.splice(0, 50);
+  if (optedOut()) {
+    log('opted out on this browser: not sent', events);
+    return;
+  }
   const body = JSON.stringify({
     v: visitId,
     d: device(),
     l: document.documentElement.dataset.lang === 'en' ? 'en' : 'ja',
-    r: queue.some((e) => e.t === 'page_view') ? referrerHost() : '',
+    r: events.some((e) => e.t === 'page_view') ? referrerHost() : '',
     p: location.pathname,
-    e: queue.splice(0),
+    e: events,
   });
+  if (debug) {
+    // fetch instead of a beacon, so the server's answer can be shown
+    fetch(ENDPOINT, { method: 'POST', body, keepalive: true, headers: { 'content-type': 'text/plain' } })
+      .then((r) => log(r.status, r.headers.get('X-Track') ?? '(no X-Track header)', events))
+      .catch((e) => log('not sent (blocked by an extension or offline?)', e, events));
+    return;
+  }
   try {
-    if (navigator.sendBeacon?.(ENDPOINT, body)) return;
+    if (navigator.sendBeacon?.(ENDPOINT, new Blob([body], { type: 'text/plain' }))) return;
   } catch {
     /* fall through */
   }
-  fetch(ENDPOINT, { method: 'POST', body, keepalive: true }).catch(() => {});
+  fetch(ENDPOINT, { method: 'POST', body, keepalive: true, headers: { 'content-type': 'text/plain' } }).catch(
+    () => {},
+  );
+}
+
+function enqueue(e: Queued, now = false) {
+  queue.push(e);
+  log('queued', e);
+  if (now || queue.length >= 25) flush();
+  // don't rely on page hide alone: beacons sent while a page is torn down are sometimes lost
+  else timer ??= setTimeout(flush, 4000);
 }
 
 export function track(name: EventName, props: Props = {}): void {
   try {
-    if (off) return;
+    if (!browser) return;
     const x: Record<string, string | number | boolean> = {};
     for (const [k, v] of Object.entries(props))
       if (v !== undefined) x[k] = typeof v === 'string' ? v.slice(0, 60) : v;
-    queue.push({ t: name, p: location.pathname, ...(Object.keys(x).length ? { x } : {}) });
-    if (queue.length >= 25) flush();
+    enqueue({ t: name, p: location.pathname, ...(Object.keys(x).length ? { x } : {}) });
   } catch {
     /* analytics must never break the page */
   }
 }
 
-if (!off) {
+if (browser) {
+  if (debug) log(`debug on (visit ${visitId})${optedOut() ? ', but this browser is opted out' : ''}`);
   // a page view on the first load and on every page change (ClientRouter fires astro:page-load for both)
   document.addEventListener('astro:page-load', () => {
     closePage();
     pagePath = location.pathname;
     visibleSince = document.visibilityState === 'visible' ? performance.now() : 0;
-    queue.push({ t: 'page_view', p: pagePath });
-    flush();
+    enqueue({ t: 'page_view', p: pagePath }, true);
   });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {

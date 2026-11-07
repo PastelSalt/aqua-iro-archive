@@ -1,5 +1,5 @@
 /** Site-wide behaviors: outbound-link analytics and Core Web Vitals → the site's own analytics (docs/ANALYTICS-PLAN.md). */
-import { track, trackingOn } from '../lib/analytics';
+import { track, countingOn } from '../lib/analytics';
 import './topbar';
 import './reveal';
 import './sparkle';
@@ -31,9 +31,9 @@ document.addEventListener(
   { capture: true },
 );
 
-// Core Web Vitals, one event per metric per page view; only when tracking is on
+// Core Web Vitals, one event per metric per page view; not loaded when this browser opted out
 const startVitals = () => {
-  if (!trackingOn) return;
+  if (!countingOn()) return;
   import('web-vitals').then(({ onLCP, onINP, onCLS, onFCP, onTTFB }) => {
     const send = (m: { name: string; rating: string }) =>
       track('cwv', { name: m.name, rating: m.rating, page: location.pathname });

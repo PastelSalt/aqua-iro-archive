@@ -116,6 +116,22 @@ const admin = Astro.locals.admin!;
 
   <section class="k-card">
     <h2>
+      <KIcon name="chart-bar" />
+      Visitor counting
+    </h2>
+    <p class="k-card__sub" style="margin:-4px 0 12px">
+      While you're signed in, your visits are never counted. Switch this on to leave this browser out after
+      you sign out too (it is remembered on this device only). To see a visit counted, use another browser or
+      a private window, and open the site with <code>?debug-analytics</code> to see each event in the console.
+    </p>
+    <label class="k-check">
+      <input type="checkbox" data-no-count />
+      <span>Don't count this browser</span>
+    </label>
+  </section>
+
+  <section class="k-card">
+    <h2>
       <KIcon name="shield-warning" />
       If you're ever locked out
     </h2>
@@ -140,6 +156,22 @@ const admin = Astro.locals.admin!;
   import { authClient } from '../../scripts/keeper-client';
   import { h, icon, toast, openDialog, stateBox } from '../../scripts/keeper/ui';
   import { ago, dateTime } from '../../lib/keeper-format';
+  import { isOptedOut, setOptedOut } from '../../lib/analytics-optout';
+
+  // ---------------------------------------------------------------- visitor counting
+  const noCount = document.querySelector<HTMLInputElement>('[data-no-count]')!;
+  noCount.checked = isOptedOut();
+  noCount.addEventListener('change', () => {
+    if (!setOptedOut(noCount.checked)) {
+      noCount.checked = false;
+      return toast("This browser blocks site storage, so the setting can't be kept.", { kind: 'error' });
+    }
+    toast(
+      noCount.checked
+        ? 'This browser is no longer counted.'
+        : 'This browser is counted again when signed out.',
+    );
+  });
 
   // ---------------------------------------------------------------- backup codes
   let codes: string[] = [];

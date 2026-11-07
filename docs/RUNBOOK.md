@@ -50,16 +50,23 @@ it before you need it.
 
 ## Visitor numbers look wrong or empty
 
-The site counts its own visits (`docs/ANALYTICS-PLAN.md`): the browser sends events to `/api/track`, which
-stores them in `analytics_events`; finished days are rolled into `analytics_daily` by the first visit or Keeper
-load of the day and by the nightly clean-up. Check, in order:
+The site counts its own visits (`docs/ANALYTICS-REBUILD-PLAN.md`): the browser sends events to `/api/hi`, which
+stores them in `analytics_events`. The Keeper reads the last 90 days straight from those raw events, so a visit
+shows up as soon as it's sent; the nightly clean-up rolls finished days into `analytics_daily` (used only for
+older days) and deletes raw rows after 90 days. Check, in order:
 
-1. **`ANALYTICS_SALT`** is set in Vercel (Production). Without it production drops every event quietly.
-2. **The tables exist**: they are created by the `migrate` job in CI (`.github/workflows/ci.yml`), which applies
-   `db/migrations/` to production on every push to main. If that job is red, its log says why.
-3. **You're not counting yourself**: visits while signed in to the Keeper, with Do Not Track / Global Privacy
-   Control on, from bots, and from preview deployments are not counted, by design.
-4. Today's numbers are computed live, so a visit shows in the Keeper right away (the stats cache for 5 minutes).
+1. **Watch one visit.** In a private window (not signed in to the Keeper, no blocker extensions) open
+   `https://aqua-iro-archive.vercel.app/?debug-analytics`. The console logs every event and the server's
+   answer: `204 ok:1` means it was stored; `dropped:<reason>` says why not (`bot`, `keeper` = signed-in
+   browser, `optout` = "Don't count this browser" is on, `origin`, `body`, `empty`, `limit`, `error` = see the
+   Vercel logs for `[hi] error`). "Not sent" means an extension or the network blocked it. `?debug-analytics=off`
+   stops the logging.
+2. **Nothing in the Vercel logs for `/api/hi`?** The browser didn't send: an extension blocked it, or the visit
+   was on the Keeper (never counted).
+3. **The tables exist**: CI's `migrate` job (`.github/workflows/ci.yml`) applies `db/migrations/` to production
+   on every push to main. If that job is red, its log says why.
+4. **Not counted, by design:** browsers signed in to the Keeper, browsers with "Don't count this browser" on
+   (My account), bots, and preview / local visits (the Visitors page has "Include preview & dev" to see those).
 
 ## Previewing the Keeper locally
 

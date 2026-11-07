@@ -57,7 +57,6 @@ export default defineConfig({
       TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
       BETTER_AUTH_SECRET: envField.string({ context: 'server', access: 'secret', optional: true }),
       BETTER_AUTH_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
-      ANALYTICS_SALT: envField.string({ context: 'server', access: 'secret', optional: true }),
       DISCORD_WEBHOOK_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },

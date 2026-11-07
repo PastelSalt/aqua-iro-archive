@@ -6,7 +6,7 @@ import { db } from '../../../server/db/http';
 import { runCleanup, digestText } from '../../../server/board/cleanup';
 import { sendAlert } from '../../../server/alerts';
 import { logError } from '../../../server/log';
-import { visitors24h, rollupIfStale } from '../../../server/analytics';
+import { addDays, dayTotals, localDay, rollup } from '../../../server/analytics';
 
 export const prerender = false;
 
@@ -21,9 +21,10 @@ export const GET: APIRoute = async ({ request }) => {
   if (!authorized(request.headers.get('authorization'))) return new Response('Unauthorized', { status: 401 });
   try {
     const out = await runCleanup(db());
-    await rollupIfStale(db(), { force: true }).catch(() => null); // finished days → daily totals
-    const visitors = await visitors24h(db()).catch(() => null);
-    await sendAlert(DISCORD_WEBHOOK_URL, digestText(out.counts, visitors));
+    // finished days → daily totals; a failure is reported but never blocks the board clean-up
+    await rollup(db()).catch((e) => logError(db(), 'cron/analytics-rollup', e));
+    const yesterday = await dayTotals(db(), addDays(localDay(), -1)).catch(() => null);
+    await sendAlert(DISCORD_WEBHOOK_URL, digestText(out.counts, yesterday));
     if (out.resumed)
       await sendAlert(
         DISCORD_WEBHOOK_URL,

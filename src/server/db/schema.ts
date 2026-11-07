@@ -145,19 +145,20 @@ export const appErrors = pgTable('app_errors', {
 export * from './auth-schema';
 
 /**
- * First-party analytics (docs/ANALYTICS-PLAN.md), after the Kotoha fan site: raw events kept 90 days, rolled
- * into per-day totals kept for good. No cookies; `visitor_hash` changes every day and IPs are never stored.
+ * First-party analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official: raw events kept 90 days and
+ * read directly by the Keeper; finished days rolled into per-day totals (kept for good) for the long view. No
+ * cookies; `visitor_hash` is an HMAC with a random salt that changes every day, and IPs are never stored.
  */
 export const analyticsEvents = pgTable(
   'analytics_events',
   {
     id: bigserial('id', { mode: 'number' }).primaryKey(),
     occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull().defaultNow(),
-    event: text('event').notNull(), // 'page_view', 'page_time' or one of the site's track() names
+    event: text('event').notNull(), // 'page_view', 'page_dwell' or one of the site's track() names
     path: text('path'),
-    visitId: text('visit_id').notNull(), // random per page load, never stored in the browser
-    visitorHash: text('visitor_hash').notNull(), // sha256(salt | day | ip | user agent), 32 hex
-    device: text('device'),
+    visitId: text('visit_id').notNull(), // random per tab, never stored in the browser
+    visitorHash: text('visitor_hash').notNull(), // hmac(daily salt, ip | user agent), 32 hex
+    device: text('device').notNull(),
     browser: text('browser'),
     os: text('os'),
     language: text('language'), // the site language the visitor was reading (ja / en)
@@ -170,6 +171,10 @@ export const analyticsEvents = pgTable(
   (t) => [
     index('analytics_events_time_idx').on(t.occurredAt),
     index('analytics_events_event_time_idx').on(t.event, t.occurredAt),
+    check('analytics_events_event_check', sql`${t.event} ~ '^[a-z_]{2,30}$'`),
+    check('analytics_events_device_check', sql`${t.device} in ('mobile', 'tablet', 'desktop')`),
+    check('analytics_events_env_check', sql`${t.environment} in ('production', 'preview', 'development')`),
+    check('analytics_events_duration_check', sql`${t.durationMs} is null or ${t.durationMs} >= 0`),
   ],
 );
 
@@ -183,3 +188,9 @@ export const analyticsDaily = pgTable(
   },
   (t) => [primaryKey({ columns: [t.day, t.metric, t.dimension] })],
 );
+
+/** One random salt per local day for the visitor hash; deleted after two days so old hashes can't be rebuilt. */
+export const analyticsSalts = pgTable('analytics_salts', {
+  day: date('day').primaryKey(),
+  salt: text('salt').notNull(), // 64 hex characters
+});

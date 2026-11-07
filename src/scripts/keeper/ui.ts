@@ -177,9 +177,11 @@ export function kpi(o: {
   sub?: string;
   now?: number;
   before?: number | null;
+  /** how the number is counted, shown on hover */
+  hint?: string;
 }) {
   const c = o.now !== undefined ? change(o.now, o.before) : null;
-  return h('div', { class: 'k-kpi' }, [
+  return h('div', { class: 'k-kpi', ...(o.hint ? { title: o.hint } : {}) }, [
     h('p', { class: 'k-kpi__label' }, [icon(o.icon), h('span', { text: o.label })]),
     h('p', { class: 'k-kpi__value', text: o.value }),
     o.sub || c

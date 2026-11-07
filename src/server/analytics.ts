@@ -1,24 +1,38 @@
 /**
- * First-party, cookieless analytics (docs/ANALYTICS-PLAN.md), ported from the Kotoha fan site's lib/analytics.js:
- * beacon checks, a daily-salted visitor hash, one aggregate query, lazy per-day roll-ups, and the numbers the
- * Keeper shows (the same shapes the old Umami client returned, so the Keeper pages didn't change).
- * Days are the keeper's time zone (Asia/Manila, UTC+8, no DST); weeks start on Monday. Only `production` counts.
+ * First-party, cookieless analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official and the Kotoha fan
+ * site: beacon checks, a visitor hash with a random salt per day (kept in the database), and the Keeper's numbers.
+ *
+ * One source of truth: every number is computed by the same `aggregate` query. Days still in the raw table (the
+ * last 90, and any not rolled up yet) are always computed from raw events; only older days come from
+ * analytics_daily, which the nightly cron fills with that very query. So the dashboard, the Visitors page, the
+ * insights and the Discord digest can't disagree.
+ *
+ * Definitions (local days in Asia/Manila, UTC+8, no DST; weeks start on Monday):
+ * - page view: one `page_view` event
+ * - visit: a distinct visit id (one browser tab) with a page view that day
+ * - visitor: a distinct visitor hash that day; over several days, the daily counts are added up (the hash changes
+ *   every day on purpose, so the same person on two days can't be recognised)
+ * - bounce: a visit with exactly one page view that day
+ * - average visit: visible time on the site (`page_dwell`) ÷ visits that reported any
+ * - on the site now: distinct visits that sent any event in the last 5 minutes
  */
-import { createHash } from 'node:crypto';
+import { createHmac, randomBytes } from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import { rows, type DB } from './db/types';
 
 export const TZ = 'Asia/Manila';
 const TZ_MS = 8 * 3600_000;
-const RAW_RETENTION_DAYS = 90;
+export const RAW_RETENTION_DAYS = 90;
 const MAX_DURATION_MS = 60 * 60_000;
-export const RANGE_DAYS = { '24h': 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365 } as const;
+export const RANGE_DAYS = { today: 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365 } as const;
 export type RangeId = keyof typeof RANGE_DAYS;
+export const rangeOf = (v: string | null | undefined, fallback: RangeId): RangeId =>
+  v && v in RANGE_DAYS ? (v as RangeId) : fallback;
 
-/** Every event the site sends (src/lib/analytics.ts) plus the tracker's own page_view / page_time. */
+/** Every event the site sends (src/lib/analytics.ts) plus the tracker's own page_view / page_dwell. */
 export const EVENTS = new Set([
   'page_view',
-  'page_time',
+  'page_dwell',
   'dock_nav',
   'sys_toggle',
   'log_open',
@@ -65,15 +79,32 @@ export const addDays = (day: string, n: number) =>
   new Date(Date.parse(`${day}T00:00:00Z`) + n * 86400_000).toISOString().slice(0, 10);
 /** Start of a local calendar day as a UTC instant (ISO). */
 const dayStart = (day: string) => new Date(Date.parse(`${day}T00:00:00+08:00`)).toISOString();
-const mondayOf = (day: string) => addDays(day, -((new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7));
+export const mondayOf = (day: string) => addDays(day, -((new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7));
 
 // ---------------------------------------------------------------- who is this (without knowing who)
 export const BOT_UA =
   /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|facebookexternalhit|embedly|curl|wget|python|node-fetch|axios|go-http|playwright/i;
 
-/** Changes every day, so a visitor can be counted once per day but never followed across days. */
-export function visitorHash(salt: string, ip: string, ua: string, day = localDay()) {
-  return createHash('sha256').update(`${salt}|${day}|${ip}|${ua}`).digest('hex').slice(0, 32);
+const salts = new Map<string, string>(); // per-instance cache: day → salt
+/** Today's random salt, made by whichever request needs it first (one statement, safe when concurrent). */
+export async function saltFor(db: DB, day = localDay()): Promise<string> {
+  const cached = salts.get(day);
+  if (cached) return cached;
+  const [r] = rows<{ salt: string }>(
+    await db.execute(sql`insert into analytics_salts (day, salt) values (${day}::date, ${randomBytes(32).toString('hex')})
+      on conflict (day) do update set day = excluded.day returning salt`),
+  );
+  if (!r?.salt) throw new Error('no analytics salt');
+  salts.clear();
+  salts.set(day, r.salt);
+  return r.salt;
+}
+/** Tests reset the per-instance cache. */
+export const _resetSaltCache = () => salts.clear();
+
+/** Changes every day with the salt, so a visitor can be counted once per day but never followed across days. */
+export function visitorHash(salt: string, ip: string, ua: string) {
+  return createHmac('sha256', salt).update(`${ip}|${ua}`).digest('hex').slice(0, 32);
 }
 export function browserOf(ua: string) {
   if (/\bLine\//i.test(ua)) return 'LINE app';
@@ -172,7 +203,7 @@ export function parseBeacon(
       typeof e.ms === 'number' && Number.isInteger(e.ms) && e.ms >= 0
         ? Math.min(e.ms, MAX_DURATION_MS)
         : null;
-    if (e.t === 'page_time' && !ms) continue;
+    if (e.t === 'page_dwell' && !ms) continue;
     out.push({
       ...base,
       event: e.t,
@@ -200,42 +231,46 @@ export async function insertEvents(db: DB, list: EventRow[]) {
 }
 
 // ---------------------------------------------------------------- one query for every number, per local day
-const aggregate = (from: string, to: string) => sql`
+/** `allEnv` adds preview and development traffic (raw days only: daily totals are production). */
+const aggregate = (from: string, to: string, allEnv = false) => sql`
 with ev as (
   select *, (occurred_at at time zone ${TZ})::date as day
   from analytics_events
-  where occurred_at >= ${from}::timestamptz and occurred_at < ${to}::timestamptz and environment = 'production'
+  where occurred_at >= ${from}::timestamptz and occurred_at < ${to}::timestamptz
+    and ${allEnv ? sql`true` : sql`environment = 'production'`}
 ),
 pv as (select * from ev where event = 'page_view'),
 per_visit as (select day, visit_id, count(*) as n from pv group by 1, 2),
+dwell as (select day, visit_id, sum(duration_ms)::bigint as ms from ev where event = 'page_dwell' group by 1, 2),
 m (day, metric, dimension, value) as (
             select day, 'visits', '', count(distinct visit_id) from pv group by 1
-  union all select day, 'uniques', '', count(distinct visitor_hash) from pv group by 1
+  union all select day, 'visitors', '', count(distinct visitor_hash) from pv group by 1
   union all select day, 'page_views', '', count(*) from pv group by 1
   union all select day, 'bounces', '', count(*) from per_visit where n = 1 group by 1
-  union all select day, 'device', coalesce(device, 'desktop'), count(distinct visit_id) from pv group by 1, 3
+  union all select day, 'dwell_ms', '', sum(ms)::bigint from dwell group by 1
+  union all select day, 'visits_timed', '', count(*) from dwell group by 1
+  union all select day, 'device', device, count(distinct visit_id) from pv group by 1, 3
   union all select day, 'browser', coalesce(browser, 'Other'), count(distinct visit_id) from pv group by 1, 3
   union all select day, 'os', coalesce(os, 'Other'), count(distinct visit_id) from pv group by 1, 3
   union all select day, 'language', coalesce(language, ''), count(distinct visit_id) from pv group by 1, 3
   union all select day, 'country', coalesce(country, '??'), count(distinct visit_id) from pv group by 1, 3
-  union all select day, 'source', coalesce(referrer_host, ''), count(*) from pv where referrer_host is not null group by 1, 3
+  union all select day, 'source', referrer_host, count(*) from pv where referrer_host is not null group by 1, 3
   union all select day, 'path', coalesce(path, '/'), count(*) from pv group by 1, 3
   union all select day, 'dow_hour',
               extract(dow from occurred_at at time zone ${TZ})::int || ':' || extract(hour from occurred_at at time zone ${TZ})::int,
               count(*) from pv group by 1, 3
-  union all select day, 'visit_ms', '', sum(duration_ms)::bigint from ev where event = 'page_time' group by 1
-  union all select day, 'visits_timed', '', count(distinct visit_id) from ev where event = 'page_time' group by 1
-  union all select day, 'event', event, count(*) from ev where event not in ('page_view', 'page_time') group by 1, 3
+  union all select day, 'event', event, count(*) from ev where event not in ('page_view', 'page_dwell') group by 1, 3
   union all select day, 'prop', event || '.' || kv.key || '=' || kv.value, count(*)
               from ev cross join lateral jsonb_each_text(coalesce(props, '{}'::jsonb)) kv
-              where event not in ('page_view', 'page_time') group by 1, 3
+              where event not in ('page_view', 'page_dwell') group by 1, 3
 )`;
 
-type DayRow = { day: string; metric: string; dimension: string; value: number };
+export type DayRow = { day: string; metric: string; dimension: string; value: number };
 
-async function aggregateLive(db: DB, fromDay: string, toDayExclusive: string): Promise<DayRow[]> {
+async function aggregateRaw(db: DB, fromDay: string, toDayExclusive: string, allEnv: boolean) {
+  if (fromDay >= toDayExclusive) return [];
   const r = rows<DayRow>(
-    await db.execute(sql`${aggregate(dayStart(fromDay), dayStart(toDayExclusive))}
+    await db.execute(sql`${aggregate(dayStart(fromDay), dayStart(toDayExclusive), allEnv)}
       select to_char(day, 'YYYY-MM-DD') as day, metric, dimension, value::bigint as value from m where value > 0`),
   );
   return r.map((x) => ({ ...x, value: Number(x.value) }));
@@ -250,18 +285,40 @@ async function lastRolledDay(db: DB): Promise<string | null> {
   return r?.day ?? null;
 }
 
-let rolledToday: string | null = null; // per-instance memo
-let lastAttempt = 0;
+/**
+ * Daily rows for [fromDay, today]. Days after the last rolled day, and every day of the last 90, come from raw
+ * events; only older, rolled days come from analytics_daily. `metrics` filters (empty = all).
+ */
+export async function dailyRows(
+  db: DB,
+  fromDay: string,
+  { today = localDay(), metrics = [] as string[], allEnv = false } = {},
+): Promise<DayRow[]> {
+  const rawFrom = addDays(today, -(RAW_RETENTION_DAYS - 1));
+  const last = await lastRolledDay(db);
+  // first day read from raw: never later than the raw window, never past an unrolled day
+  let boundary = last ? addDays(last, 1) : fromDay;
+  if (boundary > rawFrom) boundary = rawFrom;
+  if (boundary < fromDay) boundary = fromDay;
+  const want = (m: string) => !metrics.length || metrics.includes(m);
+  const old =
+    fromDay < boundary
+      ? rows<DayRow>(
+          await db.execute(sql`select to_char(day, 'YYYY-MM-DD') as day, metric, dimension, value from analytics_daily
+            where day >= ${fromDay}::date and day < ${boundary}::date and metric <> '_rolled'`),
+        ).map((r) => ({ ...r, value: Number(r.value) }))
+      : [];
+  const recent = await aggregateRaw(db, boundary, addDays(today, 1), allEnv);
+  return old.concat(recent).filter((r) => want(r.metric));
+}
 
 /**
- * Rolls every finished local day (up to yesterday) into analytics_daily and prunes raw events older than 90 days
- * (only once their day is rolled). Idempotent, safe to run concurrently. Called from the tracker, the Keeper and
- * the nightly clean-up, so no extra cron is needed.
+ * Nightly (cron): rolls every finished production day not rolled yet into analytics_daily with the same query the
+ * Keeper uses, in ONE statement (all or nothing), then prunes raw events older than 90 days that are rolled and
+ * salts older than yesterday. Idempotent: a finished day's raw events never change, so re-rolling gives the same
+ * rows.
  */
-export async function rollupIfStale(db: DB, { force = false } = {}) {
-  const today = localDay();
-  if (!force && (rolledToday === today || Date.now() - lastAttempt < 10 * 60_000)) return { skipped: true };
-  lastAttempt = Date.now();
+export async function rollup(db: DB, today = localDay()) {
   const yesterday = addDays(today, -1);
   const last = await lastRolledDay(db);
   let from = last ? addDays(last, 1) : null;
@@ -275,55 +332,32 @@ export async function rollupIfStale(db: DB, { force = false } = {}) {
   }
   let rolled = 0;
   if (from <= yesterday) {
-    await db.execute(sql`delete from analytics_daily where day >= ${from}::date and day < ${today}::date`);
     await db.execute(sql`${aggregate(dayStart(from), dayStart(today))}
       insert into analytics_daily (day, metric, dimension, value)
       select day, metric, dimension, value from m where value > 0
-      on conflict (day, metric, dimension) do update set value = excluded.value`);
-    await db.execute(sql`insert into analytics_daily (day, metric, dimension, value)
+      union all
       select d::date, '_rolled', '', 1 from generate_series(${from}::date, ${yesterday}::date, interval '1 day') as d
-      on conflict (day, metric, dimension) do nothing`);
+      on conflict (day, metric, dimension) do update set value = excluded.value`);
     rolled = Math.round((Date.parse(yesterday) - Date.parse(from)) / 86400_000) + 1;
   }
   await db.execute(sql`delete from analytics_events
     where occurred_at < now() - make_interval(days => ${RAW_RETENTION_DAYS})
       and (occurred_at at time zone ${TZ})::date <= (select max(day) from analytics_daily where metric = '_rolled')`);
-  rolledToday = today;
+  await db.execute(sql`delete from analytics_salts where day < ${yesterday}::date`);
   return { rolled, from, to: yesterday };
-}
-/** Tests reset the per-instance memo. */
-export const _resetRollupMemo = () => {
-  rolledToday = null;
-  lastAttempt = 0;
-};
-
-/** Daily rows for [fromDay, today]: rolled days from analytics_daily, the rest computed live. */
-async function dailyRows(db: DB, fromDay: string, today: string, metrics: string[]): Promise<DayRow[]> {
-  const last = await lastRolledDay(db);
-  const liveFrom = last && last >= fromDay ? addDays(last, 1) : fromDay;
-  const rolled =
-    last && last >= fromDay
-      ? rows<DayRow>(
-          await db.execute(sql`select to_char(day, 'YYYY-MM-DD') as day, metric, dimension, value from analytics_daily
-            where day >= ${fromDay}::date and day <= ${last}::date
-              and metric in ${sql`(${sql.join(
-                metrics.map((m) => sql`${m}`),
-                sql`, `,
-              )})`}`),
-        ).map((r) => ({ ...r, value: Number(r.value) }))
-      : [];
-  const live =
-    liveFrom <= today
-      ? (await aggregateLive(db, liveFrom, addDays(today, 1))).filter((r) => metrics.includes(r.metric))
-      : [];
-  return rolled.concat(live);
 }
 
 // ---------------------------------------------------------------- what the Keeper shows
 type Metric = { x: string; y: number };
-const STAT_KEYS = ['visitors', 'visits', 'pageviews', 'bounces', 'totaltime'] as const;
-type StatKey = (typeof STAT_KEYS)[number];
-export type Stats = Record<StatKey, number> & { prev: Record<StatKey, number | null> };
+export type Totals = {
+  visits: number;
+  visitors: number;
+  pageviews: number;
+  bounces: number;
+  /** average visible time per timed visit, in seconds (null: no visit reported any) */
+  avgVisit: number | null;
+};
+export type Stats = Totals & { prev: Totals | null };
 
 const sumBy = (list: DayRow[], metric: string) => {
   const out: Record<string, number> = {};
@@ -337,81 +371,38 @@ const topList = (o: Record<string, number>, n: number): Metric[] =>
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)
     .map(([x, y]) => ({ x, y }));
+const between = (list: DayRow[], from: string, toExclusive: string) =>
+  list.filter((r) => r.day >= from && r.day < toExclusive);
 
-function statsOf(list: DayRow[]): Record<StatKey, number> {
-  const visits = total(list, 'visits');
+export function totalsOf(list: DayRow[]): Totals {
   const timed = total(list, 'visits_timed');
-  const ms = total(list, 'visit_ms');
   return {
-    visitors: total(list, 'uniques'),
-    visits,
+    visits: total(list, 'visits'),
+    visitors: total(list, 'visitors'),
     pageviews: total(list, 'page_views'),
     bounces: total(list, 'bounces'),
-    // total time on site, scaled up from the visits that reported a time (in seconds)
-    totaltime: timed ? Math.round((ms / 1000 / timed) * visits) : 0,
+    avgVisit: timed ? Math.round(total(list, 'dwell_ms') / 1000 / timed) : null,
   };
 }
 
-const BREAKDOWN = [
-  'visits',
-  'uniques',
-  'page_views',
-  'bounces',
-  'visit_ms',
-  'visits_timed',
-  'device',
-  'browser',
-  'os',
-  'language',
-  'country',
-  'source',
-  'path',
-  'dow_hour',
-];
-
 /** Dashboard + Visitors page data, in the shapes src/scripts/keeper/visitors.ts reads. */
-export async function visitors(db: DB, rangeId: string, unit: 'day' | 'week' | 'month', full: boolean) {
-  await rollupIfStale(db).catch(() => {});
-  const today = localDay();
-  const days = RANGE_DAYS[rangeId as RangeId] ?? 7;
+export async function visitors(
+  db: DB,
+  rangeId: RangeId,
+  unit: 'day' | 'week' | 'month',
+  { full = false, allEnv = false, today = localDay() } = {},
+) {
+  const days = RANGE_DAYS[rangeId];
   const from = addDays(today, -(days - 1));
   const prevFrom = addDays(from, -days);
-  const [series, rangeRows] = await Promise.all([
-    dailyRows(db, addDays(today, -364), today, ['visits', 'uniques', 'page_views']),
-    dailyRows(db, prevFrom, today, BREAKDOWN),
-  ]);
-  const cur = rangeRows.filter((r) => r.day >= from);
-  const prev = rangeRows.filter((r) => r.day < from);
-  const s = statsOf(cur);
-  const p = statsOf(prev);
-  const hasPrev = prev.length > 0;
+  const tomorrow = addDays(today, 1);
+  // one read covers the chart (a year back), the periods, this range and the one before it
+  const yearAgo = addDays(today, -364);
+  const all = await dailyRows(db, prevFrom < yearAgo ? prevFrom : yearAgo, { today, allEnv });
+  const cur = between(all, from, tomorrow);
+  const prev = between(all, prevFrom, from);
+  const hasData = (l: DayRow[]) => l.some((r) => r.metric === 'page_views');
 
-  const byDay: Record<string, { pv: number; uv: number; visits: number }> = {};
-  for (const r of series) {
-    byDay[r.day] ??= { pv: 0, uv: 0, visits: 0 };
-    if (r.metric === 'page_views') byDay[r.day]!.pv += r.value;
-    if (r.metric === 'uniques') byDay[r.day]!.uv += r.value;
-    if (r.metric === 'visits') byDay[r.day]!.visits += r.value;
-  }
-  const period = (start: string) => {
-    let pv = 0;
-    let uv = 0;
-    let visits = 0;
-    for (const [d, v] of Object.entries(byDay)) {
-      if (d < start) continue;
-      pv += v.pv;
-      uv += v.uv;
-      visits += v.visits;
-    }
-    return {
-      visitors: uv,
-      visits,
-      pageviews: pv,
-      bounces: 0,
-      totaltime: 0,
-      prev: { visitors: null, visits: null, pageviews: null, bounces: null, totaltime: null },
-    };
-  };
   const buckets: { x: string; from: string; to: string }[] = [];
   if (unit === 'month') {
     const [y, m] = today.split('-').map(Number) as [number, number];
@@ -427,14 +418,13 @@ export async function visitors(db: DB, rangeId: string, unit: 'day' | 'week' | '
       buckets.push({ x: start, from: start, to: addDays(start, 7) });
     }
   } else {
-    const n = Math.max(7, Math.min(days, 90));
+    const n = Math.max(14, Math.min(days, 90));
     for (let i = n - 1; i >= 0; i--) {
       const d = addDays(today, -i);
       buckets.push({ x: d, from: d, to: addDays(d, 1) });
     }
   }
-  const sumIn = (b: { from: string; to: string }, k: 'pv' | 'uv') =>
-    Object.entries(byDay).reduce((a, [d, v]) => (d >= b.from && d < b.to ? a + v[k] : a), 0);
+  const series = buckets.map((b) => ({ x: b.x, ...totalsOf(between(all, b.from, b.to)) }));
 
   const limit = full ? 25 : 8;
   let weekly: number[][] | null = null;
@@ -446,16 +436,21 @@ export async function visitors(db: DB, rangeId: string, unit: 'day' | 'week' | '
     }
   }
   return {
-    stats: { ...s, prev: Object.fromEntries(STAT_KEYS.map((k) => [k, hasPrev ? p[k] : null])) } as Stats,
+    range: rangeId,
+    from,
+    today,
+    allEnv,
+    stats: { ...totalsOf(cur), prev: hasData(prev) ? totalsOf(prev) : null } as Stats,
     periods: {
-      today: period(today),
-      week: period(mondayOf(today)),
-      month: period(`${today.slice(0, 7)}-01`),
+      today: totalsOf(between(all, today, tomorrow)),
+      week: totalsOf(between(all, mondayOf(today), tomorrow)),
+      month: totalsOf(between(all, `${today.slice(0, 7)}-01`, tomorrow)),
     },
     unit,
     series: {
-      pageviews: buckets.map((b) => ({ x: b.x, y: sumIn(b, 'pv') })),
-      sessions: buckets.map((b) => ({ x: b.x, y: sumIn(b, 'uv') })),
+      pageviews: series.map((s) => ({ x: s.x, y: s.pageviews })),
+      visits: series.map((s) => ({ x: s.x, y: s.visits })),
+      visitors: series.map((s) => ({ x: s.x, y: s.visitors })),
     },
     paths: topList(sumBy(cur, 'path'), limit),
     referrers: topList(sumBy(cur, 'source'), limit),
@@ -470,25 +465,26 @@ export async function visitors(db: DB, rangeId: string, unit: 'day' | 'week' | '
 }
 
 /** How many times each event fired in the range. */
-export async function eventCounts(db: DB, rangeId: string): Promise<Metric[]> {
-  const today = localDay();
-  const days = RANGE_DAYS[rangeId as RangeId] ?? 30;
-  return topList(sumBy(await dailyRows(db, addDays(today, -(days - 1)), today, ['event']), 'event'), 200);
+export async function eventCounts(db: DB, rangeId: RangeId, today = localDay()): Promise<Metric[]> {
+  const from = addDays(today, -(RANGE_DAYS[rangeId] - 1));
+  return topList(sumBy(await dailyRows(db, from, { today, metrics: ['event'] }), 'event'), 200);
 }
 
-/** Values of one property of one event, e.g. ('stream_open', 'id') → [{ value: 'abc', total: 12 }]. */
-export async function eventValues(db: DB, rangeId: string, event: string, prop: string) {
-  const today = localDay();
-  const days = RANGE_DAYS[rangeId as RangeId] ?? 30;
+/** Every event property in the range: 'stream_open.id=abc' → count. Read once, then sliced per card. */
+export async function eventProps(db: DB, rangeId: RangeId, today = localDay()) {
+  const from = addDays(today, -(RANGE_DAYS[rangeId] - 1));
+  return sumBy(await dailyRows(db, from, { today, metrics: ['prop'] }), 'prop');
+}
+/** Values of one property of one event from eventProps(), e.g. ('stream_open', 'id') → [{ value, total }]. */
+export function valuesOf(all: Record<string, number>, event: string, prop: string) {
   const prefix = `${event}.${prop}=`;
-  const all = sumBy(await dailyRows(db, addDays(today, -(days - 1)), today, ['prop']), 'prop');
   return Object.entries(all)
     .filter(([k]) => k.startsWith(prefix))
     .map(([k, v]) => ({ value: k.slice(prefix.length), total: v }))
     .sort((a, b) => b.total - a.total);
 }
 
-/** Visits with any event in the last 5 minutes. */
+/** Visits that sent any event in the last 5 minutes. */
 export async function activeNow(db: DB): Promise<number> {
   const [r] = rows<{ n: number }>(
     await db.execute(sql`select count(distinct visit_id)::int as n from analytics_events
@@ -497,11 +493,7 @@ export async function activeNow(db: DB): Promise<number> {
   return Number(r?.n ?? 0);
 }
 
-/** Daily digest (cron): unique visitors yesterday-to-now (last 24 h of whole days ≈ today + yesterday's tail). */
-export async function visitors24h(db: DB): Promise<number> {
-  const [r] = rows<{ n: number }>(
-    await db.execute(sql`select count(distinct visitor_hash)::int as n from analytics_events
-      where occurred_at > now() - interval '24 hours' and environment = 'production' and event = 'page_view'`),
-  );
-  return Number(r?.n ?? 0);
+/** One finished local day's totals (the Discord digest reports yesterday), same numbers as the Keeper's. */
+export async function dayTotals(db: DB, day: string): Promise<Totals> {
+  return totalsOf(between(await dailyRows(db, day, { today: addDays(day, 1) }), day, addDays(day, 1)));
 }
