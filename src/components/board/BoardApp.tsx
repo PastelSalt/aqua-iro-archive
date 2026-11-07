@@ -9,7 +9,7 @@ import { KEYS, read, write } from '../../lib/storage';
 import { track } from '../../lib/analytics';
 import { checkText, graphemeCount, LIMITS } from '../../lib/text/normalize';
 import { jstDate } from '../../lib/format';
-import { mountTurnstile, type Widget } from './turnstile';
+import { isTurnstileError, mountTurnstile, type Widget } from './turnstile';
 import { useLang } from '../../lib/useLang';
 
 type Note = {
@@ -57,6 +57,10 @@ const ERRORS: Record<string, { ja: string; en: string }> = {
   BOT: {
     ja: 'ボットではないことを確認できませんでした。もう一度お試しください。',
     en: "We couldn't confirm you're not a bot — try again.",
+  },
+  BOTCHECK: {
+    ja: 'ボット確認が終わりませんでした。広告・トラッカーブロッカーを使っている場合は challenges.cloudflare.com を許可して、もう一度お試しください。下書きは残してあります。',
+    en: "The bot check couldn't finish. If you use an ad or tracker blocker, allow challenges.cloudflare.com and try again. Your draft is saved.",
   },
   FILTER: {
     ja: 'ボードに貼れない言葉が含まれています。やさしい言葉で書き直してね。',
@@ -152,14 +156,16 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
   const ts = useRef<Widget | null>(null);
   const tsEl = useRef<HTMLDivElement>(null);
 
+  const tsMount = useRef<Promise<Widget> | null>(null);
+
   useEffect(() => {
     setMine(readMine());
     setReported(read<string[]>(KEYS.boardReported, []));
     setDraft(read<string>(KEYS.boardDraft, ''));
-    if (siteKey && tsEl.current)
-      mountTurnstile(tsEl.current, siteKey, lang.value)
-        .then((w) => (ts.current = w))
-        .catch(() => undefined);
+    if (siteKey && tsEl.current) {
+      tsMount.current = mountTurnstile(tsEl.current, siteKey, lang.value);
+      tsMount.current.then((w) => (ts.current = w)).catch(() => undefined);
+    }
     return () => ts.current?.destroy();
   }, []);
 
@@ -253,7 +259,13 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
     };
     setNotes((n) => [optimistic, ...n]);
     try {
-      const token = ts.current ? await ts.current.token() : '';
+      // wait for the widget if it is still loading; a blocked script or a failed challenge throws "turnstile…"
+      const widget = tsMount.current
+        ? await tsMount.current.catch(() => {
+            throw new Error('turnstile:blocked');
+          })
+        : null;
+      const token = widget ? await widget.token() : '';
       const { data, error: err } = await actions.board.post({ body: draft, turnstileToken: token });
       ts.current?.reset();
       if (err || !data) {
@@ -301,10 +313,14 @@ export default function BoardApp({ siteKey }: { siteKey: string }) {
       );
       setTimeout(() => setToast(null), 4000);
       track('note_post', { status: data.status });
-    } catch {
+    } catch (e) {
       setNotes((n) => n.filter((x) => x.id !== tempId));
-      setError('NETWORK');
-      track('note_post', { status: 'error:NETWORK' });
+      // the bot check failing is not a network problem: say so, and record Cloudflare's code (Keeper → Insights)
+      const bot = isTurnstileError(e);
+      setError(bot ? 'BOTCHECK' : 'NETWORK');
+      track('note_post', {
+        status: bot ? `error:BOTCHECK:${(e as Error).message.slice('turnstile:'.length)}` : 'error:NETWORK',
+      });
     } finally {
       setSending(false);
     }
