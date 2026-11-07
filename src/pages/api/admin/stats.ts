@@ -1,5 +1,5 @@
 /**
- * GET /api/admin/stats?range=7d&unit=day[&full=1][&env=all] (docs/ANALYTICS-REBUILD-PLAN.md): the dashboard's and
+ * GET /api/admin/stats?range=7d&unit=day[&full=1][&env=all] (docs/plans/ANALYTICS-REBUILD-PLAN.md): the dashboard's and
  * the Visitors page's data in one request — board series, visitors (fixed periods, the chart series, the
  * breakdowns; `full` adds OS, language, 25 rows and the 7 × 24 grid; `env=all` adds preview and development
  * traffic) and the dashboard's top-5 engagement lists. Admin only (middleware).

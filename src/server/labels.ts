@@ -1,5 +1,5 @@
 /**
- * ID → title for the Keeper (docs/KEEPER-UPDATE-PLAN.md §6.3): the analytics events carry YouTube IDs, stream
+ * ID → title for the Keeper (docs/plans/KEEPER-UPDATE-PLAN.md §6.3): the analytics events carry YouTube IDs, stream
  * IDs, art IDs, Talk conversation IDs and chapter IDs; the Keeper shows what they are instead. Built once per
  * server instance from the same content the site is built from. Unknown IDs read "(removed item …)".
  */

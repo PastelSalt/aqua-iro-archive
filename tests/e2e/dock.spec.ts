@@ -1,5 +1,5 @@
 /**
- * The dock (docs/DOCK-PLAN.md §7): one size that never changes, every button clickable at every width,
+ * The dock (docs/plans/DOCK-PLAN.md §7): one size that never changes, every button clickable at every width,
  * the same height in both languages, one current-chapter style, library icons, and the narrow layout's
  * MORE sheet with everything in it.
  */

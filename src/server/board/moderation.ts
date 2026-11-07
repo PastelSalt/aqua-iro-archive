@@ -173,7 +173,7 @@ export async function boardStats(db: DB, days: number) {
   return { ...now!, series };
 }
 
-/** Keeper sidebar badges and the dashboard's "Needs you" cards (docs/KEEPER-UPDATE-PLAN.md §4.2, §6.1). */
+/** Keeper sidebar badges and the dashboard's "Needs you" cards (docs/plans/KEEPER-UPDATE-PLAN.md §4.2, §6.1). */
 export async function attention(db: DB) {
   const [r] = rows<{ reported: number; held: number; errors24: number }>(
     await db.execute(sql`SELECT

@@ -1,5 +1,5 @@
 /**
- * First-party, cookieless analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official and the Kotoha fan
+ * First-party, cookieless analytics (docs/plans/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official and the Kotoha fan
  * site: beacon checks, a visitor hash with a random salt per day (kept in the database), and the Keeper's numbers.
  *
  * One source of truth: every number is computed by the same `aggregate` query. Days still in the raw table (the

@@ -145,7 +145,7 @@ export const appErrors = pgTable('app_errors', {
 export * from './auth-schema';
 
 /**
- * First-party analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official: raw events kept 90 days and
+ * First-party analytics (docs/plans/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official: raw events kept 90 days and
  * read directly by the Keeper; finished days rolled into per-day totals (kept for good) for the long view. No
  * cookies; `visitor_hash` is an HMAC with a random salt that changes every day, and IPs are never stored.
  */

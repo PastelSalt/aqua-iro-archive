@@ -1,6 +1,17 @@
 {
   "name": "aqua-iro-archive",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Aqua Iro Archive — an unofficial, non-profit fan archive of Minato Aqua (2018–2024). Project 44.5 by Moeko Works.",
+  "license": "MIT",
+  "author": "Moeko Works (https://moekoworks.vercel.app)",
+  "homepage": "https://aqua-iro-archive.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PastelSalt/aqua-iro-archive.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PastelSalt/aqua-iro-archive/issues"
+  },
   "private": true,
   "type": "module",
   "engines": {

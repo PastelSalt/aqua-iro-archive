@@ -2,7 +2,7 @@
 
 |            |                                                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Status** | **Replaced** by `docs/ANALYTICS-REBUILD-PLAN.md` (2026-11-07). Kept for history.                                                                                                                              |
+| **Status** | **Replaced** by `docs/plans/ANALYTICS-REBUILD-PLAN.md` (2026-11-07). Kept for history.                                                                                                                        |
 | **Why**    | The self-hosted Umami errors in the Keeper, and it is one more app, database and set of secrets to keep alive. The Kotoha fan site counts visits itself and works.                                            |
 | **Model**  | `../kotoha-fansite`: `api/track.js` (the endpoint), `lib/analytics.js` (checks, daily totals, dashboard numbers), `public/js/public/track.js` (the browser side), `db/migrations/0001_init.sql` (two tables). |
 

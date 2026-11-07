@@ -1,5 +1,5 @@
 /**
- * Keeper formatting, shared by server pages and browser scripts (docs/KEEPER-UPDATE-PLAN.md §3): one time zone
+ * Keeper formatting, shared by server pages and browser scripts (docs/plans/KEEPER-UPDATE-PLAN.md §3): one time zone
  * everywhere (the keeper's, stated on screen), grouped numbers, human durations and relative times.
  */
 export const KEEPER_TZ = 'Asia/Manila';

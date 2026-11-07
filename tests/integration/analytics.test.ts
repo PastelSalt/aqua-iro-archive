@@ -1,4 +1,4 @@
-/** First-party analytics (docs/ANALYTICS-REBUILD-PLAN.md): beacon parsing, salts, numbers, roll-up, endpoint. */
+/** First-party analytics (docs/plans/ANALYTICS-REBUILD-PLAN.md): beacon parsing, salts, numbers, roll-up, endpoint. */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { sql } from 'drizzle-orm';
 import { freshDb } from './helpers';

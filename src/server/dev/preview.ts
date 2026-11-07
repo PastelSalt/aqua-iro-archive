@@ -1,5 +1,5 @@
 /**
- * Keeper preview switch (docs/KEEPER-UPDATE-PLAN.md): true only under `astro dev` with KEEPER_PREVIEW=1.
+ * Keeper preview switch (docs/plans/KEEPER-UPDATE-PLAN.md): true only under `astro dev` with KEEPER_PREVIEW=1.
  * Builds compile import.meta.env.DEV to false, so every `import.meta.env.DEV && keeperPreview()` check — and
  * the preview database, fake admin and sample analytics behind it — is removed from production.
  */

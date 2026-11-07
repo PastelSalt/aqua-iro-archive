@@ -1,5 +1,5 @@
 /**
- * POST /api/hi (docs/ANALYTICS-REBUILD-PLAN.md): the site's own cookieless analytics beacon. A neutral path on
+ * POST /api/hi (docs/plans/ANALYTICS-REBUILD-PLAN.md): the site's own cookieless analytics beacon. A neutral path on
  * purpose: tracker blockers drop requests to paths like /track or /collect before they reach us.
  *
  * Always answers 204 so tracking can never break a page, with an `X-Track` header saying what happened:

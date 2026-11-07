@@ -1,5 +1,5 @@
 /**
- * Visitor statistics for the Keeper (docs/KEEPER-UPDATE-PLAN.md §6.1–6.2), after the Kotoha admin's analytics.js:
+ * Visitor statistics for the Keeper (docs/plans/KEEPER-UPDATE-PLAN.md §6.1–6.2), after the Kotoha admin's analytics.js:
  * fixed-period KPIs, the visits chart with Daily / Weekly / Monthly, then a "Details for" range bar directly
  * above everything it changes, and breakdowns grouped Audience / Traffic / Engagement. `full` is the Visitors
  * page (every list to 25 rows, OS and language, the 7 × 24 grid); the dashboard shows the top rows.

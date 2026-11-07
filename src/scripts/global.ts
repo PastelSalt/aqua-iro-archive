@@ -1,4 +1,4 @@
-/** Site-wide behaviors: outbound-link analytics and Core Web Vitals → the site's own analytics (docs/ANALYTICS-PLAN.md). */
+/** Site-wide behaviors: outbound-link analytics and Core Web Vitals → the site's own analytics (docs/plans/ANALYTICS-PLAN.md). */
 import { track, countingOn } from '../lib/analytics';
 import './topbar';
 import './reveal';

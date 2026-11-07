@@ -50,7 +50,7 @@ it before you need it.
 
 ## Visitor numbers look wrong or empty
 
-The site counts its own visits (`docs/ANALYTICS-REBUILD-PLAN.md`): the browser sends events to `/api/hi`, which
+The site counts its own visits (`docs/plans/ANALYTICS-REBUILD-PLAN.md`): the browser sends events to `/api/hi`, which
 stores them in `analytics_events`. The Keeper reads the last 90 days straight from those raw events, so a visit
 shows up as soon as it's sent; the nightly clean-up rolls finished days into `analytics_daily` (used only for
 older days) and deletes raw rows after 90 days. Check, in order:

@@ -1,5 +1,5 @@
 /**
- * Keeper browser components (docs/KEEPER-UPDATE-PLAN.md §7), adapted from the Kotoha admin's ui.js/analytics.js:
+ * Keeper browser components (docs/plans/KEEPER-UPDATE-PLAN.md §7), adapted from the Kotoha admin's ui.js/analytics.js:
  * one element builder, toasts with icons, a shared dialog, KPIs, ranked bar lists, an SVG bar chart with a
  * hover / tap / arrow-key tooltip, and the 7 × 24 hour grid. Every piece of data goes in through textContent.
  */

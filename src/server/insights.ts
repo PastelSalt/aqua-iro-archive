@@ -1,5 +1,5 @@
 /**
- * Archive insights (docs/KEEPER-UPDATE-PLAN.md §6.3): the events the site already sends, grouped and labelled.
+ * Archive insights (docs/plans/KEEPER-UPDATE-PLAN.md §6.3): the events the site already sends, grouped and labelled.
  * Each card is one (event, property) pair from the site's own analytics (src/server/analytics.ts), with IDs
  * turned into titles.
  */

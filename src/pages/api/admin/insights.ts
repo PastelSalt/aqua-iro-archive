@@ -1,4 +1,4 @@
-/** GET /api/admin/insights?range=30d (docs/KEEPER-UPDATE-PLAN.md §6.3): every event card, labelled. Admin only. */
+/** GET /api/admin/insights?range=30d (docs/plans/KEEPER-UPDATE-PLAN.md §6.3): every event card, labelled. Admin only. */
 import type { APIRoute } from 'astro';
 import { rangeOf } from '../../../server/analytics';
 import { insights } from '../../../server/insights';

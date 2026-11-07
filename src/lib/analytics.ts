@@ -1,5 +1,5 @@
 /**
- * The site's own cookieless analytics (docs/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official's track.ts:
+ * The site's own cookieless analytics (docs/plans/ANALYTICS-REBUILD-PLAN.md), after moekoworks_official's track.ts:
  * events are queued in memory and sent in batches to /api/hi with sendBeacon (a page view right away; other events
  * within 4 s, when the page is hidden or closed, or every 25). A random visit id lives only in memory for this tab.
  * Never send personal data or note text.

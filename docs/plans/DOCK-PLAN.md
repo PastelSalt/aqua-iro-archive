@@ -62,7 +62,7 @@ Problems 1–4 all come from having two dock states. Removing the second state r
 
 Preview of the proposed set (duotone, chapter tints as the fill):
 
-![Proposed dock icons](img/dock-icons.png)
+![Proposed dock icons](../img/dock-icons.png)
 
 ### 3.1 Chapters
 

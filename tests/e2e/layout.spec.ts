@@ -1,5 +1,5 @@
 /**
- * Layout and chrome regressions from the 13 Oct 2026 audit (docs/AUDIT-2026-10-13.md):
+ * Layout and chrome regressions from the 13 Oct 2026 audit (docs/plans/AUDIT-2026-10-13.md):
  * filter bars undock at the end of their section,
  * no page is wider than a phone, and no chapter's first section starts under the dock.
  */
