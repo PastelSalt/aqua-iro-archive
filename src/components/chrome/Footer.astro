@@ -56,16 +56,22 @@ const THANKS = [
         <p>
           <T k="copyright" />
         </p>
-        <a class="banner-card maker-card" href={PORTFOLIO.url} rel="noopener" target="_blank">
+        <a class="banner-card maker-card" href={PORTFOLIO.url} rel="author noopener" target="_blank">
           <small>
             <span data-l="ja" lang="ja">
               制作
             </span>
             <span data-l="en" lang="en">
               Made by
-            </span>
+            </span>{' '}
+            Kyle Zoleta
           </small>
-          <Image src={moekoworks} alt="Moeko Works" height={44} densities={[1, 2]} />
+          <Image
+            src={moekoworks}
+            alt="Moeko Works — Kyle Zoleta's portfolio"
+            height={44}
+            densities={[1, 2]}
+          />
           <span class="maker-card__go">
             <span data-l="ja" lang="ja">
               ほかの作品を見る

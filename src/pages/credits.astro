@@ -2,7 +2,7 @@
 /** Credits & Policy (EXECUTIONPLAN §9.8). Generated from arts.yaml and clips.yaml. */
 import { getCollection } from 'astro:content';
 import Extra from '../layouts/Extra.astro';
-import { CONTACT_URL, COVER_GUIDELINES } from '../lib/site';
+import { AUTHOR, CONTACT_URL, COVER_GUIDELINES } from '../lib/site';
 
 const arts = await getCollection('arts');
 const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
@@ -37,6 +37,15 @@ const clippers = [...new Set(clips.map((c) => c.data.clipper))];
         Aqua Iro Archive is an unofficial, non-profit archive made by a fan. It is not affiliated with COVER
         Corp. or hololive production. There are no ads, donations, affiliate links or merch.
       </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="c-maker">
+    <h2 id="c-maker">Made by · 制作</h2>
+    <!-- prettier-ignore -->
+    <p>
+      <span data-l="ja" lang="ja">企画・デザイン・開発：<a href={AUTHOR.url} rel="author">{AUTHOR.name}（{AUTHOR.brand}）</a>。あくあクルーのひとりとして、湊あくあさんの6年間を残すために作りました。</span>
+      <span data-l="en" lang="en">Planned, designed and built by <a href={AUTHOR.url} rel="author">{AUTHOR.name} ({AUTHOR.brand})</a>, one of the Aqua Crew, to keep a record of Minato Aqua's six years.</span>
     </p>
   </section>
 

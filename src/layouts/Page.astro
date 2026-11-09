@@ -37,8 +37,9 @@ const railFrames = (await getCollection('arts', (a) => a.data.section === art.ra
 const no = c.no.slice(3); // "04"
 const title =
   chapter === 'home'
-    ? `${SITE_NAME} — あくあ色アーカイブ`
-    : `${c.no} ${c.title.ja} — ${c.title.en} | ${SITE_NAME}`;
+    ? `${SITE_NAME} — 湊あくあ ファンアーカイブ | Minato Aqua Fan Archive`
+    : // her name leads: it is what people search for (湊あくあ 切り抜き, Minato Aqua clips …)
+      `湊あくあ ${c.title.ja} — Minato Aqua ${c.title.en} | ${SITE_NAME}`;
 ---
 
 <Base title={title} description={description} chapter={chapter} og={og ?? `/og/${chapter}.jpg`}>

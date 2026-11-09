@@ -26,3 +26,48 @@ export const OFFICIAL = {
   x: 'https://x.com/minatoaqua',
 };
 export const COVER_GUIDELINES = 'https://hololivepro.com/en/terms/';
+
+/**
+ * Search identity. The maker's Person @id is the one the Moeko Works portfolio publishes in its own JSON-LD,
+ * so search engines join both sites to one creator. Keep them in step if the portfolio changes.
+ */
+export const AUTHOR = {
+  id: 'https://moekoworks.vercel.app/#person',
+  name: 'Kyle Zoleta',
+  brand: PORTFOLIO.name,
+  url: PORTFOLIO.url,
+  sameAs: ['https://github.com/PastelSalt', 'https://web.facebook.com/moemorimoeko/'],
+};
+/** The archive's subject, linked to her public reference pages (Wikidata, Wikipedia, official channels). */
+export const SUBJECT = {
+  name: 'Minato Aqua',
+  alternateName: ['湊あくあ', 'みなとあくあ', 'あくたん', 'Aqua', 'Akutan'],
+  description: 'Japanese virtual YouTuber, a member of hololive 2nd Generation (2018–2024).',
+  sameAs: [
+    'https://www.wikidata.org/wiki/Q88874152',
+    'https://en.wikipedia.org/wiki/Minato_Aqua',
+    'https://ja.wikipedia.org/wiki/%E6%B9%8A%E3%81%82%E3%81%8F%E3%81%82',
+    'https://hololive.hololivepro.com/en/talents/minato-aqua/',
+    OFFICIAL.youtube,
+    OFFICIAL.x,
+  ],
+};
+/** Terms people search the archive by; used for meta keywords and the WebSite node. */
+export const KEYWORDS = [
+  '湊あくあ',
+  'Minato Aqua',
+  'あくたん',
+  'ホロライブ',
+  'hololive',
+  'ホロライブ2期生',
+  'VTuber',
+  '湊あくあ 卒業',
+  '湊あくあ 切り抜き',
+  '湊あくあ 歌',
+  'Minato Aqua archive',
+  'Minato Aqua graduation',
+  'Aqua Iro Archive',
+  'あくあ色アーカイブ',
+  'Kyle Zoleta',
+  'Moeko Works',
+];

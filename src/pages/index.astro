@@ -94,19 +94,13 @@ const moments = [
   },
 ];
 
-const ld = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE_NAME,
-  alternateName: 'あくあ色アーカイブ',
-  url: Astro.site?.href,
-  inLanguage: ['ja', 'en'],
-};
+// the page node; Base adds the WebSite, maker and subject nodes around it
+const ld = { '@type': 'WebPage' };
 ---
 
 <Base
-  title={`${SITE_NAME} — あくあ色アーカイブ`}
-  description="湊あくあの6年間（2018–2024）を、色の数だけ残した非公式ファンアーカイブ。An unofficial fan archive of Minato Aqua's six years."
+  title={`${SITE_NAME} — 湊あくあ ファンアーカイブ | Minato Aqua Fan Archive`}
+  description="ホロライブ2期生・湊あくあの6年間（2018–2024）を、色の数だけ残した非公式ファンアーカイブ。An unofficial fan archive of hololive's Minato Aqua: streams, songs, clips, art and her 2024 graduation."
   chapter="home"
   og="/og/home.jpg"
   jsonLd={ld}
