@@ -19,3 +19,5 @@ ops
 public/data
 # rewritten by scripts/csp-hash.ts on every build
 vercel.json
+# Google Search Console ownership token — must stay byte-for-byte as Google issued it
+public/google*.html
