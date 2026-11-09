@@ -10,6 +10,7 @@ import Marquee from '../components/chrome/Marquee.astro';
 import Seam from '../components/ui/Seam.astro';
 import DialogueBox from '../components/talk/DialogueBox.tsx';
 import { CHAPTERS } from '../lib/chapters';
+import { FAQ } from '../lib/faq';
 import { OFFICIAL, SITE_NAME } from '../lib/site';
 import full08 from '../assets/poses/full-08.webp';
 import full01 from '../assets/poses/full-01.webp';
@@ -94,8 +95,23 @@ const moments = [
   },
 ];
 
-// the page node; Base adds the WebSite, maker and subject nodes around it
-const ld = { '@type': 'WebPage' };
+// the page node; Base adds the WebSite, maker and subject nodes around it. It is also the FAQPage: each
+// question once per language, the answer ending with the chapter that holds it.
+const ld = {
+  '@type': ['WebPage', 'FAQPage'],
+  mainEntity: FAQ.flatMap((f) =>
+    (['ja', 'en'] as const).map((l) => ({
+      '@type': 'Question',
+      name: f.q[l],
+      inLanguage: l,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `${f.a[l]} ${new URL(f.href, Astro.site).href}`,
+        inLanguage: l,
+      },
+    })),
+  ),
+};
 ---
 
 <Base
@@ -501,6 +517,54 @@ const ld = { '@type': 'WebPage' };
           </a>
         </li>
       </ol>
+    </section>
+
+    <section class="faq wrap" aria-labelledby="faq-title">
+      <div class="sec-title sec-title--center">
+        <span class="no label">
+          <Icon name="anchor" />
+          <b>FAQ</b>
+        </span>
+        <h2 id="faq-title" lang="ja" class="maru">
+          よくある質問
+        </h2>
+        <span class="jp" lang="en">
+          Questions fans ask
+        </span>
+      </div>
+      <div class="faq__list">
+        {FAQ.map((f) => (
+          <details class="faq__item" id={`faq-${f.id}`}>
+            <summary>
+              <span data-l="ja" lang="ja">
+                {f.q.ja}
+              </span>
+              <span data-l="en" lang="en">
+                {f.q.en}
+              </span>
+            </summary>
+            <div class="faq__answer">
+              <p>
+                <span data-l="ja" lang="ja">
+                  {f.a.ja}
+                </span>
+                <span data-l="en" lang="en">
+                  {f.a.en}
+                </span>
+              </p>
+              <a class="faq__link" href={f.href}>
+                <span data-l="ja" lang="ja">
+                  {f.link.ja}
+                </span>
+                <span data-l="en" lang="en">
+                  {f.link.en}
+                </span>{' '}
+                →
+              </a>
+            </div>
+          </details>
+        ))}
+      </div>
     </section>
 
     <Seam kind="rope" />
