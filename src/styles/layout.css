@@ -23,23 +23,34 @@
 /* ---- page head: NO.0X title block + key visual ---- */
 .page-head {
   position: relative;
-  padding-top: clamp(112px, 14vh, 156px);
+  padding-top: clamp(88px, 11vh, 120px);
   padding-bottom: var(--s-7);
   overflow-x: clip; /* key visuals (the vinyl, tilted stickers) never widen the page */
 }
-/* desktop: every chapter opens with one full-screen title card, centred in the space above the dock,
-   so the first section always starts below the fold — never half under the dock */
+/* desktop: every chapter opens with a compact title card (~52% of the viewport), content centred,
+   so the first section peeks in on load; the last row is kept clear of the dock by .page-end */
 @media (min-width: 901px) and (min-height: 560px) {
   .page > .page-head {
-    min-height: 100dvh;
+    min-height: clamp(340px, 52dvh, 520px);
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+  /* About keeps the original full-screen title card */
+  .page[data-chapter='about'] > .page-head {
+    min-height: 100dvh;
+    padding-top: clamp(112px, 14vh, 156px);
     padding-bottom: var(--dock-reserve);
   }
   .page > .page-head > .wrap {
     width: min(1200px, 100% - 2 * var(--gutter));
   }
+}
+.page[data-chapter='about'] > .page-head {
+  padding-top: clamp(112px, 14vh, 156px);
+}
+.page[data-chapter='about'] .vert-col {
+  top: clamp(40px, 6vh, 64px);
 }
 .page-head__grid {
   display: grid;
@@ -53,6 +64,9 @@
 }
 .page-head__visual {
   position: relative;
+  min-height: 220px;
+}
+.page[data-chapter='about'] .page-head__visual {
   min-height: 280px;
 }
 .page-head h1 {
@@ -97,7 +111,7 @@
 /* vertical JP headline on the right edge (Happy Sugar Life / Kaguya touch) */
 .vert-col {
   position: absolute;
-  top: clamp(40px, 6vh, 64px);
+  top: clamp(32px, 4vh, 48px);
   right: clamp(12px, 2.4vw, 36px);
   z-index: 3;
   display: flex;

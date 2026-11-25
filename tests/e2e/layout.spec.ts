@@ -48,7 +48,7 @@ for (const size of [
   { width: 1366, height: 649 },
   { width: 1920, height: 953 },
 ]) {
-  test(`chapters at ${size.width}: the first section starts below the dock (#9)`, async ({
+  test(`chapters at ${size.width}: title card height and dock clearance (#9)`, async ({
     page,
     errors,
   }) => {
@@ -57,11 +57,18 @@ for (const size of [
     for (const path of CHAPTERS) {
       await page.goto(path);
       await page.waitForTimeout(300);
-      const { first, dock } = await page.evaluate(() => ({
+      const { first, dock, copyBottom } = await page.evaluate(() => ({
+        copyBottom: document.querySelector('.page-head__copy')!.getBoundingClientRect().bottom,
         first: document.querySelector('.page-head')!.getBoundingClientRect().bottom,
         dock: document.querySelector('.dock')!.getBoundingClientRect().top,
       }));
-      expect(first, path).toBeGreaterThanOrEqual(dock - 1);
+      if (path === '/about') {
+        expect(first, path).toBeGreaterThanOrEqual(dock - 1);
+      } else {
+        // compact title card: at most ~60% of the viewport, with the title block above the dock
+        expect(first, path).toBeLessThanOrEqual(size.height * 0.6 + 1);
+        expect(copyBottom, path).toBeLessThanOrEqual(dock);
+      }
     }
     void errors;
   });

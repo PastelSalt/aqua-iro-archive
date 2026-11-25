@@ -67,14 +67,18 @@ html[data-motion='on'] .page-head__kv img {
   position: absolute;
   z-index: 0;
   right: clamp(-20px, 2vw, 60px);
-  bottom: calc(var(--dock-reserve) - 30px);
-  font: 700 clamp(9rem, 22vw, 22rem) / 0.8 var(--font-display);
+  bottom: -0.1em;
+  font: 700 clamp(6rem, 14vw, 14rem) / 0.8 var(--font-display);
   letter-spacing: -0.04em;
   color: transparent;
   -webkit-text-stroke: 2px color-mix(in srgb, var(--tint) 70%, var(--navy));
   opacity: 0.16;
   pointer-events: none;
   user-select: none;
+}
+.page[data-chapter='about'] .page-head__ghost {
+  bottom: calc(var(--dock-reserve) - 30px);
+  font-size: clamp(9rem, 22vw, 22rem);
 }
 
 /* ================= Section ghost text ================= */
