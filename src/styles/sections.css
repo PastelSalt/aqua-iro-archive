@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--s-4);
-  margin-block: var(--s-6) 0;
+  margin-block: var(--s-5) 0;
 }
 .related__card {
   display: flex;
@@ -2742,7 +2742,7 @@ html[data-motion='on'] .lighthouse__beam {
   color: var(--aqua-pink);
 }
 .gallery__sec {
-  padding-top: var(--s-6);
+  padding-top: var(--s-5);
   scroll-margin-top: 90px;
 }
 .gallery__title {
@@ -3362,4 +3362,39 @@ html[data-motion='on'] .note.thunk {
 /* 404: her line in the Talk style, under the title (FULL-UPDATE-PLAN §A2) */
 .lost__talk {
   margin: var(--s-5) 0 var(--s-5);
+}
+
+/* About: the relationship map and its list sit side by side instead of leaving the sides empty */
+@media (min-width: 1000px) {
+  .relmap-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+    gap: var(--s-7);
+    align-items: center;
+  }
+  .relmap-layout .relmap {
+    margin-inline: 0;
+  }
+  .relmap-layout .relmap__detail {
+    display: none;
+  }
+  .relmap-layout .rel-list {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    gap: 8px;
+  }
+  .rel-list__item {
+    border: 1.5px solid transparent;
+    transition:
+      border-color var(--dur-1),
+      transform var(--dur-1) var(--ease-float);
+  }
+  .rel-list__item.is-on {
+    border-color: var(--lavender);
+    transform: translateX(4px);
+  }
 }

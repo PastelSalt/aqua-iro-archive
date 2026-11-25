@@ -164,7 +164,7 @@
 .sec-title {
   display: grid;
   gap: 4px;
-  margin-bottom: var(--s-6);
+  margin-bottom: var(--s-5);
 }
 .sec-title .no {
   display: flex;
@@ -572,7 +572,7 @@ html[data-motion='on'] .marquee__track {
 .footer {
   position: relative;
   z-index: var(--z-content);
-  padding: var(--s-8) 0 calc(var(--dock-reserve) + var(--s-4));
+  padding: var(--s-6) 0 calc(var(--dock-reserve) + var(--s-4));
   color: var(--ink-soft);
   font-size: var(--step--1);
 }

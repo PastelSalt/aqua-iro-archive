@@ -24,14 +24,14 @@
 .page-head {
   position: relative;
   padding-top: clamp(88px, 11vh, 120px);
-  padding-bottom: var(--s-7);
+  padding-bottom: var(--s-6);
   overflow-x: clip; /* key visuals (the vinyl, tilted stickers) never widen the page */
 }
 /* desktop: every chapter opens with a compact title card (~52% of the viewport), content centred,
    so the first section peeks in on load; the last row is kept clear of the dock by .page-end */
 @media (min-width: 901px) and (min-height: 560px) {
   .page > .page-head {
-    min-height: clamp(340px, 52dvh, 520px);
+    min-height: clamp(320px, 46dvh, 480px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -137,7 +137,7 @@
 /* ---- sections ---- */
 .section {
   position: relative;
-  padding-block: clamp(48px, 7vw, 96px);
+  padding-block: clamp(32px, 4.5vw, 56px);
 }
 .section + .section {
   padding-top: 0;

@@ -392,7 +392,7 @@ html[data-motion='on'] .postcard__doodle {
 /* ================= Footer ending card ================= */
 .ending {
   position: relative;
-  margin-top: var(--s-7);
+  margin-top: var(--s-4);
 }
 .ending__band {
   position: relative;
@@ -1765,11 +1765,11 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
 .section.band,
 .section + .section.band {
   isolation: isolate;
-  margin-block: 24px;
-  padding-block: calc(clamp(56px, 7vw, 96px) + 24px);
+  margin-block: 12px;
+  padding-block: calc(clamp(36px, 4.5vw, 60px) + 24px);
 }
 .band + .section {
-  padding-top: clamp(48px, 7vw, 96px);
+  padding-top: clamp(28px, 4vw, 56px);
 }
 .band::before {
   content: '';
