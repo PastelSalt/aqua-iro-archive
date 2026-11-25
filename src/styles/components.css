@@ -25,7 +25,7 @@
 .logo-tab small {
   display: block;
   text-align: center;
-  font: 600 10px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.32em;
   color: var(--pink-ink);
   margin-top: 6px;
@@ -977,7 +977,7 @@ html[data-motion='on'] .tour__card {
   box-shadow: 0 0 0 1.5px var(--lav-line) inset;
 }
 .backlog .who {
-  font: 700 11px/1 var(--font-jp-round);
+  font: 700 12px/1 var(--font-jp-round);
   color: var(--pink-ink);
   letter-spacing: 0.14em;
 }
@@ -1011,7 +1011,7 @@ html[data-motion='on'] .tour__card {
   box-shadow:
     0 0 0 1.5px var(--lav-line) inset,
     0 2px 0 var(--lav-line);
-  font: 600 11px/1.5 var(--font-display);
+  font: 600 12px/1.5 var(--font-display);
   text-align: center;
 }
 .switch {
@@ -1274,7 +1274,7 @@ html[data-motion='on'] .tour__card {
 }
 .dialog-box__name span {
   color: var(--aqua-pink);
-  font: 600 10px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.16em;
 }
 .dialog-box__emote {
@@ -1298,7 +1298,7 @@ html[data-motion='on'] .tour__card {
 .dialog-box__ctrls button {
   background: #fff;
   border-radius: 999px;
-  font: 600 10px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.14em;
   padding: 6px 10px;
   min-height: 26px;
@@ -1333,7 +1333,7 @@ html[data-motion='on'] .dialog-box__cursor {
 }
 .dialog-box__note {
   margin-top: 6px;
-  font: 500 10.5px/1.4 var(--font-display);
+  font: 500 12px/1.4 var(--font-display);
   color: var(--ink-soft);
   letter-spacing: 0.02em;
 }
@@ -2118,12 +2118,12 @@ html:not([data-splash='seen']):has(.splash) {
   border-radius: 999px;
   background: var(--navy);
   color: #fff;
-  font: 700 11px/1 var(--font-jp-round);
+  font: 700 12px/1 var(--font-jp-round);
   letter-spacing: 0.2em;
 }
 .aqua-wait__name span {
   color: var(--aqua-pink);
-  font: 600 9px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.16em;
 }
 html[data-motion='on'] .aqua-wait__pose {

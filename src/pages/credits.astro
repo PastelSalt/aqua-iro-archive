@@ -119,39 +119,41 @@ const clippers = [...new Set(clips.map((c) => c.data.clipper))];
 
   <section aria-labelledby="c-art">
     <h2 id="c-art">Artwork · アートワーク ({arts.length})</h2>
-    {bySection.map(({ s, items }) => (
-      <details class="credit-group">
-        <summary>
-          {SECTION[s]} <span class="muted">({items.length})</span>
-        </summary>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th scope="col">Work</th>
-              <th scope="col">Artist</th>
-              <th scope="col">©</th>
-              <th scope="col">Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((a) => (
+    <div class="credit-groups">
+      {bySection.map(({ s, items }) => (
+        <details class="credit-group">
+          <summary>
+            {SECTION[s]} <span class="muted">({items.length})</span>
+          </summary>
+          <table class="data-table">
+            <thead>
               <tr>
-                <td>
-                  <a href={`/arts#art=${a.id}`}>{a.data.title.en ?? a.data.title.ja}</a>
-                </td>
-                <td>{a.data.artist}</td>
-                <td>{a.data.credit}</td>
-                <td>
-                  <a href={a.data.source} rel="noopener">
-                    {new URL(a.data.source).hostname}
-                  </a>
-                </td>
+                <th scope="col">Work</th>
+                <th scope="col">Artist</th>
+                <th scope="col">©</th>
+                <th scope="col">Source</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </details>
-    ))}
+            </thead>
+            <tbody>
+              {items.map((a) => (
+                <tr>
+                  <td>
+                    <a href={`/arts#art=${a.id}`}>{a.data.title.en ?? a.data.title.ja}</a>
+                  </td>
+                  <td>{a.data.artist}</td>
+                  <td>{a.data.credit}</td>
+                  <td>
+                    <a href={a.data.source} rel="noopener">
+                      {new URL(a.data.source).hostname}
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      ))}
+    </div>
   </section>
 
   <section aria-labelledby="c-clips">

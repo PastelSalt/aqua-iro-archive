@@ -1281,7 +1281,7 @@ html[data-motion='on'] .lighthouse.is-lit::after {
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(88px, 10vw, 120px);
+  min-height: clamp(96px, 11vw, 140px);
   margin-bottom: var(--s-4);
   padding: 18px 22px;
   border-radius: 22px;
@@ -1306,9 +1306,9 @@ html[data-motion='on'] .lighthouse.is-lit::after {
   z-index: -1;
   background: linear-gradient(
     90deg,
-    rgb(255 251 254 / 0.92) 0%,
-    rgb(255 251 254 / 0.65) 45%,
-    rgb(255 251 254 / 0.1) 100%
+    rgb(255 251 254 / 0.9) 0%,
+    rgb(255 251 254 / 0.55) 40%,
+    rgb(255 251 254 / 0) 100%
   );
 }
 .gallery__banner .gallery__title {

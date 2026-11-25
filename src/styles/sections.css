@@ -232,7 +232,7 @@ html[data-motion='on'] .hero-circle__ring {
   color: var(--aqua-pink-deep);
 }
 .hero-outfit__label {
-  font: 700 10px/1 var(--font-display);
+  font: 700 12px/1 var(--font-display);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--pink-ink);
@@ -453,7 +453,7 @@ html[data-motion='on'] .film__eq i:nth-child(2n) {
   border-radius: 10px;
   padding: 3px 9px;
   min-height: 26px;
-  font: 700 10px/1 var(--font-display);
+  font: 700 12px/1 var(--font-display);
   letter-spacing: 0.08em;
   box-shadow: 0 3px 0 var(--aqua-pink);
   transform: rotate(6deg);
@@ -606,7 +606,7 @@ html[data-motion='off'] .faq__item summary::after {
   z-index: 2;
   background: var(--dot);
   color: var(--navy);
-  font: 700 11px/1 var(--font-display);
+  font: 700 12px/1 var(--font-display);
   letter-spacing: 0.18em;
   padding: 6px 12px;
   border-radius: 8px 8px 8px 2px;
@@ -1320,7 +1320,7 @@ html[data-motion='off'] .faq__item summary::after {
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--pink-wash);
-  font: 600 10px/1.4 var(--font-display);
+  font: 600 12px/1.4 var(--font-display);
   letter-spacing: 0.06em;
   color: var(--navy);
 }
@@ -1619,6 +1619,10 @@ html[data-motion='on'] .record__disc {
   overflow-x: auto;
   scrollbar-width: none;
 }
+html:not(.has-topbar) .disco-tabs {
+  flex-wrap: wrap; /* five tabs plus counts never squeeze into one row */
+  overflow: visible;
+}
 .disco-tabs [role='tab'] {
   display: grid;
   grid-template-columns: auto auto;
@@ -1643,7 +1647,7 @@ html[data-motion='on'] .record__disc {
 .disco-tabs [role='tab'] .count {
   grid-row: 1 / 3;
   grid-column: 2;
-  font: 700 11px/1 var(--font-display);
+  font: 700 12px/1 var(--font-display);
   background: var(--pink-wash);
   border-radius: 999px;
   padding: 4px 8px;
@@ -1904,6 +1908,10 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
 }
 .jacket__meta b {
   font: 700 var(--step--1) / 1.4 var(--font-jp-round);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .jacket__meta small {
   font-size: var(--step--2);
@@ -1994,12 +2002,12 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   fill: var(--navy);
 }
 .yb-y {
-  font: 600 11px var(--font-display);
+  font: 600 12px var(--font-display);
   fill: var(--navy);
   letter-spacing: 0.06em;
 }
 .yb-h {
-  font: 500 10px var(--font-display);
+  font: 500 12px var(--font-display);
   fill: var(--ink-soft);
 }
 .trophies {
@@ -2115,7 +2123,7 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   list-style: none;
   margin-top: 10px;
   border-radius: 18px;
-  overflow: hidden;
+  overflow: clip; /* clip, not hidden: the year headers below are sticky */
   box-shadow: var(--sh-1);
 }
 .srow {
@@ -2137,22 +2145,31 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   display: none;
 }
 /* year blocks (streaming.astro regroup): a header row per year, then "Show more" inside it */
+.syear {
+  position: sticky;
+  top: 64px;
+  z-index: 3;
+  box-shadow:
+    0 1px 0 var(--lav-line),
+    0 6px 14px rgb(59 69 131 / 0.08);
+}
 .syear button,
 .smore button {
   display: flex;
   align-items: center;
   gap: 14px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 18px;
   font: 700 var(--step--1) / 1.2 var(--font-display);
   color: var(--navy);
-  background: color-mix(in srgb, var(--tint) 22%, var(--paper));
+  background: color-mix(in srgb, var(--tint) 30%, var(--paper));
   border: 0;
   cursor: pointer;
   text-align: left;
 }
 .syear b {
-  font-size: var(--step-1);
+  font-size: var(--step-2);
+  line-height: 1;
 }
 .syear__n {
   flex: 1;
@@ -2411,17 +2428,21 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
 .port__events {
   list-style: none;
   display: grid;
-  gap: 14px;
+  /* two real columns either side of the rope: a left and a right entry share a row, so no half-row is empty */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 68px;
+  row-gap: 14px;
+  align-items: start;
 }
 .ev {
   position: relative;
-  width: calc(50% - 34px);
 }
 .ev--l {
-  justify-self: start;
+  grid-column: 1;
 }
 .ev--r {
-  justify-self: end;
+  grid-column: 2;
+  margin-top: 26px; /* keeps the zig-zag rhythm along the rope */
 }
 .ev__dot {
   position: absolute;
@@ -2655,10 +2676,15 @@ html[data-motion='on'] .lighthouse__beam {
     margin-left: 0;
     align-items: flex-start;
   }
-  .ev {
-    width: auto;
+  .port__events {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ev,
+  .ev--l,
+  .ev--r {
+    grid-column: 1;
+    margin-top: 0;
     margin-left: 64px;
-    justify-self: stretch !important;
   }
   .ev--l .ev__dot,
   .ev--r .ev__dot {
@@ -2768,7 +2794,7 @@ html[data-motion='on'] .lighthouse__beam {
 .ribbon-tab .count {
   grid-row: 1 / 3;
   grid-column: 2;
-  font: 700 10px/1 var(--font-display);
+  font: 700 12px/1 var(--font-display);
   padding: 3px 7px;
   border-radius: 999px;
   background: var(--pink-wash);
@@ -2790,7 +2816,8 @@ html[data-motion='on'] .lighthouse__beam {
   align-items: baseline;
   gap: 12px;
   margin-bottom: var(--s-4);
-  font: 700 var(--step-2) / 1.2 var(--font-jp-round);
+  font: 800 var(--step-3) / 1.15 var(--font-jp-round);
+  color: var(--navy);
 }
 .gallery__title small {
   font: 600 var(--step--1) / 1 var(--font-display);
@@ -2832,6 +2859,10 @@ html[data-motion='on'] .lighthouse__beam {
   padding: 8px 4px 0;
 }
 .art-tile__cap > b {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   font: 700 var(--step--1) / 1.4 var(--font-jp-round);
 }
 @media (max-width: 600px) {
@@ -2875,6 +2906,15 @@ html[data-motion='on'] .lighthouse__beam {
   display: grid;
   gap: 6px;
 }
+.credit-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.credit-group[open] {
+  grid-column: 1 / -1;
+}
 .credit-group {
   background: var(--paper);
   border-radius: var(--r-card);
@@ -2898,13 +2938,13 @@ html[data-motion='on'] .lighthouse__beam {
   max-width: 100%;
 }
 .lost {
-  min-height: 100dvh;
+  min-height: min(100dvh, 760px);
   display: grid;
   grid-template-columns: auto minmax(0, 480px);
   gap: var(--s-7);
   place-content: center;
   align-items: center;
-  padding: 120px var(--gutter) var(--dock-reserve);
+  padding: 96px var(--gutter) var(--dock-reserve);
 }
 .lost__art {
   position: relative;
@@ -3008,7 +3048,7 @@ html[data-motion='on'] .lighthouse__beam {
 .compose__as em {
   font-style: normal;
   color: var(--aqua-pink);
-  font: 600 11px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.1em;
   margin-left: 4px;
 }
@@ -3041,7 +3081,7 @@ html[data-motion='on'] .lighthouse__beam {
   margin-top: 12px;
 }
 .compose__count {
-  font: 600 11px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.14em;
   color: var(--ink-soft);
 }
@@ -3075,12 +3115,12 @@ html[data-motion='on'] .lighthouse__beam {
 .compose__rules {
   position: relative;
   margin-top: 14px;
-  font: 500 11.5px/1.75 var(--font-display);
+  font: 500 12px/1.75 var(--font-display);
   color: var(--ink-soft);
 }
 .compose__rules b {
   display: block;
-  font: 700 10px/1.4 var(--font-display);
+  font: 700 12px/1.4 var(--font-display);
   letter-spacing: 0.22em;
   color: var(--pink-ink);
   margin-bottom: 2px;
@@ -3105,7 +3145,7 @@ html[data-motion='on'] .lighthouse__beam {
   position: relative;
   border-radius: 30px;
   padding: 18px 22px 30px;
-  min-height: 60vh;
+  min-height: 38vh;
   background:
     radial-gradient(circle at 20% 30%, #ffffff66 0 1.5px, transparent 2px) 0 0 / 22px 22px,
     radial-gradient(circle at 70% 60%, #e9d9f555 0 1.5px, transparent 2px) 0 0 / 30px 30px,
@@ -3126,7 +3166,7 @@ html[data-motion='on'] .lighthouse__beam {
   font-size: 12px;
 }
 .board__total {
-  font: 600 11.5px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.14em;
   color: var(--ink-soft);
 }
@@ -3182,7 +3222,7 @@ html[data-motion='on'] .note.thunk {
 .note__who em {
   display: block;
   font-style: normal;
-  font: 600 10px/1.4 var(--font-display);
+  font: 600 12px/1.4 var(--font-display);
   letter-spacing: 0.12em;
   color: var(--pink-ink);
   margin-top: 1px;
@@ -3196,7 +3236,7 @@ html[data-motion='on'] .note.thunk {
 }
 .note__held {
   margin-top: 8px;
-  font: 600 10.5px/1.5 var(--font-display);
+  font: 600 12px/1.5 var(--font-display);
   color: var(--pink-ink);
 }
 .note__foot {
@@ -3207,7 +3247,7 @@ html[data-motion='on'] .note.thunk {
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1.5px dotted #d9cbe8;
-  font: 600 10px/1 var(--font-display);
+  font: 600 12px/1 var(--font-display);
   letter-spacing: 0.14em;
   color: var(--ink-soft);
 }
@@ -3236,7 +3276,7 @@ html[data-motion='on'] .note.thunk {
 .note__undo {
   min-height: 26px;
   padding: 3px 10px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .note--rest {
   background: #ffffffaa;
@@ -3267,7 +3307,7 @@ html[data-motion='on'] .note.thunk {
 }
 .report-pop h4 small {
   display: block;
-  font: 500 11px/1.4 var(--font-display);
+  font: 500 12px/1.4 var(--font-display);
   color: var(--ink-soft);
   margin-top: 2px;
 }
@@ -3301,7 +3341,7 @@ html[data-motion='on'] .note.thunk {
   border: 0;
   border-radius: 10px;
   padding: 8px 10px;
-  font: 500 11.5px/1.5 var(--font-display);
+  font: 500 12px/1.5 var(--font-display);
   box-shadow: inset 0 0 0 1.5px #eadff2;
   resize: none;
 }

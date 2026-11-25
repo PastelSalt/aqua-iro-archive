@@ -9,7 +9,7 @@
   --navy: #3b4583;
   --lavender: #cdb8ea;
   --paper: #fffbfe;
-  --ink-soft: #5e668f;
+  --ink-soft: #4a5280;
   /* text-safe (AA on paper) */
   --pink-ink: #9a4f8c;
   --link-blue: #2a6f9a;
@@ -61,8 +61,8 @@
   --font-jp-serif: var(--font-mincho, 'Hiragino Mincho ProN'), 'Yu Mincho', 'YuMincho', serif;
   --font-text: var(--font-maru, var(--jp-round-fallback)), var(--font-fredoka, system-ui), sans-serif;
   /* scale (fluid, 360 → 1600 px) */
-  --step--2: clamp(0.66rem, 0.64rem + 0.08vw, 0.7rem);
-  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step--2: clamp(0.75rem, 0.73rem + 0.08vw, 0.78rem);
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
   --step-0: clamp(0.94rem, 0.9rem + 0.2vw, 1rem);
   --step-1: clamp(1.13rem, 1.05rem + 0.35vw, 1.25rem);
   --step-2: clamp(1.35rem, 1.2rem + 0.7vw, 1.6rem);
@@ -106,8 +106,8 @@
   --z-toast: 50;
   /* dock geometry */
   /* small uppercase labels: only these two sizes, nothing below 10px */
-  --label-s: 10px;
-  --label-m: 11px;
+  --label-s: 12px;
+  --label-m: 12px;
   --dock-h: 68px;
   --dock-gap: 24px;
   --dock-reserve: calc(var(--dock-h) + var(--dock-gap) + 24px + env(safe-area-inset-bottom));
