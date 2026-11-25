@@ -394,56 +394,6 @@ html[data-motion='on'] .postcard__doodle {
   position: relative;
   margin-top: var(--s-4);
 }
-.ending__band {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(
-    0,
-    1fr
-  ); /* the max-content ticker must not widen the track (it pushed the signature off-centre) */
-  justify-items: center;
-  gap: 10px;
-  padding: 18px 0 26px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    color-mix(in srgb, var(--aqua-cyan) 22%, transparent) 35%,
-    transparent
-  );
-  overflow: hidden;
-}
-.ending__sign {
-  width: min(260px, 60vw);
-  height: auto;
-  rotate: -5deg;
-  opacity: 0.9;
-}
-.ending__marquee {
-  width: 100%;
-  overflow: hidden;
-}
-.ending__track {
-  display: flex;
-  width: max-content;
-}
-.ending__group {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding-right: 26px;
-  font: 700 clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem) / 1 var(--font-jp-serif);
-  letter-spacing: 0.2em;
-  color: color-mix(in srgb, var(--navy) 55%, transparent);
-  white-space: nowrap;
-}
-.ending__group .icon {
-  width: 16px;
-  height: 16px;
-  color: var(--aqua-pink);
-}
-html[data-motion='on'] .ending__track {
-  animation: seam-slide 60s linear infinite;
-}
 @keyframes sign-draw {
   from {
     clip-path: inset(0 100% 0 0);
@@ -452,7 +402,6 @@ html[data-motion='on'] .ending__track {
     clip-path: inset(0 0 0 0);
   }
 }
-html[data-motion='on'] .ending__sign[data-reveal].is-in,
 html[data-motion='on'] .farewell__sign[data-reveal].is-in {
   animation: sign-draw 1.4s cubic-bezier(0.6, 0, 0.3, 1) backwards;
 }

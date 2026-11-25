@@ -33,7 +33,6 @@ const SELECTOR = [
   '.bside',
   '.ev',
   '.port__year',
-  '.ending__sign',
   '.farewell__sign',
 ].join(',');
 

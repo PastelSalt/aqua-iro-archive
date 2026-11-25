@@ -191,7 +191,7 @@ const ld = {
     <div class="site">
       <LogoTab />
       <slot />
-      {footer && <Footer signature={chapter !== 'home'} />}
+      {footer && <Footer />}
     </div>
     <Dock client:load transition:persist="dock" initialPath={Astro.url.pathname} />
     <LogDrawer client:idle transition:persist="log" />
