@@ -7,7 +7,6 @@ import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import Base from './Base.astro';
 import Icon from '../components/ui/Icon.astro';
-import Seam from '../components/ui/Seam.astro';
 import { CHAPTERS, type ChapterId } from '../lib/chapters';
 import { CHAPTER_ART } from '../lib/chapter-art';
 import { SITE_NAME } from '../lib/site';
@@ -21,10 +20,8 @@ export interface Props {
   subtitle?: string; // JP subtitle under h1
   intro?: { ja: string; en: string };
   og?: string;
-  /** wave seam under the title card; off when the first section is a deep band (its own wave edge would double it) */
-  seam?: boolean;
 }
-const { chapter, description, h1, h1Mincho = false, subtitle, intro, og, seam = true } = Astro.props;
+const { chapter, description, h1, h1Mincho = false, subtitle, intro, og } = Astro.props;
 const idx = CHAPTERS.findIndex((x) => x.id === chapter);
 const c = CHAPTERS[idx]!;
 const prev = CHAPTERS[(idx + CHAPTERS.length - 1) % CHAPTERS.length]!;
@@ -86,7 +83,6 @@ const title =
         </div>
       </div>
     </header>
-    {seam && <Seam kind="wave" />}
     <slot name="after-head" />
     <div class="page-body">
       <slot />

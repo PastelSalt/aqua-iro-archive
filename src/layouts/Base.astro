@@ -15,7 +15,6 @@ import '../styles/motion.css';
 import '../styles/fill.css';
 import '../styles/aquatime.css';
 import Sprite from '../components/chrome/Sprite.astro';
-import Motifs from '../components/chrome/Motifs.astro';
 import Shutter from '../components/chrome/Shutter.astro';
 import LogoTab from '../components/chrome/LogoTab.astro';
 import Footer from '../components/chrome/Footer.astro';
@@ -184,14 +183,12 @@ const ld = {
         Skip to content
       </span>
     </a>
-    <div class="waves" aria-hidden="true"></div>
-    <Motifs />
     <Sprite />
     <Splash />
     <div class="site">
       <LogoTab />
       <slot />
-      {footer && <Footer signature={chapter !== 'home'} />}
+      {footer && <Footer />}
     </div>
     <Dock client:load transition:persist="dock" initialPath={Astro.url.pathname} />
     <LogDrawer client:idle transition:persist="log" />

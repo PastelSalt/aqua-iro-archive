@@ -262,31 +262,6 @@
 }
 
 /* ================= Stamp (rotating ring) ================= */
-.stamp {
-  position: relative;
-  width: var(--stamp-size, 130px);
-  aspect-ratio: 1;
-  flex: none;
-}
-.stamp__ring {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.stamp__core {
-  position: absolute;
-  inset: 23%;
-  border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
-  display: grid;
-  place-items: center;
-}
-.stamp__core .icon {
-  width: 40%;
-  height: 40%;
-}
 
 /* ================= Ribbon tab ================= */
 .ribbon {
@@ -534,39 +509,6 @@
 }
 
 /* ================= Marquee ================= */
-.marquee {
-  position: relative;
-  overflow: hidden;
-  background: var(--navy);
-  color: #fff;
-  padding-block: 12px;
-  transform: rotate(-1.2deg);
-  margin-block: var(--s-7);
-  box-shadow: var(--sh-2);
-}
-.marquee__track {
-  display: flex;
-  width: max-content;
-  gap: 0;
-}
-.marquee__group {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding-right: 26px;
-  font: 600 var(--step--1) / 1 var(--font-display);
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-}
-.marquee__group .icon {
-  color: var(--aqua-pink);
-}
-html[data-motion='on'] .marquee__track {
-  animation: marquee 48s linear infinite;
-}
-.marquee:hover .marquee__track {
-  animation-play-state: paused;
-}
 
 /* ================= Footer ================= */
 .footer {
@@ -1544,9 +1486,6 @@ html[data-splash='seen'] .splash {
     filter 600ms var(--ease-float),
     opacity 600ms var(--ease-float);
 }
-html[data-motion='on'] .splash__kv {
-  animation: ken-burns 18s var(--ease-float) infinite alternate;
-}
 .splash[data-beat='title'] .splash__kv {
   /* she moves to the right; the paper of the splash shows through on the left */
   inset: -4% -4% -4% 26%;
@@ -2133,33 +2072,7 @@ html[data-motion='on'] .aqua-wait__pose {
 }
 
 /* ================= Washi tape + pin (scrapbook, board) ================= */
-.tape {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 78px;
-  height: 20px;
-  transform: translateX(-50%) rotate(-3deg);
-  opacity: 0.85;
-  background: repeating-linear-gradient(45deg, #f2a7cfaa 0 6px, #f7c6e0aa 6px 12px);
-  pointer-events: none;
-}
-.tape--blue {
-  background: repeating-linear-gradient(45deg, #8ec9eeaa 0 6px, #bfe3f7aa 6px 12px);
-  transform: translateX(-50%) rotate(4deg);
-}
-.tape--mint {
-  background: repeating-linear-gradient(90deg, #9fe3d8aa 0 8px, #c9f0eeaa 8px 16px);
-}
-.pin {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  width: 26px;
-  height: 26px;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
+
 .chip[aria-pressed='true'] .count,
 .chip[aria-selected='true'] .count,
 .chip[aria-checked='true'] .count,

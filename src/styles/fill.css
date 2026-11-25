@@ -21,8 +21,8 @@
   height: 112%;
   max-width: none;
   object-fit: cover;
-  opacity: 0.55;
-  filter: blur(1px) saturate(1.1);
+  opacity: 0.4;
+  filter: blur(1px) saturate(1.05);
 }
 /* the wash keeps the title readable: solid on the copy side, art showing through on the visual side */
 .page-head__kv::after {
@@ -38,29 +38,6 @@
       rgb(255 251 254 / 0.25) 100%
     ),
     linear-gradient(180deg, transparent 70%, var(--paper) 100%);
-}
-/* the site's dot grid continues through the wash, so the washed side isn't a flat colour */
-.page-head__kv::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image: radial-gradient(circle, #e3cdee 1.3px, transparent 1.8px);
-  background-size: 22px 22px;
-}
-@keyframes ken-burns {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-  50% {
-    transform: scale(1.08) translate(-2%, -1.5%);
-  }
-  100% {
-    transform: scale(1.03) translate(1.5%, -0.5%);
-  }
-}
-html[data-motion='on'] .page-head__kv img {
-  animation: ken-burns 20s var(--ease-float) infinite alternate;
 }
 .page > .page-head > .wrap {
   position: relative;
@@ -129,104 +106,8 @@ html[data-motion='on'] .seam__wave--front {
   animation: seam-slide 14s linear infinite reverse;
 }
 
-.seam--ticker {
-  background: var(--aqua-pink);
-  color: var(--navy);
-  padding-block: 9px;
-  transform: rotate(1deg);
-  margin-block: var(--s-6);
-  box-shadow: 0 6px 0 #e287ba;
-}
-.seam__track {
-  display: flex;
-  width: max-content;
-}
-.seam__group {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  padding-right: 22px;
-  font: 700 var(--step--1) / 1 var(--font-display);
-  letter-spacing: 0.2em;
-  white-space: nowrap;
-}
-.seam__group .icon {
-  width: 12px;
-  height: 12px;
-}
-html[data-motion='on'] .seam__track {
-  animation: seam-slide 34s linear infinite reverse;
-}
-
-.seam--rope {
-  height: 74px;
-  margin-block: var(--s-4);
-}
-.seam__rope {
-  position: absolute;
-  left: 0;
-  top: 18px;
-  width: 100%;
-  height: 40px;
-}
-.seam__rope path {
-  fill: none;
-  stroke: #c9a979;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-dasharray: 2 7;
-}
-.seam__buoy {
-  position: absolute;
-  top: 20px;
-  width: 34px;
-  height: 34px;
-  margin-left: -17px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #fff;
-  color: var(--navy);
-  box-shadow:
-    0 0 0 3px var(--aqua-pink),
-    var(--sh-1);
-}
-.seam__buoy .icon {
-  width: 16px;
-  height: 18px;
-}
-html[data-motion='on'] .seam__buoy {
-  animation: seam-bob 3.8s var(--ease-float) infinite;
-  animation-delay: var(--d, 0s);
-}
-
 /* ================= Motif field ================= */
-.motifs {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-.motif {
-  position: absolute;
-  width: var(--s);
-  height: var(--s);
-  opacity: 0.5;
-  rotate: var(--rot);
-}
-.motif svg {
-  width: 100%;
-  height: 100%;
-}
-.motif__bubble {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1.5px solid #9ed2f2;
-  background: radial-gradient(circle at 32% 30%, #fff 0 18%, transparent 20%);
-}
+
 @keyframes motif-drift {
   0%,
   100% {
@@ -242,18 +123,9 @@ html[data-motion='on'] .seam__buoy {
     transform: translate(-8px, -12px);
   }
 }
-html[data-motion='on'] .motif {
-  animation: motif-drift var(--dur) var(--ease-float) infinite;
-  animation-delay: var(--delay);
-}
+
 @media (max-width: 900px) {
   /* phones are already full; keep only a few sprites */
-  .motif:nth-child(n + 7) {
-    display: none;
-  }
-  .motif {
-    opacity: 0.35;
-  }
 }
 
 /* the logo tab swings with scroll speed (chrome-scroll.ts sets rotate) */
@@ -390,56 +262,7 @@ html[data-motion='on'] .postcard__doodle {
 }
 
 /* ================= Footer ending card ================= */
-.ending {
-  position: relative;
-  margin-top: var(--s-7);
-}
-.ending__band {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-  padding: 18px 0 26px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    color-mix(in srgb, var(--aqua-cyan) 22%, transparent) 35%,
-    transparent
-  );
-  overflow: hidden;
-}
-.ending__sign {
-  width: min(260px, 60vw);
-  height: auto;
-  rotate: -5deg;
-  opacity: 0.9;
-}
-.ending__marquee {
-  width: 100%;
-  overflow: hidden;
-}
-.ending__track {
-  display: flex;
-  width: max-content;
-}
-.ending__group {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding-right: 26px;
-  font: 700 clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem) / 1 var(--font-jp-serif);
-  letter-spacing: 0.2em;
-  color: color-mix(in srgb, var(--navy) 55%, transparent);
-  white-space: nowrap;
-}
-.ending__group .icon {
-  width: 16px;
-  height: 16px;
-  color: var(--aqua-pink);
-}
-html[data-motion='on'] .ending__track {
-  animation: seam-slide 60s linear infinite;
-}
+
 @keyframes sign-draw {
   from {
     clip-path: inset(0 100% 0 0);
@@ -808,9 +631,6 @@ html[data-motion='on'] .vn-card {
     scale: 0.4;
   }
 }
-html[data-motion='on'] .farewell .stamp[data-reveal].is-in {
-  animation: spin-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-}
 
 /* ================= About ================= */
 /* the ID card flips in like a trading card */
@@ -827,12 +647,7 @@ html[data-motion='on'] .id-card[data-reveal].is-in {
   transition: opacity 200ms;
 }
 /* sticky notes: the tape lifts a little when you hover the note */
-.scrap .tape {
-  transition: transform var(--dur-2) var(--ease-float);
-}
-.scrap:hover .tape {
-  transform: translateX(-50%) translateY(-4px) rotate(-11deg) scaleX(0.94);
-}
+
 /* relationship map: the ropes flow, the friends' circles drift around their spots */
 @keyframes rope-flow {
   to {
@@ -866,47 +681,7 @@ html[data-motion='on'] .relmap__node:nth-of-type(2n) {
   animation-duration: 9s;
   animation-direction: reverse;
 }
-.relmap__doodle {
-  position: absolute;
-  width: clamp(40px, 6vw, 84px);
-  height: clamp(40px, 6vw, 84px);
-  opacity: 0.55;
-  pointer-events: none;
-}
-.relmap__doodle .icon {
-  width: 100%;
-  height: 100%;
-}
-.relmap__doodle--1 {
-  left: -14%;
-  top: 8%;
-  rotate: -12deg;
-}
-.relmap__doodle--2 {
-  right: -14%;
-  top: 18%;
-  rotate: 10deg;
-}
-.relmap__doodle--3 {
-  left: -10%;
-  bottom: 14%;
-}
-.relmap__doodle--4 {
-  right: -12%;
-  bottom: 8%;
-  rotate: -8deg;
-}
-html[data-motion='on'] .relmap__doodle {
-  animation: seam-bob 6s var(--ease-float) infinite;
-}
-html[data-motion='on'] .relmap__doodle:nth-of-type(2n) {
-  animation-delay: -3s;
-}
-@media (max-width: 900px) {
-  .relmap__doodle {
-    display: none;
-  }
-}
+
 /* model history: cards lean toward the cursor (about.astro sets --lean) */
 .wardrobe__card {
   transform: perspective(900px) rotateY(var(--lean, 0deg));
@@ -1823,41 +1598,6 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
   inset: 0 50%;
   margin-inline: -50vw;
   background-color: var(--deep);
-  background-image:
-    radial-gradient(
-      circle at 50% 100%,
-      transparent 14px,
-      rgb(255 255 255 / 0.07) 15px,
-      rgb(255 255 255 / 0.07) 17px,
-      transparent 18px,
-      transparent 24px,
-      rgb(255 255 255 / 0.07) 25px,
-      rgb(255 255 255 / 0.07) 27px,
-      transparent 28px
-    ),
-    radial-gradient(
-      circle at 50% 100%,
-      transparent 14px,
-      rgb(255 255 255 / 0.07) 15px,
-      rgb(255 255 255 / 0.07) 17px,
-      transparent 18px,
-      transparent 24px,
-      rgb(255 255 255 / 0.07) 25px,
-      rgb(255 255 255 / 0.07) 27px,
-      transparent 28px
-    ),
-    linear-gradient(180deg, transparent 14px, var(--deep) 40px, var(--deep) 70%, var(--deep-low)),
-    var(--crest);
-  background-size:
-    60px 30px,
-    60px 30px,
-    100% 100%,
-    100% 100%;
-  background-position:
-    0 0,
-    30px 15px,
-    0 0,
-    0 0;
   /* wave edges: a wave tile along the top and bottom, solid in between */
   --wave-top: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 0 60 16T120 16T180 16T240 16V32H0Z'/%3E%3C/svg%3E");
   --wave-bottom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 32'%3E%3Cpath d='M0 16Q30 32 60 16T120 16T180 16T240 16V0H0Z'/%3E%3C/svg%3E");
@@ -1941,9 +1681,3 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
 
 /* ================= Quiet pages =================
    Chapter pages keep one soft ground: no drifting sprites, and the wave texture sits back. Home keeps both. */
-body:not([data-chapter='home']) .motifs {
-  display: none;
-}
-body:not([data-chapter='home']) .waves {
-  opacity: 0.35;
-}

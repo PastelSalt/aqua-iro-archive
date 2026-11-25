@@ -1,8 +1,6 @@
 ---
 /** Simple document layout for Credits, Privacy and other non-chapter pages. */
 import Base from './Base.astro';
-import Stamp from '../components/ui/Stamp.astro';
-import Seam from '../components/ui/Seam.astro';
 import { Image } from 'astro:assets';
 import pose from '../assets/poses/main-icon.webp';
 import { SITE_NAME } from '../lib/site';
@@ -34,7 +32,6 @@ const index = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)
     <header class="page-head wrap extra-head">
       <div class="extra-head__art" aria-hidden="true">
         <Image src={pose} alt="" height={240} loading="eager" />
-        <Stamp text="AQUA IRO ARCHIVE ⚓ CREDITS & POLICY ⚓ " size={110} />
       </div>
       <p class="label">
         <b>{label}</b>
@@ -44,7 +41,6 @@ const index = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)
         {title.ja}
       </p>
     </header>
-    <Seam kind="wave" />
     <div class="wrap prose">
       {index.length > 2 && (
         <nav class="toc card" aria-label="Contents · 目次">

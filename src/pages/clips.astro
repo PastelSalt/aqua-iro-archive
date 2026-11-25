@@ -25,7 +25,6 @@ const hasDates = clips.every((c) => c.data.published);
 ---
 
 <Page
-  seam={false}
   chapter="clips"
   description="ファンが残した湊あくあの人気切り抜き30本。手描き切り抜きからAPEXの名場面まで。The 30 most-viewed fan clips of Minato Aqua."
   h1="Clips"
@@ -48,9 +47,6 @@ const hasDates = clips.every((c) => c.data.published);
           referrerpolicy="strict-origin-when-cross-origin"
         />
       ))}
-      <span class="sticker" style="--tilt:-6deg">
-        TOP 30
-      </span>
     </div>
   </Fragment>
 
