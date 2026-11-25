@@ -180,19 +180,19 @@ export default function Dock({ initialPath = '/' }: { initialPath?: string }) {
         attrs={{ 'data-sys': 'lang' }}
       />
       <DockButton
-        icon="book-open"
-        label="LOG"
-        onClick={fromSheet(() => fire('aia:log'), inSheet)}
-        ariaLabel={say('ログを開く (Esc)', 'Open the log (Esc)')}
-        attrs={{ 'data-sys': 'log' }}
-      />
-      <DockButton
         icon="cassette-tape"
         label="TIME"
         pressed={!!timeDate.value}
         onClick={fromSheet(() => fire('aia:time-open'), inSheet)}
         ariaLabel={say('あくあ時間（日付を旅する）', 'Aqua Time — travel to a date')}
         attrs={{ 'data-sys': 'time' }}
+      />
+      <DockButton
+        icon="book-open"
+        label="LOG"
+        onClick={fromSheet(() => fire('aia:log'), inSheet)}
+        ariaLabel={say('ログを開く (Esc)', 'Open the log (Esc)')}
+        attrs={{ 'data-sys': 'log' }}
       />
       <DockButton
         icon="question"
