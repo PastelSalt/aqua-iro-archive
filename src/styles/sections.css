@@ -2678,7 +2678,7 @@ html[data-motion='on'] .lighthouse__beam {
 }
 .polaroid {
   position: absolute;
-  width: 200px;
+  width: clamp(130px, 19dvh, 200px);
   padding: 10px 10px 34px;
   background: #fff;
   box-shadow: var(--sh-2);
@@ -2843,7 +2843,7 @@ html[data-motion='on'] .lighthouse__beam {
     height: 260px;
   }
   .polaroid {
-    width: 150px;
+    width: clamp(110px, 33vw, 140px);
   }
 }
 

@@ -397,6 +397,10 @@ html[data-motion='on'] .postcard__doodle {
 .ending__band {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(
+    0,
+    1fr
+  ); /* the max-content ticker must not widen the track (it pushed the signature off-centre) */
   justify-items: center;
   gap: 10px;
   padding: 18px 0 26px;
