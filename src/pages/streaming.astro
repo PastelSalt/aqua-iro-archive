@@ -65,17 +65,6 @@ const totalHours = summary.hours;
     ja: `YouTubeに残っている配信アーカイブ${summary.count}回、約${thousands(totalHours)}時間、合計${(summary.views / 1e8).toFixed(2)}億回再生（2026年10月11日時点）。2018〜2019年の配信の多くは非公開・削除されているため、少なめに数えられています。`,
     en: `${summary.count} public stream archives on her channel — about ${thousands(totalHours)} hours and ${(summary.views / 1e6).toFixed(1)}M combined views, as of 2026-10-11. Most 2018–2019 streams were privated or deleted, so those years are undercounted.`,
   }}
-  vert={{ small: 'STREAM LOG', text: '六三九回の', em: '放送' }}
-  marquee={[
-    '#湊あくあ生放送',
-    '歌枠',
-    'APEX',
-    'Minecraft',
-    'AKUKIN建設',
-    '#湊あくあ24h',
-    '耐久',
-    'おつあくあ',
-  ]}
 >
   <Fragment slot="visual">
     <figure class="yearbars card card--dashed">
@@ -120,8 +109,8 @@ const totalHours = summary.hours;
   <section class="section wrap band" aria-labelledby="records-title">
     <SectionTitle no="01" en="Records" ja="配信の記録" id="records-title" />
     <ul class="trophies" role="list">
-      {records.map((r, i) => (
-        <li class="trophy" style={`--tilt:${[-1.2, 0.8, -0.5, 1.4][i % 4]}deg`}>
+      {records.map((r) => (
+        <li class="trophy">
           <span class="trophy__badge" aria-hidden="true">
             <Icon name="trophy" />
           </span>
@@ -298,21 +287,6 @@ const totalHours = summary.hours;
       </span>{' '}
       <span class="num"></span>
     </button>
-    {/* a giant ghost year behind the list and a running "hours so far" (IMPROVEMENT-PLAN §1.5) */}
-    <div class="stream-ghostbox" aria-hidden="true">
-      <span class="stream-ghost num" data-ghost-year>
-        {years.at(-1)!.year}
-      </span>
-      <span class="stream-hours num">
-        <b data-hours>0</b>
-        <span data-l="ja" lang="ja">
-          時間（この日まで）
-        </span>
-        <span data-l="en" lang="en">
-          h up to here
-        </span>
-      </span>
-    </div>
     <ol class="streams" role="list" data-stream-list>
       {streams.map((s) => (
         <li
@@ -408,29 +382,6 @@ const totalHours = summary.hours;
     };
   });
 
-  // the ghost year follows the row in the middle of the screen; the counter adds up the hours above it
-  onPage(() => {
-    const list = document.querySelector<HTMLElement>('[data-stream-list]');
-    const year = document.querySelector<HTMLElement>('[data-ghost-year]');
-    const hours = document.querySelector<HTMLElement>('[data-hours]');
-    if (!list || !year || !hours) return;
-    const rows = Array.from(list.querySelectorAll<HTMLElement>('.srow'));
-    const io = new IntersectionObserver(
-      (entries) => {
-        const hit = entries.find((e) => e.isIntersecting)?.target as HTMLElement | undefined;
-        if (!hit) return;
-        if (year.textContent !== hit.dataset.y) year.textContent = hit.dataset.y ?? '';
-        // everything she had streamed up to this row's date (whatever order the list is sorted in)
-        const upto = hit.dataset.d ?? '';
-        let sec = 0;
-        for (const r of rows) if (!r.hidden && (r.dataset.d ?? '') <= upto) sec += Number(r.dataset.s) || 0;
-        hours.textContent = Math.round(sec / 3600).toLocaleString('en-US');
-      },
-      { rootMargin: '-48% 0px -51% 0px' },
-    );
-    rows.forEach((r) => io.observe(r));
-    return () => io.disconnect();
-  });
   import { searchForm } from '../lib/text/kana';
   import { applyFilter, type Row } from '../lib/streams/filter';
 

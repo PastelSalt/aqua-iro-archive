@@ -1,7 +1,6 @@
 ---
 /** Simple document layout for Credits, Privacy and other non-chapter pages. */
 import Base from './Base.astro';
-import CreditRails from '../components/chrome/CreditRails.astro';
 import Stamp from '../components/ui/Stamp.astro';
 import Seam from '../components/ui/Seam.astro';
 import { Image } from 'astro:assets';
@@ -32,7 +31,6 @@ const index = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)
   noindex={noindex}
 >
   <main id="main" class="extra" tabindex="-1">
-    <CreditRails />
     <header class="page-head wrap extra-head">
       <div class="extra-head__art" aria-hidden="true">
         <Image src={pose} alt="" height={240} loading="eager" />

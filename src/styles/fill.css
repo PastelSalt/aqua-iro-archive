@@ -66,61 +66,10 @@ html[data-motion='on'] .page-head__kv img {
   position: relative;
   z-index: 1;
 }
-.page-head__ghost {
-  position: absolute;
-  z-index: 0;
-  right: clamp(-20px, 2vw, 60px);
-  bottom: -0.1em;
-  font: 700 clamp(6rem, 14vw, 14rem) / 0.8 var(--font-display);
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 2px color-mix(in srgb, var(--tint) 70%, var(--navy));
-  opacity: 0.16;
-  pointer-events: none;
-  user-select: none;
-}
-.page[data-chapter='about'] .page-head__ghost {
-  bottom: calc(var(--dock-reserve) - 30px);
-  font-size: clamp(9rem, 22vw, 22rem);
-}
 
-/* ================= Section ghost text ================= */
+/* ================= Section titles ================= */
 .sec-title {
   position: relative;
-}
-.sec-ghost {
-  position: absolute;
-  z-index: -1;
-  left: -0.06em;
-  top: -0.42em;
-  font: 700 clamp(6rem, 14vw, 12rem) / 0.8 var(--font-display);
-  letter-spacing: -0.03em;
-  color: transparent;
-  -webkit-text-stroke: 2px var(--lavender);
-  opacity: 0.45;
-  pointer-events: none;
-  user-select: none;
-  white-space: nowrap;
-}
-.sec-title--center .sec-ghost {
-  left: 50%;
-  translate: -50% 0;
-}
-
-/* ================= Scroll-driven parallax (off the main thread where supported) ================= */
-@supports (animation-timeline: view()) {
-  @keyframes ghost-drift {
-    from {
-      transform: translateY(40px);
-    }
-    to {
-      transform: translateY(-40px);
-    }
-  }
-  html[data-motion='on'] :is(.sec-ghost, .page-head__ghost) {
-    animation: ghost-drift linear both;
-    animation-timeline: view();
-  }
 }
 
 /* ================= Section seams ================= */
@@ -159,29 +108,6 @@ html[data-motion='on'] .page-head__kv img {
   fill: color-mix(in srgb, var(--aqua-cyan) 30%, transparent);
   height: 60%;
 }
-.seam__float {
-  position: absolute;
-  bottom: 14px;
-  width: 18px;
-  height: 18px;
-  color: var(--aqua-pink-deep);
-  opacity: 0.7;
-}
-.seam__float .icon {
-  width: 100%;
-  height: 100%;
-}
-.seam__float--1 {
-  left: 18%;
-}
-.seam__float--2 {
-  left: 52%;
-  color: var(--aqua-cyan);
-}
-.seam__float--3 {
-  left: 81%;
-  color: var(--lavender);
-}
 @keyframes seam-slide {
   to {
     transform: translateX(-50%);
@@ -201,15 +127,6 @@ html[data-motion='on'] .seam__wave--back {
 }
 html[data-motion='on'] .seam__wave--front {
   animation: seam-slide 14s linear infinite reverse;
-}
-html[data-motion='on'] .seam__float {
-  animation: seam-bob 4.5s var(--ease-float) infinite;
-}
-html[data-motion='on'] .seam__float--2 {
-  animation-delay: -1.5s;
-}
-html[data-motion='on'] .seam__float--3 {
-  animation-delay: -3s;
 }
 
 .seam--ticker {
@@ -336,94 +253,6 @@ html[data-motion='on'] .motif {
   }
   .motif {
     opacity: 0.35;
-  }
-}
-
-/* ================= Side rails (≥ 1440px) ================= */
-.rails {
-  display: none;
-}
-@media (min-width: 1440px) {
-  .rails {
-    display: block;
-  }
-  .rail {
-    position: fixed;
-    z-index: -1; /* behind the page content: full-width sections cover it, bare margins show it */
-    top: 150px;
-    bottom: calc(var(--dock-reserve) + 10px);
-    width: calc((100vw - 1200px) / 2 - 36px);
-    max-width: 160px;
-    pointer-events: none;
-  }
-  .rail--film {
-    left: 18px;
-    overflow: hidden;
-    mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
-  }
-  .rail__strip {
-    display: grid;
-  }
-  .rail__set {
-    display: grid;
-    gap: 14px;
-    padding-bottom: 14px;
-  }
-  .rail__frame {
-    display: block;
-    padding: 5px 5px 14px;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: var(--sh-1);
-    rotate: -2deg;
-    opacity: 0.85;
-  }
-  .rail__frame:nth-child(even) {
-    rotate: 2.5deg;
-  }
-  .rail__frame img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 3px;
-  }
-  @keyframes rail-up {
-    to {
-      transform: translateY(-50%);
-    }
-  }
-  html[data-motion='on'] .rail__strip {
-    animation: rail-up 60s linear infinite;
-  }
-  .rail--title {
-    right: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-  .rail__no {
-    font: 700 var(--label-m) / 1 var(--font-display);
-    letter-spacing: 0.2em;
-    color: var(--pink-ink);
-    writing-mode: vertical-rl;
-  }
-  .rail__vert {
-    writing-mode: vertical-rl;
-    font: 700 clamp(1.3rem, 0.9rem + 0.6vw, 1.7rem) / 1.5 var(--font-jp-serif);
-    letter-spacing: 0.3em;
-    color: var(--navy);
-    opacity: 0.85;
-  }
-  .rail__progress {
-    margin-top: auto;
-    font: 700 var(--label-m) / 1 var(--font-display);
-    letter-spacing: 0.12em;
-    color: var(--ink-soft);
-  }
-  /* where the rails show, they carry the chapter's vertical title instead of the title card */
-  .page-head .vert-col {
-    display: none;
   }
 }
 
@@ -1316,52 +1145,10 @@ html[data-motion='on'] .heatmaps:not([hidden]) svg rect:not(.heatmap__bg) {
   animation: cell-in 220ms ease-out backwards;
   animation-delay: calc(var(--w, 0) * 14ms);
 }
-/* stream list: a giant ghost year behind it and the running hours */
-.stream-ghostbox {
-  position: sticky;
-  top: 34vh;
-  z-index: 2; /* a faint watermark over the list (the list is an opaque card) */
-  height: 0;
-  pointer-events: none;
-}
-.stream-ghost {
-  position: absolute;
-  right: -2%;
-  top: 0;
-  font: 700 clamp(7rem, 16vw, 15rem) / 0.8 var(--font-display);
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 2px var(--lavender);
-  /* kept faint: it floats over the rows, which must stay easy to read (VISUAL-REFINEMENT-PLAN §7f) */
-  opacity: 0.14;
-}
-.stream-hours {
-  position: absolute;
-  right: 1%;
-  top: clamp(7rem, 16vw, 15rem);
-  display: inline-flex;
-  gap: 6px;
-  align-items: baseline;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--navy);
-  color: #fff;
-  font: 600 var(--label-m) / 1 var(--font-display);
-  letter-spacing: 0.1em;
-  box-shadow: var(--sh-1);
-}
-.stream-hours b {
-  font: 700 var(--step-0) / 1 var(--font-display);
-  color: var(--aqua-pink);
-}
+/* stream list */
 .streams {
   position: relative;
   z-index: 1;
-}
-@media (max-width: 900px) {
-  .stream-ghostbox {
-    display: none;
-  }
 }
 
 /* ================= Events ================= */
@@ -1868,41 +1655,6 @@ html[data-motion='off'] .sleepy__z--1 {
   letter-spacing: var(--tracking-label);
   color: var(--pink-ink);
 }
-/* credits roll rails */
-@media (min-width: 1440px) {
-  .rails--credits {
-    display: block;
-  }
-  .rail--roll {
-    overflow: hidden;
-    mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
-  }
-  .rail--roll-l {
-    left: 18px;
-  }
-  .rail--roll-r {
-    right: 18px;
-    text-align: right;
-  }
-  .rail__roll ul {
-    list-style: none;
-    display: grid;
-    gap: 10px;
-    padding-bottom: 40px;
-    font: 600 var(--step--2) / 1.3 var(--font-jp-round);
-    color: var(--ink-soft);
-  }
-  .rail__roll-head {
-    font: 700 var(--label-m) / 1 var(--font-display) !important;
-    letter-spacing: 0.24em;
-    color: var(--pink-ink) !important;
-    margin-bottom: 6px;
-  }
-  html[data-motion='on'] .rail__roll {
-    animation: rail-up 120s linear infinite;
-  }
-}
-
 /* ================= 404: an ocean scene ================= */
 .lost {
   position: relative;
@@ -2129,9 +1881,6 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
 .band .sec-title .icon {
   color: var(--aqua-pink);
 }
-.band .sec-ghost {
-  -webkit-text-stroke-color: rgb(255 255 255 / 0.35);
-}
 /* Home's farewell is the night sea: the same deep, its own spacing; her signature glows on it as-is */
 .farewell.band {
   isolation: isolate;
@@ -2188,4 +1937,13 @@ html[data-motion='on'] .odo.is-rolling .odo__d:nth-last-child(3) .odo__strip {
 }
 .prose > section {
   scroll-margin-top: 96px;
+}
+
+/* ================= Quiet pages =================
+   Chapter pages keep one soft ground: no drifting sprites, and the wave texture sits back. Home keeps both. */
+body:not([data-chapter='home']) .motifs {
+  display: none;
+}
+body:not([data-chapter='home']) .waves {
+  opacity: 0.35;
 }

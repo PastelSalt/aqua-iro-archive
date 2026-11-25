@@ -4,10 +4,8 @@
  * Slots: "visual" (right side of the head), default (main module), "related", "after-head".
  */
 import { Image } from 'astro:assets';
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
 import Base from './Base.astro';
-import Marquee from '../components/chrome/Marquee.astro';
-import SideRails from '../components/chrome/SideRails.astro';
 import Icon from '../components/ui/Icon.astro';
 import Seam from '../components/ui/Seam.astro';
 import { CHAPTERS, type ChapterId } from '../lib/chapters';
@@ -22,32 +20,17 @@ export interface Props {
   h1Mincho?: boolean;
   subtitle?: string; // JP subtitle under h1
   intro?: { ja: string; en: string };
-  vert?: { small: string; text: string; em?: string };
-  marquee?: string[];
   og?: string;
   /** wave seam under the title card; off when the first section is a deep band (its own wave edge would double it) */
   seam?: boolean;
 }
-const {
-  chapter,
-  description,
-  h1,
-  h1Mincho = false,
-  subtitle,
-  intro,
-  vert,
-  marquee,
-  og,
-  seam = true,
-} = Astro.props;
+const { chapter, description, h1, h1Mincho = false, subtitle, intro, og, seam = true } = Astro.props;
 const idx = CHAPTERS.findIndex((x) => x.id === chapter);
 const c = CHAPTERS[idx]!;
 const prev = CHAPTERS[(idx + CHAPTERS.length - 1) % CHAPTERS.length]!;
 const next = CHAPTERS[(idx + 1) % CHAPTERS.length]!;
 const art = CHAPTER_ART[chapter];
 const kv = (await getEntry('arts', art.kv))?.data.image;
-const railFrames = (await getCollection('arts', (a) => a.data.section === art.rail)).map((a) => a.data);
-const no = c.no.slice(3); // "04"
 const title =
   chapter === 'home'
     ? `${SITE_NAME} — 湊あくあ ファンアーカイブ | Minato Aqua Fan Archive`
@@ -58,7 +41,6 @@ const title =
 <Base title={title} description={description} chapter={chapter} og={og ?? `/og/${chapter}.jpg`}>
   <slot name="head" slot="head" />
   <main id="main" class="page" data-chapter={chapter} tabindex="-1">
-    <SideRails frames={railFrames} title={art.railTitle} no={no} />
     <header class="page-head" data-page-head>
       {kv && (
         <div class="page-head__kv" aria-hidden="true">
@@ -71,18 +53,6 @@ const title =
             fetchpriority="low"
             style={art.focus && `object-position:${art.focus}`}
           />
-        </div>
-      )}
-      <span class="page-head__ghost" aria-hidden="true">
-        {no}
-      </span>
-      {vert && (
-        <div class="vert-col" aria-hidden="true">
-          <span class="vert-small">{vert.small}</span>
-          <span class="vert">
-            {vert.text}
-            {vert.em && <em>{vert.em}</em>}
-          </span>
         </div>
       )}
       <div class="wrap page-head__grid">
@@ -121,7 +91,6 @@ const title =
     <div class="page-body">
       <slot />
     </div>
-    <Marquee items={marquee} />
     <slot name="related" />
     <nav class="wrap related" aria-label="Chapters">
       {[prev, next].map((x, i) => (

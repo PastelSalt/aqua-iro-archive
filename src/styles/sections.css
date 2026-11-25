@@ -1354,12 +1354,6 @@ html[data-motion='off'] .faq__item summary::after {
   display: grid;
   gap: 8px;
 }
-.clip:nth-child(3n + 1) {
-  transform: rotate(-0.6deg);
-}
-.clip:nth-child(3n + 2) {
-  transform: rotate(0.5deg);
-}
 .clip__link {
   display: grid;
   gap: 10px;

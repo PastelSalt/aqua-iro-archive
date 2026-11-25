@@ -49,9 +49,6 @@
 .page[data-chapter='about'] > .page-head {
   padding-top: clamp(112px, 14vh, 156px);
 }
-.page[data-chapter='about'] .vert-col {
-  top: clamp(40px, 6vh, 64px);
-}
 .page-head__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);

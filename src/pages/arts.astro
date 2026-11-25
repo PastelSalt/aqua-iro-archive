@@ -93,16 +93,6 @@ const bannerFocus = (img: { width: number; height: number }) =>
     ja: `衣装、記念日、ジャケット、コラボ、そしてキャラクターデザインのがおう先生の絵。${all.length}点の公式アートを、すべて作者と出典つきで並べています。`,
     en: `Outfits, anniversaries, music jackets, collaborations and art by her character designer Gaou — ${all.length} pieces of official art, every one credited with its artist and source.`,
   }}
-  vert={{ small: 'CG GALLERY', text: 'あくあーと', em: 'ギャラリー' }}
-  marquee={[
-    '#あくあーと',
-    'CG GALLERY',
-    'THANK YOU ARTISTS',
-    'がおう',
-    '© COVER Corp.',
-    'CREDIT EVERY ARTIST',
-    '⚓',
-  ]}
 >
   <Fragment slot="visual">
     <div class="arts-visual" aria-hidden="true">
@@ -146,8 +136,8 @@ const bannerFocus = (img: { width: number; height: number }) =>
   <section class="section wrap band" aria-labelledby="featured-title">
     <SectionTitle no="01" en="Featured" ja="えらびぬきの10枚" id="featured-title" />
     <ol class="prints" role="list">
-      {featuredLarge.map(({ a, href }, i) => (
-        <li class="print" style={`--tilt:${[-1.5, 1, -0.5, 1.5, -1][i % 5]}deg`}>
+      {featuredLarge.map(({ a, href }) => (
+        <li class="print">
           <a
             class="print__link"
             href={href}

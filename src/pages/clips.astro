@@ -2,7 +2,6 @@
 /** No.02 Clips (EXECUTIONPLAN §9.2). Works without JS: every card is visible and links to YouTube. */
 import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
-import Postcard from '../components/ui/Postcard.astro';
 import Odometer from '../components/ui/Odometer.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
@@ -11,7 +10,6 @@ import { CLIP_TAGS } from '../content.config';
 import { compactEn, compactJa } from '../lib/format';
 
 const clips = (await getCollection('clips')).sort((a, b) => a.data.rank - b.data.rank);
-const totalViews = clips.reduce((n, c) => n + c.data.views, 0);
 const TAG_LABEL: Record<string, { ja: string; en: string }> = {
   animated: { ja: '手描き', en: 'Animated' },
   gaming: { ja: 'ゲーム', en: 'Gaming' },
@@ -36,16 +34,6 @@ const hasDates = clips.every((c) => c.data.published);
     ja: 'YouTubeでいちばん見られている湊あくあの切り抜き30本（2026年10月11日時点）。手描きの切り抜きがとくに人気。すべての切り抜きに、作ってくれた人のクレジットを付けています。',
     en: 'The 30 most-viewed clips of Minato Aqua on YouTube, as of 2026-10-11 — hand-drawn animated clips lead the list. Every card credits the clipper who made it.',
   }}
-  vert={{ small: 'CLIPS', text: '名場面', em: 'いっぱい' }}
-  marquee={[
-    '#湊あくあ切り抜き',
-    '手描き切り抜き',
-    'THANK YOU CLIPPERS',
-    '#あくあクルー',
-    'APEX',
-    '44.5',
-    'ん゛に゛ゃ゛あああ',
-  ]}
 >
   <Fragment slot="visual">
     <div class="clips-visual" aria-hidden="true">
@@ -243,24 +231,6 @@ const hasDates = clips.every((c) => c.data.published);
           </span>
         </li>
       ))}
-      {/* masonry tails (IMPROVEMENT-PLAN §1.3): filler cards at the column ends, always kept last */}
-      <Postcard
-        kind="quote"
-        icon="heart"
-        ja={clips[1]!.data.title}
-        en={clips[1]!.data.title}
-        note={`#2 · ${clips[1]!.data.clipper}`}
-        tilt={2}
-      />
-      <Postcard
-        kind="fact"
-        icon="play"
-        ja={`この30本で合計 ${compactJa(totalViews)}回 再生`}
-        en={`These 30 clips have ${compactEn(totalViews)} views between them`}
-        note="as of 2026-10-11"
-        tilt={-2}
-      />
-      <Postcard kind="doodle" icon="catsleep" tilt={3} />
     </ol>
     <ShowMore step={12} />
     <p class="credit asof">
@@ -305,10 +275,6 @@ const hasDates = clips.every((c) => c.data.published);
         if (on) n++;
         list.appendChild(it);
       }
-      list.querySelectorAll<HTMLElement>('.postcard').forEach((el) => {
-        el.hidden = n > limit; // filler cards stay last, and only show once every clip is out
-        list.appendChild(el);
-      });
       more.hidden = n <= limit;
       more.querySelector('[data-more-left]')!.textContent = `(${Math.min(STEP, n - limit)}+)`;
       tagBtns.forEach((b) => {

@@ -1,8 +1,7 @@
 /**
  * One scroll reader for the decorative chrome (IMPROVEMENT-PLAN §1.4: one scroll listener):
- * - the side rail's running percentage,
  * - the logo tab's gentle swing (rotates with scroll speed, springs back when you stop).
- * Writes only to those two elements (transform / text), never to <html>, so nothing else restyles.
+ * Writes only to that element (rotate), never to <html>, so nothing else restyles.
  */
 let raf = 0;
 let lastY = window.scrollY;
@@ -15,11 +14,6 @@ const motionOn = () => document.documentElement.dataset.motion === 'on';
 function frame() {
   raf = 0;
   const y = window.scrollY;
-  const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-  const p = Math.min(1, Math.max(0, y / max));
-  const pct = document.querySelector<HTMLElement>('.rail__progress');
-  if (pct) pct.textContent = `${Math.round(p * 100)}%`;
-
   const now = performance.now();
   const v = (y - lastY) / Math.max(1, now - lastT); // px per ms
   lastY = y;

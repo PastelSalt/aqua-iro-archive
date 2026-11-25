@@ -254,6 +254,7 @@ html[data-motion='on'][data-splash='seen'] .home-hero__reel > :nth-child(4) {
 html[data-motion='on'][data-splash='seen'] .home-hero__dialog {
   animation: enter-up 760ms cubic-bezier(0.22, 1, 0.36, 1) 520ms backwards;
 }
+
 html[data-motion='on'][data-splash='seen'] .vert-col {
   animation: enter-down 900ms cubic-bezier(0.22, 1, 0.36, 1) 260ms backwards;
 }
@@ -346,7 +347,6 @@ html[data-motion='on'] .btn:active {
     .dialog-box__cursor,
     .lighthouse__beam,
     .seam__wave,
-    .seam__float,
     .seam__track,
     .seam__buoy,
     .ending__track,
