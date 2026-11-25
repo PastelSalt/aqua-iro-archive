@@ -137,17 +137,18 @@ html[data-motion='on'] .page-head__kv img {
   bottom: 0;
   left: 0;
   width: 200%;
+  max-width: none; /* base.css caps svg at 100%, which left the slid wave with a hard edge */
   height: 100%;
 }
 .seam__wave path {
   stroke: none;
 }
 .seam__wave--back {
-  fill: color-mix(in srgb, var(--tint) 30%, transparent);
+  fill: color-mix(in srgb, var(--tint) 38%, transparent);
   height: 80%;
 }
 .seam__wave--front {
-  fill: color-mix(in srgb, var(--aqua-cyan) 22%, transparent);
+  fill: color-mix(in srgb, var(--aqua-cyan) 30%, transparent);
   height: 60%;
 }
 .seam__float {
@@ -1527,8 +1528,8 @@ html[data-motion='on'] .lighthouse.is-lit::after {
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(120px, 16vw, 200px);
-  margin-bottom: var(--s-5);
+  min-height: clamp(88px, 10vw, 120px);
+  margin-bottom: var(--s-4);
   padding: 18px 22px;
   border-radius: 22px;
   overflow: hidden;

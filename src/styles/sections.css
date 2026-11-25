@@ -1303,7 +1303,7 @@ html[data-motion='off'] .faq__item summary::after {
 /* ================= No.02 Clips ================= */
 .clips-visual {
   position: relative;
-  height: 320px;
+  height: clamp(220px, 34dvh, 320px);
 }
 .clips-visual__th {
   position: absolute;
@@ -1515,7 +1515,7 @@ html[data-motion='off'] .faq__item summary::after {
 .record__sleeve {
   position: relative;
   z-index: 2;
-  width: min(330px, 70%);
+  width: min(330px, 70%, 26dvh);
   aspect-ratio: 1;
   border-radius: 10px;
   overflow: hidden;
@@ -1533,7 +1533,7 @@ html[data-motion='off'] .faq__item summary::after {
   z-index: 1;
   top: 18px;
   left: 50%;
-  width: min(310px, 66%);
+  width: min(310px, 66%, 24dvh);
   aspect-ratio: 1;
   border-radius: 50%;
   background:
@@ -2111,8 +2111,51 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   contain-intrinsic-size: auto 64px;
   font-size: var(--step--1);
 }
-.streams .srow:nth-child(even of :not([hidden])) {
+.streams .srow:nth-child(even of .srow:not([hidden], [data-fold])) {
   background: var(--mint-row);
+}
+.srow[data-fold] {
+  display: none;
+}
+/* year blocks (streaming.astro regroup): a header row per year, then "Show more" inside it */
+.syear button,
+.smore button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  font: 700 var(--step--1) / 1.2 var(--font-display);
+  color: var(--navy);
+  background: color-mix(in srgb, var(--tint) 22%, var(--paper));
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.syear b {
+  font-size: var(--step-1);
+}
+.syear__n {
+  flex: 1;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.syear__chev::before {
+  content: '▾';
+  display: inline-block;
+  transition: transform var(--dur-2, 0.2s) var(--ease-float, ease);
+}
+.syear button[aria-expanded='false'] .syear__chev::before {
+  transform: rotate(-90deg);
+}
+.smore button {
+  justify-content: center;
+  background: var(--paper);
+  color: var(--link-blue);
+}
+.smore button:hover,
+.syear button:hover {
+  filter: brightness(0.97);
 }
 .srow__d {
   grid-area: d;
@@ -2260,6 +2303,8 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
 }
 .events-visual__img {
   width: 100%;
+  max-height: 36dvh;
+  object-fit: cover;
   border-radius: 24px;
   border: 8px solid var(--paper);
   box-shadow: var(--sh-3);
@@ -2611,7 +2656,7 @@ html[data-motion='on'] .lighthouse__beam {
 /* ================= No.06 Arts ================= */
 .arts-visual {
   position: relative;
-  height: 340px;
+  height: clamp(240px, 34dvh, 340px);
 }
 .polaroid {
   position: absolute;
@@ -2719,7 +2764,7 @@ html[data-motion='on'] .lighthouse__beam {
   color: var(--aqua-pink);
 }
 .gallery__sec {
-  padding-top: var(--s-7);
+  padding-top: var(--s-6);
   scroll-margin-top: 90px;
 }
 .gallery__title {
@@ -2736,8 +2781,8 @@ html[data-motion='on'] .lighthouse__beam {
 }
 .art-masonry {
   list-style: none;
-  columns: 4 220px;
-  column-gap: 18px;
+  columns: 5 200px;
+  column-gap: 16px;
 }
 .art-tile {
   break-inside: avoid;

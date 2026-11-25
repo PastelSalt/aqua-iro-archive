@@ -6,6 +6,7 @@ import Postcard from '../components/ui/Postcard.astro';
 import Odometer from '../components/ui/Odometer.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
+import ShowMore from '../components/ui/ShowMore.astro';
 import { CLIP_TAGS } from '../content.config';
 import { compactEn, compactJa } from '../lib/format';
 
@@ -260,6 +261,7 @@ const hasDates = clips.every((c) => c.data.published);
       />
       <Postcard kind="doodle" icon="catsleep" tilt={3} />
     </ol>
+    <ShowMore step={12} />
     <p class="credit asof">
       <span data-l="ja" lang="ja">
         再生数は2026年10月11日時点の概数です。切り抜きの権利は各切り抜き師とCOVER株式会社に帰属します。
@@ -285,21 +287,29 @@ const hasDates = clips.every((c) => c.data.published);
     const params = new URLSearchParams(location.search);
     let tag = params.get('tag') ?? 'all';
     let sort = params.get('sort') ?? 'views';
+    const STEP = 12;
+    let limit = STEP;
+    const more = root.querySelector<HTMLButtonElement>('[data-more]')!;
     if (!tagBtns.some((b) => b.dataset.tag === tag)) tag = 'all';
     const apply = (push = false) => {
-      let n = 0;
-      for (const it of items) {
-        const on = tag === 'all' || it.dataset.tags!.split(' ').includes(tag);
-        it.hidden = !on;
-        if (on) n++;
-      }
       const sorted = [...items].sort((a, b) =>
         sort === 'new'
           ? (b.dataset.date ?? '').localeCompare(a.dataset.date ?? '')
           : Number(b.dataset.views) - Number(a.dataset.views),
       );
-      sorted.forEach((el) => list.appendChild(el));
-      list.querySelectorAll('.postcard').forEach((el) => list.appendChild(el)); // filler cards stay last
+      let n = 0;
+      for (const it of sorted) {
+        const on = tag === 'all' || it.dataset.tags!.split(' ').includes(tag);
+        it.hidden = !on || n >= limit;
+        if (on) n++;
+        list.appendChild(it);
+      }
+      list.querySelectorAll<HTMLElement>('.postcard').forEach((el) => {
+        el.hidden = n > limit; // filler cards stay last, and only show once every clip is out
+        list.appendChild(el);
+      });
+      more.hidden = n <= limit;
+      more.querySelector('[data-more-left]')!.textContent = `(${Math.min(STEP, n - limit)}+)`;
       tagBtns.forEach((b) => {
         b.setAttribute('aria-checked', String(b.dataset.tag === tag));
         b.tabIndex = b.dataset.tag === tag ? 0 : -1;
@@ -317,11 +327,15 @@ const hasDates = clips.every((c) => c.data.published);
     tagBtns.forEach((b) =>
       b.addEventListener('click', () => {
         tag = b.dataset.tag!;
+        limit = STEP;
         apply(true);
         track('clip_filter', { tag });
       }),
     );
-    sortBtns.forEach((b) => b.addEventListener('click', () => ((sort = b.dataset.sort!), apply(true))));
+    sortBtns.forEach((b) =>
+      b.addEventListener('click', () => ((sort = b.dataset.sort!), (limit = STEP), apply(true))),
+    );
+    more.addEventListener('click', () => ((limit += STEP), apply()));
     // arrow keys inside the radiogroup
     root.querySelector('[role="radiogroup"]')?.addEventListener('keydown', (e) => {
       const k = (e as KeyboardEvent).key;

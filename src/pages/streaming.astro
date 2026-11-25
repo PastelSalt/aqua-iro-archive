@@ -5,6 +5,7 @@ import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
 import AquaWait from '../components/ui/AquaWait.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
+import ShowMore from '../components/ui/ShowMore.astro';
 import data from '../content/streams/streams.json';
 import { STREAM_TAGS } from '../lib/streams/tags';
 import { compactEn, dotDate, hmm, thousands } from '../lib/format';
@@ -348,6 +349,7 @@ const totalHours = summary.hours;
         </li>
       ))}
     </ol>
+    <ShowMore step={40} />
     <div class="empty" hidden data-stream-empty>
       <AquaWait
         ja="えっと……その配信、見つからなかった。ほかの言葉でさがしてみて！⚓"
@@ -385,6 +387,7 @@ const totalHours = summary.hours;
     const go = () => {
       const r = mark();
       if (!r) return;
+      list.dispatchEvent(new CustomEvent('reveal', { detail: r })); // open its year / page first
       // rows render lazily (content-visibility), so their real heights appear only as they come into
       // view and a single scroll lands in the wrong place: jump instantly, then re-centre each frame
       // until the row stays put
@@ -465,6 +468,58 @@ const totalHours = summary.hours;
     let fuse: { search: (q: string) => { item: { id: string } }[] } | null = null;
     let order = 'date-desc';
 
+    // long list, short page: date sorts group rows into collapsible year blocks (newest year open,
+    // 40 rows then "Show more"); other sorts are one list with a single "Show more". Folding uses
+    // [data-fold], never `hidden`, so filters, counts and the hours tally keep seeing every row.
+    const PAGE = 40;
+    const openYears = new Set<string>([String(Math.max(...rows.map((r) => r.year)))]);
+    const yearLimit = new Map<string, number>();
+    let flatLimit = PAGE;
+    const more = root.querySelector<HTMLButtonElement>('[data-more]')!;
+    const rowEls = () => Array.from(list.querySelectorAll<HTMLElement>(':scope > .srow'));
+    const regroup = () => {
+      list.querySelectorAll(':scope > .syear, :scope > .smore').forEach((n) => n.remove());
+      const all = rowEls();
+      for (const el of all) delete el.dataset.fold;
+      const visible = all.filter((el) => !el.hidden);
+      const byDate = state.sort === 'date-desc' || state.sort === 'date-asc';
+      const groups = new Map<string, HTMLElement[]>();
+      if (byDate)
+        for (const el of visible)
+          (groups.get(el.dataset.y!) ?? groups.set(el.dataset.y!, []).get(el.dataset.y!)!).push(el);
+      if (!byDate || state.view !== 'list' || groups.size < 2) {
+        // one flat list (other sorts, or a single year): the first PAGE rows, then "Show more"
+        visible.forEach((el, i) => i >= flatLimit && (el.dataset.fold = ''));
+        const left = visible.length - flatLimit;
+        more.hidden = left <= 0;
+        more.querySelector('[data-more-left]')!.textContent = `(${Math.max(left, 0)})`;
+        return;
+      }
+      more.hidden = true;
+      for (const [y, els] of groups) {
+        const open = openYears.has(y);
+        const hrs = Math.round(els.reduce((t, el) => t + (Number(el.dataset.s) || 0), 0) / 3600);
+        const head = document.createElement('li');
+        head.className = 'syear';
+        head.innerHTML = `<button type="button" aria-expanded="${open}"><b class="num">${y}</b><span class="syear__n num">${els.length} <span data-l="ja" lang="ja">回</span><span data-l="en" lang="en">streams</span> · ${hrs} h</span><span class="syear__chev" aria-hidden="true"></span></button>`;
+        head.dataset.y = y;
+        list.insertBefore(head, els[0]!);
+        if (!open) {
+          els.forEach((el) => (el.dataset.fold = ''));
+          continue;
+        }
+        const lim = yearLimit.get(y) ?? PAGE;
+        els.forEach((el, i) => i >= lim && (el.dataset.fold = ''));
+        if (els.length > lim) {
+          const li = document.createElement('li');
+          li.className = 'smore';
+          li.dataset.y = y;
+          li.innerHTML = `<button type="button"><span data-l="ja" lang="ja">もっと見る</span><span data-l="en" lang="en">Show more</span> <span class="num">(${els.length - lim})</span></button>`;
+          els[lim - 1]!.after(li);
+        }
+      }
+    };
+
     const sync = (push: boolean) => {
       const res = applyFilter(rows, {
         year: state.year === 'all' ? null : Number(state.year),
@@ -502,6 +557,10 @@ const totalHours = summary.hours;
       list.hidden = state.view !== 'list';
       heat.hidden = state.view !== 'calendar';
       viewBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sview === state.view)));
+      // while narrowing (a year, tags or a search), every matching year opens so nothing hides behind a fold
+      if (state.year !== 'all' || state.tags.size || state.q)
+        for (const r of rows) if (!r.el.hidden) openYears.add(String(r.year));
+      regroup();
       if (push) {
         const u = new URLSearchParams();
         if (state.year !== 'all') u.set('year', state.year);
@@ -580,11 +639,39 @@ const totalHours = summary.hours;
     input.addEventListener('input', runSearch);
 
     list.addEventListener('click', (e) => {
-      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a.srow__t');
+      const t = e.target as HTMLElement;
+      const head = t.closest<HTMLElement>('.syear');
+      const next = t.closest<HTMLElement>('.smore');
+      if (head || next) {
+        const y = (head ?? next)!.dataset.y!;
+        if (head) {
+          if (!openYears.delete(y)) openYears.add(y);
+        } else yearLimit.set(y, (yearLimit.get(y) ?? PAGE) + PAGE);
+        regroup();
+        return;
+      }
+      const a = t.closest<HTMLAnchorElement>('a.srow__t');
       if (a) {
         const li = a.closest<HTMLElement>('.srow')!;
         track('stream_open', { id: li.dataset.id, year: li.dataset.y });
       }
+    });
+
+    more.addEventListener('click', () => ((flatLimit += PAGE), regroup()));
+    // the Aqua Time jump asks for a row to be on screen: open its year and extend the page to it
+    list.addEventListener('reveal', (e) => {
+      const el = (e as CustomEvent<HTMLElement>).detail;
+      const y = el.dataset.y!;
+      openYears.add(y);
+      const same = rowEls().filter((x) => !x.hidden && x.dataset.y === y);
+      yearLimit.set(y, Math.max(yearLimit.get(y) ?? PAGE, same.indexOf(el) + 1));
+      flatLimit = Math.max(
+        flatLimit,
+        rowEls()
+          .filter((x) => !x.hidden)
+          .indexOf(el) + 1,
+      );
+      regroup();
     });
 
     if (state.q) {

@@ -13,15 +13,24 @@ const {
   kind = 'wave',
   items = ['THANK YOU AKUTAN', '#あくあクルー', 'AQUA IRO ARCHIVE', 'またね', '#湊あくあ', '2018 → 2024'],
 } = Astro.props;
+// each wave is drawn over TWO viewBox widths (2400) inside a 200%-wide svg, so the -50% slide loops
+// onto an identical copy; a single 1200 path stretched to 200% slid off and left hard-edged gaps
+const wavePath = (y: number, amp: number, period: number) => {
+  let d = `M0 ${y} Q ${period / 2} ${y - amp} ${period} ${y}`;
+  for (let x = period * 2; x <= 2400; x += period) d += ` T ${x} ${y}`;
+  return `${d} V60 H0Z`;
+};
+const BACK = wavePath(30, 30, 150);
+const FRONT = wavePath(34, 26, 200);
 ---
 
 {kind === 'wave' && (
   <div class="seam seam--wave" aria-hidden="true">
-    <svg class="seam__wave seam__wave--back" viewBox="0 0 1200 60" preserveAspectRatio="none">
-      <path d="M0 30 Q 75 0 150 30 T 300 30 T 450 30 T 600 30 T 750 30 T 900 30 T 1050 30 T 1200 30 V60 H0Z" />
+    <svg class="seam__wave seam__wave--back" viewBox="0 0 2400 60" preserveAspectRatio="none">
+      <path d={BACK} />
     </svg>
-    <svg class="seam__wave seam__wave--front" viewBox="0 0 1200 60" preserveAspectRatio="none">
-      <path d="M0 34 Q 100 8 200 34 T 400 34 T 600 34 T 800 34 T 1000 34 T 1200 34 V60 H0Z" />
+    <svg class="seam__wave seam__wave--front" viewBox="0 0 2400 60" preserveAspectRatio="none">
+      <path d={FRONT} />
     </svg>
     <span class="seam__float seam__float--1">
       <Icon name="anchor" />

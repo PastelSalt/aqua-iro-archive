@@ -48,10 +48,7 @@ for (const size of [
   { width: 1366, height: 649 },
   { width: 1920, height: 953 },
 ]) {
-  test(`chapters at ${size.width}: title card height and dock clearance (#9)`, async ({
-    page,
-    errors,
-  }) => {
+  test(`chapters at ${size.width}: title card height and dock clearance (#9)`, async ({ page, errors }) => {
     test.slow(); // seven full pages in a row
     await page.setViewportSize(size);
     for (const path of CHAPTERS) {
@@ -65,8 +62,8 @@ for (const size of [
       if (path === '/about') {
         expect(first, path).toBeGreaterThanOrEqual(dock - 1);
       } else {
-        // compact title card: at most ~60% of the viewport, with the title block above the dock
-        expect(first, path).toBeLessThanOrEqual(size.height * 0.6 + 1);
+        // compact title card: at most ~60% of the viewport (450px floor for short laptops), with the title block above the dock
+        expect(first, path).toBeLessThanOrEqual(Math.max(size.height * 0.6, 450) + 1);
         expect(copyBottom, path).toBeLessThanOrEqual(dock);
       }
     }

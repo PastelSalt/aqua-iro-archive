@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
+import ShowMore from '../components/ui/ShowMore.astro';
 import { ART_SECTIONS } from '../content.config';
 import { dotDate } from '../lib/format';
 
@@ -274,6 +275,7 @@ const bannerFocus = (img: { width: number; height: number }) =>
             );
           })}
         </ul>
+        <ShowMore step={16} />
       </section>
     ))}
   </div>
@@ -292,6 +294,29 @@ const bannerFocus = (img: { width: number; height: number }) =>
       if (img.complete && img.naturalWidth) dev(img);
       else img.addEventListener('load', () => dev(img), { once: true });
       img.addEventListener('error', () => dev(img), { once: true });
+    });
+  });
+
+  // long sections open on their first 12 tiles; "Show more" adds 16 at a time
+  onPage(() => {
+    const FIRST = 12;
+    document.querySelectorAll<HTMLElement>('.gallery__sec').forEach((sec) => {
+      const tiles = Array.from(sec.querySelectorAll<HTMLElement>('.art-tile'));
+      const btn = sec.querySelector<HTMLButtonElement>('[data-more]');
+      if (!btn || tiles.length <= FIRST + 4) return; // a few extra tiles aren't worth a button
+      const step = Number(btn.dataset.step) || 16;
+      let shown = FIRST;
+      const render = () => {
+        tiles.forEach((t, i) => (t.hidden = i >= shown));
+        const left = tiles.length - shown;
+        btn.hidden = left <= 0;
+        btn.querySelector('[data-more-left]')!.textContent = `(${left})`;
+      };
+      btn.addEventListener('click', () => {
+        shown += step;
+        render();
+      });
+      render();
     });
   });
 

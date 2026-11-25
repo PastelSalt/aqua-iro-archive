@@ -2166,3 +2166,16 @@ html[data-motion='on'] .aqua-wait__pose {
 .chip.is-on .count {
   color: var(--navy);
 }
+
+/* ================= "Show more" row under long lists ================= */
+.more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--s-5);
+}
+.more-row:has(> [hidden]) {
+  display: none;
+}
+.more-btn .num {
+  margin-left: 6px;
+}

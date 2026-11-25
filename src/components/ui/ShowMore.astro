@@ -1,0 +1,19 @@
+---
+/** "Show more" row under a long list; the page script owns the [data-more] button (hidden until needed). */
+interface Props {
+  step?: number;
+}
+const { step } = Astro.props;
+---
+
+<div class="more-row">
+  <button type="button" class="btn btn--secondary more-btn" data-more data-step={step} hidden>
+    <span data-l="ja" lang="ja">
+      もっと見る
+    </span>
+    <span data-l="en" lang="en">
+      Show more
+    </span>
+    <span class="num" data-more-left></span>
+  </button>
+</div>
