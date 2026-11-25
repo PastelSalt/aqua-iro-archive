@@ -25,8 +25,21 @@ export interface Props {
   vert?: { small: string; text: string; em?: string };
   marquee?: string[];
   og?: string;
+  /** wave seam under the title card; off when the first section is a deep band (its own wave edge would double it) */
+  seam?: boolean;
 }
-const { chapter, description, h1, h1Mincho = false, subtitle, intro, vert, marquee, og } = Astro.props;
+const {
+  chapter,
+  description,
+  h1,
+  h1Mincho = false,
+  subtitle,
+  intro,
+  vert,
+  marquee,
+  og,
+  seam = true,
+} = Astro.props;
 const idx = CHAPTERS.findIndex((x) => x.id === chapter);
 const c = CHAPTERS[idx]!;
 const prev = CHAPTERS[(idx + CHAPTERS.length - 1) % CHAPTERS.length]!;
@@ -103,7 +116,7 @@ const title =
         </div>
       </div>
     </header>
-    <Seam kind="wave" />
+    {seam && <Seam kind="wave" />}
     <slot name="after-head" />
     <div class="page-body">
       <slot />

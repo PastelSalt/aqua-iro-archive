@@ -10,6 +10,9 @@
   pointer-events: none;
   /* parallax on mouse move (title-card.ts), at most 12px */
   translate: var(--mx, 0px) var(--my, 0px);
+  /* the card dissolves into the page's wave ground instead of ending in a straight edge */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 68%, transparent 100%);
 }
 .page-head__kv img {
   position: absolute;
@@ -142,6 +145,11 @@ html[data-motion='on'] .page-head__kv img {
 }
 .seam__wave path {
   stroke: none;
+}
+/* waves dissolve downward, so a seam never ends in a flat edge against whatever section follows */
+.seam__wave {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 100%);
 }
 .seam__wave--back {
   fill: color-mix(in srgb, var(--tint) 38%, transparent);
@@ -563,7 +571,12 @@ html[data-motion='on'] .postcard__doodle {
   justify-items: center;
   gap: 10px;
   padding: 18px 0 26px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aqua-cyan) 22%, transparent), transparent);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--aqua-cyan) 22%, transparent) 35%,
+    transparent
+  );
   overflow: hidden;
 }
 .ending__sign {
