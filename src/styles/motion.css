@@ -87,6 +87,9 @@
   }
 }
 
+html[data-motion='on'] .stamp__ring {
+  animation: spin 20s linear infinite;
+}
 html[data-motion='on'] .float {
   animation: float-y 5s var(--ease-float) infinite;
 }
@@ -260,6 +263,13 @@ html[data-motion='on'][data-splash='seen'] .vert-col {
 html[data-motion='on'] .hero-circle__poses {
   animation: idle-bob 5.5s var(--ease-float) infinite;
 }
+html[data-motion='on'] .hero-bubble {
+  animation: idle-drift 7s var(--ease-float) infinite;
+}
+html[data-motion='on'] .hero-bubble:nth-child(odd) {
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
 
 /* scroll reveal (src/scripts/reveal.ts) */
 html[data-motion='on'] [data-reveal]:not(.is-in) {
@@ -327,6 +337,7 @@ html[data-motion='on'] .btn:active {
     .hero-circle__ring2,
     .hero-circle__lace,
     .hero-circle__poses,
+    .hero-bubble,
     .float,
     .home-hero__sleep,
     .film__eq i,

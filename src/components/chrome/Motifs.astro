@@ -1,0 +1,47 @@
+---
+/**
+ * Motif field (IMPROVEMENT-PLAN §1.3): anchors, bubbles, stars, hearts and ribbons drifting on a fixed
+ * layer behind the page content. Sprites sit mostly in the side margins and between sections, where the
+ * page is otherwise bare; each one is a compositor-only CSS loop (no canvas redraw), paused by Motion OFF.
+ * Positions are fixed numbers so the server render and every visit look the same.
+ */
+const ICONS = ['anchor', 'spark', 'heart', 'bow', 'bubble', 'note', 'spark', 'bubble'];
+const COLORS = ['c-pink', 'c-cyan', 'c-lav', 'c-deep', 'c-cyan', 'c-pink'];
+// [left %, top %, size px]
+const SPOTS: [number, number, number][] = [
+  [3, 14, 26],
+  [7, 38, 18],
+  [2.5, 62, 30],
+  [8, 84, 16],
+  [92, 18, 22],
+  [96, 41, 30],
+  [91, 66, 18],
+  [95.5, 88, 26],
+  [18, 6, 14],
+  [79, 9, 16],
+  [24, 93, 18],
+  [72, 95, 14],
+  [48, 3, 12],
+  [52, 97, 12],
+];
+---
+
+<div class="motifs" aria-hidden="true">
+  {SPOTS.map(([x, y, s], i) => {
+    const icon = ICONS[i % ICONS.length]!;
+    return (
+      <span
+        class:list={['motif', COLORS[i % COLORS.length]]}
+        style={`left:${x}%;top:${y}%;--s:${s}px;--dur:${14 + ((i * 7) % 11)}s;--delay:${-((i * 3.1) % 9)}s;--rot:${((i * 37) % 50) - 25}deg`}
+      >
+        {icon === 'bubble' ? (
+          <i class="motif__bubble" />
+        ) : (
+          <svg>
+            <use href={`#i-${icon}`} />
+          </svg>
+        )}
+      </span>
+    );
+  })}
+</div>

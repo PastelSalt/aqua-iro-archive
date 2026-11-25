@@ -4,7 +4,10 @@ import { Image, Picture } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
+import Stamp from '../components/ui/Stamp.astro';
 import VoyageLine from '../components/ui/VoyageLine.astro';
+import Marquee from '../components/chrome/Marquee.astro';
+import Seam from '../components/ui/Seam.astro';
 import DialogueBox from '../components/talk/DialogueBox.tsx';
 import { CHAPTERS } from '../lib/chapters';
 import { FAQ } from '../lib/faq';
@@ -120,6 +123,112 @@ const ld = {
 >
   <main id="main" class="home" data-chapter="home" tabindex="-1">
     <section class="home-hero" aria-labelledby="home-title" data-home>
+      <canvas class="bubbles" data-bubbles aria-hidden="true"></canvas>
+
+      <!-- decorative doodles (mockup v5) -->
+      <div class="home-hero__fx" aria-hidden="true">
+        <span
+          class="fx c-lav"
+          style="left:19%;top:4%;width:90px;height:40px;transform:rotate(-8deg);opacity:.8"
+        >
+          <svg>
+            <use href="#i-headdress"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan float" style="left:25.6%;top:10.5%;width:18px;height:18px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="fx c-pink" style="left:24.5%;top:14%;width:11px;height:11px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan" style="left:22.5%;top:20%;width:110px;height:18px;opacity:.55">
+          <svg>
+            <use href="#i-wave"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-deep float"
+          style="left:28.9%;top:26%;width:30px;height:36px;--rot:12deg;opacity:.65"
+        >
+          <svg>
+            <use href="#i-note"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-pink"
+          style="left:27.5%;top:45%;width:26px;height:24px;transform:rotate(-12deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-heart"></use>
+          </svg>
+        </span>
+        <span class="fx c-lav float" style="left:13%;top:68%;width:30px;height:40px;--rot:10deg;opacity:.75">
+          <svg>
+            <use href="#i-onion"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-pink"
+          style="left:65%;top:66%;width:70px;height:40px;transform:rotate(14deg);opacity:.75"
+        >
+          <svg>
+            <use href="#i-bow"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-cyan float"
+          style="left:73.7%;top:27.8%;width:26px;height:32px;--rot:-10deg;opacity:.7"
+        >
+          <svg>
+            <use href="#i-note"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-lav"
+          style="left:78%;top:21%;width:74px;height:46px;transform:rotate(-8deg);opacity:.75"
+        >
+          <svg>
+            <use href="#i-pad"></use>
+          </svg>
+        </span>
+        <span class="fx c-pink float" style="left:85%;top:19%;width:16px;height:16px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-cyan"
+          style="left:92%;top:62%;width:24px;height:22px;transform:rotate(10deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-heart"></use>
+          </svg>
+        </span>
+        <span
+          class="fx c-lav"
+          style="left:91.4%;top:48%;width:30px;height:34px;transform:rotate(-14deg);opacity:.7"
+        >
+          <svg>
+            <use href="#i-anchor"></use>
+          </svg>
+        </span>
+        <span class="fx c-cyan float" style="left:40%;top:4.4%;width:14px;height:14px">
+          <svg>
+            <use href="#i-spark"></use>
+          </svg>
+        </span>
+        <span class="tiny-bub" style="left:20.6%;top:27.8%;width:12px;height:12px"></span>
+        <span class="tiny-bub" style="left:22%;top:31%;width:7px;height:7px"></span>
+        <span class="tiny-bub" style="left:32.5%;top:69%;width:10px;height:10px"></span>
+        <span class="tiny-bub" style="left:75%;top:15.5%;width:9px;height:9px"></span>
+        <span class="tiny-bub" style="left:92.5%;top:53%;width:11px;height:11px"></span>
+        <span class="tiny-bub" style="left:61%;top:4.4%;width:8px;height:8px"></span>
+      </div>
+
       <div class="home-hero__copy">
         <p class="label">
           <b>NO.00</b> — HOME
@@ -156,6 +265,11 @@ const ld = {
           </div>
           <div class="hero-circle__disc" aria-hidden="true">
             <div class="hero-circle__lace"></div>
+            <i class="hero-bubble" style="width:46px;height:46px;left:11%;top:23%"></i>
+            <i class="hero-bubble" style="width:22px;height:22px;left:19%;top:17%"></i>
+            <i class="hero-bubble" style="width:60px;height:60px;right:9%;top:33%"></i>
+            <i class="hero-bubble" style="width:18px;height:18px;right:19%;top:27%"></i>
+            <i class="hero-bubble" style="width:34px;height:34px;left:14%;bottom:27%"></i>
           </div>
           <div class="hero-circle__poses">
             {outfits.map((o, i) => (
@@ -187,6 +301,16 @@ const ld = {
               decoding="async"
             />
           </div>
+          <span class="fx c-cyan" style="left:-40px;top:300px;width:70px;height:80px" aria-hidden="true">
+            <svg>
+              <use href="#i-anchor"></use>
+            </svg>
+          </span>
+          <span class="fx c-pink" style="right:-34px;top:430px;width:74px;height:60px" aria-hidden="true">
+            <svg>
+              <use href="#i-cat"></use>
+            </svg>
+          </span>
           <label class="hero-outfit">
             <svg class="icon" aria-hidden="true">
               <use href="#i-headdress"></use>
@@ -209,6 +333,7 @@ const ld = {
               ))}
             </select>
           </label>
+          <Stamp class="home-stamp" />
         </div>
       </div>
 
@@ -307,6 +432,8 @@ const ld = {
         </div>
       </aside>
     </section>
+
+    <Marquee />
 
     <section class="chapter-spread wrap" aria-labelledby="spread-title">
       <div class="sec-title sec-title--center">
@@ -430,9 +557,12 @@ const ld = {
       </div>
     </section>
 
+    <Seam kind="rope" />
+
     <section class="farewell band" aria-labelledby="farewell-title">
       <div class="farewell__waves" aria-hidden="true"></div>
       <div class="wrap farewell__inner">
+        <Stamp text="ありがとう ⚓ THANK YOU ⚓ 2018 — 2024 ⚓ " size={150} />
         <div>
           <h2 id="farewell-title" class="mincho" lang="ja">
             ありがとう、あくたん。
@@ -477,6 +607,7 @@ const ld = {
 <script>
   import { onPage, onMotion } from '../lib/lifecycle';
   import { track } from '../lib/analytics';
+  import { startBubbles } from '../scripts/bubbles';
   import { KEYS, read, write } from '../lib/storage';
   import { timeDate } from '../lib/aquatime';
 
@@ -631,6 +762,10 @@ const ld = {
       .forEach((a) =>
         a.addEventListener('click', () => track('chapter_card', { to: a.dataset.chapterCard })),
       );
+
+    // ---- bubbles (≤ 40, 30 fps, Motion ON only, paused when hidden) ----
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-bubbles]');
+    if (canvas) cleanups.push(startBubbles(canvas));
 
     return () => cleanups.forEach((f) => f());
   });

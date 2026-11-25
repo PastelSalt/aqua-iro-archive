@@ -5,6 +5,7 @@ import { getCollection, getEntry } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import Icon from '../components/ui/Icon.astro';
 import SectionTitle from '../components/ui/SectionTitle.astro';
+import Stamp from '../components/ui/Stamp.astro';
 import { dotDate } from '../lib/format';
 
 const events = (await getCollection('events')).sort((a, b) => a.data.date.localeCompare(b.data.date) || 0);
@@ -252,6 +253,7 @@ const expandable = (e: (typeof events)[number]) =>
           <Icon name="anchor" />
         </a>
       </div>
+      <Stamp text="SEE YOU ⚓ またね ⚓ AQUA CREW ⚓ " size={120} />
     </div>
   </section>
 

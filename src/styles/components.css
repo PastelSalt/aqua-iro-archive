@@ -262,6 +262,31 @@
 }
 
 /* ================= Stamp (rotating ring) ================= */
+.stamp {
+  position: relative;
+  width: var(--stamp-size, 130px);
+  aspect-ratio: 1;
+  flex: none;
+}
+.stamp__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.stamp__core {
+  position: absolute;
+  inset: 23%;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+.stamp__core .icon {
+  width: 40%;
+  height: 40%;
+}
 
 /* ================= Ribbon tab ================= */
 .ribbon {
@@ -509,6 +534,39 @@
 }
 
 /* ================= Marquee ================= */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  background: var(--navy);
+  color: #fff;
+  padding-block: 12px;
+  transform: rotate(-1.2deg);
+  margin-block: var(--s-7);
+  box-shadow: var(--sh-2);
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+}
+.marquee__group {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-right: 26px;
+  font: 600 var(--step--1) / 1 var(--font-display);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.marquee__group .icon {
+  color: var(--aqua-pink);
+}
+html[data-motion='on'] .marquee__track {
+  animation: marquee 48s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
 
 /* ================= Footer ================= */
 .footer {
@@ -530,22 +588,25 @@
 }
 /* ================= Banner card (FULL-UPDATE-PLAN §A1) =================
    The one shape for every link-to-somewhere card: the maker credit, sister sites, Prev / Next chapters
-   (and, large and taped, the page-switch ticket). Paper, the card radius, a chapter-tint bar on the left
-   (--dot), a small lift on hover. Each user only adds its own layout. */
+   (and, large and taped, the page-switch ticket). Paper, the card radius, a hairline border that takes the
+   tint (--dot) on hover along with a small lift. Each user only adds its own layout. */
 .banner-card {
   position: relative;
   background: var(--paper);
   border-radius: var(--r-card);
-  border-left: 4px solid var(--dot, var(--aqua-pink));
+  border: 1.5px solid var(--lav-line);
   box-shadow: var(--sh-1);
   color: var(--navy);
   text-decoration: none;
   transition:
     transform var(--dur-1) var(--ease-float),
-    box-shadow var(--dur-1);
+    box-shadow var(--dur-1),
+    border-color var(--dur-1);
 }
-.banner-card:hover {
+.banner-card:hover,
+.banner-card:focus-visible {
   transform: translateY(-2px);
+  border-color: var(--dot, var(--aqua-pink));
   box-shadow: var(--sh-2);
   color: var(--navy);
 }
@@ -1485,6 +1546,9 @@ html[data-splash='seen'] .splash {
   transition:
     filter 600ms var(--ease-float),
     opacity 600ms var(--ease-float);
+}
+html[data-motion='on'] .splash__kv {
+  animation: ken-burns 18s var(--ease-float) infinite alternate;
 }
 .splash[data-beat='title'] .splash__kv {
   /* she moves to the right; the paper of the splash shows through on the left */

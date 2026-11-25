@@ -4,10 +4,15 @@
  * "wave" (two undulating wave bands), "ticker" (a tilted pink marquee), "rope" (a rope with bobbing
  * buoys). All motion is transform-only and stops with Motion OFF.
  */
+import Icon from './Icon.astro';
 interface Props {
-  kind?: 'wave';
+  kind?: 'wave' | 'ticker' | 'rope';
+  items?: string[];
 }
-const { kind = 'wave' } = Astro.props;
+const {
+  kind = 'wave',
+  items = ['THANK YOU AKUTAN', '#あくあクルー', 'AQUA IRO ARCHIVE', 'またね', '#湊あくあ', '2018 → 2024'],
+} = Astro.props;
 // each wave is drawn over TWO viewBox widths (2400) inside a 200%-wide svg, so the -50% slide loops
 // onto an identical copy; a single 1200 path stretched to 200% slid off and left hard-edged gaps
 const wavePath = (y: number, amp: number, period: number) => {
@@ -27,5 +32,33 @@ const FRONT = wavePath(34, 26, 200);
     <svg class="seam__wave seam__wave--front" viewBox="0 0 2400 60" preserveAspectRatio="none">
       <path d={FRONT} />
     </svg>
+  </div>
+)}
+{kind === 'ticker' && (
+  <div class="seam seam--ticker" aria-hidden="true">
+    <div class="seam__track">
+      {[0, 1].map(() => (
+        <div class="seam__group">
+          {items.map((it) => (
+            <>
+              <span>{it}</span>
+              <Icon name="spark" />
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+{kind === 'rope' && (
+  <div class="seam seam--rope" aria-hidden="true">
+    <svg class="seam__rope" viewBox="0 0 1200 40" preserveAspectRatio="none">
+      <path d="M0 14 Q 150 34 300 14 T 600 14 T 900 14 T 1200 14" />
+    </svg>
+    {[12, 37, 63, 88].map((x, i) => (
+      <span class="seam__buoy" style={`left:${x}%;--d:${i * -0.7}s`}>
+        <Icon name="anchor" />
+      </span>
+    ))}
   </div>
 )}

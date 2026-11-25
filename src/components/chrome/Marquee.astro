@@ -1,0 +1,33 @@
+---
+import Icon from '../ui/Icon.astro';
+interface Props {
+  items?: string[];
+}
+const {
+  items = [
+    '#湊あくあ',
+    '#あくあ色ぱれっと',
+    'THANK YOU AKUTAN',
+    '#あくあクルー',
+    '#湊あくあ生放送',
+    'AQUA IRO ARCHIVE',
+    '#あくあーと',
+    '2018 — 2024',
+  ],
+} = Astro.props;
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {[0, 1].map(() => (
+      <div class="marquee__group">
+        {items.map((it) => (
+          <>
+            <span>{it}</span>
+            <Icon name="anchor" />
+          </>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
