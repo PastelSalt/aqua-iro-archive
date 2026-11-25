@@ -110,7 +110,11 @@
   letter-spacing: 0.3em;
   color: var(--pink-ink);
 }
-
+.home-hero__cat {
+  position: absolute;
+  right: -58px;
+  top: 128px;
+}
 .home-hero__stage {
   grid-area: stage;
   position: relative;
@@ -266,7 +270,12 @@ html[data-motion='on'] .hero-circle__ring {
   top: -3%;
   z-index: 5;
 }
-
+.home-hero__sleep {
+  position: absolute !important;
+  right: -6%;
+  bottom: 2%;
+  z-index: 6;
+}
 .home-hero__dialog {
   position: absolute;
   left: clamp(20px, 4vw, 64px);
@@ -797,7 +806,9 @@ html[data-motion='off'] .faq__item summary::after {
     padding-top: 116px;
     min-height: 0;
   }
-
+  .home-hero__cat {
+    display: none;
+  }
   .hero-circle {
     width: min(82vw, 420px);
   }
@@ -1026,9 +1037,28 @@ html[data-motion='off'] .faq__item summary::after {
   box-shadow:
     0 10px 22px rgb(59 69 131 / 0.12),
     0 1px 0 #fff inset;
+  transform: rotate(var(--tilt));
   font-size: var(--step--1);
   line-height: 1.85;
   color: var(--note-ink);
+}
+.scrap__sticker {
+  position: absolute;
+  right: -10px;
+  bottom: -12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: var(--aqua-pink-deep);
+  box-shadow: 0 4px 10px rgb(59 69 131 / 0.14);
+  transform: rotate(-8deg);
+}
+.scrap__sticker .icon {
+  width: 26px;
+  height: 26px;
 }
 
 .relmap {
@@ -1455,9 +1485,11 @@ html[data-motion='off'] .faq__item summary::after {
 }
 .podium__item--2 {
   order: 1;
+  transform: rotate(-1.5deg);
 }
 .podium__item--3 {
   order: 3;
+  transform: rotate(1.5deg);
 }
 .podium__link {
   display: grid;
@@ -1985,6 +2017,7 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   border-radius: var(--r-card);
   background: var(--paper);
   box-shadow: var(--sh-card);
+  transform: rotate(var(--tilt));
 }
 .trophy__badge {
   position: absolute;
@@ -2294,6 +2327,7 @@ html[data-motion='on'] .jacket__link:hover .jacket__disc {
   border-radius: 24px;
   border: 8px solid var(--paper);
   box-shadow: var(--sh-3);
+  transform: rotate(1.5deg);
 }
 .events-visual .sticker {
   position: absolute;
@@ -2658,17 +2692,23 @@ html[data-motion='on'] .lighthouse__beam {
 .polaroid--0 {
   left: 4%;
   top: 30px;
+  transform: rotate(-6deg);
 }
 .polaroid--1 {
   left: 34%;
   top: 0;
+  transform: rotate(3deg);
   z-index: 2;
 }
 .polaroid--2 {
   right: 2%;
   top: 46px;
+  transform: rotate(8deg);
 }
-
+.polaroid .pin svg {
+  width: 26px;
+  height: 26px;
+}
 .art-banner {
   display: flex;
   gap: 14px;

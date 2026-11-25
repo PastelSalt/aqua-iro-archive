@@ -188,6 +188,12 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
     <ul class="scrapbook" role="list">
       {lore.map((l, i) => (
         <li class="scrap" style={`--note-bg:${NOTE_COLORS[i % 5]};--tilt:${TILTS[i % TILTS.length]}deg`}>
+          <span class={`tape tape--${['pink', 'blue', 'mint'][i % 3]}`} aria-hidden="true" />
+          {l.data.sticker && (
+            <span class="scrap__sticker" aria-hidden="true">
+              <Icon name={l.data.sticker} />
+            </span>
+          )}
           {l.data.text.ja && (
             <p data-l="ja" lang="ja">
               {l.data.text.ja}
@@ -232,6 +238,18 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
             <small lang="en">{n.r.data.name.en}</small>
           </button>
         ))}
+        <span class="relmap__doodle relmap__doodle--1 c-pink" aria-hidden="true">
+          <Icon name="heart" />
+        </span>
+        <span class="relmap__doodle relmap__doodle--2 c-cyan" aria-hidden="true">
+          <Icon name="anchor" />
+        </span>
+        <span class="relmap__doodle relmap__doodle--3 c-lav" aria-hidden="true">
+          <Icon name="spark" />
+        </span>
+        <span class="relmap__doodle relmap__doodle--4 c-deep" aria-hidden="true">
+          <Icon name="onion" />
+        </span>
         <p class="relmap__detail card" id="rel-detail" aria-live="polite" data-rel-detail>
           <span data-l="ja" lang="ja">
             気になる輪をえらんでね。

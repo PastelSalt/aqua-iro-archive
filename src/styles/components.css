@@ -2136,7 +2136,33 @@ html[data-motion='on'] .aqua-wait__pose {
 }
 
 /* ================= Washi tape + pin (scrapbook, board) ================= */
-
+.tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 78px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-3deg);
+  opacity: 0.85;
+  background: repeating-linear-gradient(45deg, #f2a7cfaa 0 6px, #f7c6e0aa 6px 12px);
+  pointer-events: none;
+}
+.tape--blue {
+  background: repeating-linear-gradient(45deg, #8ec9eeaa 0 6px, #bfe3f7aa 6px 12px);
+  transform: translateX(-50%) rotate(4deg);
+}
+.tape--mint {
+  background: repeating-linear-gradient(90deg, #9fe3d8aa 0 8px, #c9f0eeaa 8px 16px);
+}
+.pin {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
 .chip[aria-pressed='true'] .count,
 .chip[aria-selected='true'] .count,
 .chip[aria-checked='true'] .count,

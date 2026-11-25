@@ -270,6 +270,9 @@ html[data-motion='on'] .hero-bubble:nth-child(odd) {
   animation-duration: 9s;
   animation-delay: -3s;
 }
+html[data-motion='on'] .home-hero__sleep {
+  animation: wiggle 3.6s var(--ease-float) infinite;
+}
 
 /* scroll reveal (src/scripts/reveal.ts) */
 html[data-motion='on'] [data-reveal]:not(.is-in) {
