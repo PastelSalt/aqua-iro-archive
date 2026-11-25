@@ -22,13 +22,13 @@ export const CHAPTER_ART: Record<ChapterId, ChapterArt> = {
     focus: 'center 12%',
   },
   about: {
-    kv: 'gaou-v2',
+    kv: 'anniv-4th-haiiro-to-ao',
     rail: 'outfits',
     railTitle: 'ドジっ子メイドのプロフィール',
     focus: 'center 15%',
   },
   clips: {
-    kv: 'anniv-600k',
+    kv: 'anniv-4th-merch',
     rail: 'anniversary',
     railTitle: 'みんなが残してくれた名場面',
     focus: 'center 14%',
@@ -47,7 +47,7 @@ export const CHAPTER_ART: Record<ChapterId, ChapterArt> = {
   },
   events: { kv: 'kv-5th-fes', rail: 'collabs', railTitle: '六年間の航海' },
   arts: {
-    kv: 'gaou-aquart-1',
+    kv: 'anniv-birthday-gaou',
     rail: 'designer',
     railTitle: 'あくあーとギャラリー',
     focus: 'center 27%',

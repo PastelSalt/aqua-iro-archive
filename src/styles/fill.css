@@ -22,7 +22,7 @@
   max-width: none;
   object-fit: cover;
   opacity: 0.55;
-  filter: blur(1px) saturate(1.1);
+  filter: saturate(1.1);
 }
 /* the wash keeps the title readable: solid on the copy side, art showing through on the visual side */
 .page-head__kv::after {

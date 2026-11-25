@@ -47,8 +47,10 @@ const title =
           <Image
             src={kv}
             alt=""
-            width={960}
-            quality={50}
+            width={1920}
+            widths={[960, 1440, 1920]}
+            sizes="112vw"
+            quality={72}
             loading="eager"
             fetchpriority="low"
             style={art.focus && `object-position:${art.focus}`}
