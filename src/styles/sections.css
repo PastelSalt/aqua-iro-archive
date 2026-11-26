@@ -3517,3 +3517,82 @@ html[data-motion='on'] .note.thunk {
     grid-column: 1 / -1;
   }
 }
+
+/* ================= Scroll hints =================
+   Sideways strips (Model history, the Discography timeline, the Streaming calendar) get a slim themed
+   scrollbar instead of the browser's grey bar, and Model history also gets arrow buttons. */
+.wardrobe,
+.ruler,
+.heatmaps {
+  scrollbar-width: thin;
+  scrollbar-color: var(--lavender) transparent;
+}
+.wardrobe::-webkit-scrollbar,
+.ruler::-webkit-scrollbar,
+.heatmaps::-webkit-scrollbar {
+  height: 8px;
+}
+.wardrobe::-webkit-scrollbar-track,
+.ruler::-webkit-scrollbar-track,
+.heatmaps::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wardrobe::-webkit-scrollbar-thumb,
+.ruler::-webkit-scrollbar-thumb,
+.heatmaps::-webkit-scrollbar-thumb {
+  background: var(--lavender);
+  border-radius: 999px;
+}
+.wardrobe::-webkit-scrollbar-thumb:hover,
+.ruler::-webkit-scrollbar-thumb:hover,
+.heatmaps::-webkit-scrollbar-thumb:hover {
+  background: var(--pink-ink);
+}
+.wardrobe {
+  padding-bottom: 20px;
+}
+.wardrobe-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.scroll-btns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--s-5);
+}
+.scroll-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lav-line);
+  background: var(--paper);
+  color: var(--navy);
+  box-shadow: var(--sh-1);
+  cursor: pointer;
+  transition:
+    transform var(--dur-1) var(--ease-float),
+    background var(--dur-1),
+    color var(--dur-1),
+    opacity var(--dur-1);
+}
+.scroll-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+.scroll-btn[data-wardrobe-prev] .icon {
+  transform: scaleX(-1);
+}
+.scroll-btn:hover:not(:disabled),
+.scroll-btn:focus-visible {
+  background: var(--navy);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.scroll-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

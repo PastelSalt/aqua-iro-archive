@@ -282,8 +282,16 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
 
   <!-- wardrobe -->
   <section class="section" aria-labelledby="wardrobe-title">
-    <div class="wrap">
+    <div class="wrap wardrobe-head">
       <SectionTitle no="04" en="Model history" ja="衣装のあゆみ" id="wardrobe-title" />
+      <div class="scroll-btns" role="group" aria-label="Scroll the outfit strip · スクロール">
+        <button type="button" class="scroll-btn" data-wardrobe-prev aria-label="Earlier outfits · 前へ">
+          <Icon name="chevron" />
+        </button>
+        <button type="button" class="scroll-btn" data-wardrobe-next aria-label="Later outfits · 次へ">
+          <Icon name="chevron" />
+        </button>
+      </div>
     </div>
     <ol class="wardrobe" role="list" tabindex="0" aria-label="Outfits, oldest first">
       {wardrobe.map((a) => (
@@ -425,6 +433,22 @@ const linkIcon: Record<string, string> = { youtube: 'youtube', 'x-twitter': 'x' 
   onPage(() => {
     const strip = document.querySelector<HTMLElement>('.wardrobe');
     if (!strip) return;
+    // arrow buttons: one screenful at a time, greyed out at either end
+    const prevBtn = document.querySelector<HTMLButtonElement>('[data-wardrobe-prev]');
+    const nextBtn = document.querySelector<HTMLButtonElement>('[data-wardrobe-next]');
+    const edges = () => {
+      if (prevBtn) prevBtn.disabled = strip.scrollLeft < 8;
+      if (nextBtn) nextBtn.disabled = strip.scrollLeft > strip.scrollWidth - strip.clientWidth - 8;
+    };
+    const page = (dir: number) =>
+      strip.scrollBy({
+        left: dir * Math.max(240, strip.clientWidth * 0.8),
+        behavior: document.documentElement.dataset.motion === 'on' ? 'smooth' : 'auto',
+      });
+    prevBtn?.addEventListener('click', () => page(-1));
+    nextBtn?.addEventListener('click', () => page(1));
+    strip.addEventListener('scroll', edges, { passive: true });
+    edges();
     let raf = 0;
     let visible = false;
     let paused = false;
