@@ -2830,42 +2830,29 @@ html[data-motion='on'] .lighthouse__beam {
   color: var(--ink-soft);
 }
 .art-masonry {
-  --row-h: 175px; /* target picture height: every tile in a row ends up the same height, rows fill the width */
-  --pad: 7px;
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: flex-start;
-}
-/* the last row stays at natural size instead of stretching to the full width */
-.art-masonry::after {
-  content: '';
-  flex-grow: 999;
+  columns: 5 200px;
+  column-gap: 16px;
 }
 .art-tile {
-  /* width follows the picture's aspect ratio (--ar), so heights match within a row and nothing is cropped */
-  flex: var(--ar) 1 calc(var(--ar) * var(--row-h) + 2 * var(--pad));
-  max-width: 100%;
-  min-width: 0;
+  break-inside: avoid;
+  margin-bottom: 20px;
   background: var(--paper);
   border-radius: 16px;
-  padding: var(--pad) var(--pad) 10px;
+  padding: 7px 7px 10px;
   box-shadow: var(--sh-1);
   content-visibility: auto;
   contain-intrinsic-size: auto 320px;
 }
 .art-tile__link {
   display: block;
-  aspect-ratio: var(--ar);
   border-radius: 11px;
   overflow: hidden;
   background: var(--pink-wash);
 }
 .art-tile__link img {
   width: 100%;
-  height: 100%;
-  object-fit: cover; /* the box already has the picture's own ratio, so this never crops */
+  height: auto;
   transition: transform var(--dur-3) var(--ease-float);
 }
 .art-tile__link:hover img {
@@ -2885,8 +2872,8 @@ html[data-motion='on'] .lighthouse__beam {
 }
 @media (max-width: 600px) {
   .art-masonry {
-    --row-h: 100px;
-    gap: 10px;
+    columns: 2;
+    column-gap: 12px;
   }
   .arts-visual {
     height: 260px;

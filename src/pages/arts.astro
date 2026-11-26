@@ -220,7 +220,7 @@ const bannerFocus = (img: { width: number; height: number }) =>
           {s.items.map(({ a, srcset, href }) => {
             const title = [a.data.title.ja, a.data.title.en].filter(Boolean).join(' / ');
             return (
-              <li class="art-tile" style={`--ar:${(a.data.image.width / a.data.image.height).toFixed(4)}`}>
+              <li class="art-tile">
                 <a
                   class="art-tile__link"
                   href={href}
