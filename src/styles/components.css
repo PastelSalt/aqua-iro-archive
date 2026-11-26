@@ -262,31 +262,6 @@
 }
 
 /* ================= Stamp (rotating ring) ================= */
-.stamp {
-  position: relative;
-  width: var(--stamp-size, 130px);
-  aspect-ratio: 1;
-  flex: none;
-}
-.stamp__ring {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.stamp__core {
-  position: absolute;
-  inset: 23%;
-  border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
-  display: grid;
-  place-items: center;
-}
-.stamp__core .icon {
-  width: 40%;
-  height: 40%;
-}
 
 /* ================= Ribbon tab ================= */
 .ribbon {

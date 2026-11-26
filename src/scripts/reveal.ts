@@ -26,7 +26,6 @@ const SELECTOR = [
   '.footer__inner > *',
   '.maker-card',
   '.sticker',
-  '.stamp',
   '.postcard',
   '.spread__item',
   '.jacket',

@@ -292,7 +292,7 @@ html[data-motion='on'] .sway {
     scale: 1;
   }
 }
-html[data-motion='on'] :is(.sticker, .stamp)[data-reveal].is-in {
+html[data-motion='on'] .sticker[data-reveal].is-in {
   animation: stick-on 560ms cubic-bezier(0.22, 1, 0.36, 1) var(--rd, 0ms) backwards;
 }
 /* speech bubble */
@@ -753,16 +753,13 @@ html[data-motion='on'] .vn-card {
   top: 12px;
   font-size: var(--step--1);
 }
-/* farewell: the anchor stamp spins in */
+
 @keyframes spin-in {
   from {
     opacity: 0;
     rotate: -200deg;
     scale: 0.4;
   }
-}
-html[data-motion='on'] .farewell .stamp[data-reveal].is-in {
-  animation: spin-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 /* ================= About ================= */

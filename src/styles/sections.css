@@ -264,12 +264,7 @@ html[data-motion='on'] .hero-circle__ring {
     rotate: 0deg;
   }
 }
-.home-stamp {
-  position: absolute;
-  right: -9%;
-  top: -3%;
-  z-index: 5;
-}
+
 .home-hero__sleep {
   position: absolute !important;
   right: -6%;
@@ -673,7 +668,7 @@ html[data-motion='off'] .faq__item summary::after {
 .farewell__inner {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: var(--s-7);
   align-items: center;
 }
@@ -817,10 +812,7 @@ html[data-motion='off'] .faq__item summary::after {
   .hero-circle {
     width: min(82vw, 420px);
   }
-  .home-stamp {
-    --stamp-size: 96px !important;
-    right: -6%;
-  }
+
   .home-hero__reel {
     grid-template-columns: 1fr;
   }
@@ -924,11 +916,6 @@ html[data-motion='off'] .faq__item summary::after {
     width: 42px;
     height: 42px;
   }
-}
-.about-visual__stamp {
-  position: absolute !important;
-  right: 6%;
-  top: 0;
 }
 
 .id-card {

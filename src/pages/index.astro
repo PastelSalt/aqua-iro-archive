@@ -4,7 +4,6 @@ import { Image, Picture } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
-import Stamp from '../components/ui/Stamp.astro';
 import VoyageLine from '../components/ui/VoyageLine.astro';
 import Marquee from '../components/chrome/Marquee.astro';
 import Seam from '../components/ui/Seam.astro';
@@ -219,7 +218,6 @@ const ld = {
               ))}
             </select>
           </label>
-          <Stamp class="home-stamp" />
         </div>
       </div>
 
@@ -484,7 +482,6 @@ const ld = {
             <Icon name="anchor" />
           </a>
         </div>
-        <Stamp text="ありがとう ⚓ THANK YOU ⚓ 2018 — 2024 ⚓ " size={150} />
       </div>
     </section>
   </main>

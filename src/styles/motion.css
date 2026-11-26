@@ -87,9 +87,6 @@
   }
 }
 
-html[data-motion='on'] .stamp__ring {
-  animation: spin 20s linear infinite;
-}
 html[data-motion='on'] .float {
   animation: float-y 5s var(--ease-float) infinite;
 }
@@ -334,7 +331,6 @@ html[data-motion='on'] .btn:active {
    Only the infinite loops — never one-shot entrances or reveals, which would freeze at opacity 0. */
 [data-offscreen]
   :is(
-    .stamp__ring,
     .marquee__track,
     .hero-circle__ring,
     .hero-circle__ring2,
