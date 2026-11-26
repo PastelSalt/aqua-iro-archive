@@ -5,7 +5,8 @@ import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/ui/Icon.astro';
 import VoyageLine from '../components/ui/VoyageLine.astro';
-import Marquee from '../components/chrome/Marquee.astro';
+import streamData from '../content/streams/streams.json';
+import { thousands } from '../lib/format';
 import Seam from '../components/ui/Seam.astro';
 import DialogueBox from '../components/talk/DialogueBox.tsx';
 import { CHAPTERS } from '../lib/chapters';
@@ -46,6 +47,34 @@ const cardFocus: Record<string, string> = {
   arts: 'center 10%',
   messages: 'center top',
 };
+// "the archive in numbers" strip under the hero (replaces the old scrolling ticker)
+const stats = [
+  {
+    n: thousands(streamData.summary.count),
+    ja: '配信アーカイブ',
+    en: 'streams archived',
+    href: '/streaming',
+  },
+  { n: thousands(streamData.summary.hours), ja: '時間の配信', en: 'hours streamed', href: '/streaming' },
+  {
+    n: String((await getCollection('originals')).length),
+    ja: 'オリジナル曲',
+    en: 'original songs',
+    href: '/discography',
+  },
+  {
+    n: String((await getCollection('arts')).length),
+    ja: '点の公式アート',
+    en: 'pieces of official art',
+    href: '/arts',
+  },
+  {
+    n: String((await getCollection('events')).length),
+    ja: '件の航海のきろく',
+    en: 'voyage log entries',
+    href: '/events',
+  },
+];
 // a ring of tiny official key visuals around the hero circle (IMPROVEMENT-PLAN §1.5 Home)
 const halo = (await getCollection('arts', (a) => a.data.section === 'key-visuals')).slice(0, 12);
 const cards = await Promise.all(
@@ -317,7 +346,23 @@ const ld = {
       </aside>
     </section>
 
-    <Marquee />
+    <section class="numbers wrap" aria-label="The archive in numbers · 数字で見るアーカイブ">
+      <ul class="numbers__list" role="list">
+        {stats.map((x) => (
+          <li>
+            <a class="numbers__item" href={x.href}>
+              <b class="numbers__n num">{x.n}</b>
+              <span data-l="ja" lang="ja">
+                {x.ja}
+              </span>
+              <span data-l="en" lang="en">
+                {x.en}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
     <section class="chapter-spread wrap" aria-labelledby="spread-title">
       <div class="sec-title sec-title--center">
