@@ -448,7 +448,13 @@ const ld = {
     <section class="farewell band" aria-labelledby="farewell-title">
       <div class="farewell__waves" aria-hidden="true"></div>
       <div class="wrap farewell__inner">
-        <Stamp text="ありがとう ⚓ THANK YOU ⚓ 2018 — 2024 ⚓ " size={150} />
+        <Image
+          src={signature}
+          alt="湊あくあのサイン / Minato Aqua's signature"
+          width={520}
+          class="farewell__sign"
+          loading="lazy"
+        />
         <div>
           <h2 id="farewell-title" class="mincho" lang="ja">
             ありがとう、あくたん。
@@ -478,13 +484,7 @@ const ld = {
             <Icon name="anchor" />
           </a>
         </div>
-        <Image
-          src={signature}
-          alt="湊あくあのサイン / Minato Aqua's signature"
-          width={320}
-          class="farewell__sign"
-          loading="lazy"
-        />
+        <Stamp text="ありがとう ⚓ THANK YOU ⚓ 2018 — 2024 ⚓ " size={150} />
       </div>
     </section>
   </main>

@@ -692,9 +692,11 @@ html[data-motion='off'] .faq__item summary::after {
   max-width: 36em;
 }
 .farewell__sign {
-  width: 240px;
-  opacity: 0.9;
+  /* her signature leads the section: large, and lifted off the navy as a white ink with a soft pink glow */
+  width: clamp(280px, 30vw, 440px);
+  height: auto;
   transform: rotate(-6deg);
+  filter: brightness(0) invert(1) drop-shadow(0 0 12px rgb(255 197 226 / 0.55));
 }
 
 @media (max-width: 1440px) {
@@ -797,6 +799,9 @@ html[data-motion='off'] .faq__item summary::after {
   .farewell__inner {
     grid-template-columns: 1fr;
     justify-items: start;
+  }
+  .farewell__sign {
+    width: min(78vw, 340px);
   }
 }
 @media (max-width: 760px) {
